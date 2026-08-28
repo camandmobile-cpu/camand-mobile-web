@@ -1,0 +1,2103 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Camand Mobile — Tecnología y estuches personalizados</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Manrope:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<style>
+:root{
+  --bg:#fbfbfd;
+  --surface:#f5f5f7;
+  --surface-2:#eef0f2;
+  --ink:#1d1d1f;
+  --ink-soft:#6e6e73;
+  --ink-faint:#a1a1a6;
+  --line:rgba(0,0,0,0.08);
+  --white:#ffffff;
+
+  --tech:#0071e3;
+  --tech-dark:#0058b0;
+  --tech-tint:#eaf3fe;
+
+  --cases:#c8447a;
+  --cases-dark:#a3345f;
+  --cases-tint:#fbeaf1;
+
+  --trust:#0f7a4d;
+  --trust-tint:#e7f6ee;
+
+  --acc:#c9720a;
+  --acc-dark:#9c5900;
+  --acc-tint:#fdf1e2;
+
+  --radius-lg:28px;
+  --radius-md:18px;
+  --radius-sm:12px;
+
+  --shadow-1:0 1px 2px rgba(0,0,0,0.04), 0 8px 24px -8px rgba(0,0,0,0.10);
+  --shadow-2:0 2px 8px rgba(0,0,0,0.06), 0 24px 48px -16px rgba(0,0,0,0.18);
+
+  --ease:cubic-bezier(.22,.61,.36,1);
+}
+
+*{box-sizing:border-box;}
+html{scroll-behavior:smooth;}
+body{
+  margin:0;
+  background:var(--bg);
+  color:var(--ink);
+  font-family:'Inter','Manrope',-apple-system,BlinkMacSystemFont,'SF Pro Display','Segoe UI',sans-serif;
+  -webkit-font-smoothing:antialiased;
+  overflow-x:hidden;
+}
+img{max-width:100%;display:block;}
+a{color:inherit;text-decoration:none;}
+button{font-family:inherit;}
+
+.wrap{max-width:1120px;margin:0 auto;padding:0 24px;}
+@media (max-width:734px){ .wrap{padding:0 20px;} }
+
+/* ---------- NAV ---------- */
+header.nav{
+  position:fixed;top:0;left:0;right:0;z-index:200;
+  background:rgba(251,251,253,0.72);
+  backdrop-filter:blur(20px) saturate(1.6);
+  -webkit-backdrop-filter:blur(20px) saturate(1.6);
+  border-bottom:1px solid rgba(0,0,0,0.06);
+  transition:background .3s var(--ease);
+}
+.nav-inner{
+  max-width:1120px;margin:0 auto;padding:0 24px;
+  height:52px;display:flex;align-items:center;justify-content:space-between;
+  gap:20px;
+}
+.brand{display:flex;align-items:center;gap:9px;font-weight:800;font-size:15px;letter-spacing:-0.01em;cursor:pointer;background:none;border:none;color:var(--ink);}
+.brand .brand-logo{
+  height:30px;width:auto;flex-shrink:0;display:block;
+}
+nav.links{display:flex;align-items:center;gap:30px;font-size:12.5px;font-weight:500;color:var(--ink);}
+nav.links button{background:none;border:none;color:var(--ink-soft);cursor:pointer;font-size:12.5px;padding:4px 0;position:relative;}
+nav.links button:hover{color:var(--ink);}
+nav.links button.is-active{color:var(--ink);}
+nav.links button.is-active::after{
+  content:"";position:absolute;left:0;right:0;bottom:-8px;height:2px;
+  background:var(--ink);border-radius:2px;
+}
+.nav-cta{
+  display:flex;align-items:center;gap:8px;
+  background:var(--ink);color:#fff;border-radius:100px;
+  padding:8px 16px;font-size:12.5px;font-weight:600;
+  transition:transform .2s var(--ease), background .2s;
+}
+.nav-cta:hover{background:#000;transform:translateY(-1px);}
+.hamburger{display:none;background:none;border:none;cursor:pointer;padding:8px;}
+.hamburger span{display:block;width:20px;height:1.6px;background:var(--ink);margin:5px 0;border-radius:2px;transition:.25s;}
+
+@media (max-width:734px){
+  nav.links{display:none;}
+  .hamburger{display:block;}
+  .nav-cta span.long{display:none;}
+}
+
+/* mobile full menu */
+.mobile-menu{
+  position:fixed;inset:0;z-index:190;
+  background:rgba(251,251,253,0.86);
+  backdrop-filter:blur(28px);
+  -webkit-backdrop-filter:blur(28px);
+  display:flex;flex-direction:column;align-items:center;justify-content:center;gap:26px;
+  opacity:0;pointer-events:none;transform:scale(1.02);
+  transition:opacity .35s var(--ease), transform .35s var(--ease);
+}
+.mobile-menu.open{opacity:1;pointer-events:auto;transform:scale(1);}
+.mobile-menu button.mm-link{background:none;border:none;font-size:30px;font-weight:700;color:var(--ink);letter-spacing:-0.02em;cursor:pointer;}
+.mobile-menu .mm-close{position:absolute;top:18px;right:20px;font-size:26px;background:none;border:none;color:var(--ink-soft);cursor:pointer;}
+.mobile-menu .mm-wa{margin-top:10px;background:var(--ink);color:#fff;padding:12px 24px;border-radius:100px;font-size:14px;font-weight:600;}
+
+/* ---------- VIEW TRANSITION ---------- */
+#app{
+  padding-top:52px;
+  min-height:calc(100vh - 52px);
+  transition:opacity .4s var(--ease), transform .4s var(--ease), filter .4s var(--ease);
+}
+#app.transitioning{ opacity:0; transform:translateY(8px) scale(0.985); filter:blur(6px); }
+.view{display:none;}
+.view.active{display:block;}
+
+/* ---------- HOME ---------- */
+.eyebrow{
+  font-size:12.5px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;
+  color:var(--ink-faint);margin:0 0 14px;
+}
+.hero{
+  padding:76px 0 56px;text-align:center;
+}
+.hero h1{
+  font-size:clamp(34px,5.4vw,64px);
+  line-height:1.06;letter-spacing:-0.03em;font-weight:800;
+  margin:0 0 18px;
+}
+.hero h1 em{font-style:normal;color:var(--ink-soft);font-weight:500;}
+.hero p.sub{
+  font-size:clamp(16px,2vw,20px);color:var(--ink-soft);
+  max-width:560px;margin:0 auto;line-height:1.5;font-weight:400;
+}
+
+.portals{
+  display:grid;grid-template-columns:1fr 1fr 1fr;gap:18px;
+  margin:48px 0 8px;
+}
+@media (max-width:900px){ .portals{grid-template-columns:1fr 1fr;} }
+@media (max-width:560px){ .portals{grid-template-columns:1fr;} }
+
+.portal{
+  position:relative;overflow:hidden;border-radius:var(--radius-lg);
+  padding:44px 34px;min-height:280px;min-width:0;
+  display:flex;flex-direction:column;justify-content:flex-end;
+  cursor:pointer;border:1px solid var(--line);
+  transition:transform .45s var(--ease), box-shadow .45s var(--ease);
+  text-align:left;
+  -webkit-mask-image:-webkit-radial-gradient(white, black);
+}
+.portal:hover{transform:translateY(-4px);box-shadow:var(--shadow-2);}
+.portal .glow{
+  position:absolute;inset:-40% -20% auto auto;width:70%;height:140%;
+  border-radius:50%;filter:blur(60px);opacity:.55;pointer-events:none;
+  transition:opacity .4s;
+}
+.portal:hover .glow{opacity:.85;}
+.portal.tech{background:linear-gradient(180deg,#fff,var(--tech-tint) 130%);}
+.portal.tech .glow{background:var(--tech);}
+.portal.cases{background:linear-gradient(180deg,#fff,var(--cases-tint) 130%);}
+.portal.cases .glow{background:var(--cases);}
+.portal.accesorios{background:linear-gradient(180deg,#fff,var(--acc-tint) 130%);}
+.portal.accesorios .glow{background:var(--acc);}
+
+.portal .kicker{font-size:12.5px;font-weight:700;letter-spacing:.06em;text-transform:uppercase;position:relative;z-index:1;}
+.portal.tech .kicker{color:var(--tech);}
+.portal.cases .kicker{color:var(--cases);}
+.portal.accesorios .kicker{color:var(--acc-dark);}
+.portal h3{font-size:clamp(24px,3vw,32px);letter-spacing:-0.02em;margin:8px 0 10px;position:relative;z-index:1;font-weight:800;}
+.portal p{margin:0 0 20px;color:var(--ink-soft);font-size:15px;line-height:1.5;max-width:380px;position:relative;z-index:1;}
+.portal .go{
+  display:inline-flex;align-items:center;gap:6px;font-weight:600;font-size:14.5px;
+  position:relative;z-index:1;color:var(--ink);
+}
+.portal .go svg{width:15px;height:15px;transition:transform .25s var(--ease);}
+.portal:hover .go svg{transform:translateX(4px);}
+
+/* trust strip */
+.trust{
+  display:flex;flex-wrap:wrap;justify-content:center;gap:10px;
+  margin:52px 0 0;padding:20px 0;border-top:1px solid var(--line);border-bottom:1px solid var(--line);
+}
+.pill{
+  display:flex;align-items:center;gap:7px;font-size:12.5px;font-weight:600;color:var(--ink-soft);
+  background:var(--surface);padding:8px 14px;border-radius:100px;
+}
+.pill b{color:var(--ink);font-weight:700;}
+.pill .dot{width:6px;height:6px;border-radius:50%;background:var(--trust);}
+
+/* section shell reused */
+.section{padding:72px 0;}
+.section-head{text-align:center;max-width:640px;margin:0 auto 44px;}
+.section-head h2{font-size:clamp(26px,3.6vw,38px);letter-spacing:-0.025em;font-weight:800;margin:0 0 12px;}
+.section-head p{color:var(--ink-soft);font-size:16px;line-height:1.55;margin:0;}
+
+/* testimonials */
+.testi-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:16px;}
+@media (max-width:900px){.testi-grid{grid-template-columns:1fr;}}
+.testi{
+  background:var(--surface);border-radius:var(--radius-md);padding:26px;
+  display:flex;flex-direction:column;gap:14px;min-width:0;
+}
+.stars{color:#f5a623;font-size:14px;letter-spacing:2px;}
+.testi p{margin:0;font-size:14.5px;line-height:1.55;color:var(--ink);}
+.testi .who{font-size:12.5px;color:var(--ink-soft);font-weight:600;}
+
+/* footer */
+footer.site{
+  background:var(--ink);color:rgba(255,255,255,.72);padding:56px 0 28px;margin-top:40px;
+}
+.foot-grid{display:grid;grid-template-columns:1.4fr 1fr 1fr;gap:32px;padding-bottom:32px;border-bottom:1px solid rgba(255,255,255,.12);}
+.foot-grid > div{min-width:0;}
+@media (max-width:734px){.foot-grid{grid-template-columns:1fr;gap:26px;}}
+.foot-grid h4{color:#fff;font-size:13px;font-weight:700;margin:0 0 14px;text-transform:uppercase;letter-spacing:.05em;}
+.foot-grid a, .foot-grid div.line{display:block;font-size:14px;margin-bottom:9px;color:rgba(255,255,255,.72);}
+.foot-grid a:hover{color:#fff;}
+.foot-bottom{padding-top:22px;display:flex;justify-content:space-between;flex-wrap:wrap;gap:10px;font-size:12.5px;color:rgba(255,255,255,.45);}
+
+/* ---------- BREADCRUMB / BACK ---------- */
+.subnav{
+  display:flex;align-items:center;gap:10px;padding:22px 0 4px;font-size:13.5px;color:var(--ink-soft);
+}
+.back-btn{
+  display:inline-flex;align-items:center;gap:6px;background:var(--surface);
+  border:none;border-radius:100px;padding:8px 14px 8px 10px;font-size:13.5px;font-weight:600;
+  color:var(--ink);cursor:pointer;transition:background .2s;
+}
+.back-btn:hover{background:var(--surface-2);}
+.back-btn svg{width:14px;height:14px;}
+
+/* ---------- TECH HUB HERO ---------- */
+.hub-hero{padding:26px 0 46px;text-align:center;}
+.hub-hero h1{font-size:clamp(30px,4.6vw,52px);letter-spacing:-0.03em;font-weight:800;margin:0 0 14px;}
+.hub-hero p{color:var(--ink-soft);font-size:16.5px;max-width:560px;margin:0 auto;line-height:1.55;}
+
+/* ---------- FAQ ACCORDION ---------- */
+.faq-list{max-width:760px;margin:0 auto;}
+.faq-item{
+  border:1px solid var(--line);border-radius:var(--radius-md);margin-bottom:12px;
+  overflow:hidden;background:#fff;transition:border-color .2s;
+}
+.faq-item.open{border-color:var(--tech);}
+.faq-q{
+  width:100%;display:flex;align-items:center;gap:14px;padding:18px 20px;
+  background:none;border:none;text-align:left;cursor:pointer;
+}
+.faq-icon{font-size:19px;flex-shrink:0;width:26px;text-align:center;}
+.faq-q-text{flex:1;font-size:14.5px;font-weight:700;color:var(--ink);letter-spacing:-0.01em;}
+.faq-chevron{width:17px;height:17px;color:var(--ink-faint);transition:transform .3s var(--ease);flex-shrink:0;}
+.faq-item.open .faq-chevron{transform:rotate(180deg);color:var(--tech);}
+.faq-a-wrap{display:grid;grid-template-rows:0fr;transition:grid-template-rows .35s var(--ease);}
+.faq-item.open .faq-a-wrap{grid-template-rows:1fr;}
+.faq-a{overflow:hidden;}
+.faq-a ul{margin:0;padding:0 20px 20px 60px;list-style:none;}
+.faq-a li{
+  position:relative;font-size:13.5px;color:var(--ink-soft);line-height:1.6;margin-bottom:10px;
+}
+.faq-a li:last-child{margin-bottom:0;}
+.faq-a li::before{
+  content:"";position:absolute;left:-16px;top:8px;width:5px;height:5px;border-radius:50%;background:var(--tech);
+}
+.faq-a li b{color:var(--ink);}
+
+/* ---------- TRUST MICRO-BLOCK ---------- */
+.trust-mini{
+  display:flex;flex-wrap:wrap;gap:10px 20px;
+  background:var(--surface);border-radius:var(--radius-md);
+  padding:16px 20px;
+}
+.trust-mini-item{display:flex;align-items:center;gap:8px;font-size:12px;font-weight:600;color:var(--ink-soft);}
+.trust-mini-item .emoji{font-size:15px;line-height:1;}
+
+/* category tiles */
+/* gift banner */
+.gift-banner{
+  display:flex;align-items:center;gap:16px;
+  background:linear-gradient(120deg,var(--tech-tint),#fff);
+  border:1px solid var(--line);border-radius:var(--radius-md);
+  padding:20px 24px;margin-bottom:22px;
+}
+.gift-icon{font-size:26px;flex-shrink:0;}
+.gift-banner .txt b{display:block;font-size:15.5px;margin-bottom:3px;}
+.gift-banner .txt span{font-size:13px;color:var(--ink-soft);line-height:1.5;}
+
+/* tech search */
+.tech-search{
+  position:relative;max-width:480px;margin:0 auto 22px;
+}
+.tech-search svg{
+  position:absolute;left:16px;top:50%;transform:translateY(-50%);
+  width:17px;height:17px;color:var(--ink-faint);pointer-events:none;
+}
+.tech-search input{
+  width:100%;padding:13px 16px 13px 44px;border-radius:100px;border:1px solid var(--line);
+  background:#fff;font-size:14px;color:var(--ink);font-family:inherit;
+}
+.tech-search input:focus{outline:none;border-color:var(--tech);box-shadow:0 0 0 3px var(--tech-tint);}
+.search-results{margin-bottom:8px;}
+.search-results:empty{display:none;}
+.search-results .note{font-size:13px;color:var(--ink-soft);margin:0 0 14px;text-align:center;}
+
+.cat-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:14px;margin:0 0 8px;}
+@media (max-width:900px){.cat-grid{grid-template-columns:repeat(2,1fr);}}
+@media (max-width:560px){.cat-grid{grid-template-columns:1fr;}}
+
+.cat-tile{
+  background:var(--surface);border-radius:var(--radius-md);padding:24px;min-width:0;
+  cursor:pointer;border:1px solid transparent;text-align:left;
+  transition:border-color .25s, transform .25s var(--ease), background .25s;
+  display:flex;flex-direction:column;gap:14px;
+}
+.cat-tile:hover{border-color:var(--line);transform:translateY(-3px);background:#fff;box-shadow:var(--shadow-1);}
+.cat-tile.is-open{background:#fff;border-color:var(--ink);box-shadow:var(--shadow-1);}
+.cat-tile .icon{
+  width:42px;height:42px;border-radius:12px;display:flex;align-items:center;justify-content:center;
+  background:var(--tech-tint);color:var(--tech);
+}
+.cat-tile .icon svg{width:22px;height:22px;}
+.cat-tile h4{margin:0;font-size:17px;font-weight:700;letter-spacing:-0.01em;}
+.cat-tile .count{font-size:12.5px;color:var(--ink-soft);font-weight:500;}
+
+/* optional cover photo per category — falls back to icon design if no photo set */
+.cat-tile.has-photo{
+  background-size:cover;background-position:center;
+  min-height:150px;justify-content:flex-end;position:relative;color:#fff;
+}
+.cat-tile.has-photo::before{
+  content:"";position:absolute;inset:0;border-radius:inherit;
+  background:linear-gradient(180deg,rgba(0,0,0,0) 30%,rgba(0,0,0,.65));
+}
+.cat-tile.has-photo .icon{position:relative;z-index:1;background:rgba(255,255,255,.18);color:#fff;backdrop-filter:blur(6px);}
+.cat-tile.has-photo h4, .cat-tile.has-photo .count{position:relative;z-index:1;}
+.cat-tile.has-photo .count{color:rgba(255,255,255,.75);}
+.cat-tile.has-photo:hover{border-color:transparent;}
+
+/* photo gallery — trabajos reales, modo carrusel */
+.gallery-carousel{position:relative;}
+.gallery-grid{
+  display:flex;gap:9px;overflow-x:auto;scroll-snap-type:x mandatory;
+  padding:2px 2px 10px;-webkit-overflow-scrolling:touch;scrollbar-width:thin;
+  -webkit-mask-image:linear-gradient(to right, transparent, black 18px, black calc(100% - 18px), transparent);
+  mask-image:linear-gradient(to right, transparent, black 18px, black calc(100% - 18px), transparent);
+}
+.gallery-grid::-webkit-scrollbar{height:5px;}
+.gallery-grid::-webkit-scrollbar-thumb{background:var(--line);border-radius:10px;}
+.gallery-slot{
+  flex:0 0 auto;width:clamp(84px,19vw,112px);
+  aspect-ratio:1/1.2;border-radius:12px;overflow:hidden;position:relative;
+  background:var(--surface);scroll-snap-align:start;display:block;
+  transition:transform .2s var(--ease);
+  border:none;padding:0;margin:0;cursor:pointer;-webkit-appearance:none;appearance:none;
+}
+.gallery-slot:hover{transform:translateY(-3px);}
+.gallery-slot img{width:100%;height:100%;object-fit:cover;display:block;}
+.car-btn{
+  position:absolute;top:50%;transform:translateY(-50%);
+  width:32px;height:32px;border-radius:50%;background:#fff;border:1px solid var(--line);
+  box-shadow:var(--shadow-1);display:flex;align-items:center;justify-content:center;
+  font-size:16px;line-height:1;color:var(--ink);cursor:pointer;z-index:2;padding:0;
+}
+.car-btn:hover{background:var(--surface);}
+.car-prev{left:-4px;}
+.car-next{right:-4px;}
+@media (max-width:700px){.car-btn{display:none;}}
+
+/* category panel (expand) */
+.cat-panel{
+  grid-column:1 / -1;
+  background:#fff;border:1px solid var(--line);border-radius:var(--radius-md);
+  padding:28px;margin-top:2px;
+  animation:reveal .35s var(--ease);
+}
+@keyframes reveal{from{opacity:0;transform:translateY(-6px);}to{opacity:1;transform:translateY(0);}}
+.cat-panel .note{font-size:13px;color:var(--ink-soft);margin:0 0 20px;}
+.brand-block{margin-bottom:20px;}
+.brand-block:last-child{margin-bottom:0;}
+.brand-block h5{
+  font-size:12.5px;text-transform:uppercase;letter-spacing:.06em;color:var(--ink-faint);
+  font-weight:700;margin:0 0 10px;
+}
+.chip-row{display:flex;flex-wrap:wrap;gap:8px;}
+.chip{
+  display:inline-flex;flex-direction:column;align-items:flex-start;gap:2px;
+  border:1px solid var(--line);border-radius:14px;padding:10px 14px;
+  font-size:12.5px;font-weight:600;color:var(--ink);background:var(--bg);
+  cursor:pointer;transition:border-color .2s,background .2s, transform .15s;
+  min-width:132px;max-width:220px;
+}
+.chip:hover{border-color:var(--tech);background:var(--tech-tint);transform:translateY(-1px);}
+.chip .chip-thumb{width:100%;height:84px;object-fit:cover;border-radius:8px;background:var(--tech-tint);margin-bottom:2px;}
+.chip .chip-name{line-height:1.3;}
+.chip .chip-price{font-size:14px;font-weight:800;color:var(--tech-dark);}
+.chip .chip-go{display:inline-flex;align-items:center;gap:3px;font-size:11px;font-weight:700;color:var(--ink-faint);margin-top:2px;}
+.chip:hover .chip-go{color:var(--tech-dark);}
+.chip .chip-go svg{width:10px;height:10px;}
+
+/* ===================== FILTROS DE CATÁLOGO ===================== */
+.filters-bar{
+  display:flex;flex-wrap:wrap;gap:10px;align-items:flex-end;
+  background:var(--surface);border:1px solid var(--line);border-radius:var(--radius-md);
+  padding:16px 18px;margin-bottom:16px;
+}
+.filter-field{display:flex;flex-direction:column;gap:4px;min-width:118px;}
+.filter-field label{font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.05em;color:var(--ink-faint);}
+.filter-field select,.filter-field input{
+  border:1px solid var(--line);border-radius:10px;background:#fff;color:var(--ink);
+  font-size:13px;font-family:inherit;padding:8px 10px;min-width:0;
+}
+.filter-field select:focus,.filter-field input:focus{outline:none;border-color:var(--tech);box-shadow:0 0 0 3px var(--tech-tint);}
+.filter-price{display:flex;gap:6px;align-items:center;}
+.filter-price input{width:88px;}
+.filters-clear{
+  align-self:flex-end;background:none;border:1px solid var(--line);border-radius:10px;
+  padding:8px 14px;font-size:12.5px;font-weight:700;color:var(--ink-soft);cursor:pointer;
+}
+.filters-clear:hover{color:var(--ink);border-color:var(--ink-faint);}
+.filters-count{font-size:12.5px;color:var(--ink-soft);margin:0 0 14px;}
+@media (max-width:560px){
+  .filters-bar{padding:14px;}
+  .filter-field{min-width:46%;flex:1 1 46%;}
+  .filters-clear{width:100%;}
+}
+
+/* ===================== TARJETAS DE PRODUCTO ===================== */
+.product-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(190px,1fr));gap:16px;}
+@media (max-width:420px){.product-grid{grid-template-columns:repeat(2,1fr);gap:10px;}}
+.product-card{
+  background:#fff;border:1px solid var(--line);border-radius:var(--radius-md);overflow:hidden;
+  display:flex;flex-direction:column;transition:border-color .2s,transform .2s var(--ease),box-shadow .2s;
+}
+.product-card:hover{border-color:var(--tech);transform:translateY(-3px);box-shadow:var(--shadow-1);}
+.product-card .pc-media{
+  aspect-ratio:1/1;background:var(--surface);display:flex;align-items:center;justify-content:center;
+  padding:10px;position:relative;
+}
+.product-card .pc-media img{width:100%;height:100%;object-fit:contain;}
+.product-card .pc-media .pc-noimg{font-size:34px;opacity:.25;}
+.product-card .pc-badge{
+  position:absolute;top:8px;left:8px;background:var(--ink);color:#fff;font-size:10.5px;font-weight:700;
+  padding:4px 8px;border-radius:100px;text-transform:uppercase;letter-spacing:.03em;
+}
+.product-card .pc-badge.nuevo{background:var(--trust);}
+.product-card .pc-body{padding:14px;display:flex;flex-direction:column;gap:6px;flex:1;}
+.product-card .pc-name{font-size:13.5px;font-weight:700;line-height:1.35;color:var(--ink);}
+.product-card .pc-specs{display:flex;flex-wrap:wrap;gap:5px;margin:2px 0;}
+.product-card .pc-specs span{
+  font-size:10.5px;font-weight:600;color:var(--ink-soft);background:var(--surface);
+  border-radius:6px;padding:3px 7px;
+}
+.product-card .pc-price-row{margin-top:auto;padding-top:6px;display:flex;align-items:baseline;gap:8px;flex-wrap:wrap;}
+.product-card .pc-price{font-size:16px;font-weight:800;color:var(--tech-dark);}
+.product-card .pc-price-old{font-size:12px;color:var(--ink-faint);text-decoration:line-through;}
+.product-card .pc-actions{display:flex;gap:6px;margin-top:8px;}
+.product-card .pc-add{
+  flex:1;background:var(--tech);color:#fff;border:none;border-radius:10px;padding:9px 8px;
+  font-size:12.5px;font-weight:700;cursor:pointer;transition:background .2s;
+}
+.product-card .pc-add:hover{background:var(--tech-dark);}
+.product-card .pc-add.added{background:var(--trust);}
+.product-card .pc-ask{
+  display:flex;align-items:center;justify-content:center;width:38px;flex-shrink:0;
+  border:1px solid var(--line);border-radius:10px;color:var(--ink-soft);
+}
+.product-card .pc-ask:hover{border-color:var(--tech);color:var(--tech);}
+.product-card .pc-ask svg{width:16px;height:16px;}
+.grid-empty{grid-column:1/-1;text-align:center;color:var(--ink-faint);font-size:13.5px;padding:30px 0;}
+
+/* ===================== CARRITO ===================== */
+.cart-fab{
+  position:fixed;bottom:22px;right:88px;z-index:150;
+  width:54px;height:54px;border-radius:50%;background:var(--ink);border:none;cursor:pointer;
+  display:flex;align-items:center;justify-content:center;box-shadow:0 8px 24px rgba(0,0,0,.28);
+  transition:transform .2s var(--ease);
+}
+.cart-fab:hover{transform:scale(1.08);}
+.cart-fab svg{width:23px;height:23px;stroke:#fff;fill:none;}
+.cart-badge{
+  position:absolute;top:-4px;right:-4px;background:var(--tech);color:#fff;font-size:11px;font-weight:800;
+  min-width:19px;height:19px;border-radius:100px;display:none;align-items:center;justify-content:center;
+  padding:0 4px;border:2px solid #fff;
+}
+@media (max-width:560px){.cart-fab{right:80px;bottom:20px;width:48px;height:48px;} .cart-fab svg{width:20px;height:20px;}}
+
+.cart-overlay{
+  position:fixed;inset:0;background:rgba(0,0,0,.45);z-index:199;
+  opacity:0;pointer-events:none;transition:opacity .25s;
+}
+.cart-overlay.open{opacity:1;pointer-events:auto;}
+.cart-drawer{
+  position:fixed;top:0;right:0;bottom:0;width:min(400px,92vw);background:#fff;z-index:200;
+  display:flex;flex-direction:column;transform:translateX(100%);transition:transform .3s var(--ease);
+  box-shadow:-12px 0 40px rgba(0,0,0,.18);
+}
+.cart-drawer.open{transform:translateX(0);}
+.cart-head{display:flex;align-items:center;justify-content:space-between;padding:20px 22px;border-bottom:1px solid var(--line);}
+.cart-head h3{margin:0;font-size:17px;}
+.cart-close{background:none;border:none;font-size:20px;color:var(--ink-soft);cursor:pointer;padding:4px;}
+.cart-body{flex:1;overflow-y:auto;padding:16px 22px;}
+.cart-empty{color:var(--ink-faint);font-size:13.5px;text-align:center;padding:40px 0;}
+.cart-item{display:flex;gap:12px;padding:14px 0;border-bottom:1px solid var(--line);}
+.cart-item img,.cart-item-noimg{
+  width:56px;height:56px;border-radius:10px;background:var(--surface);object-fit:contain;flex-shrink:0;
+  display:flex;align-items:center;justify-content:center;font-size:20px;
+}
+.cart-item-info{display:flex;flex-direction:column;gap:4px;flex:1;min-width:0;}
+.cart-item-name{font-size:12.5px;font-weight:700;color:var(--ink);line-height:1.3;}
+.cart-item-price{font-size:12.5px;color:var(--ink-soft);}
+.cart-item-qty{display:flex;align-items:center;gap:8px;margin-top:2px;}
+.cart-item-qty button{
+  width:22px;height:22px;border-radius:6px;border:1px solid var(--line);background:#fff;cursor:pointer;
+  font-size:14px;line-height:1;color:var(--ink);
+}
+.cart-item-qty span{font-size:12.5px;font-weight:700;min-width:14px;text-align:center;}
+.cart-item-remove{border:none;background:none;color:var(--ink-faint);font-size:11px;text-decoration:underline;cursor:pointer;margin-left:auto;}
+.cart-pay-note{
+  display:flex;gap:8px;align-items:flex-start;background:var(--trust-tint);border-radius:10px;
+  padding:10px 12px;font-size:11.5px;color:var(--ink-soft);line-height:1.4;margin-top:14px;
+}
+.cart-pay-note b{color:var(--ink);}
+.cart-foot{border-top:1px solid var(--line);padding:18px 22px 22px;}
+.cart-total-row{display:flex;justify-content:space-between;align-items:baseline;margin-bottom:14px;}
+.cart-total-row span:first-child{font-size:13px;color:var(--ink-soft);}
+.cart-total-row span:last-child{font-size:20px;font-weight:800;color:var(--ink);}
+.cart-checkout{
+  display:block;width:100%;background:#25D366;color:#fff;border:none;border-radius:12px;
+  padding:13px;font-size:14px;font-weight:700;cursor:pointer;text-align:center;
+}
+.cart-checkout:hover{background:#1fb958;}
+.cart-checkout:disabled{background:var(--ink-faint);cursor:not-allowed;}
+
+/* accesorios panel (standalone, not tied to catGrid) */
+.acc-panel{
+  background:#fff;border:1px solid var(--line);border-radius:var(--radius-md);
+  padding:28px;
+}
+
+.sistecredito-banner{
+  margin-top:36px;border-radius:var(--radius-md);
+  background:linear-gradient(120deg,var(--trust-tint),#fff);
+  border:1px solid var(--line);
+  padding:26px 28px;display:flex;align-items:center;justify-content:space-between;gap:20px;flex-wrap:wrap;
+}
+.sc-left{display:flex;align-items:center;gap:16px;flex-wrap:wrap;}
+.sc-logo-lg{height:26px;flex-shrink:0;}
+.sistecredito-banner .txt b{display:block;font-size:16.5px;margin-bottom:4px;}
+.sistecredito-banner .txt span{font-size:13.5px;color:var(--ink-soft);}
+.sc-btn{
+  background:var(--trust);color:#fff;padding:11px 20px;border-radius:100px;font-size:13.5px;font-weight:700;
+  white-space:nowrap;
+}
+
+/* ---------- CASES HUB ---------- */
+.cases-hero{
+  padding:26px 0 12px;display:grid;grid-template-columns:1.1fr .9fr;gap:40px;align-items:center;
+}
+.cases-hero > div{min-width:0;}
+@media (max-width:800px){.cases-hero{grid-template-columns:1fr;}}
+.cases-hero h1{font-size:clamp(30px,4.4vw,48px);letter-spacing:-0.03em;font-weight:800;margin:0 0 16px;}
+.cases-hero p{color:var(--ink-soft);font-size:16px;line-height:1.6;margin:0 0 22px;}
+.btn-primary{
+  display:inline-flex;align-items:center;gap:8px;background:var(--ink);color:#fff;
+  padding:14px 24px;border-radius:100px;font-weight:700;font-size:14.5px;
+  transition:transform .2s var(--ease), background .2s;
+}
+.btn-primary:hover{transform:translateY(-2px);background:#000;}
+.btn-primary.cases-btn{
+  background:linear-gradient(135deg,var(--cases),#7d3ff0);
+  padding:17px 30px;font-size:15.5px;position:relative;
+  box-shadow:0 10px 24px -6px rgba(200,68,122,.55);
+}
+.btn-primary.cases-btn:hover{background:linear-gradient(135deg,var(--cases-dark),#6a2fd9);transform:translateY(-2px);}
+.btn-primary.cases-btn svg{width:19px;height:19px;flex-shrink:0;}
+.btn-primary.cases-btn::after{
+  content:"";position:absolute;inset:0;border-radius:100px;
+  border:2px solid var(--cases);opacity:0;pointer-events:none;
+  animation:cta-pulse 2.6s ease-out infinite;
+}
+@keyframes cta-pulse{
+  0%{transform:scale(1);opacity:.55;}
+  100%{transform:scale(1.16);opacity:0;}
+}
+.design-hint{
+  display:flex;width:fit-content;align-items:center;gap:6px;font-size:12px;font-weight:700;
+  color:var(--cases-dark);background:var(--cases-tint);padding:6px 12px;border-radius:100px;
+  margin-bottom:12px;
+}
+.design-hint span.dot2{width:6px;height:6px;border-radius:50%;background:var(--cases);flex-shrink:0;}
+
+/* showcase card — real work photos, header labels aligned to each photo column */
+.cases-showcase-card{
+  width:100%;background:var(--surface);border:1px solid var(--line);border-radius:28px;
+  padding:20px;display:flex;flex-direction:column;gap:14px;
+}
+
+.showcase-header{display:flex;justify-content:space-between;align-items:center;gap:10px;}
+.showcase-header .tag{
+  display:inline-flex;align-items:center;justify-content:center;
+  padding:6px 14px;font-size:12px;font-weight:700;border-radius:100px;white-space:nowrap;
+  color:var(--trust);background:var(--trust-tint);
+}
+
+.showcase-grid-clean{position:relative;width:100%;aspect-ratio:3/2;}
+.showcase-page{
+  position:absolute;top:0;left:0;width:100%;height:100%;box-sizing:border-box;
+  display:grid;grid-template-columns:1fr 1fr;gap:12px;
+  opacity:0;transition:opacity .8s ease;pointer-events:none;
+}
+.showcase-page.active{opacity:1;pointer-events:auto;}
+.showcase-page img{
+  width:100%;aspect-ratio:3/4;object-fit:cover;border-radius:18px;display:block;
+  opacity:0;transform:scale(.96);transition:opacity .55s ease, transform .55s ease;
+}
+.showcase-page.active img{opacity:1;transform:scale(1);}
+.showcase-page.active img:nth-child(1){transition-delay:.04s;}
+.showcase-page.active img:nth-child(2){transition-delay:.14s;}
+
+.steps{display:grid;grid-template-columns:repeat(4,1fr);gap:16px;}
+@media (max-width:800px){.steps{grid-template-columns:repeat(2,1fr);}}
+.step{background:var(--surface);border-radius:var(--radius-md);padding:22px;}
+.step .n{font-size:12.5px;font-weight:800;color:var(--cases);margin-bottom:10px;}
+.step h5{margin:0 0 6px;font-size:15px;font-weight:700;}
+.step p{margin:0;font-size:13px;color:var(--ink-soft);line-height:1.5;}
+
+.promo-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:16px;}
+@media (max-width:700px){.promo-grid{grid-template-columns:1fr;}}
+.promo-card{
+  position:relative;background:linear-gradient(160deg,var(--cases-tint),#fff);border:1px solid var(--line);
+  border-radius:var(--radius-md);padding:26px 24px 24px;min-width:0;
+}
+.promo-card.featured{border-color:var(--cases);box-shadow:var(--shadow-1);}
+.promo-badge{
+  display:inline-block;font-size:10.5px;font-weight:800;letter-spacing:.04em;text-transform:uppercase;
+  color:#fff;background:var(--cases);padding:5px 10px;border-radius:100px;margin-bottom:14px;
+}
+.promo-badge.alt{background:var(--ink);}
+.promo-card h5{margin:0 0 8px;font-size:16.5px;font-weight:700;line-height:1.3;}
+.promo-card p{margin:0 0 14px;font-size:13.5px;color:var(--ink-soft);line-height:1.5;}
+.promo-price{font-size:14px;margin-bottom:14px;color:var(--ink);}
+.promo-price b{font-size:19px;font-weight:800;}
+.promo-price span{color:var(--ink-soft);font-size:12.5px;}
+.promo-link{font-size:13.5px;font-weight:700;color:var(--cases-dark);}
+
+.promo-featured-body{display:flex;gap:18px;align-items:flex-start;}
+.promo-featured-img{
+  width:96px;flex-shrink:0;border-radius:12px;background:#fff;
+  box-shadow:0 6px 16px rgba(0,0,0,.10);object-fit:contain;
+}
+.promo-featured-text{min-width:0;flex:1;}
+.promo-featured-text h5{margin:0 0 8px;}
+@media (max-width:480px){
+  .promo-featured-body{flex-direction:column;}
+  .promo-featured-img{width:120px;}
+}
+
+/* product lines: Essential / Pro MagSafe */
+.line-grid{display:grid;grid-template-columns:1fr 1fr;gap:20px;}
+@media (max-width:700px){.line-grid{grid-template-columns:1fr;}}
+.line-card{
+  position:relative;background:#fff;border:1px solid var(--line);
+  border-radius:var(--radius-lg);padding:30px 26px 26px;
+  display:flex;flex-direction:column;min-width:0;
+}
+.line-card.pro{background:linear-gradient(160deg,var(--surface-2),#fff);border-color:var(--ink);}
+.line-badge{
+  display:inline-flex;align-self:flex-start;font-size:10.5px;font-weight:800;letter-spacing:.05em;
+  text-transform:uppercase;color:#fff;padding:5px 11px;border-radius:100px;margin-bottom:16px;
+}
+.line-badge.pink{background:var(--cases);}
+.line-badge.ink{background:var(--ink);}
+.line-eyebrow{font-size:12.5px;font-weight:700;letter-spacing:.05em;text-transform:uppercase;color:var(--cases-dark);margin:0 0 6px;}
+.line-card.pro .line-eyebrow{color:var(--ink-soft);}
+.line-card h3{font-size:21px;font-weight:800;letter-spacing:-0.02em;margin:0 0 10px;}
+.line-card .line-desc{color:var(--ink-soft);font-size:13.5px;line-height:1.55;margin:0 0 18px;}
+.line-price{display:flex;align-items:baseline;gap:9px;margin-bottom:18px;}
+.line-price .old{font-size:14.5px;color:var(--ink-faint);text-decoration:line-through;}
+.line-price .new{font-size:25px;font-weight:800;color:var(--ink);letter-spacing:-0.02em;}
+.line-price .badge{background:var(--cases);color:#fff;font-size:11px;font-weight:700;padding:4px 9px;border-radius:100px;}
+.line-card.pro .line-price .badge{background:var(--ink);}
+.line-features{list-style:none;margin:0 0 20px;padding:0;display:flex;flex-direction:column;gap:11px;}
+.line-features li{display:flex;align-items:flex-start;gap:9px;font-size:13.5px;color:var(--ink);line-height:1.45;}
+.line-features li svg{flex-shrink:0;width:16px;height:16px;margin-top:1px;color:var(--cases);}
+.line-card.pro .line-features li svg{color:var(--ink);}
+.line-gift{
+  display:flex;align-items:center;gap:10px;background:var(--surface);border-radius:var(--radius-md);
+  padding:12px 14px;font-size:12.5px;color:var(--ink-soft);margin-bottom:20px;line-height:1.4;
+}
+.line-gift b{color:var(--ink);}
+.line-gift .emoji{font-size:17px;flex-shrink:0;}
+.line-cta{margin-top:auto;justify-content:center;}
+.btn-primary.line-btn-pro{
+  background:linear-gradient(135deg,#26282c,#000);
+  box-shadow:0 10px 24px -6px rgba(0,0,0,.35);
+}
+.btn-primary.line-btn-pro:hover{background:#000;}
+
+/* bento grid: Acrygel technical specs */
+.bento-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:16px;}
+@media (max-width:800px){.bento-grid{grid-template-columns:1fr;}}
+.bento-card{
+  background:var(--surface);border:1px solid var(--line);border-radius:var(--radius-md);
+  padding:26px 22px;
+}
+.bento-icon{
+  width:44px;height:44px;border-radius:12px;background:var(--cases-tint);color:var(--cases-dark);
+  display:flex;align-items:center;justify-content:center;margin-bottom:16px;
+}
+.bento-icon svg{width:22px;height:22px;}
+.bento-card h5{font-size:16px;font-weight:800;letter-spacing:-0.01em;margin:0 0 8px;}
+.bento-card p{margin:0;color:var(--ink-soft);font-size:13.5px;line-height:1.55;}
+
+/* trend inspiration grid */
+.trend-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:14px;}
+@media (max-width:800px){.trend-grid{grid-template-columns:repeat(2,1fr);}}
+.trend-tile{
+  position:relative;overflow:hidden;border-radius:var(--radius-md);
+  min-height:150px;display:flex;align-items:flex-end;padding:18px;
+  transition:transform .25s var(--ease), box-shadow .25s var(--ease);
+}
+.trend-tile:hover{transform:translateY(-3px);box-shadow:var(--shadow-2);}
+.trend-tile::after{
+  content:"";position:absolute;inset:0;
+  background:linear-gradient(0deg, rgba(0,0,0,.45), rgba(0,0,0,0) 60%);
+}
+.trend-tile span{position:relative;z-index:1;color:#fff;font-size:15px;font-weight:800;letter-spacing:-0.01em;line-height:1.25;}
+
+.finish-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:14px;}
+@media (max-width:700px){.finish-grid{grid-template-columns:1fr;}}
+.finish-card{
+  display:block;background:var(--surface);border-radius:var(--radius-md);padding:22px;min-width:0;
+  border:1px solid transparent;transition:transform .25s var(--ease), background .25s, border-color .25s;
+}
+.finish-card:hover{transform:translateY(-3px);background:#fff;border-color:var(--line);box-shadow:var(--shadow-1);}
+.finish-icon{
+  width:38px;height:38px;border-radius:11px;background:var(--cases-tint);color:var(--cases-dark);
+  display:flex;align-items:center;justify-content:center;margin-bottom:14px;
+}
+.finish-icon svg{width:20px;height:20px;}
+.finish-card h5{margin:0 0 6px;font-size:15.5px;font-weight:700;}
+.finish-card p{margin:0;font-size:13px;color:var(--ink-soft);line-height:1.5;}
+
+/* utility */
+.center{text-align:center;}
+.mt-lg{margin-top:56px;}
+.wa-fab{
+  position:fixed;bottom:22px;right:22px;z-index:150;
+  width:54px;height:54px;border-radius:50%;background:#25D366;
+  display:flex;align-items:center;justify-content:center;box-shadow:0 8px 24px rgba(37,211,102,.4);
+  transition:transform .2s var(--ease);
+}
+.wa-fab:hover{transform:scale(1.08);}
+.wa-fab svg{width:26px;height:26px;fill:#fff;}
+
+.sc-fab{
+  position:fixed;bottom:24px;left:22px;z-index:150;
+  display:flex;align-items:center;gap:9px;
+  background:#fff;border-radius:100px;padding:11px 18px 11px 14px;
+  box-shadow:0 8px 24px rgba(0,0,0,.16);border:1px solid var(--line);
+  transition:transform .2s var(--ease), box-shadow .2s;
+}
+.sc-fab:hover{transform:translateY(-2px);box-shadow:0 12px 28px rgba(0,0,0,.2);}
+.sc-fab img{height:16px;width:auto;display:block;}
+.sc-fab span{font-size:12.5px;font-weight:700;color:var(--ink);white-space:nowrap;}
+@media (max-width:560px){
+  .sc-fab span{display:none;}
+  .sc-fab{padding:12px;}
+  .sc-fab img{height:15px;}
+}
+
+.sc-logo-img{height:16px;width:auto;display:inline-block;vertical-align:middle;}
+
+.lightbox{
+  position:fixed;inset:0;z-index:400;background:rgba(10,10,12,0.92);
+  display:flex;align-items:center;justify-content:center;padding:32px;
+  opacity:0;pointer-events:none;transition:opacity .25s var(--ease);
+}
+.lightbox.open{opacity:1;pointer-events:auto;}
+.lightbox img{max-width:min(600px,92vw);max-height:88vh;border-radius:16px;box-shadow:0 24px 64px rgba(0,0,0,.5);}
+.lightbox-close{
+  position:absolute;top:20px;right:22px;width:40px;height:40px;border-radius:50%;
+  background:rgba(255,255,255,.12);border:none;color:#fff;font-size:18px;cursor:pointer;
+  display:flex;align-items:center;justify-content:center;transition:background .2s;
+}
+.lightbox-close:hover{background:rgba(255,255,255,.22);}
+
+@media (prefers-reduced-motion: reduce){
+  *{animation-duration:0.001ms !important; transition-duration:0.001ms !important;}
+}
+
+/* ---------- SPLASH SCREEN ---------- */
+#splash-screen {
+  position: fixed;
+  inset: 0;
+  z-index: 9999;
+  background: var(--bg);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: opacity 0.6s var(--ease), visibility 0.6s var(--ease);
+}
+#splash-screen.hidden {
+  opacity: 0;
+  visibility: hidden;
+  pointer-events: none;
+}
+.splash-content {
+  text-align: center;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  animation: splashPop 0.8s var(--ease) forwards;
+}
+.splash-logo-img {
+  width: 220px;
+  max-width: 62vw;
+  height: auto;
+  display: block;
+  margin-bottom: 22px;
+  animation: logoGlowImg 2s ease-in-out infinite alternate;
+}
+.splash-loader {
+  width: 140px;
+  height: 3px;
+  background: var(--line);
+  border-radius: 10px;
+  overflow: hidden;
+  position: relative;
+}
+.splash-loader::after {
+  content: "";
+  position: absolute;
+  left: -100%;
+  top: 0;
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(90deg, var(--tech), var(--cases));
+  animation: loadingBar 1.4s var(--ease) forwards;
+}
+body.loaded #app,
+body.loaded header.nav {
+  animation: pageReveal 0.8s var(--ease) forwards;
+}
+@keyframes splashPop {
+  0% { transform: scale(0.85); opacity: 0; }
+  100% { transform: scale(1); opacity: 1; }
+}
+@keyframes logoGlowImg {
+  0% { filter: drop-shadow(0 6px 16px rgba(0, 113, 227, 0.22)); transform: scale(1); }
+  100% { filter: drop-shadow(0 12px 28px rgba(200, 68, 122, 0.32)); transform: scale(1.03); }
+}
+@keyframes loadingBar {
+  0% { left: -100%; }
+  100% { left: 0%; }
+}
+@keyframes pageReveal {
+  0% { transform: scale(0.97); opacity: 0; }
+  100% { transform: scale(1); opacity: 1; }
+}
+</style>
+</head>
+<body>
+
+<div id="splash-screen">
+  <div class="splash-content">
+    <img class="splash-logo-img camand-logo-img" alt="Camand Mobile">
+    <div class="splash-loader"></div>
+  </div>
+</div>
+
+<script>
+  window.addEventListener('DOMContentLoaded', () => {
+    setTimeout(() => {
+      const splash = document.getElementById('splash-screen');
+      if (splash) {
+        splash.classList.add('hidden');
+        document.body.classList.add('loaded');
+      }
+      // Una vez que pageReveal termina, la liberamos con animation:none.
+      // Como usaba "forwards", sin esto se queda controlando opacity/transform
+      // de #app para siempre y choca con la transición de go() entre vistas.
+      const app = document.getElementById('app');
+      const navEl = document.querySelector('header.nav');
+      [app, navEl].forEach(el => {
+        if (!el) return;
+        el.addEventListener('animationend', () => {
+          el.style.animation = 'none';
+        }, { once: true });
+      });
+    }, 1500);
+  });
+</script>
+
+<header class="nav">
+  <div class="nav-inner">
+    <button class="brand" onclick="go('home')">
+      <img class="brand-logo camand-logo-img" alt="Camand Mobile">
+    </button>
+    <nav class="links">
+      <button data-view="home" class="is-active" onclick="go('home')">Inicio</button>
+      <button data-view="tech" onclick="go('tech')">Equipos</button>
+      <button data-view="accesorios" onclick="go('accesorios')">Accesorios</button>
+      <button data-view="cases" onclick="go('cases')">Estuches</button>
+      <button onclick="document.getElementById('contacto').scrollIntoView({behavior:'smooth'})">Contacto</button>
+    </nav>
+    <a class="nav-cta" href="https://wa.me/573122265799?text=Hola%2C%20quiero%20hacer%20un%20pedido" target="_blank" rel="noopener">
+      <span class="long">Escríbenos</span><span class="short">WhatsApp</span>
+    </a>
+    <button class="hamburger" onclick="toggleMenu(true)" aria-label="Menú">
+      <span></span><span></span><span></span>
+    </button>
+  </div>
+</header>
+
+<div class="mobile-menu" id="mobileMenu">
+  <button class="mm-close" onclick="toggleMenu(false)">✕</button>
+  <button class="mm-link" onclick="go('home')">Inicio</button>
+  <button class="mm-link" onclick="go('tech')">Equipos</button>
+  <button class="mm-link" onclick="go('accesorios')">Accesorios</button>
+  <button class="mm-link" onclick="go('cases')">Estuches</button>
+  <a class="mm-wa" href="https://wa.me/573122265799?text=Hola%2C%20quiero%20hacer%20un%20pedido" target="_blank" rel="noopener">Escríbenos por WhatsApp</a>
+</div>
+
+<div id="app">
+
+  <!-- ======================= HOME ======================= -->
+  <section class="view active" id="view-home">
+    <div class="wrap">
+      <div class="hero">
+        <p class="eyebrow">Camand Mobile · Tecnología &amp; Personalización</p>
+        <h1>Todo tu ecosistema tech,<br><em>en un solo lugar.</em></h1>
+        <p class="sub">Equipos, accesorios y estuches personalizados, con la mejor calidad y atención.</p>
+      </div>
+
+      <div class="portals">
+        <div class="portal tech" onclick="go('tech')">
+          <div class="glow"></div>
+          <p class="kicker">Equipos</p>
+          <h3>Celulares, tablets, computadores e impresoras</h3>
+          <p>Encuentra tu próximo equipo. Explora marcas, modelos y opciones disponibles.</p>
+          <span class="go">Ver catálogo
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><path d="M5 12h14M13 6l6 6-6 6"/></svg>
+          </span>
+        </div>
+        <div class="portal accesorios" onclick="go('accesorios')">
+          <div class="glow"></div>
+          <p class="kicker">Accesorios</p>
+          <h3>Cargadores, cables y más</h3>
+          <p>Power banks, cables y cargadores para complementar tu equipo.</p>
+          <span class="go">Ver accesorios
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><path d="M5 12h14M13 6l6 6-6 6"/></svg>
+          </span>
+        </div>
+        <div class="portal cases" onclick="go('cases')">
+          <div class="glow"></div>
+          <p class="kicker">Personalización</p>
+          <h3>Crea un estuche único</h3>
+          <p>Personaliza tu diseño, elige tu modelo de celular y visualízalo antes de pedir.</p>
+          <span class="go">Diseñar el mío
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><path d="M5 12h14M13 6l6 6-6 6"/></svg>
+          </span>
+        </div>
+      </div>
+
+      <div class="trust">
+        <div class="pill"><span class="dot"></span>Envíos a Bogotá y a nivel nacional</div>
+        <div class="pill"><span class="dot"></span>Productos de máxima calidad garantizada</div>
+        <div class="pill"><span class="dot"></span>Compra 100% segura — abonas y apartas</div>
+        <div class="pill"><img class="sc-logo-img" alt="Sistecrédito">&nbsp;Sin tarjeta, en cuotas</div>
+      </div>
+
+      <div class="sistecredito-banner">
+        <div class="sc-left">
+          <img class="sc-logo-img sc-logo-lg" alt="Sistecrédito">
+          <div class="txt">
+            <b>Lleva tu equipo hoy, sin tarjeta de crédito</b>
+            <span>Somos aliados autorizados Sistecrédito — aprueban tu cupo y pagas en cuotas cómodas.</span>
+          </div>
+        </div>
+        <a class="sc-btn" href="https://wa.me/573122265799?text=Hola%2C%20quiero%20comprar%20usando%20mi%20cupo%20Sistecr%C3%A9dito" target="_blank" rel="noopener">Solicitar cupo →</a>
+      </div>
+    </div>
+
+    <div class="section">
+      <div class="wrap">
+        <div class="section-head">
+          <h2>La experiencia de nuestros clientes</h2>
+          <p>Atención directa por WhatsApp, de principio a fin.</p>
+        </div>
+        <div class="testi-grid">
+          <div class="testi">
+            <div class="stars">★★★★★</div>
+            <p>Excelente atención y muy buena asesoría. Me ayudaron a elegir el celular que necesitaba y todo el proceso fue rápido y sencillo.</p>
+            <div class="who">Valentina R. · Compra de celular</div>
+          </div>
+          <div class="testi">
+            <div class="stars">★★★★★</div>
+            <p>Compré mi iPhone y quedé muy satisfecho. El equipo estaba en excelente estado y la atención fue de primera. Muy recomendado.</p>
+            <div class="who">Andrés M. · iPhone</div>
+          </div>
+          <div class="testi">
+            <div class="stars">★★★★★</div>
+            <p>Me encantó el estuche personalizado que me hicieron. Quedó justo como lo quería y la entrega fue rápida.</p>
+            <div class="who">Laura G. · Estuche personalizado</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ======================= TECH HUB ======================= -->
+  <section class="view" id="view-tech">
+    <div class="wrap">
+      <div class="subnav">
+        <button class="back-btn" onclick="go('home')">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4"><path d="M15 6l-6 6 6 6"/></svg>
+          Inicio
+        </button>
+        <span>/ Tecnología</span>
+      </div>
+      <div class="hub-hero">
+        <h1>Tecnología</h1>
+        <p>Explora nuestras categorías y encuentra el equipo que buscas. Precio y disponibilidad se confirman por WhatsApp.</p>
+      </div>
+
+      <div class="gift-banner">
+        <div class="gift-icon">🎁</div>
+        <div class="txt">
+          <b>Con la compra de tu equipo, llévate gratis</b>
+          <span>Estuche Space + vidrio templado — sin costo adicional, para que tu equipo salga protegido desde el primer día.</span>
+        </div>
+      </div>
+
+      <div class="tech-search">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><circle cx="11" cy="11" r="7"/><path d="m21 21-4.3-4.3"/></svg>
+        <input type="text" id="techSearchInput" placeholder="Busca tu modelo — ej. iPhone 15, Redmi Note, A57..." oninput="performTechSearch(this.value)">
+      </div>
+
+      <div class="search-results" id="searchResults"></div>
+
+      <div class="cat-grid" id="catGrid"></div>
+
+      <div class="sistecredito-banner">
+        <div class="sc-left">
+          <img class="sc-logo-img sc-logo-lg" alt="Sistecrédito">
+          <div class="txt">
+            <b>¿Prefieres pagar en cuotas, sin tarjeta?</b>
+            <span>Somos aliados autorizados Sistecrédito — solicita tu cupo y compra el equipo que quieres hoy.</span>
+          </div>
+        </div>
+        <a class="sc-btn" href="https://wa.me/573122265799?text=Hola%2C%20quiero%20comprar%20usando%20mi%20cupo%20Sistecr%C3%A9dito" target="_blank" rel="noopener">Solicitar cupo →</a>
+      </div>
+    </div>
+  </section>
+
+  <!-- ======================= ACCESORIOS HUB ======================= -->
+  <section class="view" id="view-accesorios">
+    <div class="wrap">
+      <div class="subnav">
+        <button class="back-btn" onclick="go('home')">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4"><path d="M15 6l-6 6 6 6"/></svg>
+          Inicio
+        </button>
+        <span>/ Accesorios</span>
+      </div>
+      <div class="hub-hero">
+        <h1>Accesorios</h1>
+        <p>Cargadores, cables, power banks y más — todo para complementar tu equipo. Precio y disponibilidad se confirman por WhatsApp.</p>
+      </div>
+
+      <div class="acc-panel" id="accesoriosGrid"></div>
+
+      <div class="sistecredito-banner">
+        <div class="sc-left">
+          <img class="sc-logo-img sc-logo-lg" alt="Sistecrédito">
+          <div class="txt">
+            <b>¿Prefieres pagar en cuotas, sin tarjeta?</b>
+            <span>Somos aliados autorizados Sistecrédito — solicita tu cupo y lleva tus accesorios hoy.</span>
+          </div>
+        </div>
+        <a class="sc-btn" href="https://wa.me/573122265799?text=Hola%2C%20quiero%20comprar%20usando%20mi%20cupo%20Sistecr%C3%A9dito" target="_blank" rel="noopener">Solicitar cupo →</a>
+      </div>
+    </div>
+  </section>
+
+  <!-- ======================= CASES HUB ======================= -->
+  <section class="view" id="view-cases">
+    <div class="wrap">
+      <div class="subnav">
+        <button class="back-btn" onclick="go('home')">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4"><path d="M15 6l-6 6 6 6"/></svg>
+          Inicio
+        </button>
+        <span>/ Estuches personalizados</span>
+      </div>
+
+      <div class="cases-hero">
+        <div>
+          <div class="design-hint"><span class="dot2"></span>Calidad Premium HD</div>
+          <p class="eyebrow" style="color:var(--cases);">Personalización</p>
+          <h1>Estuches transparentes en Acrygel, diseñados por ti.</h1>
+          <p>Usamos Acrygel híbrido de grado militar, anti-amarilleo, con impresión fotográfica UV de máxima definición — tu diseño se ve nítido y se mantiene así con el tiempo.</p>
+          <a class="btn-primary cases-btn" href="estuche-editor.html" target="_blank" rel="noopener">
+            Diseñar mi estuche
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M13 6l6 6-6 6"/></svg>
+          </a>
+        </div>
+        <div class="cases-showcase-card">
+          <div class="showcase-header">
+            <span class="tag">Trabajos reales</span>
+            <span class="tag">Acrygel Anti-Amarilleo</span>
+          </div>
+          <div class="showcase-grid-clean" id="heroShowcase"></div>
+        </div>
+      </div>
+    </div>
+
+    <div class="section" style="padding-top:8px;">
+      <div class="wrap">
+        <div class="line-grid">
+
+          <div class="line-card">
+            <span class="line-badge pink">Más vendido</span>
+            <p class="line-eyebrow">Línea Essential</p>
+            <h3>Estuche Acrygel transparente</h3>
+            <p class="line-desc">No es una funda desechable más: es un estuche híbrido Acrygel de grado militar, con bordes compactos, protección de cámara y tecnología anti-amarilleo — personalizado con tu diseño favorito.</p>
+            <div class="line-price">
+              <span class="old">$59.990</span>
+              <span class="new">$39.990</span>
+              <span class="badge">-33%</span>
+            </div>
+            <ul class="line-features">
+              <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M4 12l5 5L20 6"/></svg>Impresión UV de alta resolución (no se pela ni se raya fácil)</li>
+              <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M4 12l5 5L20 6"/></svg>Híbrido Acrygel de grado militar — mucho más resistente que una funda común</li>
+              <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M4 12l5 5L20 6"/></svg>Bordes compactos con protección reforzada de cámara</li>
+              <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M4 12l5 5L20 6"/></svg>Tecnología anti-amarilleo: se mantiene transparente con el tiempo</li>
+              <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M4 12l5 5L20 6"/></svg>Visualízalo antes de pedir con nuestro editor</li>
+            </ul>
+            <a class="btn-primary cases-btn line-cta" href="estuche-editor.html" target="_blank" rel="noopener">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><path d="M12 20h9"/><path d="M16.5 3.5a2.12 2.12 0 0 1 3 3L7 19l-4 1 1-4Z"/></svg>
+              Diseñar Essential →
+            </a>
+          </div>
+
+          <div class="line-card pro">
+            <span class="line-badge ink">Máxima protección</span>
+            <p class="line-eyebrow">Línea Pro / MagSafe</p>
+            <h3>Estuche Pro con MagSafe</h3>
+            <p class="line-desc">Diseñado para los más exigentes. Incluye anillo MagSafe integrado, bordes reforzados de grado militar y tu vidrio templado de regalo.</p>
+            <div class="line-price">
+              <span class="old">$89.990</span>
+              <span class="new">$69.990</span>
+              <span class="badge">-22%</span>
+            </div>
+            <ul class="line-features">
+              <li><svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 2l2.9 6.6L22 9.3l-5 4.8L18.2 21 12 17.3 5.8 21 7 14.1 2 9.3l7.1-.7Z"/></svg>Conexión MagSafe potente para cargadores y accesorios inalámbricos</li>
+              <li><svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 2l2.9 6.6L22 9.3l-5 4.8L18.2 21 12 17.3 5.8 21 7 14.1 2 9.3l7.1-.7Z"/></svg>Bordes reforzados de alto impacto (estilo Space / Camera Control)</li>
+              <li><svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 2l2.9 6.6L22 9.3l-5 4.8L18.2 21 12 17.3 5.8 21 7 14.1 2 9.3l7.1-.7Z"/></svg>Impresión UV HD personalizada a tu gusto</li>
+            </ul>
+            <div class="line-gift"><span class="emoji">🎁</span><span><b>Incluye gratis:</b> vidrio templado para tu pantalla</span></div>
+            <a class="btn-primary cases-btn line-cta" href="estuche-editor.html" target="_blank" rel="noopener">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><path d="M12 20h9"/><path d="M16.5 3.5a2.12 2.12 0 0 1 3 3L7 19l-4 1 1-4Z"/></svg>
+              Diseñar Pro MagSafe →
+            </a>
+          </div>
+
+        </div>
+      </div>
+    </div>
+
+    <div class="section" style="padding-top:0;">
+      <div class="wrap">
+        <div class="section-head">
+          <h2>Protección Acrygel de grado militar</h2>
+          <p>La tecnología detrás de cada estuche — hecha para durar.</p>
+        </div>
+        <div class="bento-grid">
+          <div class="bento-card">
+            <div class="bento-icon">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M12 3l7 3v6c0 5-3.5 8-7 9-3.5-1-7-4-7-9V6l7-3z"/></svg>
+            </div>
+            <h5>Grado Militar Anti-Caídas</h5>
+            <p>Absorbe impactos de hasta 2 metros de altura sin dañar tu celular.</p>
+          </div>
+          <div class="bento-card">
+            <div class="bento-icon">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><rect x="3" y="7" width="18" height="13" rx="2"/><circle cx="12" cy="13.5" r="3.2"/><path d="M8 7l1.3-2h5.4L16 7"/></svg>
+            </div>
+            <h5>Bisel Elevado para Cámara</h5>
+            <p>1.5 mm de protección extra en los lentes — se apoya sobre superficies sin rayar la cámara.</p>
+          </div>
+          <div class="bento-card">
+            <div class="bento-icon">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><circle cx="12" cy="12" r="4"/><path d="M12 2v3M12 19v3M4.2 4.2l2.1 2.1M17.7 17.7l2.1 2.1M2 12h3M19 12h3M4.2 19.8l2.1-2.1M17.7 6.3l2.1-2.1"/></svg>
+            </div>
+            <h5>TPU Alifático Anti-Amarilleo</h5>
+            <p>Filtro UV de alta resistencia que evita que el estuche se ponga amarillo con el tiempo.</p>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="section" style="padding-top:0;">
+      <div class="wrap">
+        <div class="section-head">
+          <h2>Explora tendencias para tu estuche</h2>
+          <p>Ideas para inspirarte — toca la categoría que más te gusta y armamos tu diseño por WhatsApp.</p>
+        </div>
+        <div class="trend-grid">
+          <a class="trend-tile" style="background:linear-gradient(160deg,#15803d,#0ea5e9)" href="https://wa.me/573122265799?text=Hola%2C%20quiero%20un%20estuche%20personalizado%20estilo%20Deportes%20%26%20F%C3%BAtbol" target="_blank" rel="noopener">
+            <span>Deportes &amp; Fútbol</span>
+          </a>
+          <a class="trend-tile" style="background:linear-gradient(160deg,#e11d48,#ec4899)" href="https://wa.me/573122265799?text=Hola%2C%20quiero%20un%20estuche%20personalizado%20estilo%20Parejas%20y%20Momentos" target="_blank" rel="noopener">
+            <span>Parejas y Momentos</span>
+          </a>
+          <a class="trend-tile" style="background:linear-gradient(160deg,#334155,#64748b)" href="https://wa.me/573122265799?text=Hola%2C%20quiero%20un%20estuche%20personalizado%20estilo%20Minimal%20%26%20Arte%20Vector" target="_blank" rel="noopener">
+            <span>Minimal &amp; Arte Vector</span>
+          </a>
+          <a class="trend-tile" style="background:linear-gradient(160deg,#6d28d9,#a855f7)" href="https://wa.me/573122265799?text=Hola%2C%20quiero%20un%20estuche%20personalizado%20estilo%20Anime%20%26%20Gaming" target="_blank" rel="noopener">
+            <span>Anime &amp; Gaming</span>
+          </a>
+        </div>
+      </div>
+    </div>
+
+    <div class="section" style="padding-top:0;">
+      <div class="wrap">
+        <div class="section-head">
+          <h2>Cómo funciona</h2>
+        </div>
+        <div class="steps">
+          <div class="step"><div class="n">01</div><h5>Elige tu modelo</h5><p>Selecciona tu celular y sube la foto que quieres en el estuche.</p></div>
+          <div class="step"><div class="n">02</div><h5>Escríbenos</h5><p>Nos mandas esa misma foto por WhatsApp para confirmar el diseño.</p></div>
+          <div class="step"><div class="n">03</div><h5>Confirmamos</h5><p>Te decimos precio final y tiempo de entrega.</p></div>
+          <div class="step"><div class="n">04</div><h5>Apartas y fabricamos</h5><p>Con un anticipo, empezamos a producir tu estuche.</p></div>
+        </div>
+      </div>
+    </div>
+
+    <div class="section" style="padding-top:0;">
+      <div class="wrap">
+        <div class="section-head">
+          <h2>Promociones</h2>
+          <p>Aprovecha estos beneficios al personalizar con nosotros.</p>
+        </div>
+        <div class="promo-grid">
+          <div class="promo-card featured">
+            <span class="promo-badge">Recomendada</span>
+            <div class="promo-featured-body">
+              <img class="promo-featured-img" src="img/promo-featured.jpg" alt="Instalador Easy-Install para el vidrio templado">
+              <div class="promo-featured-text">
+                <h5>Combo Protección Total (Estuche + Vidrio Mágico)</h5>
+                <p>Personaliza tu estuche y protege la pantalla con nuestro vidrio templado. Viene con su <b>instalador Easy-Install</b> — alineas, presionas y queda perfecto, sin burbujas ni errores, en menos de 30 segundos desde tu casa.</p>
+                <a class="promo-link" href="https://wa.me/573122265799?text=Hola%2C%20quiero%20pedir%20el%20combo%20estuche%20%2B%20vidrio%20m%C3%A1gico%20con%20instalador%20Easy-Install" target="_blank" rel="noopener">Pedir Combo →</a>
+              </div>
+            </div>
+          </div>
+          <div class="promo-card">
+            <span class="promo-badge alt">Oferta segunda unidad</span>
+            <h5>Lleva 2 Estuches con Descuento</h5>
+            <p>Compra el primero a $34.990 y llévate el segundo por solo $27.990. Ideal para combinar diseños o pedir con un amigo.</p>
+            <div class="promo-price"><b>$62.980</b> los dos <span>(ahorras $7.000)</span></div>
+            <a class="promo-link" href="https://wa.me/573122265799?text=Hola%2C%20quiero%20armar%20mi%20d%C3%BAo%20de%20estuches%20con%20descuento" target="_blank" rel="noopener">Armar mi Dúo →</a>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="section" style="padding-top:0;">
+      <div class="wrap">
+        <div class="section-head">
+          <h2>Protección de pantalla</h2>
+          <p>Hidrogel con instalación incluida, en el acabado que prefieras.</p>
+        </div>
+        <div class="finish-grid">
+          <a class="finish-card" href="https://wa.me/573122265799?text=Hola%2C%20quiero%20instalar%20Hidrogel%20acabado%20Mate" target="_blank" rel="noopener">
+            <div class="finish-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><rect x="6" y="3" width="12" height="18" rx="2"/><path d="M9 18h6"/></svg></div>
+            <h5>Mate</h5>
+            <p>Antihuellas, tacto suave y reduce el brillo de la pantalla.</p>
+          </a>
+          <a class="finish-card" href="https://wa.me/573122265799?text=Hola%2C%20quiero%20instalar%20Hidrogel%20acabado%20Anti-esp%C3%ADa" target="_blank" rel="noopener">
+            <div class="finish-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M2 12s4-7 10-7 10 7 10 7-4 7-10 7-10-7-10-7z"/><circle cx="12" cy="12" r="3"/><path d="M4 4l16 16"/></svg></div>
+            <h5>Anti-espía</h5>
+            <p>Oculta la pantalla desde ángulos laterales — ideal para privacidad.</p>
+          </a>
+          <a class="finish-card" href="https://wa.me/573122265799?text=Hola%2C%20quiero%20instalar%20Hidrogel%20acabado%20Brillante" target="_blank" rel="noopener">
+            <div class="finish-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><circle cx="12" cy="12" r="9"/><path d="M12 3v18M3 12h18"/></svg></div>
+            <h5>Brillante</h5>
+            <p>Transparencia total — mantiene el brillo original de tu pantalla.</p>
+          </a>
+        </div>
+        <div class="sistecredito-banner" style="margin-top:24px;background:linear-gradient(120deg,var(--surface),#fff);">
+          <div class="txt">
+            <b>Instalación incluida, sin burbujas</b>
+            <span>Desde $19.990 según acabado — confirmamos el precio exacto por WhatsApp.</span>
+          </div>
+          <a class="sc-btn" style="background:var(--ink);" href="https://wa.me/573122265799?text=Hola%2C%20quiero%20agendar%20una%20instalaci%C3%B3n%20de%20Hidrogel" target="_blank" rel="noopener">Agendar instalación →</a>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ======================= FAQ / POLÍTICAS ======================= -->
+  <section class="view" id="view-faq">
+    <div class="wrap">
+      <div class="subnav">
+        <button class="back-btn" onclick="go('home')">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4"><path d="M15 6l-6 6 6 6"/></svg>
+          Inicio
+        </button>
+        <span>/ Preguntas frecuentes</span>
+      </div>
+      <div class="hub-hero">
+        <h1>Preguntas Frecuentes y Políticas de Compra</h1>
+        <p>Todo lo que necesitas saber antes de pedir — envíos, tiempos, anticipos y garantía.</p>
+      </div>
+
+      <div class="faq-list">
+        <div class="faq-item">
+          <button class="faq-q" onclick="toggleFaq(this)">
+            <span class="faq-icon">🚚</span>
+            <span class="faq-q-text">¿Cómo funcionan los envíos y cuáles son los costos?</span>
+            <svg class="faq-chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4"><path d="M6 9l6 6 6-6"/></svg>
+          </button>
+          <div class="faq-a-wrap">
+            <div class="faq-a"><ul>
+              <li><b>Envío GRATIS:</b> en todas las compras iguales o superiores a $150.000 COP.</li>
+              <li><b>Pedidos menores a $150.000 COP:</b> el valor del envío varía según tu zona/ciudad y te lo confirmamos por WhatsApp antes de despachar.</li>
+              <li><b>Envíos nacionales:</b> los realizamos a través de Interrapidísimo y te enviamos tu número de guía para rastreo en tiempo real.</li>
+            </ul></div>
+          </div>
+        </div>
+
+        <div class="faq-item">
+          <button class="faq-q" onclick="toggleFaq(this)">
+            <span class="faq-icon">⏱️</span>
+            <span class="faq-q-text">¿Cuánto tarda en llegar mi estuche personalizado?</span>
+            <svg class="faq-chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4"><path d="M6 9l6 6 6-6"/></svg>
+          </button>
+          <div class="faq-a-wrap">
+            <div class="faq-a"><ul>
+              <li>Al ser un producto hecho a tu medida y bajo pedido, nuestro tiempo de fabricación y entrega es de <b>3 a 5 días hábiles</b> a partir de la confirmación de tu diseño y pago.</li>
+            </ul></div>
+          </div>
+        </div>
+
+        <div class="faq-item">
+          <button class="faq-q" onclick="toggleFaq(this)">
+            <span class="faq-icon">💳</span>
+            <span class="faq-q-text">¿Por qué pedimos un anticipo para estuches personalizados?</span>
+            <svg class="faq-chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4"><path d="M6 9l6 6 6-6"/></svg>
+          </button>
+          <div class="faq-a-wrap">
+            <div class="faq-a"><ul>
+              <li>Tu estuche es único: lleva tus fotos, nombre o estilo elegidos exclusivamente para tu modelo de celular. Al ser un producto personalizado no se puede revender a otra persona, por lo que el anticipo nos permite cubrir los insumos y poner tu diseño en producción.</li>
+            </ul></div>
+          </div>
+        </div>
+
+        <div class="faq-item">
+          <button class="faq-q" onclick="toggleFaq(this)">
+            <span class="faq-icon">🛡️</span>
+            <span class="faq-q-text">¿Cómo funciona la garantía y devoluciones?</span>
+            <svg class="faq-chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4"><path d="M6 9l6 6 6-6"/></svg>
+          </button>
+          <div class="faq-a-wrap">
+            <div class="faq-a"><ul>
+              <li>Si tu producto llega con algún defecto de fábrica, error de impresión o fallo de ajuste en el modelo solicitado, te hacemos el arreglo, corrección o reposición sin costo.</li>
+              <li><b>Nota:</b> al ser productos personalizados y hechos bajo pedido, no realizamos devoluciones de dinero, pero garantizamos que recibirás tu producto en perfectas condiciones.</li>
+            </ul></div>
+          </div>
+        </div>
+      </div>
+
+      <div class="trust-mini" style="margin-top:28px;">
+        <div class="trust-mini-item"><span class="emoji">🚚</span>Envío gratis +$150.000</div>
+        <div class="trust-mini-item"><span class="emoji">⏱️</span>3–5 días hábiles</div>
+        <div class="trust-mini-item"><span class="emoji">🛡️</span>Garantía y ajustes</div>
+        <div class="trust-mini-item"><span class="emoji">🔒</span>Producción con anticipo</div>
+      </div>
+    </div>
+  </section>
+
+</div>
+
+<footer class="site" id="contacto">
+  <div class="wrap">
+    <div class="foot-grid">
+      <div>
+        <h4>Camand Mobile</h4>
+        <div class="line">Tienda 100% virtual · Bogotá</div>
+        <div class="line">Lun – Sáb, 9am – 7pm</div>
+        <a href="https://www.instagram.com/camand.mobile/" target="_blank" rel="noopener">@camand.mobile</a>
+      </div>
+      <div>
+        <h4>Contacto</h4>
+        <a href="https://wa.me/573122265799" target="_blank" rel="noopener">+57 312 226 5799</a>
+        <a href="https://wa.me/573122265799?text=Hola%2C%20quiero%20hacer%20un%20pedido" target="_blank" rel="noopener">Escribir por WhatsApp</a>
+      </div>
+      <div>
+        <h4>Explorar</h4>
+        <a onclick="go('tech')" style="cursor:pointer;">Equipos</a>
+        <a onclick="go('accesorios')" style="cursor:pointer;">Accesorios</a>
+        <a onclick="go('cases')" style="cursor:pointer;">Estuches personalizados</a>
+        <a onclick="go('faq')" style="cursor:pointer;">Políticas y Envíos</a>
+        <a href="https://wa.me/573122265799?text=Hola%2C%20quiero%20comprar%20usando%20mi%20cupo%20Sistecr%C3%A9dito" target="_blank" rel="noopener">Cupo Sistecrédito</a>
+      </div>
+    </div>
+    <div class="foot-bottom">
+      <span>© 2026 Camand Mobile Bogotá · Tienda virtual</span>
+      <span>Aliado autorizado Sistecrédito</span>
+    </div>
+  </div>
+</footer>
+
+<a class="sc-fab" href="https://wa.me/573122265799?text=Hola%2C%20quiero%20comprar%20usando%20mi%20cupo%20Sistecr%C3%A9dito" target="_blank" rel="noopener" aria-label="Comprar con Sistecrédito">
+  <img class="sc-logo-img" alt="Sistecrédito">
+  <span>Compra en cuotas</span>
+</a>
+
+<a class="wa-fab" href="https://wa.me/573122265799?text=Hola%2C%20quiero%20hacer%20un%20pedido" target="_blank" rel="noopener" aria-label="WhatsApp">
+  <svg viewBox="0 0 32 32"><path d="M16.001 3C9.096 3 3.5 8.596 3.5 15.5c0 2.42.688 4.68 1.878 6.598L3 29l7.086-2.335A12.44 12.44 0 0 0 16 28c6.905 0 12.5-5.596 12.5-12.5S22.906 3 16.001 3Zm7.29 17.86c-.304.858-1.51 1.57-2.472 1.774-.657.14-1.514.252-4.4-.945-3.693-1.53-6.07-5.28-6.256-5.526-.18-.246-1.5-1.998-1.5-3.812 0-1.814.95-2.706 1.286-3.076.336-.37.732-.462.976-.462.244 0 .488.002.7.013.225.012.526-.086.822.627.304.732 1.033 2.53 1.123 2.714.09.185.15.4.03.646-.12.246-.18.4-.354.615-.174.216-.366.482-.522.647-.174.185-.356.386-.153.756.204.37.905 1.494 1.943 2.42 1.336 1.192 2.462 1.562 2.833 1.738.37.176.588.15.804-.09.216-.24.925-1.078 1.172-1.448.246-.37.492-.308.83-.185.34.123 2.153 1.016 2.523 1.2.37.185.616.277.706.432.09.156.09.902-.213 1.762Z"/></svg>
+</a>
+
+<button type="button" class="cart-fab" onclick="openCart(true)" aria-label="Ver carrito de compras">
+  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 4h2l2.4 12.2a2 2 0 0 0 2 1.6h8.6a2 2 0 0 0 2-1.6L22 8H6"/><circle cx="9" cy="21" r="1"/><circle cx="18" cy="21" r="1"/></svg>
+  <span class="cart-badge" id="cartBadge">0</span>
+</button>
+
+<div class="cart-overlay" id="cartOverlay" onclick="openCart(false)"></div>
+<aside class="cart-drawer" id="cartDrawer" aria-label="Carrito de compras">
+  <div class="cart-head">
+    <h3>Tu carrito</h3>
+    <button type="button" class="cart-close" onclick="openCart(false)" aria-label="Cerrar carrito">✕</button>
+  </div>
+  <div class="cart-body" id="cartBody"></div>
+  <div class="cart-foot">
+    <div class="cart-pay-note">💳 Aceptamos <b>transferencia</b> y <b>Sistecrédito a cuotas</b>. Confirmamos el método de pago al finalizar por WhatsApp.</div>
+    <div class="cart-total-row"><span>Total</span><span id="cartTotal">$0</span></div>
+    <button type="button" class="cart-checkout" id="cartCheckoutBtn" onclick="checkoutWhatsApp()" disabled>Finalizar pedido por WhatsApp</button>
+  </div>
+</aside>
+
+<div class="lightbox" id="lightbox" onclick="if(event.target===this) closeLightbox()">
+  <button class="lightbox-close" onclick="closeLightbox()" aria-label="Cerrar">✕</button>
+  <img id="lightboxImg" src="" alt="Estuche personalizado ampliado">
+</div>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/PapaParse/5.4.1/papaparse.min.js"></script>
+<script>
+/* ===================== DATA ===================== */
+const SISTECREDITO_LOGO = "img/sistecredito-logo.png";
+const CAMAND_LOGO = "img/camand-logo.png";
+const IPHONE_CATALOG = [{n:"iPhone 13 ▫️128 GB • SIM física • Seminuevo • Equipo de exhibición 🎨 Rosa • Negro • Azul • Blanco",p:1198890,notes:"Pantalla Super Retina XDR 6,1”; chip A15 Bionic; doble cámara 12 MP; Face ID; 5G; MagSafe."},{n:"iPhone 13 Pro ▫️128 GB • SIM física • Seminuevo • Equipo de exhibición",p:1623990,notes:"Pantalla Super Retina XDR 6,1”; chip A15 Bionic; doble cámara 12 MP; Face ID; 5G; MagSafe."},{n:"iPhone 13 Pro ▫️256 GB • SIM física • Seminuevo • Equipo de exhibición",p:1791990,notes:"Pantalla Super Retina XDR 6,1”; chip A15 Bionic; doble cámara 12 MP; Face ID; 5G; MagSafe."},{n:"iPhone 13 Pro ▫️1 TB • SIM física • Seminuevo • Equipo de exhibición ⚪ Blanco",p:2015990,notes:"Pantalla Super Retina XDR 6,1”; chip A15 Bionic; doble cámara 12 MP; Face ID; 5G; MagSafe."},{n:"iPhone 13 Pro Max ▫️128 GB • Seminuevo • Equipo de exhibición",p:1903990,notes:"Pantalla Super Retina XDR 6,1”; chip A15 Bionic; doble cámara 12 MP; Face ID; 5G; MagSafe."},{n:"iPhone 13 Pro Max ▫️512 GB • SIM física • Seminuevo • Equipo de exhibición",p:2127990,notes:"Pantalla Super Retina XDR 6,1”; chip A15 Bionic; doble cámara 12 MP; Face ID; 5G; MagSafe."},{n:"iPhone 14 ▫️128 GB • eSIM • Seminuevo • Equipo de exhibición",p:1419990,notes:"Pantalla Super Retina XDR OLED 6,1”; chip A15 Bionic; doble cámara 12 MP; detección de accidentes; 5G; MagSafe."},{n:"iPhone 14 Pro ▫️128 GB • eSIM • Seminuevo • Equipo de exhibición ⚫ Negro • 💜 Morado",p:1860990,notes:"Pantalla Super Retina XDR OLED 6,1”; chip A15 Bionic; doble cámara 12 MP; detección de accidentes; 5G; MagSafe."},{n:"iPhone 14 Pro ▫️128 GB • eSIM • Seminuevo • Equipo de exhibición 🟡 Dorado • ⚪ Blanco",p:1860990,notes:"Pantalla Super Retina XDR OLED 6,1”; chip A15 Bionic; doble cámara 12 MP; detección de accidentes; 5G; MagSafe."},{n:"iPhone 14 Pro ▫️256 GB • eSIM • Seminuevo • Equipo de exhibición ⚫ Negro • 💜 Morado",p:1889990,notes:"Pantalla Super Retina XDR OLED 6,1”; chip A15 Bionic; doble cámara 12 MP; detección de accidentes; 5G; MagSafe."},{n:"iPhone 14 Pro ▫️512 GB • eSIM • Seminuevo • Equipo de exhibición",p:2127990,notes:"Pantalla Super Retina XDR OLED 6,1”; chip A15 Bionic; doble cámara 12 MP; detección de accidentes; 5G; MagSafe."},{n:"iPhone 14 Pro ▫️1 TB • eSIM • Seminuevo • Equipo de exhibición",p:2239990,notes:"Pantalla Super Retina XDR OLED 6,1”; chip A15 Bionic; doble cámara 12 MP; detección de accidentes; 5G; MagSafe."},{n:"iPhone 14 Pro Max ▫️128 GB • eSIM • Seminuevo • Equipo de exhibición ⚫ Negro • 💜 Morado",p:2105990,notes:"Pantalla Super Retina XDR OLED 6,1”; chip A15 Bionic; doble cámara 12 MP; detección de accidentes; 5G; MagSafe."},{n:"iPhone 14 Pro Max ▫️128 GB • eSIM • Seminuevo • Equipo de exhibición 🟡 Dorado • ⚪ Blanco",p:2148890,notes:"Pantalla Super Retina XDR OLED 6,1”; chip A15 Bionic; doble cámara 12 MP; detección de accidentes; 5G; MagSafe."},{n:"iPhone 14 Pro Max ▫️256 GB • eSIM • Seminuevo • Equipo de exhibición ⚫ Negro • 💜 Morado",p:2148890,notes:"Pantalla Super Retina XDR OLED 6,1”; chip A15 Bionic; doble cámara 12 MP; detección de accidentes; 5G; MagSafe."},{n:"iPhone 14 Pro Max ▫️256 GB • eSIM • Seminuevo • Equipo de exhibición 🟡 Dorado • ⚪ Blanco",p:2407990,notes:"Pantalla Super Retina XDR OLED 6,1”; chip A15 Bionic; doble cámara 12 MP; detección de accidentes; 5G; MagSafe."},{n:"iPhone 15 ▫️128 GB • eSIM • Seminuevo • Equipo de exhibición 🩷 Rosa",p:1781990,notes:"Pantalla Super Retina XDR OLED 6,1”; Dynamic Island; chip A16 Bionic; cámara principal 48 MP; USB-C; 5G."},{n:"iPhone 15 ▫️128 GB • eSIM • Seminuevo • Equipo de exhibición ⚫ Negro • 🔵 Azul",p:1762990,notes:"Pantalla Super Retina XDR OLED 6,1”; Dynamic Island; chip A16 Bionic; cámara principal 48 MP; USB-C; 5G."},{n:"iPhone 15 Pro ▫️128 GB • eSIM • Seminuevo • Equipo de exhibición",p:2248890,notes:"Pantalla Super Retina XDR OLED 6,1”; Dynamic Island; chip A16 Bionic; cámara principal 48 MP; USB-C; 5G."},{n:"iPhone 15 Pro ▫️256 GB • eSIM • Seminuevo • Equipo de exhibición",p:2248890,notes:"Pantalla Super Retina XDR OLED 6,1”; Dynamic Island; chip A16 Bionic; cámara principal 48 MP; USB-C; 5G."},{n:"iPhone 15 Pro ▫️512 GB • eSIM • Seminuevo • Equipo de exhibición ⚪ Titanio Natural",p:2575990,notes:"Pantalla Super Retina XDR OLED 6,1”; Dynamic Island; chip A16 Bionic; cámara principal 48 MP; USB-C; 5G."},{n:"iPhone 15 Pro Max ▫️256 GB • eSIM • Seminuevo • Equipo de exhibición",p:2693990,notes:"Pantalla Super Retina XDR OLED 6,1”; Dynamic Island; chip A16 Bionic; cámara principal 48 MP; USB-C; 5G."},{n:"iPhone 16 ▫️128 GB • eSIM • Seminuevo ⚫ Negro 🔋 Batería 89%",p:2301990,notes:"Pantalla Super Retina XDR OLED 6,1”; chip A18; cámara principal 48 MP; Control de Cámara; Apple Intelligence; USB-C; 5G."},{n:"iPhone 16 Plus ▫️128 GB • eSIM • Seminuevo • Equipo de exhibición 🔵 Azul 🔋 Batería 92%",p:2348890,notes:"Pantalla Super Retina XDR OLED 6,1”; chip A18; cámara principal 48 MP; Control de Cámara; Apple Intelligence; USB-C; 5G."},{n:"iPhone 16 Pro ▫️256 GB • eSIM • Seminuevo • Equipo de exhibición",p:2898890,notes:"Pantalla Super Retina XDR OLED 6,1”; chip A18; cámara principal 48 MP; Control de Cámara; Apple Intelligence; USB-C; 5G."},{n:"iPhone 16 Pro Max ▫️256 GB • eSIM • Seminuevo • Equipo de exhibición 🔋 Batería inferior al 100%",p:3330990,notes:"Pantalla Super Retina XDR OLED 6,1”; chip A18; cámara principal 48 MP; Control de Cámara; Apple Intelligence; USB-C; 5G."},{n:"iPhone 17 ▫️256 GB • SIM física • Nuevo",p:3281990,notes:"Pantalla Super Retina XDR; chip de nueva generación; cámara principal de alta resolución; USB-C; 5G; Apple Intelligence. Especificaciones exactas según versión."},{n:"iPhone 17 Pro Max ▫️256 GB • eSIM • Nuevo ⚪ Silver",p:4506990,notes:"Pantalla Super Retina XDR; chip de nueva generación; cámara principal de alta resolución; USB-C; 5G; Apple Intelligence. Especificaciones exactas según versión."}];
+
+const ANDROID_BRANDS_DATA = [
+  {name:"Samsung", models:[{n:"A07 64",p:347990,notes:"Referencia comercial del proveedor. Datos técnicos detallados: por confirmar según referencia exacta."},{n:"A07 128/4 Dual",p:391090,notes:"128 GB almacenamiento / 4 GB RAM • Dual SIM. Datos técnicos detallados: por confirmar según referencia exacta."},{n:"A07 128/6",p:425890,notes:"128 GB almacenamiento / 6 GB RAM. Datos técnicos detallados: por confirmar según referencia exacta."},{n:"A17 128 4G Dual",p:509990,notes:"Conectividad 4G • Dual SIM. Datos técnicos detallados: por confirmar según referencia exacta."},{n:"A17 256/8 4G Dual",p:754490,notes:"256 GB almacenamiento / 8 GB RAM • Conectividad 4G • Dual SIM. Datos técnicos detallados: por confirmar según referencia exacta."},{n:"A17 256/8 5G 1 SIM",p:754490,notes:"256 GB almacenamiento / 8 GB RAM • Conectividad 5G. Datos técnicos detallados: por confirmar según referencia exacta."},{n:"A37 5G 128",p:1018790,notes:"Conectividad 5G. Datos técnicos detallados: por confirmar según referencia exacta."},{n:"A37 5G 256",p:1299990,notes:"Conectividad 5G. Datos técnicos detallados: por confirmar según referencia exacta."},{n:"A56 5G 256/8",p:1399990,notes:"256 GB almacenamiento / 8 GB RAM • Conectividad 5G. Datos técnicos detallados: por confirmar según referencia exacta."},{n:"A57 5G 256/8",p:1665890,notes:"256 GB almacenamiento / 8 GB RAM • Conectividad 5G. Datos técnicos detallados: por confirmar según referencia exacta."},{n:"S26 ULTRA 5G 25612",p:3831690,notes:"Pantalla Dynamic AMOLED 2X 6,9” QHD+ 120 Hz; Snapdragon 8 Elite Gen 5 for Galaxy; 200 MP + 50 MP + 50 MP + 10 MP; S Pen; 5G; batería 5000 mAh."}]},
+  {name:"Xiaomi / Redmi / POCO", models:[{n:"A7 64/4",p:356390,notes:"64 GB almacenamiento / 4 GB RAM. Datos técnicos detallados: por confirmar según referencia exacta."},{n:"A7 Pro 64/4",p:371990,notes:"64 GB almacenamiento / 4 GB RAM. Datos técnicos detallados: por confirmar según referencia exacta."},{n:"A7 Pro 128/4",p:413890,notes:"128 GB almacenamiento / 4 GB RAM. Datos técnicos detallados: por confirmar según referencia exacta."},{n:"REDMI 17 128/4",p:617990,notes:"128 GB almacenamiento / 4 GB RAM. Datos técnicos detallados: por confirmar según referencia exacta."},{n:"REDMI 17 256/4",p:731990,notes:"256 GB almacenamiento / 4 GB RAM. Datos técnicos detallados: por confirmar según referencia exacta."},{n:"REDMI 17 256/6",p:797990,notes:"256 GB almacenamiento / 6 GB RAM. Datos técnicos detallados: por confirmar según referencia exacta."},{n:"15C 128/4",p:473990,notes:"128 GB almacenamiento / 4 GB RAM. Datos técnicos detallados: por confirmar según referencia exacta."},{n:"15C 256/4",p:533990,notes:"256 GB almacenamiento / 4 GB RAM. Datos técnicos detallados: por confirmar según referencia exacta."},{n:"15C 256/8",p:605990,notes:"256 GB almacenamiento / 8 GB RAM. Datos técnicos detallados: por confirmar según referencia exacta."},{n:"Redmi 15 256/8",p:666290,notes:"256 GB almacenamiento / 8 GB RAM. Datos técnicos detallados: por confirmar según referencia exacta."},{n:"Note 15 512/8",p:881990,notes:"512 GB almacenamiento / 8 GB RAM. Datos técnicos detallados: por confirmar según referencia exacta."},{n:"Note 15 Pro 512/12",p:1198790,notes:"512 GB almacenamiento / 12 GB RAM. Datos técnicos detallados: por confirmar según referencia exacta."},{n:"Note 15 Pro plus 5G 512/12",p:1724690,notes:"512 GB almacenamiento / 12 GB RAM • Conectividad 5G. Datos técnicos detallados: por confirmar según referencia exacta."}]},
+  {name:"Motorola", models:[{n:"G06 128/4",p:455990,notes:"128 GB almacenamiento / 4 GB RAM. Datos técnicos detallados: por confirmar según referencia exacta."},{n:"G06 256/4+8",p:491990,notes:"256 GB almacenamiento / 4 GB RAM. Datos técnicos detallados: por confirmar según referencia exacta."},{n:"G17 256/4",p:605990,notes:"256 GB almacenamiento / 4 GB RAM. Datos técnicos detallados: por confirmar según referencia exacta."},{n:"G67 4G 256/8",p:887990,notes:"256 GB almacenamiento / 8 GB RAM • Conectividad 4G. Datos técnicos detallados: por confirmar según referencia exacta."},{n:"edge 50 fusión 256",p:899990,notes:"Referencia comercial del proveedor. Datos técnicos detallados: por confirmar según referencia exacta."},{n:"edge 50 fusión 512",p:1103990,notes:"Referencia comercial del proveedor. Datos técnicos detallados: por confirmar según referencia exacta."},{n:"G77 4G 256/8 +⚽ original",p:911990,notes:"256 GB almacenamiento / 8 GB RAM • Conectividad 4G. Datos técnicos detallados: por confirmar según referencia exacta."}]},
+  {name:"Honor", models:[{n:"play 10 64/3+3",p:368390,notes:"64 GB almacenamiento / 3 GB RAM. Datos técnicos detallados: por confirmar según referencia exacta."},{n:"play 10 128/4",p:431990,notes:"128 GB almacenamiento / 4 GB RAM. Datos técnicos detallados: por confirmar según referencia exacta."},{n:"X7D 256/8",p:875990,notes:"256 GB almacenamiento / 8 GB RAM. Datos técnicos detallados: por confirmar según referencia exacta."},{n:"X8D 512/8",p:1163990,notes:"512 GB almacenamiento / 8 GB RAM. Datos técnicos detallados: por confirmar según referencia exacta."},{n:"X9D 256/8",p:1187990,notes:"256 GB almacenamiento / 8 GB RAM. Datos técnicos detallados: por confirmar según referencia exacta."}]},
+  {name:"Tecno / itel", models:[{n:"itel A100c S 64GB",p:311990,notes:"Almacenamiento: 64 GB • Conectividad 4G. Datos técnicos detallados: por confirmar según referencia exacta."},{n:"itel A100c 128",p:359990,notes:"Referencia comercial del proveedor. Datos técnicos detallados: por confirmar según referencia exacta."},{n:"spark Go3 64/4",p:395890,notes:"64 GB almacenamiento / 4 GB RAM. Datos técnicos detallados: por confirmar según referencia exacta."},{n:"spark Go3 128/4",p:443890,notes:"128 GB almacenamiento / 4 GB RAM. Datos técnicos detallados: por confirmar según referencia exacta."},{n:"pova 6 256/16 5G(termo)",p:641990,notes:"256 GB almacenamiento / 16 GB RAM • Conectividad 5G. Datos técnicos detallados: por confirmar según referencia exacta."},{n:"spark 50 5G 258",p:965990,notes:"Conectividad 5G. Datos técnicos detallados: por confirmar según referencia exacta."},{n:"pova slim 5G 258GB",p:1049990,notes:"Almacenamiento: 258 GB • Conectividad 5G. Datos técnicos detallados: por confirmar según referencia exacta."},{n:"pova curve 2 5G 258/8+8",p:1085990,notes:"258 GB almacenamiento / 8 GB RAM • Conectividad 5G. Datos técnicos detallados: por confirmar según referencia exacta."},{n:"CAMON 50 ULTRA 5G 258/8+8+ obsequio 🎁",p:1399990,notes:"258 GB almacenamiento / 8 GB RAM • Conectividad 5G. Datos técnicos detallados: por confirmar según referencia exacta."}]},
+  {name:"ZTE", models:[{n:"A35e 64/3",p:321590,notes:"64 GB almacenamiento / 3 GB RAM. Datos técnicos detallados: por confirmar según referencia exacta."},{n:"A56 128/12",p:395990,notes:"128 GB almacenamiento / 12 GB RAM. Datos técnicos detallados: por confirmar según referencia exacta."},{n:"A56 PRO 128/12",p:413990,notes:"128 GB almacenamiento / 12 GB RAM. Datos técnicos detallados: por confirmar según referencia exacta."},{n:"V70 MAX 256/20",p:473990,notes:"256 GB almacenamiento / 20 GB RAM. Datos técnicos detallados: por confirmar según referencia exacta."},{n:"V80 MAX 256/20",p:499990,notes:"256 GB almacenamiento / 20 GB RAM. Datos técnicos detallados: por confirmar según referencia exacta."},{n:"V80 PRO 256/20",p:719990,notes:"256 GB almacenamiento / 20 GB RAM. Datos técnicos detallados: por confirmar según referencia exacta."},{n:"nubia air slim 5G 256",p:899990,notes:"Conectividad 5G. Datos técnicos detallados: por confirmar según referencia exacta."},{n:"nubia focus 2ultra 5G 256/20",p:971990,notes:"256 GB almacenamiento / 20 GB RAM • Conectividad 5G. Datos técnicos detallados: por confirmar según referencia exacta."},{n:"nubia neo 5 5G 256/20",p:1121990,notes:"256 GB almacenamiento / 20 GB RAM • Conectividad 5G. Datos técnicos detallados: por confirmar según referencia exacta."}]},
+  {name:"OPPO", models:[{n:"A5 5G 256 GB 8 ram 5G",p:1013990,notes:"Almacenamiento: 256 GB • RAM: 8 GB • Conectividad 5G. Datos técnicos detallados: por confirmar según referencia exacta."},{n:"A6C 64/4",p:779990,notes:"64 GB almacenamiento / 4 GB RAM. Datos técnicos detallados: por confirmar según referencia exacta."},{n:"A6C 128/4",p:863990,notes:"128 GB almacenamiento / 4 GB RAM. Datos técnicos detallados: por confirmar según referencia exacta."},{n:"A6K 256/4",p:1115990,notes:"256 GB almacenamiento / 4 GB RAM. Datos técnicos detallados: por confirmar según referencia exacta."}]},
+  {name:"Infinix", models:[{n:"Hot 70 256/4+4",p:719990,notes:"256 GB almacenamiento / 4 GB RAM. Datos técnicos detallados: por confirmar según referencia exacta."},{n:"Hot 60 pro + 256/16",p:941990,notes:"256 GB almacenamiento / 16 GB RAM. Datos técnicos detallados: por confirmar según referencia exacta."},{n:"note edge 5G curvó 256/8+8",p:1091990,notes:"256 GB almacenamiento / 8 GB RAM • Conectividad 5G. Datos técnicos detallados: por confirmar según referencia exacta."},{n:"NOTE 60 pro 256/16",p:1599990,notes:"256 GB almacenamiento / 16 GB RAM. Datos técnicos detallados: por confirmar según referencia exacta."},{n:"note 60 ultra PIRIFARINA super edición",p:3599990,notes:"Referencia comercial del proveedor. Datos técnicos detallados: por confirmar según referencia exacta."}]},
+  {name:"Otras marcas", models:[{n:"rompe muros DIKEY D8 5g",p:117590,notes:"Conectividad 5G. Datos técnicos detallados: por confirmar según referencia exacta."}]},
+];
+
+const TABLET_MODELS = [{n:"iPad A16 ▫️128 GB • Wi-Fi • Nuevo 🔵 Azul • 🟡 Amarillo",p:1651990,notes:"Pantalla Liquid Retina 11”; chip A16; almacenamiento 128 GB; Wi‑Fi; USB-C; compatible con accesorios seleccionados de iPad."},{n:"TAB A11 Wi-Fi 8\" 128/8",p:525090,notes:"128 GB almacenamiento / 8 GB RAM • Tablet. Datos técnicos detallados: por confirmar según referencia exacta."},{n:"pad 2 9.7\" 64/4 wifi",p:631290,notes:"64 GB almacenamiento / 4 GB RAM • Wi‑Fi • Tablet. Datos técnicos detallados: por confirmar según referencia exacta."},{n:"honor pad x8D 128/4 wifi",p:637190,notes:"128 GB almacenamiento / 4 GB RAM • Wi‑Fi • Tablet. Datos técnicos detallados: por confirmar según referencia exacta."},{n:"tablet megapad wifi",p:589990,notes:"Wi‑Fi • Tablet. Datos técnicos detallados: por confirmar según referencia exacta."}];
+const COMPUTADOR_MODELS = [{n:"macbook neo 256gb/8",p:2799990,notes:"Almacenamiento: 256 GB • Computador portátil. Datos técnicos detallados: por confirmar según referencia exacta."},{n:"HP 14 N100",p:1199990,notes:"Computador portátil. Datos técnicos detallados: por confirmar según referencia exacta."},{n:"HP 15 N305",p:1399990,notes:"Computador portátil. Datos técnicos detallados: por confirmar según referencia exacta."},{n:"COMPUMAX ÓNIX 16/512",p:1499990,notes:"16 GB almacenamiento / 512 GB RAM • Computador portátil. Datos técnicos detallados: por confirmar según referencia exacta."},{n:"LENOVO V14 G5",p:1499990,notes:"Computador portátil. Datos técnicos detallados: por confirmar según referencia exacta."},{n:"HP 245 G10 RYZEN 3",p:1699990,notes:"Computador portátil. Datos técnicos detallados: por confirmar según referencia exacta."},{n:"LENOVO SLIM 3 RYZEN 3",p:1599990,notes:"Computador portátil. Datos técnicos detallados: por confirmar según referencia exacta."},{n:"ACER GO15",p:1799990,notes:"Computador portátil. Datos técnicos detallados: por confirmar según referencia exacta."},{n:"HP 15 RYZEN 5",p:1699990,notes:"Computador portátil. Datos técnicos detallados: por confirmar según referencia exacta."},{n:"ACER ASPIRE LITE 15 RYZEN 3",p:1499990,notes:"Computador portátil. Datos técnicos detallados: por confirmar según referencia exacta."},{n:"HP 255R ATHLON 7120U",p:1299990,notes:"Computador portátil. Datos técnicos detallados: por confirmar según referencia exacta."},{n:"LENOVO SLIM 3 15AHP10 RYZEN 5",p:1899990,notes:"Computador portátil. Datos técnicos detallados: por confirmar según referencia exacta."}];
+const IMPRESORA_MODELS = [{n:"BROTHER DCP-T430",p:706790,notes:"Impresora. Datos técnicos detallados: por confirmar según referencia exacta."},{n:"EPSON L3210",p:725690,notes:"Impresora. Datos técnicos detallados: por confirmar según referencia exacta."},{n:"EPSON L3251",p:861390,notes:"Impresora. Datos técnicos detallados: por confirmar según referencia exacta."}];
+
+const ACCESORIO_BRANDS_DATA = [
+  {name:"Cargadores y cables", models:[{n:"Cubo Galaxy",p:33590,notes:"Accesorio de carga. Datos técnicos detallados: por confirmar según referencia exacta."},{n:"cubo Apple 20w",p:53990,notes:"Accesorio de carga. Datos técnicos detallados: por confirmar según referencia exacta."},{n:"powerbank magnétic 5.000/15w",p:296990,notes:"000 GB almacenamiento / 15 GB RAM • Batería portátil. Datos técnicos detallados: por confirmar según referencia exacta."},{n:"ADATA cable cto 100w 2 metros",p:29690,notes:"Cable de carga/datos. Datos técnicos detallados: por confirmar según referencia exacta."},{n:"power bank",p:60790,notes:"Batería portátil. Datos técnicos detallados: por confirmar según referencia exacta."},{n:"cables de carga",p:10790,notes:"Cable de carga/datos. Datos técnicos detallados: por confirmar según referencia exacta."},{n:"cargador completo",p:20190,notes:"Accesorio de carga. Datos técnicos detallados: por confirmar según referencia exacta."},{n:"cubo de carga",p:20190,notes:"Accesorio de carga. Datos técnicos detallados: por confirmar según referencia exacta."}]},
+  {name:"Audio", models:[{n:"Xiaomi Buds 6 Play",p:175490,notes:"Audio inalámbrico / audífonos • Audio Bluetooth. Datos técnicos detallados: por confirmar según referencia exacta."},{n:"BT Speaker 5W",p:80990,notes:"Audio Bluetooth. Datos técnicos detallados: por confirmar según referencia exacta."},{n:"BT Speaker 30W",p:209190,notes:"Audio Bluetooth. Datos técnicos detallados: por confirmar según referencia exacta."},{n:"honor Earbuds X7e",p:94490,notes:"Audio inalámbrico / audífonos. Datos técnicos detallados: por confirmar según referencia exacta."},{n:"honor Earbuds clip",p:244390,notes:"Audio inalámbrico / audífonos. Datos técnicos detallados: por confirmar según referencia exacta."},{n:"free buds se 2",p:155190,notes:"Audio inalámbrico / audífonos. Datos técnicos detallados: por confirmar según referencia exacta."},{n:"audifono cable fino",p:20190,notes:"Audio inalámbrico / audífonos • Cable de carga/datos. Datos técnicos detallados: por confirmar según referencia exacta."},{n:"audifono sencillo",p:10790,notes:"Audio inalámbrico / audífonos. Datos técnicos detallados: por confirmar según referencia exacta."},{n:"audifono BT mando táctil",p:47190,notes:"Audio inalámbrico / audífonos • Audio Bluetooth. Datos técnicos detallados: por confirmar según referencia exacta."},{n:"BT Xiaomi",p:59990,notes:"Audio Bluetooth. Datos técnicos detallados: por confirmar según referencia exacta."},{n:"honor choise headphone",p:203990,notes:"Audio inalámbrico / audífonos. Datos técnicos detallados: por confirmar según referencia exacta."}]},
+  {name:"Wearables", models:[{n:"WATCH 5 ACTIVE",p:155990,notes:"Wearable inteligente. Datos técnicos detallados: por confirmar según referencia exacta."},{n:"Band 9 Active",p:110490,notes:"Wearable inteligente. Datos técnicos detallados: por confirmar según referencia exacta."},{n:"Band 10",p:207990,notes:"Wearable inteligente. Datos técnicos detallados: por confirmar según referencia exacta."},{n:"honor WATCH 2i",p:144290,notes:"Wearable inteligente. Datos técnicos detallados: por confirmar según referencia exacta."},{n:"watch fit 3",p:630490,notes:"Wearable inteligente. Datos técnicos detallados: por confirmar según referencia exacta."}]},
+  {name:"Cómputo", models:[{n:"MOUSE LENOVO",p:70190,notes:"Mouse. Datos técnicos detallados: por confirmar según referencia exacta."}]},
+];
+
+const CATALOG = {
+  apple: {
+    label:"Celulares Apple", count:"28 modelos seminuevos y nuevos", photo:null,
+    icon:'<path d="M17.05 20.28c-.98.95-2.05.8-3.08.35-1.09-.46-2.09-.48-3.24 0-1.44.62-2.2.44-3.06-.35C2.79 15.25 3.51 7.59 9.05 7.3c1.35.07 2.29.74 3.08.8 1.18-.24 2.31-.93 3.57-.84 1.51.12 2.65.72 3.4 1.8-3.12 1.87-2.38 5.98.48 7.13-.57 1.5-1.31 2.99-2.53 4.09zM12.03 7.25c-.15-2.23 1.66-4.07 3.74-4.25.29 2.58-2.34 4.51-3.74 4.25z"/>',
+    brands:[{name:"iPhone", models:IPHONE_CATALOG}]
+  },
+  android: {
+    label:"Celulares Android", count:"64 modelos — Samsung, Xiaomi, Motorola y más", photo:null,
+    icon:'<rect x="7" y="2" width="10" height="20" rx="2"/><path d="M11 18h2"/>',
+    brands: ANDROID_BRANDS_DATA
+  },
+  tablets: {
+    label:"Tablets", count:"iPad, Samsung, Xiaomi, Lenovo", photo:null,
+    icon:'<rect x="4" y="3" width="16" height="18" rx="2"/><path d="M10 19h4"/>',
+    brands:[{name:"Tablets disponibles", models:TABLET_MODELS}]
+  },
+  computadores: {
+    label:"Computadores", count:"MacBook, HP, Lenovo, Acer", photo:null,
+    icon:'<rect x="3" y="4" width="18" height="12" rx="1.5"/><path d="M2 20h20"/>',
+    brands:[{name:"Portátiles disponibles", models:COMPUTADOR_MODELS}]
+  },
+  impresoras: {
+    label:"Impresoras", count:"Brother, Epson", photo:null,
+    icon:'<rect x="5" y="8" width="14" height="8" rx="1.5"/><path d="M7 8V4h10v4M7 16v4h10v-4"/>',
+    brands:[{name:"Impresoras disponibles", models:IMPRESORA_MODELS}]
+  },
+  accesorios: {
+    label:"Accesorios", count:"Cargadores, audio, wearables", photo:null,
+    icon:'<circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 3"/>',
+    brands: ACCESORIO_BRANDS_DATA
+  }
+};
+
+/* Tus 15 fotos reales de estuches entregados a clientes. */
+const GALLERY_PHOTOS = [
+  "img/galeria/estuche-01.jpg",
+  "img/galeria/estuche-02.jpg",
+  "img/galeria/estuche-03.jpg",
+  "img/galeria/estuche-04.jpg",
+  "img/galeria/estuche-05.jpg",
+  "img/galeria/estuche-06.jpg",
+  "img/galeria/estuche-07.jpg",
+  "img/galeria/estuche-08.jpg",
+  "img/galeria/estuche-09.jpg",
+  "img/galeria/estuche-10.jpg",
+  "img/galeria/estuche-11.jpg",
+  "img/galeria/estuche-12.jpg",
+  "img/galeria/estuche-13.jpg",
+  "img/galeria/estuche-14.jpg",
+  "img/galeria/estuche-15.jpg",
+  "img/galeria/estuche-16.jpg"
+];
+
+/* ===================== RENDER ===================== */
+function waLink(text){ return "https://wa.me/573122265799?text=" + encodeURIComponent(text); }
+
+/* ===================== TARJETAS DE PRODUCTO + FILTROS ===================== */
+// La imagen del producto ocupa toda la tarjeta (object-fit:contain, sin recorte).
+// Si "imagen" no es una URL real (http/https) o falla al cargar, se muestra un
+// ícono de cámara en su lugar — nunca se rompe el diseño.
+function productMediaHTML(m){
+  if(m.img && /^https?:\/\//i.test(m.img)){
+    return `<img src="${m.img}" alt="" loading="lazy" onerror="this.parentElement.innerHTML='<span class=\\'pc-noimg\\'>📷</span>'">`;
+  }
+  return `<span class="pc-noimg">📷</span>`;
+}
+
+// Identificador estable del producto para el carrito — no depende de dónde
+// se agregó (categoría o buscador), así el mismo producto siempre suma
+// cantidad en vez de crear una línea duplicada.
+function productId(marca, m){
+  return (marca+'|'+m.n+'|'+m.p).replace(/[^a-zA-Z0-9]+/g,'_').slice(0,140);
+}
+
+function productCardHTML(catLabel, marca, m){
+  const id = productId(marca, m);
+  const esNuevo = /nuevo/i.test(m.cond || '');
+  const specs = [m.alm, m.ram ? m.ram+' RAM' : '', m.cam || '', m.bat || ''].filter(Boolean);
+  const idJs = id.replace(/'/g, "\\'");
+  const nJs = m.n.replace(/\\/g, '\\\\').replace(/'/g, "\\'").replace(/"/g, '&quot;');
+  const imgJs = (m.img || '').replace(/\\/g, '\\\\').replace(/'/g, "\\'");
+  return `
+    <div class="product-card">
+      <div class="pc-media">
+        ${m.cond ? `<span class="pc-badge${esNuevo ? ' nuevo' : ''}">${m.cond}</span>` : ''}
+        ${productMediaHTML(m)}
+      </div>
+      <div class="pc-body">
+        <span class="pc-name">${m.n}</span>
+        ${specs.length ? `<div class="pc-specs">${specs.map(s => `<span>${s}</span>`).join('')}</div>` : ''}
+        <div class="pc-price-row"><span class="pc-price">${formatCOP(m.p)}</span></div>
+        <div class="pc-actions">
+          <button type="button" class="pc-add" onclick="addToCart('${idJs}','${nJs}',${m.p},'${imgJs}',this)">Agregar al carrito</button>
+          <a class="pc-ask" href="${waLink('Hola, quiero preguntar por: '+catLabel+' - '+marca+' - '+m.n+' ('+formatCOP(m.p)+')')}" target="_blank" rel="noopener" aria-label="Preguntar por WhatsApp" title="Preguntar por WhatsApp">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><path d="M21 11.5a8.5 8.5 0 0 1-12.36 7.57L3 20l1.02-5.4A8.5 8.5 0 1 1 21 11.5Z"/></svg>
+          </a>
+        </div>
+      </div>
+    </div>`;
+}
+
+function uniqueSorted(values){
+  return [...new Set(values.filter(v => v && String(v).trim()))].sort((a,b) => String(a).localeCompare(String(b), 'es'));
+}
+
+// Estado de filtros por panel (uno por categoría abierta + accesorios).
+const FILTER_STATE = {};
+// Últimos productos mostrados por panel, para poder re-filtrar sin recalcular todo.
+const PANEL_SOURCE = {};
+
+function flattenItems(cat){
+  const items = [];
+  cat.brands.forEach(b => b.models.forEach(m => items.push({ marca: b.name, m })));
+  return items;
+}
+
+function filteredItems(panelKey, items){
+  const f = FILTER_STATE[panelKey] || {};
+  return items.filter(({marca, m}) => {
+    if(f.marca && marca !== f.marca) return false;
+    if(f.cond && m.cond !== f.cond) return false;
+    if(f.alm && m.alm !== f.alm) return false;
+    if(f.ram && m.ram !== f.ram) return false;
+    if(f.cam && m.cam !== f.cam) return false;
+    if(f.bat && m.bat !== f.bat) return false;
+    if(f.min && m.p < Number(f.min)) return false;
+    if(f.max && m.p > Number(f.max)) return false;
+    return true;
+  });
+}
+
+function filterSelectHTML(panelKey, field, label, options){
+  if(options.length < 2) return '';
+  const current = (FILTER_STATE[panelKey] && FILTER_STATE[panelKey][field]) || '';
+  return `
+    <div class="filter-field">
+      <label>${label}</label>
+      <select onchange="onFilterChange('${panelKey}','${field}',this.value)">
+        <option value="">Todos</option>
+        ${options.map(o => `<option value="${o}" ${o === current ? 'selected' : ''}>${o}</option>`).join('')}
+      </select>
+    </div>`;
+}
+
+// Solo se muestran los filtros que realmente varían en la categoría — si todos
+// los productos son "Nuevo" no aparece el filtro de condición, por ejemplo.
+function renderFilterBar(panelKey, items){
+  if(items.length < 2) return '';
+  const f = FILTER_STATE[panelKey] || {};
+  const marcas = uniqueSorted(items.map(i => i.marca));
+  const camposMarca = marcas.length > 1 ? filterSelectHTML(panelKey, 'marca', 'Marca', marcas) : '';
+  const camposCond = filterSelectHTML(panelKey, 'cond', 'Condición', uniqueSorted(items.map(i => i.m.cond)));
+  const camposAlm = filterSelectHTML(panelKey, 'alm', 'Almacenamiento', uniqueSorted(items.map(i => i.m.alm)));
+  const camposRam = filterSelectHTML(panelKey, 'ram', 'RAM', uniqueSorted(items.map(i => i.m.ram)));
+  const camposCam = filterSelectHTML(panelKey, 'cam', 'Cámara', uniqueSorted(items.map(i => i.m.cam)));
+  const camposBat = filterSelectHTML(panelKey, 'bat', 'Batería', uniqueSorted(items.map(i => i.m.bat)));
+
+  return `
+    <div class="filters-bar">
+      ${camposMarca}${camposCond}${camposAlm}${camposRam}${camposCam}${camposBat}
+      <div class="filter-field">
+        <label>Precio</label>
+        <div class="filter-price">
+          <input type="number" inputmode="numeric" placeholder="Desde" value="${f.min || ''}" onchange="onFilterChange('${panelKey}','min',this.value)">
+          <input type="number" inputmode="numeric" placeholder="Hasta" value="${f.max || ''}" onchange="onFilterChange('${panelKey}','max',this.value)">
+        </div>
+      </div>
+      <button type="button" class="filters-clear" onclick="clearFilters('${panelKey}')">Limpiar filtros</button>
+    </div>`;
+}
+
+function onFilterChange(panelKey, field, value){
+  if(!FILTER_STATE[panelKey]) FILTER_STATE[panelKey] = {};
+  FILTER_STATE[panelKey][field] = value;
+  refreshPanelGrid(panelKey);
+}
+
+function clearFilters(panelKey){
+  FILTER_STATE[panelKey] = {};
+  if(panelKey === 'accesorios'){ renderAccesoriosGrid(); return; }
+  const panel = document.getElementById('panel-'+panelKey);
+  if(panel) panel.innerHTML = buildCatPanelHTML(panelKey);
+}
+
+// Solo vuelve a pintar la grilla de productos (no el panel de filtros), para
+// que el usuario no pierda el foco del campo que acaba de cambiar.
+function refreshPanelGrid(panelKey){
+  const gridEl = document.getElementById('grid-'+panelKey);
+  const source = PANEL_SOURCE[panelKey];
+  if(!gridEl || !source) return;
+  const items = filteredItems(panelKey, source.items);
+  gridEl.innerHTML = items.length
+    ? items.map(({marca, m}) => productCardHTML(source.label, marca, m)).join('')
+    : `<p class="grid-empty">Ningún producto coincide con estos filtros — prueba con otro rango o pregúntanos por WhatsApp.</p>`;
+  const countEl = document.getElementById('count-'+panelKey);
+  if(countEl) countEl.textContent = `${items.length} de ${source.items.length} producto${source.items.length===1?'':'s'}`;
+}
+
+function buildCatPanelHTML(key){
+  const cat = CATALOG[key];
+  const items = flattenItems(cat);
+  PANEL_SOURCE[key] = { items, label: cat.label };
+  const filtered = filteredItems(key, items);
+  return `
+    <p class="note">Nuevos y usados revisados según disponibilidad. Agrega al carrito o pregúntanos por WhatsApp.</p>
+    ${renderFilterBar(key, items)}
+    ${items.length ? `<p class="filters-count" id="count-${key}">${filtered.length} de ${items.length} producto${items.length===1?'':'s'}</p>` : ''}
+    <div class="product-grid" id="grid-${key}">
+      ${filtered.length ? filtered.map(({marca, m}) => productCardHTML(cat.label, marca, m)).join('') : `<p class="grid-empty">No hay productos disponibles en esta categoría por ahora.</p>`}
+    </div>`;
+}
+
+/* ===================== CARRITO DE COMPRAS ===================== */
+const CART_KEY = 'camand_cart_v1';
+let CART = [];
+try {
+  const saved = JSON.parse(localStorage.getItem(CART_KEY) || '[]');
+  if(Array.isArray(saved)) CART = saved;
+} catch(e){ CART = []; }
+
+function saveCart(){
+  try { localStorage.setItem(CART_KEY, JSON.stringify(CART)); } catch(e){}
+  renderCartUI();
+}
+
+function addToCart(id, n, p, img, btn){
+  const existing = CART.find(it => it.id === id);
+  if(existing){ existing.qty += 1; }
+  else { CART.push({ id, n, p: Number(p) || 0, img: img || '', qty: 1 }); }
+  saveCart();
+  openCart(true);
+  if(btn){
+    const original = btn.textContent;
+    btn.textContent = '✓ Agregado';
+    btn.classList.add('added');
+    setTimeout(() => { btn.textContent = original; btn.classList.remove('added'); }, 1400);
+  }
+}
+
+function changeQty(id, delta){
+  const it = CART.find(x => x.id === id);
+  if(!it) return;
+  it.qty += delta;
+  if(it.qty <= 0) CART = CART.filter(x => x.id !== id);
+  saveCart();
+}
+
+function removeFromCart(id){
+  CART = CART.filter(x => x.id !== id);
+  saveCart();
+}
+
+function cartTotal(){ return CART.reduce((sum, it) => sum + it.p*it.qty, 0); }
+function cartCount(){ return CART.reduce((sum, it) => sum + it.qty, 0); }
+
+function renderCartUI(){
+  const badge = document.getElementById('cartBadge');
+  if(badge){
+    const n = cartCount();
+    badge.textContent = n;
+    badge.style.display = n > 0 ? 'flex' : 'none';
+  }
+  const body = document.getElementById('cartBody');
+  if(body){
+    body.innerHTML = CART.length ? CART.map(it => `
+      <div class="cart-item">
+        ${it.img ? `<img src="${it.img}" alt="" loading="lazy" onerror="this.outerHTML='<div class=\\'cart-item-noimg\\'>📦</div>'">` : `<div class="cart-item-noimg">📦</div>`}
+        <div class="cart-item-info">
+          <span class="cart-item-name">${it.n}</span>
+          <span class="cart-item-price">${formatCOP(it.p)}</span>
+          <div class="cart-item-qty">
+            <button type="button" onclick="changeQty('${it.id}',-1)" aria-label="Restar">−</button>
+            <span>${it.qty}</span>
+            <button type="button" onclick="changeQty('${it.id}',1)" aria-label="Sumar">+</button>
+            <button type="button" class="cart-item-remove" onclick="removeFromCart('${it.id}')">Quitar</button>
+          </div>
+        </div>
+      </div>`).join('') : `<p class="cart-empty">Tu carrito está vacío. Agrega productos desde el catálogo.</p>`;
+  }
+  const totalEl = document.getElementById('cartTotal');
+  if(totalEl) totalEl.textContent = formatCOP(cartTotal());
+  const checkoutBtn = document.getElementById('cartCheckoutBtn');
+  if(checkoutBtn) checkoutBtn.disabled = CART.length === 0;
+}
+
+function openCart(open){
+  const drawer = document.getElementById('cartDrawer');
+  const overlay = document.getElementById('cartOverlay');
+  if(!drawer || !overlay) return;
+  drawer.classList.toggle('open', open);
+  overlay.classList.toggle('open', open);
+  document.body.style.overflow = open ? 'hidden' : '';
+}
+
+function checkoutWhatsApp(){
+  if(!CART.length) return;
+  const lineas = CART.map(it => `• ${it.n} — ${formatCOP(it.p)} x ${it.qty} = ${formatCOP(it.p*it.qty)}`).join('\n');
+  const msg = `Hola Camand Mobile 👋, quiero hacer este pedido:\n\n${lineas}\n\nTotal: ${formatCOP(cartTotal())}\n\n¿Cómo puedo pagar? Me interesa transferencia o Sistecrédito a cuotas.`;
+  window.open(waLink(msg), '_blank', 'noopener');
+}
+
+function renderCatGrid(){
+  const grid = document.getElementById('catGrid');
+  grid.innerHTML = '';
+  Object.entries(CATALOG).filter(([key]) => key !== 'accesorios').forEach(([key, cat]) => {
+    const tile = document.createElement('button');
+    tile.className = 'cat-tile' + (cat.photo ? ' has-photo' : '');
+    tile.id = 'tile-'+key;
+    if(cat.photo){ tile.style.backgroundImage = `url('${cat.photo}')`; }
+    tile.innerHTML = `
+      <div class="icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8">${cat.icon}</svg></div>
+      <h4>${cat.label}</h4>
+      <div class="count">${cat.count}</div>
+    `;
+    tile.onclick = () => toggleCategory(key);
+    grid.appendChild(tile);
+  });
+}
+
+function scrollGallery(dir){
+  document.getElementById('galleryGrid').scrollBy({left: dir*220, behavior:'smooth'});
+}
+
+function renderGallery(){
+  const grid = document.getElementById('galleryGrid');
+  if (!grid) return;
+  grid.innerHTML = GALLERY_PHOTOS.map((src, i) =>
+    `<button type="button" class="gallery-slot" onclick="openLightbox(${i})" aria-label="Ampliar foto ${i+1}">
+      <img src="${src}" alt="Estuche personalizado Camand Mobile ${i+1}" loading="lazy">
+    </button>`
+  ).join('');
+}
+
+function openLightbox(index){
+  const overlay = document.getElementById('lightbox');
+  document.getElementById('lightboxImg').src = GALLERY_PHOTOS[index];
+  overlay.classList.add('open');
+  document.body.style.overflow = 'hidden';
+}
+function closeLightbox(){
+  document.getElementById('lightbox').classList.remove('open');
+  document.body.style.overflow = '';
+}
+
+function formatCOP(n){
+  return '$' + Math.round(n).toLocaleString('es-CO');
+}
+
+function performTechSearch(query){
+  const q = query.trim().toLowerCase();
+  const catGrid = document.getElementById('catGrid');
+  const resultsEl = document.getElementById('searchResults');
+  const existingPanel = document.querySelector('.cat-panel');
+  if (existingPanel) existingPanel.remove();
+  document.querySelectorAll('.cat-tile').forEach(t => t.classList.remove('is-open'));
+  openCat = null;
+
+  if (q.length < 2){
+    resultsEl.innerHTML = '';
+    catGrid.style.display = '';
+    return;
+  }
+  catGrid.style.display = 'none';
+
+  const matches = [];
+  Object.entries(CATALOG).filter(([key]) => key !== 'accesorios').forEach(([key, cat]) => {
+    cat.brands.forEach(b => {
+      b.models.forEach(m => {
+        if (m.n.toLowerCase().includes(q)) matches.push({ cat, brand: b.name, m });
+      });
+    });
+  });
+
+  if (!matches.length){
+    resultsEl.innerHTML = `<p class="note">No encontramos modelos con "${query}" — prueba con otra palabra o pregúntanos por WhatsApp.</p>`;
+    return;
+  }
+  resultsEl.innerHTML = `<p class="note">${matches.length} resultado${matches.length===1?'':'s'} para "${query}"</p>
+    <div class="product-grid">
+      ${matches.map(({cat,brand,m}) => productCardHTML(cat.label, brand, m)).join('')}
+    </div>`;
+}
+
+let openCat = null;
+function toggleCategory(key){
+  document.querySelectorAll('.cat-tile').forEach(t => t.classList.remove('is-open'));
+  const oldPanel = document.querySelector('.cat-panel');
+  if(oldPanel) oldPanel.remove();
+
+  if(openCat === key){ openCat = null; return; }
+  openCat = key;
+  document.getElementById('tile-'+key).classList.add('is-open');
+
+  const panel = document.createElement('div');
+  panel.className = 'cat-panel';
+  panel.id = 'panel-'+key;
+  panel.innerHTML = buildCatPanelHTML(key);
+
+  document.getElementById('tile-'+key).insertAdjacentElement('afterend', panel);
+}
+
+function renderAccesoriosGrid(){
+  const grid = document.getElementById('accesoriosGrid');
+  if (!grid) return;
+  const cat = CATALOG.accesorios;
+  const items = flattenItems(cat);
+  PANEL_SOURCE['accesorios'] = { items, label: cat.label };
+  const filtered = filteredItems('accesorios', items);
+  grid.innerHTML = `
+    <p class="note">Agrega al carrito o pregúntanos por WhatsApp.</p>
+    ${renderFilterBar('accesorios', items)}
+    ${items.length ? `<p class="filters-count" id="count-accesorios">${filtered.length} de ${items.length} producto${items.length===1?'':'s'}</p>` : ''}
+    <div class="product-grid" id="grid-accesorios">
+      ${filtered.length ? filtered.map(({marca, m}) => productCardHTML(cat.label, marca, m)).join('') : `<p class="grid-empty">No hay accesorios disponibles por ahora.</p>`}
+    </div>`;
+}
+
+/* ===================== VIEW SWITCH ===================== */
+function go(view){
+  const app = document.getElementById('app');
+  toggleMenu(false);
+
+  const swapView = () => {
+    document.querySelectorAll('.view').forEach(v => v.classList.remove('active'));
+    document.getElementById('view-'+view).classList.add('active');
+    document.querySelectorAll('nav.links button[data-view]').forEach(b => b.classList.toggle('is-active', b.dataset.view === view));
+    window.scrollTo({top:0, behavior:'instant'});
+    requestAnimationFrame(() => app.classList.remove('transitioning'));
+  };
+
+  app.addEventListener('transitionend', swapView, {once:true});
+  app.classList.add('transitioning');
+}
+
+function toggleFaq(btn){
+  btn.parentElement.classList.toggle('open');
+}
+
+function toggleMenu(open){
+  document.getElementById('mobileMenu').classList.toggle('open', open);
+}
+
+function renderHeroShowcase(){
+  const el = document.getElementById('heroShowcase');
+  if (!el || !GALLERY_PHOTOS.length) return;
+
+  const PAGE_SIZE = 2;
+  const pages = [];
+  for (let i = 0; i < GALLERY_PHOTOS.length; i += PAGE_SIZE) {
+    pages.push(GALLERY_PHOTOS.slice(i, i + PAGE_SIZE));
+  }
+
+  el.innerHTML = pages.map((page, pi) =>
+    `<div class="showcase-page ${pi === 0 ? 'active' : ''}">` +
+      page.map(src => `<img src="${src}" alt="Estuche personalizado Camand Mobile">`).join('') +
+    `</div>`
+  ).join('');
+
+  if (pages.length <= 1) return;
+  const pageEls = el.querySelectorAll('.showcase-page');
+  let idx = 0;
+  setInterval(() => {
+    pageEls[idx].classList.remove('active');
+    idx = (idx + 1) % pageEls.length;
+    pageEls[idx].classList.add('active');
+  }, 4200);
+}
+
+function applySistecreditoLogos(){
+  document.querySelectorAll('.sc-logo-img').forEach(img => img.src = SISTECREDITO_LOGO);
+}
+
+function applyCamandLogo(){
+  document.querySelectorAll('.camand-logo-img').forEach(img => img.src = CAMAND_LOGO);
+}
+
+function renderTodo(){
+  renderCatGrid();
+  renderAccesoriosGrid();
+  renderGallery();
+  renderHeroShowcase();
+  applySistecreditoLogos();
+  applyCamandLogo();
+  renderCartUI();
+}
+
+/* ============================================================
+   CATÁLOGO DESDE GOOGLE SHEETS
+   Pega aquí la URL de "Publicar en la Web" (formato CSV) de tu
+   pestaña "CATALOGO PAGINA". Si la fila tiene disponible=no, se
+   oculta. Si algo falla (sin internet, hoja mal formada, etc.)
+   el sitio sigue mostrando los datos guardados abajo en el código,
+   así que nunca se rompe por esto.
+   ============================================================ */
+const SHEET_CSV_URL = "https://docs.google.com/spreadsheets/d/e/2PACX-1vTVTMXRy1SKrWUR512KBjjWJ0__CcP5g19K2QK7YfVSr5FBeH8PZHMxBAeCKdxQuawOgi-IjsfF4Pvp/pub?gid=1802395348&single=true&output=csv";
+
+async function cargarCatalogoDesdeSheet(){
+  try{
+    const res = await fetch(SHEET_CSV_URL, { cache: "no-store" });
+    if(!res.ok) throw new Error("HTTP " + res.status);
+    const texto = await res.text();
+    const filasCrudas = window.Papa.parse(texto, { header: true, skipEmptyLines: true }).data;
+    if(!filasCrudas.length) throw new Error("La hoja no devolvió filas");
+
+    // Normaliza los encabezados (pueden venir como "NOMBRE", "PRECIO ANTES",
+    // "BATERÍA", etc.) a minúscula, sin espacios y sin tildes, para no
+    // depender de mayúsculas ni de cómo se escribió el acento.
+    const filas = filasCrudas.map(filaCruda => {
+      const norm = {};
+      Object.keys(filaCruda).forEach(k => {
+        const clave = k.trim().toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g, "").replace(/\s+/g, "");
+        norm[clave] = filaCruda[k];
+      });
+      return norm;
+    });
+
+    const parsearPrecio = valor => {
+      const t = String(valor || "").trim();
+      if(!t) return 0;
+      // Formato colombiano "$ 40.000,00": se toma lo que hay antes de la
+      // coma decimal y se descartan los puntos de miles y el símbolo $.
+      const antesDeComa = t.split(",")[0];
+      return Number(antesDeComa.replace(/[^\d]/g, "")) || 0;
+    };
+
+    const nuevoIphone = [], nuevoTablets = [], nuevoComputadores = [], nuevoImpresoras = [];
+    const androidPorMarca = new Map();
+    const accesoriosPorMarca = new Map();
+
+    filas.forEach(fila => {
+      const disponible = String(fila.disponible || "").trim().toLowerCase();
+      if(disponible === "no") return;
+
+      const nombreBase = (fila.nombre || "").trim();
+      const almacenamiento = (fila.almacenamiento || "").trim();
+      const condicion = (fila.condicion || "").trim();
+      const precio = parsearPrecio(fila.precio);
+      if(!nombreBase || !precio) return;
+
+      // El nombre solo (ej. "Samsung Galaxy A07") se repite en varias filas
+      // con distinto almacenamiento/precio, así que se le agrega para
+      // diferenciarlas en el chip.
+      const nombre = almacenamiento ? `${nombreBase} — ${almacenamiento}` : nombreBase;
+      const notes = [condicion, almacenamiento ? "Almacenamiento: " + almacenamiento : ""]
+        .filter(Boolean).join(". ");
+
+      const categoria = (fila.categoria || "").trim().toLowerCase();
+      const sub = (fila.subcategoria || "").trim();
+      const imagen = (fila.imagen || "").trim();
+      // Columnas opcionales para los filtros del catálogo — si no existen
+      // todavía en la hoja, simplemente quedan vacías y ese filtro no aparece.
+      const ram = (fila.ram || "").trim();
+      const camara = (fila.camara || fila.resolucioncamara || "").trim();
+      const bateria = (fila.bateria || "").trim();
+      const modelo = { n: nombre, p: precio, notes, img: imagen, cond: condicion, alm: almacenamiento, ram, cam: camara, bat: bateria };
+
+      const esCelular = categoria.includes("celular");
+      const esIphone = /iphone/i.test(nombreBase) || /iphone|apple/i.test(sub);
+
+      if(esCelular && esIphone){
+        nuevoIphone.push(modelo);
+      } else if(esCelular){
+        const marca = sub || "Otras marcas";
+        if(!androidPorMarca.has(marca)) androidPorMarca.set(marca, []);
+        androidPorMarca.get(marca).push(modelo);
+      } else if(categoria.includes("tablet")){
+        nuevoTablets.push(modelo);
+      } else if(categoria.includes("computador")){
+        nuevoComputadores.push(modelo);
+      } else if(categoria.includes("impresora")){
+        nuevoImpresoras.push(modelo);
+      } else if(categoria.includes("accesorio")){
+        const marca = sub || "Otros";
+        if(!accesoriosPorMarca.has(marca)) accesoriosPorMarca.set(marca, []);
+        accesoriosPorMarca.get(marca).push(modelo);
+      }
+    });
+
+    // Se reemplaza el CONTENIDO de los arreglos que ya existen (no se
+    // reasignan), para que CATALOG siga apuntando a los mismos arreglos.
+    if(nuevoIphone.length){ IPHONE_CATALOG.length = 0; IPHONE_CATALOG.push(...nuevoIphone); }
+    if(nuevoTablets.length){ TABLET_MODELS.length = 0; TABLET_MODELS.push(...nuevoTablets); }
+    if(nuevoComputadores.length){ COMPUTADOR_MODELS.length = 0; COMPUTADOR_MODELS.push(...nuevoComputadores); }
+    if(nuevoImpresoras.length){ IMPRESORA_MODELS.length = 0; IMPRESORA_MODELS.push(...nuevoImpresoras); }
+    if(androidPorMarca.size){
+      ANDROID_BRANDS_DATA.length = 0;
+      androidPorMarca.forEach((models, name) => ANDROID_BRANDS_DATA.push({ name, models }));
+    }
+    if(accesoriosPorMarca.size){
+      ACCESORIO_BRANDS_DATA.length = 0;
+      accesoriosPorMarca.forEach((models, name) => ACCESORIO_BRANDS_DATA.push({ name, models }));
+    }
+
+    renderTodo();
+    const totalAndroid = [...androidPorMarca.values()].reduce((a,b)=>a+b.length,0);
+    const totalAccesorios = [...accesoriosPorMarca.values()].reduce((a,b)=>a+b.length,0);
+    console.log(
+      "[Camand] Catálogo actualizado desde Google Sheets:", filas.length, "filas leídas —",
+      nuevoIphone.length, "iPhone,", totalAndroid, "Android,", nuevoTablets.length, "tablets,",
+      nuevoComputadores.length, "computadores,", nuevoImpresoras.length, "impresoras,",
+      totalAccesorios, "accesorios."
+    );
+  }catch(err){
+    console.warn("[Camand] No se pudo leer Google Sheets, se muestran los datos guardados en el código:", err.message);
+  }
+}
+
+renderTodo();
+cargarCatalogoDesdeSheet();
+</script>
+
+</body>
+</html>
