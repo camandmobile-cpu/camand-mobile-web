@@ -1548,9 +1548,22 @@ function waLink(text){ return "https://wa.me/573122265799?text=" + encodeURIComp
 // La imagen del producto ocupa toda la tarjeta (object-fit:contain, sin recorte).
 // Si "imagen" no es una URL real (http/https) o falla al cargar, se muestra un
 // ícono de cámara en su lugar — nunca se rompe el diseño.
+// Si la foto viene de Cloudinary, le pedimos una versión ya redimensionada y
+// comprimida (el ancho real de la tarjeta es ~190px) en vez de la foto original
+// completa — así cada producto pesa unos KB en lugar de varios MB. Con otros
+// servicios de imágenes (ImgBB, Postimages, etc.) esto no aplica y se usa la
+// URL tal cual, porque esos no ofrecen esta opción.
+function optimizeImageUrl(url){
+  if(/^https?:\/\/res\.cloudinary\.com\/.+\/upload\//i.test(url)){
+    return url.replace(/\/upload\//i, '/upload/w_400,q_auto,f_auto,c_limit/');
+  }
+  return url;
+}
+
 function productMediaHTML(m){
   if(m.img && /^https?:\/\//i.test(m.img)){
-    return `<img src="${m.img}" alt="" loading="lazy" onerror="this.parentElement.innerHTML='<span class=\\'pc-noimg\\'>📷</span>'">`;
+    const src = optimizeImageUrl(m.img);
+    return `<img src="${src}" alt="" loading="lazy" decoding="async" onerror="this.parentElement.innerHTML='<span class=\\'pc-noimg\\'>📷</span>'">`;
   }
   return `<span class="pc-noimg">📷</span>`;
 }
