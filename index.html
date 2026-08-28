@@ -496,6 +496,10 @@ footer.site{
   padding:4px 8px;border-radius:100px;text-transform:uppercase;letter-spacing:.03em;
 }
 .product-card .pc-badge.nuevo{background:var(--trust);}
+.product-card .pc-tag{
+  position:absolute;top:8px;right:8px;background:#e11d3c;color:#fff;font-size:9.5px;font-weight:800;
+  padding:4px 7px;border-radius:100px;text-transform:uppercase;letter-spacing:.02em;text-align:right;
+}
 .product-card .pc-body{padding:14px;display:flex;flex-direction:column;gap:6px;flex:1;}
 .product-card .pc-name{font-size:13.5px;font-weight:700;line-height:1.35;color:var(--ink);}
 .product-card .pc-specs{display:flex;flex-wrap:wrap;gap:5px;margin:2px 0;}
@@ -506,6 +510,14 @@ footer.site{
 .product-card .pc-price-row{margin-top:auto;padding-top:6px;display:flex;align-items:baseline;gap:8px;flex-wrap:wrap;}
 .product-card .pc-price{font-size:16px;font-weight:800;color:var(--tech-dark);}
 .product-card .pc-price-old{font-size:12px;color:var(--ink-faint);text-decoration:line-through;}
+.product-card .pc-discount-badge{
+  background:#e11d3c;color:#fff;font-size:10px;font-weight:800;padding:2px 6px;border-radius:6px;
+}
+.product-card .pc-sistecredito{
+  display:flex;align-items:center;gap:4px;font-size:11px;font-weight:700;color:var(--trust);
+  text-decoration:none;line-height:1.3;
+}
+.product-card .pc-sistecredito:hover{text-decoration:underline;}
 .product-card .pc-actions{display:flex;gap:6px;margin-top:8px;}
 .product-card .pc-add{
   flex:1;background:var(--tech);color:#fff;border:none;border-radius:10px;padding:9px 8px;
@@ -573,6 +585,22 @@ footer.site{
   padding:10px 12px;font-size:11.5px;color:var(--ink-soft);line-height:1.4;margin-top:14px;
 }
 .cart-pay-note b{color:var(--ink);}
+
+.cart-crosssell{margin-top:16px;padding-top:14px;border-top:1px dashed var(--line);}
+.cart-crosssell-title{display:block;font-size:12px;font-weight:800;color:var(--ink);margin-bottom:10px;}
+.cart-crosssell-item{display:flex;align-items:center;gap:10px;padding:8px 0;}
+.cart-crosssell-item img,.cart-crosssell-item .cart-item-noimg{
+  width:40px;height:40px;border-radius:8px;background:var(--surface);object-fit:contain;flex-shrink:0;
+  display:flex;align-items:center;justify-content:center;font-size:16px;
+}
+.cart-crosssell-info{display:flex;flex-direction:column;flex:1;min-width:0;gap:2px;}
+.cart-crosssell-info span{font-size:11.5px;font-weight:600;color:var(--ink);line-height:1.3;}
+.cart-crosssell-info b{font-size:11.5px;font-weight:700;color:var(--ink-soft);}
+.cart-crosssell-item button{
+  background:var(--tech-tint);color:var(--tech-dark);border:none;border-radius:8px;padding:6px 10px;
+  font-size:11px;font-weight:700;cursor:pointer;flex-shrink:0;
+}
+.cart-crosssell-item button:hover{background:var(--tech);color:#fff;}
 .cart-foot{border-top:1px solid var(--line);padding:18px 22px 22px;}
 .cart-total-row{display:flex;justify-content:space-between;align-items:baseline;margin-bottom:14px;}
 .cart-total-row span:first-child{font-size:13px;color:var(--ink-soft);}
@@ -1624,18 +1652,26 @@ function productCardHTML(catLabel, marca, m){
   const idJs = id.replace(/'/g, "\\'");
   const nJs = m.n.replace(/\\/g, '\\\\').replace(/'/g, "\\'").replace(/"/g, '&quot;');
   const imgJs = (m.img || '').replace(/\\/g, '\\\\').replace(/'/g, "\\'");
+  const catJs = catLabel.replace(/\\/g, '\\\\').replace(/'/g, "\\'");
+  const tieneDescuento = m.pAntes && m.pAntes > m.p;
+  const pctDescuento = tieneDescuento ? Math.round((1 - m.p / m.pAntes) * 100) : 0;
   return `
     <div class="product-card">
       <div class="pc-media">
         ${m.cond ? `<span class="pc-badge${esNuevo ? ' nuevo' : ''}">${m.cond}</span>` : ''}
+        ${m.tag ? `<span class="pc-tag">${m.tag}</span>` : ''}
         ${productMediaHTML(m)}
       </div>
       <div class="pc-body">
         <span class="pc-name">${m.n}</span>
         ${specs.length ? `<div class="pc-specs">${specs.map(s => `<span>${s}</span>`).join('')}</div>` : ''}
-        <div class="pc-price-row"><span class="pc-price">${formatCOP(m.p)}</span></div>
+        <div class="pc-price-row">
+          ${tieneDescuento ? `<span class="pc-price-old">${formatCOP(m.pAntes)}</span><span class="pc-discount-badge">-${pctDescuento}%</span>` : ''}
+          <span class="pc-price">${formatCOP(m.p)}</span>
+        </div>
+        <a class="pc-sistecredito" href="${waLink('Hola, quiero saber cuánto me quedaría la cuota con Sistecrédito para: '+m.n+' ('+formatCOP(m.p)+')')}" target="_blank" rel="noopener">💳 Consulta tu cuota con Sistecrédito →</a>
         <div class="pc-actions">
-          <button type="button" class="pc-add" onclick="addToCart('${idJs}','${nJs}',${m.p},'${imgJs}',this)">Agregar al carrito</button>
+          <button type="button" class="pc-add" onclick="addToCart('${idJs}','${nJs}',${m.p},'${imgJs}','${catJs}',this)">Agregar al carrito</button>
           <a class="pc-ask" href="${waLink('Hola, quiero preguntar por: '+catLabel+' - '+marca+' - '+m.n+' ('+formatCOP(m.p)+')')}" target="_blank" rel="noopener" aria-label="Preguntar por WhatsApp" title="Preguntar por WhatsApp">
             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><path d="M21 11.5a8.5 8.5 0 0 1-12.36 7.57L3 20l1.02-5.4A8.5 8.5 0 1 1 21 11.5Z"/></svg>
           </a>
@@ -1768,10 +1804,10 @@ function saveCart(){
   renderCartUI();
 }
 
-function addToCart(id, n, p, img, btn){
+function addToCart(id, n, p, img, cat, btn){
   const existing = CART.find(it => it.id === id);
   if(existing){ existing.qty += 1; }
-  else { CART.push({ id, n, p: Number(p) || 0, img: img || '', qty: 1 }); }
+  else { CART.push({ id, n, p: Number(p) || 0, img: img || '', qty: 1, cat: cat || '' }); }
   saveCart();
   openCart(true);
   if(btn){
@@ -1798,6 +1834,54 @@ function removeFromCart(id){
 function cartTotal(){ return CART.reduce((sum, it) => sum + it.p*it.qty, 0); }
 function cartCount(){ return CART.reduce((sum, it) => sum + it.qty, 0); }
 
+// Elige hasta 3 accesorios para sugerir como venta cruzada: primero los
+// marcados DESTACADO="si" en la Hoja, y si no alcanzan, completa con
+// cualquier otro accesorio. Nunca repite algo que ya está en el carrito.
+function sugerenciasAccesorios(idsEnCarrito){
+  const todos = flattenItems(CATALOG.accesorios);
+  const destacados = todos.filter(({m}) => m.dest);
+  const pool = destacados.length >= 3 ? destacados : todos;
+  const vistos = new Set();
+  const resultado = [];
+  for(const item of pool){
+    const id = productId(item.marca, item.m);
+    if(idsEnCarrito.has(id) || vistos.has(id)) continue;
+    vistos.add(id);
+    resultado.push(item);
+    if(resultado.length >= 3) break;
+  }
+  return resultado;
+}
+
+function crossSellHTML(){
+  if(!CART.length) return '';
+  const hayDispositivo = CART.some(it => it.cat !== 'Accesorios');
+  const hayAccesorio = CART.some(it => it.cat === 'Accesorios');
+  if(!hayDispositivo || hayAccesorio) return '';
+  const idsEnCarrito = new Set(CART.map(it => it.id));
+  const sugeridos = sugerenciasAccesorios(idsEnCarrito);
+  if(!sugeridos.length) return '';
+  return `
+    <div class="cart-crosssell">
+      <span class="cart-crosssell-title">✨ Completa tu compra</span>
+      ${sugeridos.map(({marca, m}) => {
+        const id = productId(marca, m);
+        const idJs = id.replace(/'/g, "\\'");
+        const nJs = m.n.replace(/\\/g, '\\\\').replace(/'/g, "\\'").replace(/"/g, '&quot;');
+        const imgJs = (m.img || '').replace(/\\/g, '\\\\').replace(/'/g, "\\'");
+        return `
+        <div class="cart-crosssell-item">
+          ${m.img ? `<img src="${optimizeImageUrl(m.img)}" alt="" loading="lazy" onerror="this.outerHTML='<div class=\\'cart-item-noimg\\'>📦</div>'">` : `<div class="cart-item-noimg">📦</div>`}
+          <div class="cart-crosssell-info">
+            <span>${m.n}</span>
+            <b>${formatCOP(m.p)}</b>
+          </div>
+          <button type="button" onclick="addToCart('${idJs}','${nJs}',${m.p},'${imgJs}','Accesorios',this)">+ Agregar</button>
+        </div>`;
+      }).join('')}
+    </div>`;
+}
+
 function renderCartUI(){
   const badge = document.getElementById('cartBadge');
   if(badge){
@@ -1820,7 +1904,7 @@ function renderCartUI(){
             <button type="button" class="cart-item-remove" onclick="removeFromCart('${it.id}')">Quitar</button>
           </div>
         </div>
-      </div>`).join('') : `<p class="cart-empty">Tu carrito está vacío. Agrega productos desde el catálogo.</p>`;
+      </div>`).join('') + crossSellHTML() : `<p class="cart-empty">Tu carrito está vacío. Agrega productos desde el catálogo.</p>`;
   }
   const totalEl = document.getElementById('cartTotal');
   if(totalEl) totalEl.textContent = formatCOP(cartTotal());
@@ -2097,7 +2181,17 @@ async function cargarCatalogoDesdeSheet(){
       const ram = (fila.ram || "").trim();
       const camara = (fila.camara || fila.resolucioncamara || "").trim();
       const bateria = (fila.bateria || "").trim();
-      const modelo = { n: nombre, p: precio, notes, img: imagen, cond: condicion, alm: almacenamiento, ram, cam: camara, bat: bateria };
+      // PRECIO ANTES (opcional): si es mayor al precio actual, se muestra
+      // tachado con el % de descuento — se llena solo en los productos donde
+      // se quiera mostrar la rebaja, el resto sigue igual sin tocar nada.
+      const precioAntes = parsearPrecio(fila.precioantes);
+      // ETIQUETA (opcional): texto libre tipo "Últimas unidades" o "Recién
+      // llegado" — se muestra como insignia sobre la foto cuando se llena.
+      const etiqueta = (fila.etiqueta || "").trim();
+      // DESTACADO ahora se usa para accesorios: marcados con "si" son los
+      // que se sugieren primero como venta cruzada dentro del carrito.
+      const destacado = String(fila.destacado || "").trim().toLowerCase() === "si";
+      const modelo = { n: nombre, p: precio, notes, img: imagen, cond: condicion, alm: almacenamiento, ram, cam: camara, bat: bateria, pAntes: precioAntes, tag: etiqueta, dest: destacado };
 
       const esCelular = categoria.includes("celular");
       const esIphone = /iphone/i.test(nombreBase) || /iphone|apple/i.test(sub);
