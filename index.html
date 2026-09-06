@@ -844,6 +844,14 @@ footer.site{
 }
 .btn-primary:hover{transform:translateY(-2px);background:#000;box-shadow:0 10px 22px -8px rgba(0,0,0,.4);}
 .btn-primary:active{transform:translateY(0) scale(0.97);}
+
+.hero-compare-btn{
+  display:inline-flex;align-items:center;gap:8px;background:#fff;color:var(--tech);
+  border:1.5px solid var(--tech);padding:12px 22px;border-radius:100px;font-weight:700;
+  font-size:14px;margin-top:18px;transition:transform .2s var(--ease), background .2s, color .2s;
+}
+.hero-compare-btn:hover{background:var(--tech);color:#fff;transform:translateY(-2px);}
+.hero-compare-btn:active{transform:translateY(0) scale(0.97);}
 .btn-primary.cases-btn{
   background:linear-gradient(135deg,var(--cases),#7d3ff0);
   padding:17px 30px;font-size:15.5px;position:relative;
@@ -1474,6 +1482,10 @@ body.loaded header.nav {
         <p class="eyebrow">Camand Mobile · Tecnología &amp; Personalización</p>
         <h1>Todo tu ecosistema tech,<br><em>en un solo lugar.</em></h1>
         <p class="sub">Equipos, accesorios y estuches personalizados, con la mejor calidad y atención.</p>
+        <button type="button" class="hero-compare-btn" onclick="startCompareFlow()">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><path d="M9 3H5a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h4M15 3h4a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2h-4M9 3v18M15 3v18"/></svg>
+          Comparar dispositivos
+        </button>
       </div>
 
       <div class="portals">
@@ -2697,6 +2709,15 @@ function removeFromCompare(id){
   toggleCompare(id);
   if(COMPARE.length < 2) closeCompareModal();
   else openCompareModal();
+}
+
+// Botón "Comparar dispositivos" del inicio: baja hasta "Destacados de hoy"
+// (ya tiene la casilla "Comparar" en cada tarjeta) y explica cómo usarla,
+// en vez de mandar a otra vista donde todavía no hay nada para marcar.
+function startCompareFlow(){
+  const grid = document.getElementById('homeFeaturedGrid');
+  if(grid) grid.scrollIntoView({behavior:'smooth', block:'start'});
+  setTimeout(() => showToast('Marca hasta 3 productos con la casilla "Comparar" de cada tarjeta, y toca "Comparar" en la barra que aparece abajo.'), grid ? 500 : 0);
 }
 
 function clearCompare(){

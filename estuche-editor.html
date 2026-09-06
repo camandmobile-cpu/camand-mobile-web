@@ -1,13 +1,6 @@
 <!DOCTYPE html>
 <html lang="es">
-<head> <!-- Google tag (gtag.js) -->
-<script async src="https://www.googletagmanager.com/gtag/js?id=G-DDZ8LL1MTK"></script>
-<script>
-  window.dataLayer = window.dataLayer || [];
-  function gtag(){dataLayer.push(arguments);}
-  gtag('js', new Date());
-  gtag('config', 'G-DDZ8LL1MTK');
-</script>
+<head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1">
 <title>Editor de Estuches — Camand Mobile</title>
@@ -325,6 +318,60 @@ body.preview-mode .trust-strip{display:none;}
   opacity:0;transition:.3s var(--ease);z-index:300;pointer-events:none;white-space:nowrap;
 }
 .toast.show{opacity:1;transform:translateX(-50%) translateY(0);}
+
+/* ---------- AJUSTES DE ESPACIO EN CELULAR ----------
+   En pantallas chicas, header + barra de venta cruzada + barra de acciones +
+   franja de confianza se apilan y le dejan muy poco alto disponible al
+   lienzo y al panel de herramientas (donde vive "subir foto"), haciendo que
+   ese botón quede escondido o casi invisible sin hacer scroll. Estos ajustes
+   liberan espacio vertical y agregan un botón de subir foto siempre visible. */
+.quick-upload-btn{display:none;}
+.addons-toggle{display:none;}
+@media (max-width:860px){
+  /* Se oculta la franja de confianza (información redundante con el resto
+     de la tienda) para recuperar una fila completa de alto en celular. */
+  .trust-strip{display:none;}
+
+  /* El lienzo cede algo de alto mínimo para que el panel de herramientas
+     (imagen/texto/clipart/capas) tenga un espacio garantizado y visible. */
+  .stage-wrap{min-height:190px;padding:14px;}
+  .panel{min-height:280px;}
+
+  /* Barra de venta cruzada: colapsada por defecto en celular (un solo renglón
+     con un interruptor), para no competir por espacio con el editor. Se
+     expande solo si la persona quiere ver los complementos. */
+  .addons-bar{
+    flex-wrap:wrap;padding:6px 14px;position:relative;
+  }
+  .addons-bar > .addons-label{display:none;}
+  .addons-bar:not(.expanded) .addon-chip{display:none;}
+  .addons-toggle{
+    display:flex;align-items:center;gap:6px;background:none;border:none;
+    font-size:12px;font-weight:700;color:var(--cases-dark);padding:4px 0;
+    width:100%;justify-content:space-between;
+  }
+  .addons-toggle svg{width:14px;height:14px;transition:transform .2s;}
+  .addons-bar.expanded .addons-toggle svg{transform:rotate(180deg);}
+
+  /* Botón flotante "Subir foto": siempre visible sobre el lienzo, sin
+     depender de hacer scroll hasta el panel de pestañas. Es el atajo
+     principal para subir la foto en celular. */
+  .quick-upload-btn{
+    display:flex;align-items:center;gap:7px;position:absolute;top:10px;left:50%;
+    transform:translateX(-50%);z-index:20;background:var(--ink);color:#fff;
+    border:none;border-radius:100px;padding:10px 18px;font-size:13px;font-weight:700;
+    box-shadow:var(--shadow-1);
+  }
+  .quick-upload-btn svg{width:16px;height:16px;flex-shrink:0;}
+  body.preview-mode .quick-upload-btn{display:none;}
+
+  /* La franja de acciones inferior traía 4 botones que se amontonaban;
+     se prioriza "Añadir al carrito"/"Comprar" y se compacta el resto. */
+  footer.bottom-bar{gap:8px;padding:10px 14px;}
+  footer.bottom-bar .bar-right{width:100%;flex-wrap:wrap;gap:8px;}
+  footer.bottom-bar .bar-right .action-btn{flex:1;min-width:0;padding:11px 10px;font-size:12.5px;}
+  footer.bottom-bar .bar-left{width:100%;}
+}
 </style>
 </head>
 <body>
@@ -446,6 +493,10 @@ body.preview-mode .trust-strip{display:none;}
 
   <!-- ============ CENTER STAGE ============ -->
   <main class="stage-wrap">
+    <button class="quick-upload-btn" id="quickUploadBtn" title="Subir foto">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 16V4M6 10l6-6 6 6"/><path d="M4 16v3a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2v-3"/></svg>
+      Subir foto
+    </button>
     <div id="editorCanvasWrap" class="stage-shadow">
       <canvas id="editorCanvas"></canvas>
     </div>
@@ -458,7 +509,11 @@ body.preview-mode .trust-strip{display:none;}
 </div>
 
 <!-- ============ VENTA CRUZADA ============ -->
-<div class="addons-bar">
+<div class="addons-bar" id="addonsBar">
+  <button class="addons-toggle" id="addonsToggle" type="button">
+    <span>✨ Complementa tu pedido (opcional)</span>
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M6 9l6 6 6-6"/></svg>
+  </button>
   <span class="addons-label">Complementa tu pedido:</span>
   <label class="addon-chip">
     <input type="checkbox" id="addonHidrogel">
@@ -559,6 +614,34 @@ const BRANDS = {
   apple: {
     label: "Apple",
     models: [
+      /* ---- Línea iPhone 17 (lanzada sept 2025) — agregada 6 sep 2026 ----
+         Cuerpo (w/h/radius) verificado contra las especificaciones oficiales
+         de Apple (support.apple.com), igual de confiable que el resto de
+         modelos de esta lista.
+         OJO con el 17 Pro / 17 Pro Max: Apple rediseñó la cámara trasera a
+         una "meseta" horizontal que cruza casi todo el ancho del equipo, ya
+         no es la isla cuadrada de generaciones anteriores. No hay una
+         medida oficial publicada de esa meseta, así que su posición/tamaño
+         y la separación entre los 3 lentes son un placeholder razonable
+         (mismo criterio de "aproximado, pendiente de confirmar" que ya
+         usan varios modelos de arriba) — para dejarlo exacto haría falta
+         una foto cenital o una medida real de un iPhone 17 Pro físico.
+         El iPhone 17 (normal) sí mantiene el diseño vertical de 2 lentes
+         de generaciones anteriores, por eso reutiliza ese mismo patrón. */
+      { id:"iphone17promax", name:"iPhone 17 Pro Max", w:348.6, h:730.4, radius:50.8,
+        islandBg:{x:9.8,y:9.8,w:329.0,h:124.0,rx:40.0},
+        lenses:[{cx:75.0, cy:71.8, r:29.0}, {cx:174.3, cy:71.8, r:29.0}, {cx:273.6, cy:71.8, r:29.0}],
+        flash:{cx:174.3,cy:110.0,r:11.0}
+      },
+      { id:"iphone17pro", name:"iPhone 17 Pro", w:321.4, h:670.5, radius:46.8,
+        islandBg:{x:9.8,y:9.8,w:301.8,h:118.0,rx:38.0},
+        lenses:[{cx:70.0, cy:68.0, r:27.5}, {cx:160.7, cy:68.0, r:27.5}, {cx:251.4, cy:68.0, r:27.5}],
+        flash:{cx:160.7,cy:104.0,r:10.5}
+      },
+      { id:"iphone17", name:"iPhone 17", w:319.6, h:668.7, radius:46.5,
+        lenses:[{cx:69.0, cy:69.2, r:42.0}, {cx:69.0, cy:170.0, r:42.0}],
+        flash:{cx:139.3,cy:60.8,r:10.3}
+      },
       { id:"iphone16promax", name:"iPhone 16 Pro Max", w:346.9, h:728.6, radius:50.5,
         islandBg:{x:9.8,y:9.8,w:194.4,h:187.7,rx:51.0},
         lenses:[{cx:68.2, cy:68.0, r:33.5}, {cx:145.9, cy:68.0, r:33.5}, {cx:68.2, cy:144.5, r:32.7}],
@@ -1250,6 +1333,25 @@ function wireUI(){
   dropZone.addEventListener('drop', e=>{
     Array.from(e.dataTransfer.files).filter(f=>f.type.startsWith('image/')).forEach(addImageFile);
   });
+
+  // Botón flotante "Subir foto" (celular): abre el mismo selector de
+  // archivo y deja la pestaña "Imagen" activa, para que quede visible
+  // adónde fue a parar la foto una vez elegida.
+  const quickUploadBtn = document.getElementById('quickUploadBtn');
+  if(quickUploadBtn){
+    quickUploadBtn.addEventListener('click', ()=>{
+      document.querySelector('.tab-btn[data-tab="image"]')?.click();
+      fileInput.click();
+    });
+  }
+
+  // Venta cruzada colapsable (celular): empieza cerrada para no robarle
+  // espacio al editor; se expande solo si la persona toca el interruptor.
+  const addonsToggle = document.getElementById('addonsToggle');
+  const addonsBar = document.getElementById('addonsBar');
+  if(addonsToggle && addonsBar){
+    addonsToggle.addEventListener('click', ()=>addonsBar.classList.toggle('expanded'));
+  }
 
   // Text tool
   document.getElementById('addTextBtn').addEventListener('click', addText);
