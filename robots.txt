@@ -1,0 +1,4 @@
+User-agent: *
+Allow: /
+
+Sitemap: https://camandmobile-cpu.github.io/camand-mobile-web/sitemap.xml
