@@ -3415,28 +3415,48 @@ function openProduct(id, opts){
 function renderHomeFeatured(){
   const grid = document.getElementById('homeFeaturedGrid');
   if(!grid) return;
-  const techKeys = ['apple', 'android', 'tablets', 'computadores', 'impresoras'];
-  const pool = [];
-  techKeys.forEach(k => flattenItems(CATALOG[k]).forEach(item => pool.push({ ...item, catLabel: CATALOG[k].label })));
-  flattenItems(CATALOG.accesorios).forEach(item => pool.push({ ...item, catLabel: CATALOG.accesorios.label }));
 
-  if(!pool.length){ grid.innerHTML = ''; return; }
+  // Un "canasto" por categoría (en vez de una sola lista mezclada), para
+  // poder repartir los cupos del inicio ROTANDO entre categorías más
+  // abajo — así "Destacados de hoy" no lo acapara una sola categoría
+  // (por ejemplo, cuando casi todos los celulares tienen descuento a la
+  // vez) dejando a los accesorios sin espacio.
+  const techKeys = ['apple', 'android', 'tablets', 'computadores', 'impresoras', 'accesorios'];
+  const buckets = techKeys
+    .map(k => flattenItems(CATALOG[k]).map(item => ({ ...item, catLabel: CATALOG[k].label })))
+    .filter(bucket => bucket.length);
 
-  // Prioriza lo que ya tiene una señal de "destacado" real (descuento,
-  // etiqueta tipo "Últimas unidades", o DESTACADO=si) y completa con el
-  // resto del catálogo hasta un máximo razonable para el inicio.
-  // Dentro de los destacados, lo marcado a mano con DESTACADO=si en la
-  // Hoja va SIEMPRE primero — si hay más de 8 en total (marcados +
-  // con descuento + con etiqueta), lo que Andrés eligió a mano nunca se
-  // queda por fuera solo por el orden de las categorías en el catálogo.
-  const destacados = pool.filter(x => x.m.dest || (x.m.pAntes && x.m.pAntes > x.m.p) || x.m.tag);
-  destacados.sort((a, b) => {
-    const prioridad = x => x.m.dest ? 0 : ((x.m.pAntes && x.m.pAntes > x.m.p) ? 1 : 2);
+  if(!buckets.length){ grid.innerHTML = ''; return; }
+
+  // Dentro de cada categoría, prioriza lo que ya tiene una señal de
+  // "destacado" real: primero lo marcado a mano con DESTACADO=si en la
+  // Hoja, luego lo que tiene descuento, luego lo que tiene etiqueta (ej.
+  // "Últimas unidades"), y al final el resto de esa categoría.
+  const esDestacado = x => x.m.dest || (x.m.pAntes && x.m.pAntes > x.m.p) || x.m.tag;
+  const prioridad = x => x.m.dest ? 0 : ((x.m.pAntes && x.m.pAntes > x.m.p) ? 1 : (x.m.tag ? 2 : 3));
+  buckets.forEach(bucket => bucket.sort((a, b) => {
+    const da = esDestacado(a), db = esDestacado(b);
+    if(da !== db) return da ? -1 : 1;
     return prioridad(a) - prioridad(b);
-  });
-  const destacadosSet = new Set(destacados);
-  const relleno = pool.filter(x => !destacadosSet.has(x));
-  const elegidos = [...destacados, ...relleno].slice(0, 8);
+  }));
+
+  // Reparte los 8 cupos dando una vuelta por cada categoría con
+  // productos (Apple, Android, Tablets, Computadores, Impresoras,
+  // Accesorios) antes de repetir categoría, tomando siempre lo mejor
+  // priorizado de cada una primero.
+  const elegidos = [];
+  const cursores = buckets.map(() => 0);
+  let avanzo = true;
+  while(elegidos.length < 8 && avanzo){
+    avanzo = false;
+    for(let i = 0; i < buckets.length && elegidos.length < 8; i++){
+      if(cursores[i] < buckets[i].length){
+        elegidos.push(buckets[i][cursores[i]]);
+        cursores[i]++;
+        avanzo = true;
+      }
+    }
+  }
 
   grid.innerHTML = elegidos.map(({ marca, m, catLabel }) => productCardHTML(catLabel, marca, m)).join('');
 }
