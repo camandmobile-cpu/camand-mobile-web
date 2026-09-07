@@ -1754,7 +1754,7 @@ body.loaded header.nav {
     <div class="section" style="padding-top:44px;padding-bottom:44px;">
       <div class="wrap">
         <div class="home-featured-head">
-          <h2>Destacados de hoy</h2>
+          <h2>Productos más vendidos</h2>
           <a onclick="go('tech')">Ver todo el catálogo →</a>
         </div>
         <div class="product-grid" id="homeFeaturedGrid"></div>
@@ -2894,6 +2894,21 @@ let PROMO_BANNERS = [];
 let PROMO_BANNER_INDEX = 0;
 let PROMO_BANNER_TIMER = null;
 
+/* ===================== DIAGNÓSTICO — DESTACADO / GOOGLE SHEETS ===================== */
+// Guarda, de la última lectura de la Hoja, una fila de diagnóstico por CADA
+// producto (se muestre o no en el sitio) con su DESTACADO tal cual se
+// escribió, cómo se interpretó, su ORDEN_DESTACADO, DISPONIBLE y CATEGORIA.
+// Para revisarlo: abre la consola del navegador (F12) y escribe
+// camandDebugDestacados() — imprime una tabla con todo esto.
+let LAST_SHEET_DEBUG_ROWS = [];
+function camandDebugDestacados(){
+  if(!LAST_SHEET_DEBUG_ROWS.length){
+    console.warn("[Camand] Todavía no se ha leído ningún dato de Google Sheets en esta visita — espera a que cargue el catálogo e inténtalo de nuevo.");
+    return;
+  }
+  console.table(LAST_SHEET_DEBUG_ROWS);
+}
+
 /* ===================== CARRITO DE COMPRAS ===================== */
 // Meta de "envío gratis" que se muestra arriba del carrito (estilo Apple:
 // "Te faltan $X para envío gratis"). Valor de partida razonable para una
@@ -3200,7 +3215,7 @@ function removeFromCompare(id){
   else openCompareModal();
 }
 
-// Botón "Comparar dispositivos" del inicio: baja hasta "Destacados de hoy"
+// Botón "Comparar dispositivos" del inicio: baja hasta "Productos más vendidos"
 // (ya tiene la casilla "Comparar" en cada tarjeta) y explica cómo usarla,
 // en vez de mandar a otra vista donde todavía no hay nada para marcar.
 function startCompareFlow(){
@@ -4149,52 +4164,42 @@ function openProduct(id, opts){
   }
 }
 
-/* ===================== HOME — DESTACADOS ===================== */
+/* ===================== HOME — PRODUCTOS MÁS VENDIDOS ===================== */
+// Límite de tarjetas que se muestran en esta sección del inicio (el mismo
+// límite de 8 que ya tenía "Destacados de hoy").
+const HOME_FEATURED_LIMIT = 8;
+
 function renderHomeFeatured(){
   const grid = document.getElementById('homeFeaturedGrid');
   if(!grid) return;
 
-  // Un "canasto" por categoría (en vez de una sola lista mezclada), para
-  // poder repartir los cupos del inicio ROTANDO entre categorías más
-  // abajo — así "Destacados de hoy" no lo acapara una sola categoría
-  // (por ejemplo, cuando casi todos los celulares tienen descuento a la
-  // vez) dejando a los accesorios sin espacio.
-  const techKeys = ['apple', 'android', 'tablets', 'computadores', 'impresoras', 'accesorios'];
-  const buckets = techKeys
-    .map(k => flattenItems(CATALOG[k]).map(item => ({ ...item, catLabel: CATALOG[k].label })))
-    .filter(bucket => bucket.length);
+  // Recorre TODAS las categorías del catálogo (incluida "otros", por si
+  // algún producto quedó sin categorizar) para no perder ningún producto
+  // marcado DESTACADO=sí sin importar en qué categoría esté.
+  const todos = Object.keys(CATALOG)
+    .flatMap(k => flattenItems(CATALOG[k]).map(item => ({ ...item, catLabel: CATALOG[k].label })));
 
-  if(!buckets.length){ grid.innerHTML = ''; return; }
+  // Filtro EXCLUSIVO: solo entra lo marcado DESTACADO=sí en la Hoja. No se
+  // usa descuento, PRECIO ANTES, ETIQUETA, categoría ni disponibilidad como
+  // sustituto — si no está marcado, no aparece aquí, sin excepción.
+  const destacados = todos.filter(({ m }) => m.dest === true);
 
-  // Dentro de cada categoría, prioriza lo que ya tiene una señal de
-  // "destacado" real: primero lo marcado a mano con DESTACADO=si en la
-  // Hoja, luego lo que tiene descuento, luego lo que tiene etiqueta (ej.
-  // "Últimas unidades"), y al final el resto de esa categoría.
-  const esDestacado = x => x.m.dest || (x.m.pAntes && x.m.pAntes > x.m.p) || x.m.tag;
-  const prioridad = x => x.m.dest ? 0 : ((x.m.pAntes && x.m.pAntes > x.m.p) ? 1 : (x.m.tag ? 2 : 3));
-  buckets.forEach(bucket => bucket.sort((a, b) => {
-    const da = esDestacado(a), db = esDestacado(b);
-    if(da !== db) return da ? -1 : 1;
-    return prioridad(a) - prioridad(b);
-  }));
+  if(!destacados.length){ grid.innerHTML = ''; return; }
 
-  // Reparte los 8 cupos dando una vuelta por cada categoría con
-  // productos (Apple, Android, Tablets, Computadores, Impresoras,
-  // Accesorios) antes de repetir categoría, tomando siempre lo mejor
-  // priorizado de cada una primero.
-  const elegidos = [];
-  const cursores = buckets.map(() => 0);
-  let avanzo = true;
-  while(elegidos.length < 8 && avanzo){
-    avanzo = false;
-    for(let i = 0; i < buckets.length && elegidos.length < 8; i++){
-      if(cursores[i] < buckets[i].length){
-        elegidos.push(buckets[i][cursores[i]]);
-        cursores[i]++;
-        avanzo = true;
-      }
-    }
-  }
+  // Orden: primero los que tienen ORDEN_DESTACADO (número), de menor a
+  // mayor — eso respeta exactamente lo que Andrés escriba en esa columna.
+  // Los que la dejan vacía se agregan después, en el mismo orden en que
+  // aparecen en la Hoja de Google (idxOriginal). El sort de JS es estable,
+  // así que los empates conservan su orden relativo.
+  destacados.sort((a, b) => {
+    const oa = a.m.ordenDest, ob = b.m.ordenDest;
+    if(oa !== null && ob !== null) return oa - ob;
+    if(oa !== null) return -1;
+    if(ob !== null) return 1;
+    return a.m.idxOriginal - b.m.idxOriginal;
+  });
+
+  const elegidos = destacados.slice(0, HOME_FEATURED_LIMIT);
 
   grid.innerHTML = elegidos.map(({ marca, m, catLabel }) => productCardHTML(catLabel, marca, m)).join('');
 }
@@ -4634,12 +4639,57 @@ function aplicarFilasCatalogo(filas, origen){
     // silencio; ahora quedan aquí para avisar por consola cuáles hay que
     // revisar en la Hoja.
     const sinPrecioValido = [];
+    // Diagnóstico de DESTACADO/ORDEN_DESTACADO por fila — ver camandDebugDestacados().
+    const debugRows = [];
+    // Posición original de cada fila en la Hoja (0, 1, 2...) — se usa como
+    // orden de respaldo en "Productos más vendidos" cuando ORDEN_DESTACADO
+    // viene vacío, sin importar en qué categoría termine el producto.
+    let idxOriginal = 0;
 
     filas.forEach(fila => {
-      const disponible = String(fila.disponible || "").trim().toLowerCase();
+      const disponibleRaw = fila.disponible !== undefined && fila.disponible !== null ? String(fila.disponible) : "";
+      const disponible = disponibleRaw.trim().toLowerCase();
+      const nombreBase = (fila.nombre || "").trim();
+
+      // DESTACADO="si" hace que el producto aparezca en "Productos más
+      // vendidos" del inicio — EXCLUSIVAMENTE por esta columna, nunca por
+      // descuento, etiqueta, categoría ni disponibilidad. Se acepta con o
+      // sin tilde, en mayúscula/minúscula, y con espacios antes/después
+      // ("SI", "Si", "si", "Sí", " SI " cuentan todas igual).
+      const destacadoRaw = fila.destacado !== undefined && fila.destacado !== null ? String(fila.destacado) : "";
+      const destacado = destacadoRaw.trim().toLowerCase()
+        .normalize("NFD").replace(/[\u0300-\u036f]/g, "") === "si";
+      // Si es un accesorio y está destacado, además se sugiere primero
+      // como venta cruzada dentro del carrito (esto no cambió).
+
+      // ORDEN_DESTACADO (columna opcional, numérica): controla la posición
+      // exacta dentro de "Productos más vendidos" (menor número = primero).
+      // Acepta el encabezado escrito como "ORDEN_DESTACADO" o "ORDEN
+      // DESTACADO". Vacío o no numérico = sin orden explícito; ese producto
+      // se ubica después de los que sí tienen número, respetando el orden
+      // en que aparece en la Hoja.
+      const ordenDestacadoRaw = (fila.orden_destacado ?? fila.ordendestacado ?? "").toString().trim();
+      let ordenDest = null;
+      if(ordenDestacadoRaw !== ""){
+        const n = Number(ordenDestacadoRaw);
+        if(!isNaN(n)) ordenDest = n;
+        else console.warn(`[Camand] ORDEN_DESTACADO de "${nombreBase || '(sin nombre)'}" no es un número válido ("${ordenDestacadoRaw}") — se trata como si estuviera vacío.`);
+      }
+
+      // Fila de diagnóstico: se guarda de TODA fila de la Hoja, se muestre o
+      // no en el sitio, para poder ver de un vistazo por qué un producto no
+      // aparece (DISPONIBLE=no, DESTACADO mal escrito, etc.).
+      debugRows.push({
+        NOMBRE: nombreBase || "(sin nombre)",
+        DESTACADO_ORIGINAL: destacadoRaw,
+        DESTACADO_NORMALIZADO: destacado,
+        ORDEN_DESTACADO: ordenDest === null ? "(vacío)" : ordenDest,
+        DISPONIBLE: disponibleRaw || "(vacío = sí)",
+        CATEGORIA: (fila.categoria || "").trim() || "(vacía)"
+      });
+
       if(disponible === "no") return;
 
-      const nombreBase = (fila.nombre || "").trim();
       const almacenamiento = (fila.almacenamiento || "").trim();
       const condicion = (fila.condicion || "").trim();
       const precio = parsearPrecio(fila.precio);
@@ -4674,16 +4724,11 @@ function aplicarFilasCatalogo(filas, origen){
       // ETIQUETA (opcional): texto libre tipo "Últimas unidades" o "Recién
       // llegado" — se muestra como insignia sobre la foto cuando se llena.
       const etiqueta = (fila.etiqueta || "").trim();
-      // DESTACADO="si" hace dos cosas: 1) el producto aparece primero en
-      // "Destacados de hoy" en el inicio, y 2) si es un accesorio, se
-      // sugiere primero como venta cruzada dentro del carrito.
-      // Se compara sin tildes ni mayúsculas para que "Sí", "SI", "si" o
-      // "Si" cuenten todos igual — antes solo "si" (minúscula, sin tilde)
-      // funcionaba, y quedaba marcado como "no destacado" en silencio si
-      // se escribía con tilde, que es lo más natural en español.
-      const destacado = String(fila.destacado || "").trim().toLowerCase()
-        .normalize("NFD").replace(/[\u0300-\u036f]/g, "") === "si";
-      const modelo = { n: nombre, p: precio, notes, img: imagen, cond: condicion, alm: almacenamiento, ram, cam: camara, bat: bateria, pAntes: precioAntes, tag: etiqueta, dest: destacado };
+      // dest/ordenDest ya se calcularon arriba (antes del filtro de
+      // disponibilidad) para que camandDebugDestacados() los pueda mostrar
+      // de toda fila, se muestre o no en el sitio. idxOriginal es la
+      // posición de esta fila en la Hoja, usada como orden de respaldo.
+      const modelo = { n: nombre, p: precio, notes, img: imagen, cond: condicion, alm: almacenamiento, ram, cam: camara, bat: bateria, pAntes: precioAntes, tag: etiqueta, dest: destacado, ordenDest, idxOriginal: idxOriginal++ };
 
       const esCelular = categoria.includes("celular");
       const esIphone = /iphone/i.test(nombreBase) || /iphone|apple/i.test(sub);
@@ -4734,15 +4779,29 @@ function aplicarFilasCatalogo(filas, origen){
       otrosPorMarca.forEach((models, name) => OTROS_BRANDS_DATA.push({ name, models }));
     }
 
+    // Guarda el diagnóstico de esta lectura para camandDebugDestacados().
+    LAST_SHEET_DEBUG_ROWS = debugRows;
+
     renderTodo();
     const totalAndroid = [...androidPorMarca.values()].reduce((a,b)=>a+b.length,0);
     const totalAccesorios = [...accesoriosPorMarca.values()].reduce((a,b)=>a+b.length,0);
     const totalOtros = [...otrosPorMarca.values()].reduce((a,b)=>a+b.length,0);
+    // Cuenta solo lo que realmente puede llegar a mostrarse en "Productos
+    // más vendidos": DESTACADO=sí Y no marcado DISPONIBLE=no (un producto
+    // agotado nunca aparece ahí, aunque esté marcado como destacado en la
+    // Hoja — mismo criterio que ya aplica en el resto del sitio).
+    const totalDestacados = debugRows.filter(r =>
+      r.DESTACADO_NORMALIZADO && r.DISPONIBLE.trim().toLowerCase() !== "no"
+    ).length;
     console.log(
       "[Camand] Catálogo actualizado desde " + origen + ":", filas.length, "filas leídas —",
       nuevoIphone.length, "iPhone,", totalAndroid, "Android,", nuevoTablets.length, "tablets,",
       nuevoComputadores.length, "computadores,", nuevoImpresoras.length, "impresoras,",
       totalAccesorios, "accesorios."
+    );
+    console.log(
+      "[Camand] " + totalDestacados + " producto(s) con DESTACADO=sí (y disponibles) — se muestran en \"Productos más vendidos\" del inicio (máximo " + HOME_FEATURED_LIMIT + "). " +
+      "Escribe camandDebugDestacados() en esta consola para ver el detalle fila por fila."
     );
     if(totalOtros > 0){
       console.warn(
