@@ -1489,7 +1489,12 @@ footer.site{
   .promo-banner-strip{padding:20px 0;border-radius:20px;}
   .promo-banner-track{padding:0 6%;}
   .promo-banner-slide{flex-basis:88%;}
-  .promo-banner-nav{width:32px;height:32px;font-size:16px;}
+  /* En celular las flechas se ocultan (se navega deslizando el dedo, como
+     cualquier carrusel de app) — antes, cuando un banner quedaba pegado al
+     borde (el primero o el último, que no tienen más espacio para
+     centrarse), el botón de flecha se montaba encima de la esquina
+     redondeada de la foto y parecía que la imagen "se salía" del marco. */
+  .promo-banner-nav{display:none !important;}
 }
 
 /* ---------- SPLASH SCREEN ---------- */
@@ -3646,8 +3651,15 @@ function renderAccesoriosGrid(){
 // nombres o agregas subcategorías nuevas en la Hoja, ajusta las listas de
 // abajo (WEARABLE_BRAND_NAMES / AUDIO_BRAND_NAMES) para que sigan cayendo en
 // el tile correcto.
-const WEARABLE_BRAND_NAMES = ["Wearables", "Relojes", "Smartwatches"];
-const AUDIO_BRAND_NAMES = ["Audio", "Audífonos", "Audifonos"];
+// Antes esto se comparaba con IGUALDAD exacta contra la subcategoría de tu
+// Hoja de Google — si escribías "Relojes inteligentes" o "Smartwatch"
+// (singular) en vez de exactamente "Wearables"/"Relojes"/"Smartwatches",
+// no calzaba con NINGUNA palabra de la lista y la categoría quedaba vacía
+// en el sitio ("No hay productos disponibles"), sin ningún aviso. Ahora se
+// compara por CONTENIDO (igual que categoria/marca en el resto del sitio):
+// basta con que el texto de tu Hoja CONTENGA una de estas palabras.
+const WEARABLE_BRAND_NAMES = ["wearable", "reloj", "watch", "smartwatch"];
+const AUDIO_BRAND_NAMES = ["audio", "audifono", "auricular", "airpod", "earbud"];
 
 function buildHub(label, brands){
   return { label, brands };
@@ -3655,8 +3667,9 @@ function buildHub(label, brands){
 
 function getExtraHub(key){
   const accBrands = CATALOG.accesorios.brands;
-  const esWearable = b => WEARABLE_BRAND_NAMES.some(n => n.toLowerCase() === b.name.toLowerCase());
-  const esAudio = b => AUDIO_BRAND_NAMES.some(n => n.toLowerCase() === b.name.toLowerCase());
+  const normalizarTexto = s => String(s || "").toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g, "");
+  const esWearable = b => WEARABLE_BRAND_NAMES.some(n => normalizarTexto(b.name).includes(n));
+  const esAudio = b => AUDIO_BRAND_NAMES.some(n => normalizarTexto(b.name).includes(n));
   // "Celulares" unifica Apple (iPhone) y Android en una sola búsqueda/filtro,
   // en vez de dos categorías separadas dentro del hub de Tecnología — así
   // el ícono "Equipos" del inicio lleva directo a un solo lugar con todos
