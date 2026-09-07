@@ -357,13 +357,16 @@ nav.links button.is-active::after{
 .cat-card-home:hover{transform:translateY(-4px);box-shadow:0 14px 30px -10px rgba(0,0,0,.14);}
 .cat-card-home:active{transform:translateY(-1px);}
 .cch-media{
-  width:100%;height:64px;display:flex;align-items:center;justify-content:center;margin-bottom:14px;
+  width:100%;height:104px;display:flex;align-items:center;justify-content:center;margin-bottom:12px;
 }
-/* Espacio pensado para una imagen PNG transparente del producto/categoría —
-   basta con reemplazar el <svg> de este bloque por un <img src="img/categorias/xxx.png">
-   cuando tengas esas fotos; el tamaño ya queda ajustado (max 56px de alto). */
-.cch-media img{max-width:100%;max-height:56px;object-fit:contain;}
-.cch-media svg{width:34px;height:34px;stroke:var(--ink);}
+/* Espacio para la foto de cada categoría (viene de Google Sheets, pestaña
+   CATEGORIAS PAGINA). Se ve mejor si la foto tiene fondo transparente (PNG)
+   en vez de un fondo blanco/gris propio — así no se nota un "recuadro"
+   dentro de la tarjeta. Herramientas gratis para quitar el fondo de una
+   foto ya tomada: remove.bg, o la opción "Fondo" al editar la imagen en
+   Canva. */
+.cch-media img{max-width:100%;max-height:96px;object-fit:contain;}
+.cch-media svg{width:38px;height:38px;stroke:var(--ink);}
 .cat-card-home h4{
   margin:0;font-size:13.5px;font-weight:600;color:var(--ink);letter-spacing:-0.01em;
   display:flex;align-items:center;justify-content:center;gap:5px;
@@ -1429,16 +1432,16 @@ footer.site{
 }
 .promo-banner-track{
   position:relative;display:flex;gap:16px;overflow-x:auto;scroll-snap-type:x mandatory;
-  scroll-behavior:smooth;padding:0 12%;-ms-overflow-style:none;scrollbar-width:none;
+  scroll-behavior:smooth;padding:0 10%;-ms-overflow-style:none;scrollbar-width:none;
 }
 .promo-banner-track::-webkit-scrollbar{display:none;}
 .promo-banner-slide{
-  flex:0 0 76%;scroll-snap-align:center;cursor:pointer;display:block;
-  aspect-ratio:2.6/1;border-radius:18px;overflow:hidden;background:#fff;
-  opacity:.55;transform:scale(.94);
-  transition:opacity .5s var(--ease),transform .5s var(--ease),box-shadow .5s var(--ease);
+  flex:0 0 78%;scroll-snap-align:center;cursor:pointer;display:block;
+  aspect-ratio:2.15/1;border-radius:18px;overflow:hidden;background:#fff;
+  opacity:.4;transform:scale(.82);filter:blur(1.5px);
+  transition:opacity .6s var(--ease),transform .6s var(--ease),box-shadow .6s var(--ease),filter .6s var(--ease);
 }
-.promo-banner-slide.is-active{opacity:1;transform:scale(1);box-shadow:0 20px 40px -16px rgba(0,0,0,.22);}
+.promo-banner-slide.is-active{opacity:1;transform:scale(1);box-shadow:0 20px 40px -16px rgba(0,0,0,.22);filter:blur(0);}
 /* object-fit:contain (no "cover") — la foto siempre se ve completa, nunca
    se recorta ni en computador ni en celular; si sobra espacio se rellena
    con el fondo, no cortando los bordes de la imagen. */
@@ -1461,8 +1464,8 @@ footer.site{
 .promo-banner-dot.is-active{background:#000;width:20px;}
 @media (max-width:700px){
   .promo-banner-strip{padding:20px 0;border-radius:20px;}
-  .promo-banner-track{padding:0 7%;}
-  .promo-banner-slide{flex-basis:86%;aspect-ratio:1.9/1;}
+  .promo-banner-track{padding:0 6%;}
+  .promo-banner-slide{flex-basis:88%;aspect-ratio:1.55/1;}
   .promo-banner-nav{width:32px;height:32px;font-size:16px;}
 }
 
