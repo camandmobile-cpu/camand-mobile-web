@@ -83,7 +83,7 @@
   --ink:#1d1d1f;
   --ink-soft:#6e6e73;
   --ink-faint:#a1a1a6;
-  --line:rgba(0,0,0,0.08);
+  --line:rgba(0,0,0,0.05);
   --white:#ffffff;
 
   --tech:#0071e3;
@@ -101,7 +101,7 @@
   --acc-dark:#9c5900;
   --acc-tint:#fdf1e2;
 
-  --radius-lg:28px;
+  --radius-lg:24px;
   --radius-md:18px;
   --radius-sm:12px;
 
@@ -109,15 +109,23 @@
   --shadow-2:0 2px 8px rgba(0,0,0,0.06), 0 24px 48px -16px rgba(0,0,0,0.18);
 
   --ease:cubic-bezier(.22,.61,.36,1);
+
+  /* Alto de la barra superior negra + el navbar blanco — todo lo que
+     necesita "empezar debajo del header" (contenido, buscador móvil,
+     barra de filtros) usa esta variable en vez de un número suelto. */
+  --topbar-h:32px;
+  --header-h:52px;
+  --stack-h:calc(var(--topbar-h) + var(--header-h));
 }
 
+.icon-inline{width:15px;height:15px;flex-shrink:0;vertical-align:-2.5px;margin-right:5px;}
 *{box-sizing:border-box;}
 html{scroll-behavior:smooth;}
 body{
   margin:0;
   background:var(--bg);
   color:var(--ink);
-  font-family:'Inter','Manrope',-apple-system,BlinkMacSystemFont,'SF Pro Display','Segoe UI',sans-serif;
+  font-family:'SF Pro Display',-apple-system,BlinkMacSystemFont,'Inter','Manrope','Segoe UI',sans-serif;
   -webkit-font-smoothing:antialiased;
   overflow-x:hidden;
 }
@@ -128,32 +136,54 @@ button{font-family:inherit;}
 .wrap{max-width:1120px;margin:0 auto;padding:0 24px;}
 @media (max-width:734px){ .wrap{padding:0 20px;} }
 
+/* ---------- TOP-BAR (estilo Artezcom) ---------- */
+.top-bar{
+  position:fixed;top:0;left:0;right:0;z-index:201;height:var(--topbar-h);
+  background:#000;color:#fff;display:flex;align-items:center;
+  justify-content:space-between;padding:0 20px;font-size:11px;
+}
+.top-bar-social{display:flex;align-items:center;gap:12px;}
+.top-bar-social a{display:flex;align-items:center;color:#fff;opacity:.85;transition:opacity .2s;}
+.top-bar-social a:hover{opacity:1;}
+.top-bar-social svg{width:14px;height:14px;}
+.top-bar-msg{font-weight:600;letter-spacing:.01em;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+.top-bar-spacer{width:58px;flex-shrink:0;}
+@media (max-width:560px){ .top-bar{padding:0 12px;font-size:10px;} .top-bar-spacer{width:34px;} }
+
 /* ---------- NAV ---------- */
 header.nav{
-  position:fixed;top:0;left:0;right:0;z-index:200;
-  background:rgba(251,251,253,0.72);
-  backdrop-filter:blur(20px) saturate(1.6);
-  -webkit-backdrop-filter:blur(20px) saturate(1.6);
+  /* Nota de diseño: la spec pide position:sticky, pero la barra de filtros
+     de las secciones (.filters-bar) usa position:sticky asumiendo que el
+     header SIEMPRE ocupa el mismo espacio fijo arriba (comportamiento de
+     position:fixed). Cambiarlo a sticky real haría que el header se
+     desplace con el scroll en vistas largas y descuadre esa barra. Se deja
+     fixed (visualmente idéntico a sticky en un header superior) y se ajusta
+     el cristal traslúcido al valor exacto pedido. */
+  position:fixed;top:var(--topbar-h);left:0;right:0;z-index:200;
+  background:rgba(255,255,255,0.8);
+  backdrop-filter:blur(20px);
+  -webkit-backdrop-filter:blur(20px);
   border-bottom:1px solid rgba(0,0,0,0.06);
   transition:background .3s var(--ease);
 }
 .nav-inner{
-  max-width:1120px;margin:0 auto;padding:0 24px;
-  height:52px;display:flex;align-items:center;justify-content:space-between;
-  gap:20px;
+  max-width:1180px;margin:0 auto;padding:0 24px;
+  height:52px;display:grid;grid-template-columns:1fr auto 1fr;align-items:center;
+  gap:16px;
 }
-.brand{display:flex;align-items:center;gap:9px;font-weight:800;font-size:15px;letter-spacing:-0.01em;cursor:pointer;background:none;border:none;color:var(--ink);}
+.brand{display:flex;align-items:center;gap:9px;font-weight:800;font-size:15px;letter-spacing:-0.01em;cursor:pointer;background:none;border:none;color:var(--ink);justify-self:start;}
 .brand .brand-logo{
   height:30px;width:auto;flex-shrink:0;display:block;
 }
-nav.links{display:flex;align-items:center;gap:30px;font-size:12.5px;font-weight:500;color:var(--ink);}
-nav.links button{background:none;border:none;color:var(--ink-soft);cursor:pointer;font-size:12.5px;padding:4px 0;position:relative;}
-nav.links button:hover{color:var(--ink);}
-nav.links button.is-active{color:var(--ink);}
+nav.links{display:flex;align-items:center;gap:20px;font-size:12px;font-weight:500;color:var(--ink);justify-self:center;white-space:nowrap;}
+nav.links button{background:none;border:none;color:var(--ink-soft);cursor:pointer;font-size:12px;padding:4px 0;position:relative;transition:color .2s;}
+nav.links button:hover{color:#000;}
+nav.links button.is-active{color:#000;}
 nav.links button.is-active::after{
   content:"";position:absolute;left:0;right:0;bottom:-8px;height:2px;
   background:var(--ink);border-radius:2px;
 }
+.nav-actions{display:flex;align-items:center;gap:8px;justify-self:end;}
 .nav-cta{
   display:flex;align-items:center;gap:8px;
   background:var(--ink);color:#fff;border-radius:100px;
@@ -205,9 +235,9 @@ nav.links button.is-active::after{
 .nav-search-empty{font-size:13px;color:var(--ink-soft);padding:12px 6px;margin:0;}
 .nav-search-overlay{display:none;}
 @media (max-width:734px){
-  .nav-search-panel{position:fixed;top:52px;left:0;right:0;width:auto;max-width:none;border-radius:0 0 16px 16px;}
+  .nav-search-panel{position:fixed;top:var(--stack-h);left:0;right:0;width:auto;max-width:none;border-radius:0 0 16px 16px;}
   .nav-search-overlay{
-    display:block;position:fixed;inset:52px 0 0 0;background:rgba(0,0,0,.25);z-index:205;
+    display:block;position:fixed;inset:var(--stack-h) 0 0 0;background:rgba(0,0,0,.25);z-index:205;
     opacity:0;visibility:hidden;transition:opacity .2s;
   }
   .nav-search-overlay.is-open{opacity:1;visibility:visible;}
@@ -215,7 +245,11 @@ nav.links button.is-active::after{
 .hamburger{display:none;background:none;border:none;cursor:pointer;padding:8px;}
 .hamburger span{display:block;width:20px;height:1.6px;background:var(--ink);margin:5px 0;border-radius:2px;transition:.25s;}
 
-@media (max-width:734px){
+/* El menú central ahora trae más opciones (todas las categorías reales +
+   Soporte) — se pasa a menú hamburguesa un poco antes que el resto de
+   breakpoints (1080px en vez de 734px) para que nunca se vea apretado en
+   laptops de pantalla mediana. */
+@media (max-width:1080px){
   nav.links{display:none;}
   .hamburger{display:block;}
   .nav-cta span.long{display:none;}
@@ -227,19 +261,20 @@ nav.links button.is-active::after{
   background:rgba(251,251,253,0.86);
   backdrop-filter:blur(28px);
   -webkit-backdrop-filter:blur(28px);
-  display:flex;flex-direction:column;align-items:center;justify-content:center;gap:26px;
+  display:flex;flex-direction:column;align-items:center;justify-content:center;gap:16px;
   opacity:0;pointer-events:none;transform:scale(1.02);
   transition:opacity .35s var(--ease), transform .35s var(--ease);
+  overflow-y:auto;padding:90px 20px 40px;
 }
 .mobile-menu.open{opacity:1;pointer-events:auto;transform:scale(1);}
-.mobile-menu button.mm-link{background:none;border:none;font-size:30px;font-weight:700;color:var(--ink);letter-spacing:-0.02em;cursor:pointer;}
+.mobile-menu button.mm-link{background:none;border:none;font-size:22px;font-weight:700;color:var(--ink);letter-spacing:-0.02em;cursor:pointer;display:flex;align-items:center;}
 .mobile-menu .mm-close{position:absolute;top:18px;right:20px;font-size:26px;background:none;border:none;color:var(--ink-soft);cursor:pointer;}
 .mobile-menu .mm-wa{margin-top:10px;background:var(--ink);color:#fff;padding:12px 24px;border-radius:100px;font-size:14px;font-weight:600;}
 
 /* ---------- VIEW TRANSITION ---------- */
 #app{
-  padding-top:52px;
-  min-height:calc(100vh - 52px);
+  padding-top:var(--stack-h);
+  min-height:calc(100vh - var(--stack-h));
   transition:opacity .4s var(--ease), transform .4s var(--ease), filter .4s var(--ease);
 }
 #app.transitioning{ opacity:0; transform:translateY(8px) scale(0.985); filter:blur(6px); }
@@ -308,6 +343,51 @@ nav.links button.is-active::after{
 .portal .go svg{width:15px;height:15px;transition:transform .25s var(--ease);}
 .portal:hover .go svg{transform:translateX(4px);}
 
+/* ---------- CUADRÍCULA DE CATEGORÍAS ESTILO APPLE / ARTEZCOM ---------- */
+.cat-grid-home{
+  display:grid;grid-template-columns:repeat(6,1fr);gap:14px;margin:40px 0 0;
+}
+@media (max-width:900px){ .cat-grid-home{grid-template-columns:repeat(3,1fr);} }
+@media (max-width:560px){ .cat-grid-home{grid-template-columns:repeat(2,1fr);gap:10px;} }
+.cat-card-home{
+  background:#F5F5F7;border:none;border-radius:20px;padding:26px 14px 20px;cursor:pointer;
+  display:flex;flex-direction:column;align-items:center;text-align:center;gap:0;
+  transition:transform .3s var(--ease),box-shadow .3s var(--ease);
+}
+.cat-card-home:hover{transform:translateY(-4px);box-shadow:0 14px 30px -10px rgba(0,0,0,.14);}
+.cat-card-home:active{transform:translateY(-1px);}
+.cch-media{
+  width:100%;height:64px;display:flex;align-items:center;justify-content:center;margin-bottom:14px;
+}
+/* Espacio pensado para una imagen PNG transparente del producto/categoría —
+   basta con reemplazar el <svg> de este bloque por un <img src="img/categorias/xxx.png">
+   cuando tengas esas fotos; el tamaño ya queda ajustado (max 56px de alto). */
+.cch-media img{max-width:100%;max-height:56px;object-fit:contain;}
+.cch-media svg{width:34px;height:34px;stroke:var(--ink);}
+.cat-card-home h4{
+  margin:0;font-size:13.5px;font-weight:600;color:var(--ink);letter-spacing:-0.01em;
+  display:flex;align-items:center;justify-content:center;gap:5px;
+}
+.cat-card-home h4 .arrow{display:inline-block;transition:transform .25s var(--ease);}
+.cat-card-home:hover h4 .arrow{transform:translateX(3px);}
+
+/* ---------- BANNER DESTACADO: ESTUCHES PERSONALIZADOS ACRYGEL ---------- */
+.acrygel-feature{
+  margin-top:16px;background:linear-gradient(135deg,#1d1d1f,#000);border-radius:24px;
+  padding:44px 40px;display:flex;flex-wrap:wrap;align-items:center;justify-content:space-between;gap:24px;
+  color:#fff;
+}
+.af-kicker{margin:0 0 8px;font-size:12.5px;font-weight:700;letter-spacing:.06em;text-transform:uppercase;color:#f2a6c6;}
+.af-text h2{margin:0 0 14px;font-size:clamp(22px,3vw,30px);letter-spacing:-0.02em;font-weight:800;max-width:480px;}
+.af-benefits{list-style:none;margin:0 0 22px;padding:0;display:flex;flex-wrap:wrap;gap:10px 22px;}
+.af-benefits li{font-size:13.5px;font-weight:600;color:#f0f0f2;display:flex;align-items:center;gap:7px;}
+.af-cta{
+  display:inline-flex;align-items:center;gap:8px;background:#fff;color:#000;border:none;border-radius:100px;
+  padding:13px 24px;font-size:14px;font-weight:700;cursor:pointer;transition:transform .2s var(--ease),box-shadow .2s;
+}
+.af-cta:hover{transform:translateY(-2px);box-shadow:0 10px 24px -8px rgba(0,0,0,.5);}
+@media (max-width:640px){ .acrygel-feature{padding:32px 24px;} }
+
 /* trust strip */
 .trust{
   display:flex;flex-wrap:wrap;justify-content:center;gap:10px;
@@ -342,11 +422,11 @@ nav.links button.is-active::after{
 .about-block p{margin:0;font-size:15px;line-height:1.7;color:var(--ink-soft);max-width:760px;}
 
 .instagram-cta{
-  display:flex;align-items:center;gap:18px;background:linear-gradient(135deg,#f9ce34,#ee2a7b 55%,#6228d7);
+  display:flex;align-items:center;gap:18px;background:#000;
   color:#fff;border-radius:var(--radius-lg);padding:24px clamp(20px,4vw,32px);
-  transition:transform .2s var(--ease),box-shadow .2s;
+  transition:transform .2s var(--ease),box-shadow .2s,background .2s;
 }
-.instagram-cta:hover{transform:translateY(-2px);box-shadow:0 16px 32px -12px rgba(238,42,123,.45);}
+.instagram-cta:hover{background:#1a1a1a;transform:translateY(-2px);box-shadow:0 16px 32px -12px rgba(0,0,0,.5);}
 .instagram-cta-icon{width:46px;height:46px;flex-shrink:0;display:flex;align-items:center;justify-content:center;background:rgba(255,255,255,.2);border-radius:14px;}
 .instagram-cta-icon svg{width:24px;height:24px;}
 .instagram-cta-text{display:flex;flex-direction:column;gap:3px;min-width:0;}
@@ -580,7 +660,7 @@ footer.site{
   display:flex;flex-wrap:wrap;gap:10px;align-items:flex-end;
   background:var(--surface);border:1px solid var(--line);border-radius:var(--radius-md);
   padding:16px 18px;margin-bottom:16px;
-  position:sticky;top:62px;z-index:60;
+  position:sticky;top:calc(var(--stack-h) + 10px);z-index:60;
   background:rgba(245,245,247,.88);backdrop-filter:blur(14px) saturate(1.4);-webkit-backdrop-filter:blur(14px) saturate(1.4);
 }
 .filter-field{display:flex;flex-direction:column;gap:4px;min-width:118px;}
@@ -760,24 +840,29 @@ footer.site{
 .cart-drawer.open{transform:translateX(0);}
 .cart-head{display:flex;align-items:center;justify-content:space-between;padding:20px 22px;border-bottom:1px solid var(--line);}
 .cart-head h3{margin:0;font-size:17px;}
+.cart-head-count{font-size:11px;font-weight:700;color:var(--ink-soft);vertical-align:super;margin-left:2px;}
 .cart-close{background:none;border:none;font-size:20px;color:var(--ink-soft);cursor:pointer;padding:4px;}
 .cart-body{flex:1;overflow-y:auto;padding:16px 22px;}
 .cart-empty{color:var(--ink-faint);font-size:13.5px;text-align:center;padding:40px 0;}
-.cart-item{display:flex;gap:12px;padding:14px 0;border-bottom:1px solid var(--line);}
+/* Fila de producto minimalista: foto — nombre/variante — precio+cantidad+quitar
+   apilados y alineados a la derecha (en vez de todo en una sola línea). */
+.cart-item{display:grid;grid-template-columns:60px 1fr auto;gap:14px;padding:16px 0;border-bottom:1px solid var(--line);align-items:start;}
 .cart-item img,.cart-item-noimg{
-  width:56px;height:56px;border-radius:10px;background:var(--surface);object-fit:contain;flex-shrink:0;
+  width:60px;height:60px;border-radius:12px;background:var(--surface);object-fit:contain;flex-shrink:0;
   display:flex;align-items:center;justify-content:center;font-size:20px;
 }
-.cart-item-info{display:flex;flex-direction:column;gap:4px;flex:1;min-width:0;}
-.cart-item-name{font-size:12.5px;font-weight:700;color:var(--ink);line-height:1.3;}
-.cart-item-price{font-size:12.5px;color:var(--ink-soft);}
-.cart-item-qty{display:flex;align-items:center;gap:8px;margin-top:2px;}
-.cart-item-qty button{
-  width:22px;height:22px;border-radius:6px;border:1px solid var(--line);background:#fff;cursor:pointer;
-  font-size:14px;line-height:1;color:var(--ink);
-}
-.cart-item-qty span{font-size:12.5px;font-weight:700;min-width:14px;text-align:center;}
-.cart-item-remove{border:none;background:none;color:var(--ink-faint);font-size:11px;text-decoration:underline;cursor:pointer;margin-left:auto;}
+.cart-item-info{display:flex;flex-direction:column;gap:3px;min-width:0;padding-top:2px;}
+.cart-item-name{font-size:13px;font-weight:600;color:var(--ink);line-height:1.35;}
+.cart-item-variant{font-size:11.5px;color:var(--ink-soft);line-height:1.4;}
+.cart-item-right{display:flex;flex-direction:column;align-items:flex-end;gap:8px;}
+.cart-item-price{font-size:13px;font-weight:600;color:var(--ink);white-space:nowrap;}
+.cart-item-stepper{display:flex;align-items:center;gap:7px;background:var(--surface);border-radius:8px;padding:6px 9px;}
+.cart-item-stepper .cis-num{font-size:12.5px;font-weight:700;color:var(--ink);min-width:9px;text-align:center;}
+.cart-item-stepper .cis-arrows{display:flex;flex-direction:column;gap:2px;}
+.cart-item-stepper .cis-arrows button{background:none;border:none;padding:0;width:13px;height:9px;display:flex;align-items:center;justify-content:center;color:var(--ink-soft);cursor:pointer;}
+.cart-item-stepper .cis-arrows button:hover{color:var(--ink);}
+.cart-item-stepper .cis-arrows svg{width:9px;height:9px;}
+.cart-item-remove{border:none;background:none;color:var(--ink-faint);font-size:11px;text-decoration:underline;cursor:pointer;}
 .fav-item-actions{display:flex;align-items:center;gap:10px;margin-top:4px;}
 .fav-add-btn{background:var(--tech);color:#fff;border:none;border-radius:8px;padding:6px 10px;font-size:11.5px;font-weight:700;cursor:pointer;transition:background .2s;}
 .fav-add-btn:hover{background:var(--tech-dark);}
@@ -802,16 +887,72 @@ footer.site{
   font-size:11px;font-weight:700;cursor:pointer;flex-shrink:0;
 }
 .cart-crosssell-item button:hover{background:var(--tech);color:#fff;}
-.cart-foot{border-top:1px solid var(--line);padding:18px 22px 22px;}
-.cart-total-row{display:flex;justify-content:space-between;align-items:baseline;margin-bottom:14px;}
+.cart-foot{border-top:1px solid var(--line);padding:14px 22px 22px;}
+
+/* "Notas para entrega" / "Descuento" — dos pestañas minimalistas que
+   despliegan un campo, en vez de dos secciones siempre abiertas. */
+.cart-extras{display:flex;align-items:center;padding:4px 0 12px;}
+.cart-extra-toggle{
+  flex:1;display:flex;align-items:center;justify-content:center;gap:6px;background:none;border:none;
+  color:var(--ink-soft);font-size:12px;font-weight:600;cursor:pointer;padding:6px 4px;transition:color .2s;
+}
+.cart-extra-toggle:hover{color:var(--ink);}
+.cart-extras-divider{width:1px;align-self:stretch;background:var(--line);}
+.cart-extra-panel{padding-bottom:14px;}
+.cart-extra-panel textarea{
+  width:100%;resize:none;border:1px solid var(--line);border-radius:10px;padding:10px 12px;
+  font:inherit;font-size:12.5px;color:var(--ink);background:var(--surface);box-sizing:border-box;
+}
+.cart-extra-panel textarea:focus{outline:none;border-color:var(--ink);}
+.cart-discount-row{display:flex;gap:8px;}
+.cart-discount-row input{
+  flex:1;min-width:0;border:1px solid var(--line);border-radius:10px;padding:10px 12px;
+  font:inherit;font-size:12.5px;color:var(--ink);background:var(--surface);box-sizing:border-box;
+}
+.cart-discount-row input:focus{outline:none;border-color:var(--ink);}
+.cart-discount-row button{
+  background:var(--ink);color:#fff;border:none;border-radius:10px;padding:0 16px;font-size:12.5px;
+  font-weight:700;cursor:pointer;transition:background .2s;
+}
+.cart-discount-row button:hover{background:#000;}
+.cart-discount-msg{margin:8px 0 0;font-size:11.5px;}
+.cart-discount-msg.is-ok{color:var(--trust);}
+.cart-discount-msg.is-error{color:#c0392b;}
+
+.cart-total-row{display:flex;justify-content:space-between;align-items:baseline;margin-bottom:6px;}
 .cart-total-row span:first-child{font-size:13px;color:var(--ink-soft);}
 .cart-total-row span:last-child{font-size:20px;font-weight:800;color:var(--ink);}
+.cart-total-row.is-sub{margin-bottom:4px;}
+.cart-total-row.is-sub span:first-child{font-size:12px;}
+.cart-total-row.is-sub span:last-child{font-size:13px;font-weight:600;color:var(--ink-soft);}
+.cart-total-row.is-discount span:last-child{color:var(--trust);}
+#cartTotalsWrap{margin-top:10px;margin-bottom:8px;}
+.cart-checkout-row{display:flex;gap:10px;margin-top:14px;}
 .cart-checkout{
-  display:block;width:100%;background:#25D366;color:#fff;border:none;border-radius:12px;
-  padding:13px;font-size:14px;font-weight:700;cursor:pointer;text-align:center;
+  flex:1.4;display:flex;align-items:center;justify-content:center;gap:6px;background:#000000;color:#fff;border:none;border-radius:100px;
+  padding:14px;font-size:13.5px;font-weight:700;cursor:pointer;text-align:center;
+  transition:background .2s,transform .2s;
 }
-.cart-checkout:hover{background:#1fb958;}
-.cart-checkout:disabled{background:var(--ink-faint);cursor:not-allowed;}
+.cart-checkout:hover{background:#1a1a1a;transform:translateY(-1px);}
+.cart-checkout:active{transform:translateY(0) scale(.98);}
+.cart-checkout:disabled{background:var(--ink-faint);cursor:not-allowed;transform:none;}
+.cart-continue-btn{
+  flex:1;background:none;border:1.5px solid var(--line);color:var(--ink);border-radius:100px;
+  padding:14px;font-size:13.5px;font-weight:700;cursor:pointer;transition:border-color .2s,background .2s;
+}
+.cart-continue-btn:hover{border-color:var(--ink);background:var(--surface);}
+@media (max-width:360px){
+  .cart-checkout-row{flex-direction:column;}
+}
+
+/* Barra de meta de envío gratis, arriba del carrito (estilo Apple) */
+.cart-shipping-bar{padding:14px 22px 0;}
+.csb-msg{font-size:12px;color:var(--ink-soft);margin:0 0 8px;line-height:1.4;}
+.csb-msg b{color:var(--ink);font-weight:700;}
+.csb-msg.is-done{color:var(--ink);}
+.csb-track{width:100%;height:4px;border-radius:100px;background:var(--surface-2);overflow:hidden;}
+.csb-fill{height:100%;border-radius:100px;background:var(--ink);transition:width .35s var(--ease);}
+.csb-fill.is-done{background:#000;}
 
 /* accesorios panel (standalone, not tied to catGrid) */
 .acc-panel{
@@ -1277,45 +1418,51 @@ footer.site{
 .legal-content b{color:var(--ink);}
 .legal-updated{font-size:12.5px;color:var(--ink-faint);margin-bottom:28px;}
 
-/* ===================== BANNER PUBLICITARIO ROTATIVO ===================== */
+/* ===================== BANNER PUBLICITARIO ROTATIVO (Hero Carousel estilo Artezcom) ===================== */
+/* Ahora es un carril horizontal real (scroll-snap) en vez de fotos superpuestas
+   con crossfade — así el slide activo queda centrado y se alcanzan a ver
+   "mordidas" de las tarjetas vecinas a los lados, como en Artezcom/Apple.
+   También se puede deslizar con el dedo en celular, no solo con las flechas. */
 .promo-banner-strip{
-  position:relative;width:100%;overflow:hidden;background:var(--surface);
-  aspect-ratio:3.2/1;border-radius:18px;
+  position:relative;width:100%;background:#f5f5f7;border-radius:24px;
+  padding:28px 0;
 }
-.promo-banner-track{position:relative;width:100%;height:100%;}
-/* Cada foto se superpone en el mismo lugar y se desvanece (crossfade) en vez
-   de deslizarse — la que entra y la que sale se cruzan suavemente. */
+.promo-banner-track{
+  position:relative;display:flex;gap:16px;overflow-x:auto;scroll-snap-type:x mandatory;
+  scroll-behavior:smooth;padding:0 12%;-ms-overflow-style:none;scrollbar-width:none;
+}
+.promo-banner-track::-webkit-scrollbar{display:none;}
 .promo-banner-slide{
-  position:absolute;inset:0;cursor:pointer;display:block;
-  opacity:0;pointer-events:none;transition:opacity .7s ease;
+  flex:0 0 76%;scroll-snap-align:center;cursor:pointer;display:block;
+  aspect-ratio:2.6/1;border-radius:18px;overflow:hidden;background:#fff;
+  opacity:.55;transform:scale(.94);
+  transition:opacity .5s var(--ease),transform .5s var(--ease),box-shadow .5s var(--ease);
 }
-.promo-banner-slide.is-active{opacity:1;pointer-events:auto;}
+.promo-banner-slide.is-active{opacity:1;transform:scale(1);box-shadow:0 20px 40px -16px rgba(0,0,0,.22);}
 /* object-fit:contain (no "cover") — la foto siempre se ve completa, nunca
    se recorta ni en computador ni en celular; si sobra espacio se rellena
    con el fondo, no cortando los bordes de la imagen. */
-.promo-banner-slide img{width:100%;height:100%;object-fit:contain;display:block;}
+.promo-banner-slide img,.promo-banner-slide video{width:100%;height:100%;object-fit:contain;display:block;}
+.promo-banner-slide iframe{width:100%;height:100%;border:0;display:block;pointer-events:none;}
 .promo-banner-nav{
   position:absolute;top:50%;transform:translateY(-50%);width:38px;height:38px;border-radius:50%;
-  background:rgba(255,255,255,.85);backdrop-filter:blur(4px);border:none;font-size:20px;line-height:1;
+  background:rgba(255,255,255,.9);border:none;font-size:20px;line-height:1;
   color:var(--ink);cursor:pointer;display:flex;align-items:center;justify-content:center;
-  z-index:2;transition:background .2s,transform .2s;
+  z-index:2;transition:background .2s,transform .2s;box-shadow:0 4px 14px rgba(0,0,0,.08);
 }
 .promo-banner-nav:hover{background:#fff;transform:translateY(-50%) scale(1.06);}
 .promo-banner-nav.prev{left:14px;}
 .promo-banner-nav.next{right:14px;}
-.promo-banner-dots{position:absolute;bottom:12px;left:0;right:0;display:flex;justify-content:center;gap:6px;z-index:2;}
+.promo-banner-dots{position:relative;margin-top:14px;display:flex;justify-content:center;gap:6px;z-index:2;}
 .promo-banner-dot{
-  width:7px;height:7px;border-radius:50%;background:rgba(255,255,255,.55);border:none;padding:0;
-  cursor:pointer;transition:background .2s,transform .2s;
+  width:7px;height:7px;border-radius:100px;background:rgba(0,0,0,.18);border:none;padding:0;
+  cursor:pointer;transition:background .3s var(--ease),width .3s var(--ease);
 }
-.promo-banner-dot.is-active{background:#fff;transform:scale(1.35);}
+.promo-banner-dot.is-active{background:#000;width:20px;}
 @media (max-width:700px){
-  /* Antes esto forzaba un recuadro casi cuadrado (4/3) y, como las fotos son
-     anchas, el sitio las recortaba fuerte a los lados — por eso se veían
-     "cortadas" en celular. Ahora es más ancho (menos alto) y, combinado con
-     object-fit:contain de arriba, la imagen nunca se corta: como mucho deja
-     una franja vacía arriba/abajo si su proporción no calza exacto. */
-  .promo-banner-strip{aspect-ratio:2.2/1;}
+  .promo-banner-strip{padding:20px 0;border-radius:20px;}
+  .promo-banner-track{padding:0 7%;}
+  .promo-banner-slide{flex-basis:86%;aspect-ratio:1.9/1;}
   .promo-banner-nav{width:32px;height:32px;font-size:16px;}
 }
 
@@ -1422,52 +1569,82 @@ body.loaded header.nav {
   });
 </script>
 
+<div class="top-bar">
+  <div class="top-bar-social">
+    <a href="https://www.instagram.com/camand.mobile/" target="_blank" rel="noopener" aria-label="Instagram">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="2" width="20" height="20" rx="6"/><circle cx="12" cy="12" r="4.5"/><circle cx="17.8" cy="6.2" r="1.1" fill="currentColor" stroke="none"/></svg>
+    </a>
+    <a href="https://wa.me/573122265799?text=Hola%2C%20quiero%20hacer%20un%20pedido" target="_blank" rel="noopener" aria-label="WhatsApp">
+      <svg viewBox="0 0 32 32" fill="currentColor"><path d="M16.001 3C9.096 3 3.5 8.596 3.5 15.5c0 2.42.688 4.68 1.878 6.598L3 29l7.086-2.335A12.44 12.44 0 0 0 16 28c6.905 0 12.5-5.596 12.5-12.5S22.906 3 16.001 3Zm7.29 17.86c-.304.858-1.51 1.57-2.472 1.774-.657.14-1.514.252-4.4-.945-3.693-1.53-6.07-5.28-6.256-5.526-.18-.246-1.5-1.998-1.5-3.812 0-1.814.95-2.706 1.286-3.076.336-.37.732-.462.976-.462.244 0 .488.002.7.013.225.012.526-.086.822.627.304.732 1.033 2.53 1.123 2.714.09.185.15.4.03.646-.12.246-.18.4-.354.615-.174.216-.366.482-.522.647-.174.185-.356.386-.153.756.204.37.905 1.494 1.943 2.42 1.336 1.192 2.462 1.562 2.833 1.738.37.176.588.15.804-.09.216-.24.925-1.078 1.172-1.448.246-.37.492-.308.83-.185.34.123 2.153 1.016 2.523 1.2.37.185.616.277.706.432.09.156.09.902-.213 1.762Z"/></svg>
+    </a>
+  </div>
+  <p class="top-bar-msg" id="topBarShippingMsg">Envío gratis desde $200.000</p>
+  <div class="top-bar-spacer"></div>
+</div>
+
 <header class="nav">
   <div class="nav-inner">
     <button class="brand" onclick="go('home')">
       <img class="brand-logo camand-logo-img" alt="Camand Mobile">
     </button>
     <nav class="links">
-      <button data-view="home" class="is-active" onclick="go('home')">Inicio</button>
-      <button data-view="tech" onclick="go('tech')">Equipos</button>
-      <button data-view="accesorios" onclick="go('accesorios')">Accesorios</button>
-      <button data-view="cases" onclick="go('cases')">Estuches</button>
-      <button onclick="document.getElementById('contacto').scrollIntoView({behavior:'smooth'})">Contacto</button>
+      <button data-view="home" class="is-active" onclick="go('home')">Home</button>
+      <button data-view="celulares" onclick="go('celulares')">Equipos</button>
+      <button data-view="tablets" onclick="go('tablets')">Tablets</button>
+      <button data-view="relojes" onclick="go('relojes')">Relojes</button>
+      <button data-view="audifonos" onclick="go('audifonos')">Audífonos</button>
+      <button data-view="computadores" onclick="go('computadores')">Computadores</button>
+      <button data-view="techoficina" onclick="go('techoficina')">Accesorios</button>
+      <button data-view="faq" onclick="go('faq')">Soporte</button>
     </nav>
-    <button type="button" class="nav-fav-btn" onclick="openFav(true)" aria-label="Ver favoritos">
-      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 21s-7-4.35-9.5-8.5C.5 8 2 4.5 5.5 4c2-.3 3.7.7 4.7 2.2C11.2 4.7 12.9 3.7 14.9 4c3.5.5 5 4 3 8.5C19 16.65 12 21 12 21Z"/></svg>
-      <span class="cart-badge" id="favBadge">0</span>
-    </button>
-    <div class="nav-search">
-      <button type="button" class="nav-search-btn" onclick="toggleNavSearch()" aria-label="Buscar productos">
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><circle cx="11" cy="11" r="7"/><path d="m21 21-4.3-4.3"/></svg>
-      </button>
-      <div class="nav-search-panel" id="navSearchPanel">
-        <div class="nav-search-input-wrap">
+    <div class="nav-actions">
+      <div class="nav-search">
+        <button type="button" class="nav-search-btn" onclick="toggleNavSearch()" aria-label="Buscar productos">
           <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><circle cx="11" cy="11" r="7"/><path d="m21 21-4.3-4.3"/></svg>
-          <input type="text" id="navSearchInput" placeholder="Busca cualquier producto — ej. iPhone 13, cargador, A57..." oninput="performNavSearch(this.value)" onkeydown="if(event.key==='Escape')toggleNavSearch(false)">
-          <button type="button" class="nav-search-close" onclick="toggleNavSearch(false)" aria-label="Cerrar búsqueda">✕</button>
+        </button>
+        <div class="nav-search-panel" id="navSearchPanel">
+          <div class="nav-search-input-wrap">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><circle cx="11" cy="11" r="7"/><path d="m21 21-4.3-4.3"/></svg>
+            <input type="text" id="navSearchInput" placeholder="Busca cualquier producto — ej. iPhone 13, cargador, A57..." oninput="performNavSearch(this.value)" onkeydown="if(event.key==='Escape')toggleNavSearch(false)">
+            <button type="button" class="nav-search-close" onclick="toggleNavSearch(false)" aria-label="Cerrar búsqueda">✕</button>
+          </div>
+          <div class="nav-search-results" id="navSearchResults"></div>
         </div>
-        <div class="nav-search-results" id="navSearchResults"></div>
       </div>
+      <a class="nav-fav-btn" href="https://wa.me/573122265799?text=Hola%2C%20quiero%20consultar%20el%20estado%20de%20mi%20pedido" target="_blank" rel="noopener" aria-label="Mi cuenta / consultar pedido por WhatsApp">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="8" r="4"/><path d="M4 20c0-4 3.6-7 8-7s8 3 8 7"/></svg>
+      </a>
+      <button type="button" class="nav-fav-btn" onclick="openFav(true)" aria-label="Ver favoritos">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 21s-7-4.35-9.5-8.5C.5 8 2 4.5 5.5 4c2-.3 3.7.7 4.7 2.2C11.2 4.7 12.9 3.7 14.9 4c3.5.5 5 4 3 8.5C19 16.65 12 21 12 21Z"/></svg>
+        <span class="cart-badge" id="favBadge">0</span>
+      </button>
+      <button type="button" class="nav-fav-btn" onclick="openCart(true)" aria-label="Ver carrito de compras">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 4h2l2.4 12.2a2 2 0 0 0 2 1.6h8.6a2 2 0 0 0 2-1.6L22 8H6"/><circle cx="9" cy="21" r="1"/><circle cx="18" cy="21" r="1"/></svg>
+        <span class="cart-badge" id="cartBadgeNav">0</span>
+      </button>
+      <a class="nav-cta" href="https://wa.me/573122265799?text=Hola%2C%20quiero%20hacer%20un%20pedido" target="_blank" rel="noopener">
+        <span class="long">Escríbenos</span><span class="short">WhatsApp</span>
+      </a>
+      <button class="hamburger" onclick="toggleMenu(true)" aria-label="Menú">
+        <span></span><span></span><span></span>
+      </button>
     </div>
-    <a class="nav-cta" href="https://wa.me/573122265799?text=Hola%2C%20quiero%20hacer%20un%20pedido" target="_blank" rel="noopener">
-      <span class="long">Escríbenos</span><span class="short">WhatsApp</span>
-    </a>
-    <button class="hamburger" onclick="toggleMenu(true)" aria-label="Menú">
-      <span></span><span></span><span></span>
-    </button>
   </div>
   <div class="nav-search-overlay" id="navSearchOverlay" onclick="toggleNavSearch(false)"></div>
 </header>
 
 <div class="mobile-menu" id="mobileMenu">
   <button class="mm-close" onclick="toggleMenu(false)">✕</button>
-  <button class="mm-link" onclick="go('home')">Inicio</button>
-  <button class="mm-link" onclick="go('tech')">Equipos</button>
-  <button class="mm-link" onclick="go('accesorios')">Accesorios</button>
+  <button class="mm-link" onclick="go('home')">Home</button>
+  <button class="mm-link" onclick="go('celulares')">Equipos</button>
+  <button class="mm-link" onclick="go('tablets')">Tablets</button>
+  <button class="mm-link" onclick="go('relojes')">Relojes</button>
+  <button class="mm-link" onclick="go('audifonos')">Audífonos</button>
+  <button class="mm-link" onclick="go('computadores')">Computadores</button>
+  <button class="mm-link" onclick="go('techoficina')">Accesorios</button>
   <button class="mm-link" onclick="go('cases')">Estuches</button>
-  <button class="mm-link" onclick="toggleMenu(false);openFav(true)">❤️ Favoritos</button>
+  <button class="mm-link" onclick="go('faq')">Soporte</button>
+  <button class="mm-link" onclick="toggleMenu(false);openFav(true)"><svg class="icon-inline" style="width:20px;height:20px;" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M12 20s-6.5-4-8.5-7.7C1.7 9 3 5.8 6 5.2c1.8-.35 3.4.5 4.4 1.9C11.4 5.7 13 4.85 14.8 5.2c3 .6 4.3 3.8 2.5 7.1C15.3 16 12 20 12 20Z"/></svg> Favoritos</button>
   <a class="mm-wa" href="https://wa.me/573122265799?text=Hola%2C%20quiero%20hacer%20un%20pedido" target="_blank" rel="noopener">Escríbenos por WhatsApp</a>
 </div>
 
@@ -1492,52 +1669,54 @@ body.loaded header.nav {
         </button>
       </div>
 
-      <div class="portals">
-        <div class="portal tech" onclick="go('tech')">
-          <div class="glow"></div>
-          <p class="kicker">Equipos</p>
-          <h3>Celulares, tablets, computadores e impresoras</h3>
-          <p>Encuentra tu próximo equipo. Explora marcas, modelos y opciones disponibles.</p>
-          <span class="go">Ver catálogo
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><path d="M5 12h14M13 6l6 6-6 6"/></svg>
-          </span>
+      <div class="cat-grid-home reveal">
+        <button type="button" class="cat-card-home" onclick="go('celulares')">
+          <div class="cch-media" id="cchm-equipos"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><rect x="7" y="2" width="10" height="20" rx="2"/><path d="M11 18h2"/></svg></div>
+          <h4>Equipos<span class="arrow">→</span></h4>
+        </button>
+        <button type="button" class="cat-card-home" onclick="go('tablets')">
+          <div class="cch-media" id="cchm-tablets"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><rect x="4" y="3" width="16" height="18" rx="2"/><path d="M10 19h4"/></svg></div>
+          <h4>Tablets<span class="arrow">→</span></h4>
+        </button>
+        <button type="button" class="cat-card-home" onclick="go('relojes')">
+          <div class="cch-media" id="cchm-relojes"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><rect x="7" y="6" width="10" height="12" rx="3"/><path d="M9 6V3.5h6V6M9 18v2.5h6V18M12 10v2.5l1.6 1"/></svg></div>
+          <h4>Relojes<span class="arrow">→</span></h4>
+        </button>
+        <button type="button" class="cat-card-home" onclick="go('audifonos')">
+          <div class="cch-media" id="cchm-audifonos"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M4 14v-2a8 8 0 0 1 16 0v2"/><rect x="2.5" y="14" width="5" height="7" rx="2"/><rect x="16.5" y="14" width="5" height="7" rx="2"/></svg></div>
+          <h4>Audífonos<span class="arrow">→</span></h4>
+        </button>
+        <button type="button" class="cat-card-home" onclick="go('computadores')">
+          <div class="cch-media" id="cchm-computadores"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><rect x="3" y="4" width="18" height="12" rx="1.5"/><path d="M2 20h20"/></svg></div>
+          <h4>Computadores<span class="arrow">→</span></h4>
+        </button>
+        <button type="button" class="cat-card-home" onclick="go('techoficina')">
+          <div class="cch-media" id="cchm-techoficina"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><rect x="5" y="8" width="14" height="8" rx="1.5"/><path d="M7 8V4h10v4M8 16v4h8v-4"/></svg></div>
+          <h4>Tech &amp; Oficina<span class="arrow">→</span></h4>
+        </button>
+      </div>
+
+      <div class="acrygel-feature reveal">
+        <div class="af-text">
+          <p class="af-kicker">Personalización premium</p>
+          <h2>Estuches Personalizados Acrygel</h2>
+          <ul class="af-benefits">
+            <li><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" style="flex-shrink:0;"><path d="M12 3l7 3v6c0 4.5-3 7.5-7 9-4-1.5-7-4.5-7-9V6z"/></svg> Grado militar</li>
+            <li><svg width="15" height="15" viewBox="0 0 24 24" fill="currentColor" stroke="none" style="flex-shrink:0;"><path d="M12 2l1.8 5.6L19.5 9l-5.7 1.4L12 16l-1.8-5.6L4.5 9l5.7-1.4Z"/></svg> Anti-amarilleo</li>
+            <li><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" style="flex-shrink:0;"><circle cx="13.5" cy="6.5" r="2.5"/><path d="M11.5 8.5 4 16l1 3 3 1 7.5-7.5"/></svg> Impresión UV de alta definición</li>
+          </ul>
         </div>
-        <div class="portal accesorios" onclick="go('accesorios')">
-          <div class="glow"></div>
-          <p class="kicker">Accesorios</p>
-          <h3>Cargadores, cables y más</h3>
-          <p>Power banks, cables y cargadores para complementar tu equipo.</p>
-          <span class="go">Ver accesorios
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><path d="M5 12h14M13 6l6 6-6 6"/></svg>
-          </span>
-        </div>
-        <div class="portal cases" onclick="go('cases')">
-          <div class="glow"></div>
-          <p class="kicker">Personalización</p>
-          <h3>Crea un estuche único</h3>
-          <p>Personaliza tu diseño, elige tu modelo de celular y visualízalo antes de pedir.</p>
-          <span class="go">Diseñar el mío
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><path d="M5 12h14M13 6l6 6-6 6"/></svg>
-          </span>
-        </div>
+        <button type="button" class="af-cta" onclick="go('cases')">
+          Diseñar mi estuche
+          <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4"><path d="M5 12h14M13 6l6 6-6 6"/></svg>
+        </button>
       </div>
 
       <div class="trust">
         <div class="pill"><span class="dot"></span>Envíos a Bogotá y a nivel nacional</div>
         <div class="pill"><span class="dot"></span>Productos de máxima calidad garantizada</div>
         <div class="pill"><span class="dot"></span>Compra 100% segura — abonas y apartas</div>
-        <div class="pill"><img class="sc-logo-img" alt="Sistecrédito">&nbsp;Sin tarjeta, en cuotas</div>
-      </div>
-
-      <div class="sistecredito-banner">
-        <div class="sc-left">
-          <img class="sc-logo-img sc-logo-lg" alt="Sistecrédito">
-          <div class="txt">
-            <b>Lleva tu equipo hoy, sin tarjeta de crédito</b>
-            <span>Somos aliados autorizados Sistecrédito — aprueban tu cupo y pagas en cuotas cómodas.</span>
-          </div>
-        </div>
-        <a class="sc-btn" href="https://wa.me/573122265799?text=Hola%2C%20quiero%20comprar%20usando%20mi%20cupo%20Sistecr%C3%A9dito" target="_blank" rel="noopener">Solicitar cupo →</a>
+        <div class="pill"><span class="dot"></span>Paga a cuotas, sin tarjeta</div>
       </div>
     </div>
 
@@ -1619,7 +1798,7 @@ body.loaded header.nav {
       </div>
 
       <div class="gift-banner reveal">
-        <div class="gift-icon">🎁</div>
+        <div class="gift-icon"><svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><rect x="3" y="8.5" width="18" height="12" rx="1.5"/><path d="M3 12.5h18M12 8.5v12"/><path d="M12 8.5C9 8.5 7.5 7 7.5 5.3 7.5 4 8.5 3 9.8 3 11.6 3 12 5.5 12 8.5ZM12 8.5c3 0 4.5-1.5 4.5-3.2C16.5 4 15.5 3 14.2 3 12.4 3 12 5.5 12 8.5Z"/></svg></div>
         <div class="txt">
           <b>Con la compra de tu equipo, llévate gratis</b>
           <span>Estuche Space + vidrio templado — sin costo adicional, para que tu equipo salga protegido desde el primer día.</span>
@@ -1635,16 +1814,72 @@ body.loaded header.nav {
 
       <div class="cat-grid" id="catGrid"></div>
 
-      <div class="sistecredito-banner">
-        <div class="sc-left">
-          <img class="sc-logo-img sc-logo-lg" alt="Sistecrédito">
-          <div class="txt">
-            <b>¿Prefieres pagar en cuotas, sin tarjeta?</b>
-            <span>Somos aliados autorizados Sistecrédito — solicita tu cupo y compra el equipo que quieres hoy.</span>
-          </div>
-        </div>
-        <a class="sc-btn" href="https://wa.me/573122265799?text=Hola%2C%20quiero%20comprar%20usando%20mi%20cupo%20Sistecr%C3%A9dito" target="_blank" rel="noopener">Solicitar cupo →</a>
+    </div>
+  </section>
+
+  <!-- ======================= CELULARES (Apple + Android unificados) ======================= -->
+  <section class="view" id="view-celulares">
+    <div class="wrap">
+      <div class="subnav">
+        <button class="back-btn" onclick="go('home')">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4"><path d="M15 6l-6 6 6 6"/></svg>
+          Inicio
+        </button>
+        <span>/ Celulares</span>
       </div>
+      <div class="hub-hero">
+        <h1>Celulares</h1>
+        <p>Android y Apple, nuevos y usados, en un solo lugar — filtra por marca o busca tu modelo. Precio y disponibilidad se confirman por WhatsApp.</p>
+      </div>
+
+      <div class="tech-search">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><circle cx="11" cy="11" r="7"/><path d="m21 21-4.3-4.3"/></svg>
+        <input type="text" id="celularesSearchInput" placeholder="Busca tu modelo — ej. iPhone 15, Redmi Note, A57..." oninput="performCelularesSearch(this.value)">
+      </div>
+      <div class="search-results" id="celularesSearchResults"></div>
+
+      <div class="acc-panel" id="celularesGrid"></div>
+
+    </div>
+  </section>
+
+  <!-- ======================= TABLETS ======================= -->
+  <section class="view" id="view-tablets">
+    <div class="wrap">
+      <div class="subnav">
+        <button class="back-btn" onclick="go('home')">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4"><path d="M15 6l-6 6 6 6"/></svg>
+          Inicio
+        </button>
+        <span>/ Tablets</span>
+      </div>
+      <div class="hub-hero">
+        <h1>Tablets</h1>
+        <p>iPad, Samsung, Xiaomi, Lenovo y más. Precio y disponibilidad se confirman por WhatsApp.</p>
+      </div>
+
+      <div class="acc-panel" id="tabletsGrid"></div>
+
+    </div>
+  </section>
+
+  <!-- ======================= COMPUTADORES ======================= -->
+  <section class="view" id="view-computadores">
+    <div class="wrap">
+      <div class="subnav">
+        <button class="back-btn" onclick="go('home')">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4"><path d="M15 6l-6 6 6 6"/></svg>
+          Inicio
+        </button>
+        <span>/ Computadores</span>
+      </div>
+      <div class="hub-hero">
+        <h1>Computadores</h1>
+        <p>Portátiles MacBook, HP, Lenovo, Acer y más. Precio y disponibilidad se confirman por WhatsApp.</p>
+      </div>
+
+      <div class="acc-panel" id="computadoresGrid"></div>
+
     </div>
   </section>
 
@@ -1665,16 +1900,66 @@ body.loaded header.nav {
 
       <div class="acc-panel" id="accesoriosGrid"></div>
 
-      <div class="sistecredito-banner">
-        <div class="sc-left">
-          <img class="sc-logo-img sc-logo-lg" alt="Sistecrédito">
-          <div class="txt">
-            <b>¿Prefieres pagar en cuotas, sin tarjeta?</b>
-            <span>Somos aliados autorizados Sistecrédito — solicita tu cupo y lleva tus accesorios hoy.</span>
-          </div>
-        </div>
-        <a class="sc-btn" href="https://wa.me/573122265799?text=Hola%2C%20quiero%20comprar%20usando%20mi%20cupo%20Sistecr%C3%A9dito" target="_blank" rel="noopener">Solicitar cupo →</a>
+    </div>
+  </section>
+
+  <!-- ======================= RELOJES (SMARTWATCHES) — subcategoría de Accesorios ======================= -->
+  <section class="view" id="view-relojes">
+    <div class="wrap">
+      <div class="subnav">
+        <button class="back-btn" onclick="go('home')">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4"><path d="M15 6l-6 6 6 6"/></svg>
+          Inicio
+        </button>
+        <span>/ Relojes</span>
       </div>
+      <div class="hub-hero">
+        <h1>Relojes inteligentes</h1>
+        <p>Smartwatches y bandas de actividad. Precio y disponibilidad se confirman por WhatsApp.</p>
+      </div>
+
+      <div class="acc-panel" id="relojesGrid"></div>
+
+    </div>
+  </section>
+
+  <!-- ======================= AUDÍFONOS — subcategoría de Accesorios ======================= -->
+  <section class="view" id="view-audifonos">
+    <div class="wrap">
+      <div class="subnav">
+        <button class="back-btn" onclick="go('home')">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4"><path d="M15 6l-6 6 6 6"/></svg>
+          Inicio
+        </button>
+        <span>/ Audífonos</span>
+      </div>
+      <div class="hub-hero">
+        <h1>Audífonos</h1>
+        <p>Audio inalámbrico y con cable, parlantes Bluetooth y más. Precio y disponibilidad se confirman por WhatsApp.</p>
+      </div>
+
+      <div class="acc-panel" id="audifonosGrid"></div>
+
+    </div>
+  </section>
+
+  <!-- ======================= TECH & OFICINA — impresoras + resto de accesorios ======================= -->
+  <section class="view" id="view-techoficina">
+    <div class="wrap">
+      <div class="subnav">
+        <button class="back-btn" onclick="go('home')">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4"><path d="M15 6l-6 6 6 6"/></svg>
+          Inicio
+        </button>
+        <span>/ Tech &amp; Oficina</span>
+      </div>
+      <div class="hub-hero">
+        <h1>Tech &amp; Oficina</h1>
+        <p>Impresoras, cargadores, cables y otros accesorios para tu equipo y tu oficina. Precio y disponibilidad se confirman por WhatsApp.</p>
+      </div>
+
+      <div class="acc-panel" id="techOficinaGrid"></div>
+
     </div>
   </section>
 
@@ -1752,7 +2037,7 @@ body.loaded header.nav {
               <li><svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 2l2.9 6.6L22 9.3l-5 4.8L18.2 21 12 17.3 5.8 21 7 14.1 2 9.3l7.1-.7Z"/></svg>Bordes reforzados de alto impacto (estilo Space / Camera Control)</li>
               <li><svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 2l2.9 6.6L22 9.3l-5 4.8L18.2 21 12 17.3 5.8 21 7 14.1 2 9.3l7.1-.7Z"/></svg>Impresión UV HD personalizada a tu gusto</li>
             </ul>
-            <div class="line-gift"><span class="emoji">🎁</span><span><b>Incluye gratis:</b> vidrio templado para tu pantalla</span></div>
+            <div class="line-gift"><span class="emoji"><svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><rect x="3" y="8.5" width="18" height="12" rx="1.5"/><path d="M3 12.5h18M12 8.5v12"/><path d="M12 8.5C9 8.5 7.5 7 7.5 5.3 7.5 4 8.5 3 9.8 3 11.6 3 12 5.5 12 8.5ZM12 8.5c3 0 4.5-1.5 4.5-3.2C16.5 4 15.5 3 14.2 3 12.4 3 12 5.5 12 8.5Z"/></svg></span><span><b>Incluye gratis:</b> vidrio templado para tu pantalla</span></div>
             <a class="btn-primary cases-btn line-cta" href="estuche-editor.html" target="_blank" rel="noopener">
               <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><path d="M12 20h9"/><path d="M16.5 3.5a2.12 2.12 0 0 1 3 3L7 19l-4 1 1-4Z"/></svg>
               Diseñar Pro MagSafe →
@@ -1913,14 +2198,14 @@ body.loaded header.nav {
       <div class="faq-list">
         <div class="faq-item">
           <button class="faq-q" onclick="toggleFaq(this)">
-            <span class="faq-icon">🚚</span>
+            <span class="faq-icon"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7"><path d="M2 6h11v9H2z"/><path d="M13 10h4l4 3.2V15h-8z"/><circle cx="6.5" cy="17.5" r="1.6"/><circle cx="16.5" cy="17.5" r="1.6"/></svg></span>
             <span class="faq-q-text">¿Cómo funcionan los envíos y cuáles son los costos?</span>
             <svg class="faq-chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4"><path d="M6 9l6 6 6-6"/></svg>
           </button>
           <div class="faq-a-wrap">
             <div class="faq-a"><ul>
-              <li><b>Envío GRATIS:</b> en todas las compras iguales o superiores a $150.000 COP.</li>
-              <li><b>Pedidos menores a $150.000 COP:</b> el valor del envío varía según tu zona/ciudad y te lo confirmamos por WhatsApp antes de despachar.</li>
+              <li><b>Envío GRATIS:</b> en todas las compras iguales o superiores a $200.000 COP.</li>
+              <li><b>Pedidos menores a $200.000 COP:</b> el valor del envío varía según tu zona/ciudad y te lo confirmamos por WhatsApp antes de despachar.</li>
               <li><b>Envíos nacionales:</b> los realizamos a través de Interrapidísimo y te enviamos tu número de guía para rastreo en tiempo real.</li>
             </ul></div>
           </div>
@@ -1928,7 +2213,7 @@ body.loaded header.nav {
 
         <div class="faq-item">
           <button class="faq-q" onclick="toggleFaq(this)">
-            <span class="faq-icon">⏱️</span>
+            <span class="faq-icon"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3.2 3.2"/></svg></span>
             <span class="faq-q-text">¿Cuánto tarda en llegar mi estuche personalizado?</span>
             <svg class="faq-chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4"><path d="M6 9l6 6 6-6"/></svg>
           </button>
@@ -1941,7 +2226,7 @@ body.loaded header.nav {
 
         <div class="faq-item">
           <button class="faq-q" onclick="toggleFaq(this)">
-            <span class="faq-icon">💳</span>
+            <span class="faq-icon"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7"><rect x="2.5" y="5.5" width="19" height="13" rx="2"/><path d="M2.5 10h19"/></svg></span>
             <span class="faq-q-text">¿Por qué pedimos un anticipo para estuches personalizados?</span>
             <svg class="faq-chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4"><path d="M6 9l6 6 6-6"/></svg>
           </button>
@@ -1954,7 +2239,7 @@ body.loaded header.nav {
 
         <div class="faq-item">
           <button class="faq-q" onclick="toggleFaq(this)">
-            <span class="faq-icon">🛡️</span>
+            <span class="faq-icon"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7"><path d="M12 3l7 3v6c0 4.5-3 7.5-7 9-4-1.5-7-4.5-7-9V6z"/></svg></span>
             <span class="faq-q-text">¿Cómo funciona la garantía y devoluciones?</span>
             <svg class="faq-chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4"><path d="M6 9l6 6 6-6"/></svg>
           </button>
@@ -1968,10 +2253,10 @@ body.loaded header.nav {
       </div>
 
       <div class="trust-mini" style="margin-top:28px;">
-        <div class="trust-mini-item"><span class="emoji">🚚</span>Envío gratis +$150.000</div>
-        <div class="trust-mini-item"><span class="emoji">⏱️</span>3–5 días hábiles</div>
-        <div class="trust-mini-item"><span class="emoji">🛡️</span>Garantía y ajustes</div>
-        <div class="trust-mini-item"><span class="emoji">🔒</span>Producción con anticipo</div>
+        <div class="trust-mini-item"><span class="emoji"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M2 6h11v9H2z"/><path d="M13 10h4l4 3.2V15h-8z"/><circle cx="6.5" cy="17.5" r="1.6"/><circle cx="16.5" cy="17.5" r="1.6"/></svg></span>Envío gratis +$200.000</div>
+        <div class="trust-mini-item"><span class="emoji"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3.2 3.2"/></svg></span>3–5 días hábiles</div>
+        <div class="trust-mini-item"><span class="emoji"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M12 3l7 3v6c0 4.5-3 7.5-7 9-4-1.5-7-4.5-7-9V6z"/></svg></span>Garantía y ajustes</div>
+        <div class="trust-mini-item"><span class="emoji"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><rect x="5" y="10.5" width="14" height="9" rx="2"/><path d="M8 10.5V7a4 4 0 0 1 8 0v3.5"/></svg></span>Producción con anticipo</div>
       </div>
     </div>
   </section>
@@ -2085,15 +2370,16 @@ body.loaded header.nav {
       </div>
       <div>
         <h4>Explorar</h4>
-        <a onclick="go('tech')" style="cursor:pointer;">Equipos</a>
-        <a onclick="go('accesorios')" style="cursor:pointer;">Accesorios</a>
+        <a onclick="go('celulares')" style="cursor:pointer;">Equipos</a>
+        <a onclick="go('relojes')" style="cursor:pointer;">Relojes</a>
+        <a onclick="go('audifonos')" style="cursor:pointer;">Audífonos</a>
+        <a onclick="go('techoficina')" style="cursor:pointer;">Accesorios</a>
         <a onclick="go('cases')" style="cursor:pointer;">Estuches personalizados</a>
       </div>
       <div>
         <h4>Ayuda</h4>
         <a onclick="go('faq')" style="cursor:pointer;">Políticas y Envíos</a>
         <a onclick="go('privacidad')" style="cursor:pointer;">Política de Privacidad</a>
-        <a href="https://wa.me/573122265799?text=Hola%2C%20quiero%20comprar%20usando%20mi%20cupo%20Sistecr%C3%A9dito" target="_blank" rel="noopener">Cupo Sistecrédito</a>
       </div>
     </div>
 
@@ -2118,7 +2404,7 @@ body.loaded header.nav {
 
     <div class="foot-bottom">
       <span>© 2026 Camand Mobile Bogotá · Tienda virtual</span>
-      <span>Hecho con ♥ en Bogotá · <a href="#" onclick="openCookieSettings();return false;" style="color:inherit;text-decoration:underline;">Configurar cookies</a></span>
+      <span>Hecho con cariño en Bogotá · <a href="#" onclick="openCookieSettings();return false;" style="color:inherit;text-decoration:underline;">Configurar cookies</a></span>
     </div>
   </div>
 </footer>
@@ -2140,21 +2426,49 @@ body.loaded header.nav {
 <div class="cart-overlay" id="cartOverlay" onclick="openCart(false)"></div>
 <aside class="cart-drawer" id="cartDrawer" aria-label="Carrito de compras">
   <div class="cart-head">
-    <h3>Tu carrito</h3>
+    <h3>Carrito<span class="cart-head-count" id="cartHeadCount"></span></h3>
     <button type="button" class="cart-close" onclick="openCart(false)" aria-label="Cerrar carrito">✕</button>
   </div>
+  <div class="cart-shipping-bar" id="cartShippingBar"></div>
   <div class="cart-body" id="cartBody"></div>
   <div class="cart-foot">
-    <div class="cart-pay-note">💳 Aceptamos <b>transferencia</b> y <b>Sistecrédito a cuotas</b>. Confirmamos el método de pago al finalizar por WhatsApp.</div>
-    <div class="cart-total-row"><span>Total</span><span id="cartTotal">$0</span></div>
-    <button type="button" class="cart-checkout" id="cartCheckoutBtn" onclick="checkoutWhatsApp()" disabled>Finalizar pedido por WhatsApp</button>
+    <div class="cart-extras">
+      <button type="button" class="cart-extra-toggle" onclick="toggleCartExtra('nota')">
+        <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7"><path d="M7 3h8l4 4v13a1 1 0 0 1-1 1H7a1 1 0 0 1-1-1V4a1 1 0 0 1 1-1Z"/><path d="M9 8h3M9 12h6M9 16h6"/></svg>
+        Notas para entrega
+      </button>
+      <span class="cart-extras-divider"></span>
+      <button type="button" class="cart-extra-toggle" onclick="toggleCartExtra('descuento')">
+        <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7"><path d="M20.5 12.5 12.9 20a2 2 0 0 1-2.8 0l-6-6a2 2 0 0 1 0-2.8L11.6 3.7a2 2 0 0 1 1.4-.6H19a1.5 1.5 0 0 1 1.5 1.5v6.4a2 2 0 0 1-.6 1.4Z"/><circle cx="15.4" cy="7.6" r="1.3" fill="currentColor" stroke="none"/></svg>
+        Descuento
+      </button>
+    </div>
+    <div class="cart-extra-panel" id="cartNotaPanel" hidden>
+      <textarea id="cartNotaInput" rows="2" placeholder="Ej: dejar con portería, timbre 302, llamar antes de llegar..." oninput="onCartNotaChange(this.value)"></textarea>
+    </div>
+    <div class="cart-extra-panel" id="cartDescuentoPanel" hidden>
+      <div class="cart-discount-row">
+        <input type="text" id="cartDescuentoInput" placeholder="Código de descuento">
+        <button type="button" onclick="applyDiscountCode()">Aplicar</button>
+      </div>
+      <p class="cart-discount-msg" id="cartDescuentoMsg"></p>
+    </div>
+    <div id="cartTotalsWrap"></div>
+    <div class="cart-pay-note"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" style="flex-shrink:0;"><rect x="2.5" y="5.5" width="19" height="13" rx="2"/><path d="M2.5 10h19"/></svg> Aceptamos <b>transferencia</b> y <b>pago a cuotas</b>. Confirmamos el método de pago al finalizar por WhatsApp.</div>
+    <div class="cart-checkout-row">
+      <button type="button" class="cart-checkout" id="cartCheckoutBtn" onclick="checkoutWhatsApp()" disabled>
+        <svg class="icon-inline" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><rect x="5" y="10.5" width="14" height="9" rx="2"/><path d="M8 10.5V7a4 4 0 0 1 8 0v3.5"/></svg>
+        Finalizar pedido
+      </button>
+      <button type="button" class="cart-continue-btn" onclick="openCart(false)">Seguir comprando</button>
+    </div>
   </div>
 </aside>
 
 <div class="cart-overlay fav-overlay" id="favOverlay" onclick="openFav(false)"></div>
 <aside class="cart-drawer fav-drawer" id="favDrawer" aria-label="Favoritos">
   <div class="cart-head">
-    <h3>❤️ Tus favoritos</h3>
+    <h3><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" style="vertical-align:-3px;margin-right:4px;"><path d="M12 20s-6.5-4-8.5-7.7C1.7 9 3 5.8 6 5.2c1.8-.35 3.4.5 4.4 1.9C11.4 5.7 13 4.85 14.8 5.2c3 .6 4.3 3.8 2.5 7.1C15.3 16 12 20 12 20Z"/></svg>Tus favoritos</h3>
     <button type="button" class="cart-close" onclick="openFav(false)" aria-label="Cerrar favoritos">✕</button>
   </div>
   <div class="cart-body" id="favBody"></div>
@@ -2186,7 +2500,7 @@ body.loaded header.nav {
 <!-- ======================= AVISO DE COOKIES / HABEAS DATA ======================= -->
 <div class="cookie-banner" id="cookieBanner" role="dialog" aria-live="polite" aria-label="Aviso de cookies y privacidad">
   <div class="cookie-banner-text">
-    🍪 <b>Usamos cookies propias y de análisis (Google Analytics)</b> para que el carrito funcione correctamente y para entender cómo se usa el sitio. Puedes aceptarlas, rechazarlas o elegir cuáles permitir. Más información en nuestra
+    <b>Usamos cookies propias y de análisis (Google Analytics)</b> para que el carrito funcione correctamente y para entender cómo se usa el sitio. Puedes aceptarlas, rechazarlas o elegir cuáles permitir. Más información en nuestra
     <a onclick="go('privacidad');return false;" href="#">Política de Privacidad y Tratamiento de Datos</a>.
   </div>
   <div class="cookie-banner-actions">
@@ -2220,6 +2534,28 @@ body.loaded header.nav {
 /* ===================== DATA ===================== */
 const SISTECREDITO_LOGO = "img/sistecredito-logo.png";
 const CAMAND_LOGO = "img/camand-logo.png";
+
+/* ===================== ÍCONOS SVG (reemplazan los emojis del diseño) ===================== */
+// Set pequeño de íconos vectoriales reutilizables — 16x16, trazo currentColor —
+// para no depender de emojis en el carrito ni en el resto de la interfaz.
+// Los emojis que SÍ se dejan intactos son los que vienen dentro de datos reales
+// del catálogo (colores/promos escritos en la Hoja de Google o en el respaldo
+// sin conexión), porque son contenido de producto, no diseño de la página.
+const ICON_TRUCK = `<svg class="icon-inline" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M2 6h11v9H2z"/><path d="M13 10h4l4 3.2V15h-8z"/><circle cx="6.5" cy="17.5" r="1.6"/><circle cx="16.5" cy="17.5" r="1.6"/></svg>`;
+const ICON_SHIELD = `<svg class="icon-inline" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M12 3l7 3v6c0 4.5-3 7.5-7 9-4-1.5-7-4.5-7-9V6z"/></svg>`;
+const ICON_LOCK = `<svg class="icon-inline" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><rect x="5" y="10.5" width="14" height="9" rx="2"/><path d="M8 10.5V7a4 4 0 0 1 8 0v3.5"/></svg>`;
+const ICON_GIFT = `<svg class="icon-inline" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><rect x="3" y="8.5" width="18" height="12" rx="1.5"/><path d="M3 12.5h18M12 8.5v12"/><path d="M12 8.5C9 8.5 7.5 7 7.5 5.3 7.5 4 8.5 3 9.8 3 11.6 3 12 5.5 12 8.5ZM12 8.5c3 0 4.5-1.5 4.5-3.2C16.5 4 15.5 3 14.2 3 12.4 3 12 5.5 12 8.5Z"/></svg>`;
+const ICON_CARD = `<svg class="icon-inline" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><rect x="2.5" y="5.5" width="19" height="13" rx="2"/><path d="M2.5 10h19"/></svg>`;
+const ICON_BOX = `<svg class="icon-inline" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M3 8l9-4.5L21 8v8l-9 4.5L3 16Z"/><path d="M3 8l9 4.5L21 8M12 12.5V21"/></svg>`;
+const ICON_ZAP = `<svg class="icon-inline" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M13 2 4 14h6l-1 8 9-12h-6z"/></svg>`;
+const ICON_CHECK = `<svg class="icon-inline" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><circle cx="12" cy="12" r="9.5"/><path d="M8 12.3l2.6 2.6L16.2 9"/></svg>`;
+const ICON_SPARKLE = `<svg class="icon-inline" viewBox="0 0 24 24" fill="currentColor" stroke="none"><path d="M12 2l1.8 5.6L19.5 9l-5.7 1.4L12 16l-1.8-5.6L4.5 9l5.7-1.4Z"/></svg>`;
+const ICON_PHOTO = `<svg class="icon-inline" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><rect x="3" y="4.5" width="18" height="15" rx="2"/><circle cx="9" cy="10" r="1.8"/><path d="M21 16l-5.5-5-4 4-2.5-2L3 18"/></svg>`;
+const ICON_HEART = `<svg class="icon-inline" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M12 20s-6.5-4-8.5-7.7C1.7 9 3 5.8 6 5.2c1.8-.35 3.4.5 4.4 1.9C11.4 5.7 13 4.85 14.8 5.2c3 .6 4.3 3.8 2.5 7.1C15.3 16 12 20 12 20Z"/></svg>`;
+// Misma versión del ícono de caja, pero con comillas simples escapadas (\')
+// para poder incrustarla dentro de un atributo onerror="...innerHTML='...'"
+// sin romper el HTML — se usa solo en los 3 marcadores de "sin foto" del carrito.
+const ICON_BOX_ESC = `<svg width=\\'18\\' height=\\'18\\' viewBox=\\'0 0 24 24\\' fill=\\'none\\' stroke=\\'currentColor\\' stroke-width=\\'1.6\\'><path d=\\'M3 8l9-4.5L21 8v8l-9 4.5L3 16Z\\'/><path d=\\'M3 8l9 4.5L21 8M12 12.5V21\\'/></svg>`;
 const IPHONE_CATALOG = [{n:"iPhone 13 ▫️128 GB • SIM física • Seminuevo • Equipo de exhibición 🎨 Rosa • Negro • Azul • Blanco",p:1198890,notes:"Pantalla Super Retina XDR 6,1”; chip A15 Bionic; doble cámara 12 MP; Face ID; 5G; MagSafe."},{n:"iPhone 13 Pro ▫️128 GB • SIM física • Seminuevo • Equipo de exhibición",p:1623990,notes:"Pantalla Super Retina XDR 6,1”; chip A15 Bionic; doble cámara 12 MP; Face ID; 5G; MagSafe."},{n:"iPhone 13 Pro ▫️256 GB • SIM física • Seminuevo • Equipo de exhibición",p:1791990,notes:"Pantalla Super Retina XDR 6,1”; chip A15 Bionic; doble cámara 12 MP; Face ID; 5G; MagSafe."},{n:"iPhone 13 Pro ▫️1 TB • SIM física • Seminuevo • Equipo de exhibición ⚪ Blanco",p:2015990,notes:"Pantalla Super Retina XDR 6,1”; chip A15 Bionic; doble cámara 12 MP; Face ID; 5G; MagSafe."},{n:"iPhone 13 Pro Max ▫️128 GB • Seminuevo • Equipo de exhibición",p:1903990,notes:"Pantalla Super Retina XDR 6,1”; chip A15 Bionic; doble cámara 12 MP; Face ID; 5G; MagSafe."},{n:"iPhone 13 Pro Max ▫️512 GB • SIM física • Seminuevo • Equipo de exhibición",p:2127990,notes:"Pantalla Super Retina XDR 6,1”; chip A15 Bionic; doble cámara 12 MP; Face ID; 5G; MagSafe."},{n:"iPhone 14 ▫️128 GB • eSIM • Seminuevo • Equipo de exhibición",p:1419990,notes:"Pantalla Super Retina XDR OLED 6,1”; chip A15 Bionic; doble cámara 12 MP; detección de accidentes; 5G; MagSafe."},{n:"iPhone 14 Pro ▫️128 GB • eSIM • Seminuevo • Equipo de exhibición ⚫ Negro • 💜 Morado",p:1860990,notes:"Pantalla Super Retina XDR OLED 6,1”; chip A15 Bionic; doble cámara 12 MP; detección de accidentes; 5G; MagSafe."},{n:"iPhone 14 Pro ▫️128 GB • eSIM • Seminuevo • Equipo de exhibición 🟡 Dorado • ⚪ Blanco",p:1860990,notes:"Pantalla Super Retina XDR OLED 6,1”; chip A15 Bionic; doble cámara 12 MP; detección de accidentes; 5G; MagSafe."},{n:"iPhone 14 Pro ▫️256 GB • eSIM • Seminuevo • Equipo de exhibición ⚫ Negro • 💜 Morado",p:1889990,notes:"Pantalla Super Retina XDR OLED 6,1”; chip A15 Bionic; doble cámara 12 MP; detección de accidentes; 5G; MagSafe."},{n:"iPhone 14 Pro ▫️512 GB • eSIM • Seminuevo • Equipo de exhibición",p:2127990,notes:"Pantalla Super Retina XDR OLED 6,1”; chip A15 Bionic; doble cámara 12 MP; detección de accidentes; 5G; MagSafe."},{n:"iPhone 14 Pro ▫️1 TB • eSIM • Seminuevo • Equipo de exhibición",p:2239990,notes:"Pantalla Super Retina XDR OLED 6,1”; chip A15 Bionic; doble cámara 12 MP; detección de accidentes; 5G; MagSafe."},{n:"iPhone 14 Pro Max ▫️128 GB • eSIM • Seminuevo • Equipo de exhibición ⚫ Negro • 💜 Morado",p:2105990,notes:"Pantalla Super Retina XDR OLED 6,1”; chip A15 Bionic; doble cámara 12 MP; detección de accidentes; 5G; MagSafe."},{n:"iPhone 14 Pro Max ▫️128 GB • eSIM • Seminuevo • Equipo de exhibición 🟡 Dorado • ⚪ Blanco",p:2148890,notes:"Pantalla Super Retina XDR OLED 6,1”; chip A15 Bionic; doble cámara 12 MP; detección de accidentes; 5G; MagSafe."},{n:"iPhone 14 Pro Max ▫️256 GB • eSIM • Seminuevo • Equipo de exhibición ⚫ Negro • 💜 Morado",p:2148890,notes:"Pantalla Super Retina XDR OLED 6,1”; chip A15 Bionic; doble cámara 12 MP; detección de accidentes; 5G; MagSafe."},{n:"iPhone 14 Pro Max ▫️256 GB • eSIM • Seminuevo • Equipo de exhibición 🟡 Dorado • ⚪ Blanco",p:2407990,notes:"Pantalla Super Retina XDR OLED 6,1”; chip A15 Bionic; doble cámara 12 MP; detección de accidentes; 5G; MagSafe."},{n:"iPhone 15 ▫️128 GB • eSIM • Seminuevo • Equipo de exhibición 🩷 Rosa",p:1781990,notes:"Pantalla Super Retina XDR OLED 6,1”; Dynamic Island; chip A16 Bionic; cámara principal 48 MP; USB-C; 5G."},{n:"iPhone 15 ▫️128 GB • eSIM • Seminuevo • Equipo de exhibición ⚫ Negro • 🔵 Azul",p:1762990,notes:"Pantalla Super Retina XDR OLED 6,1”; Dynamic Island; chip A16 Bionic; cámara principal 48 MP; USB-C; 5G."},{n:"iPhone 15 Pro ▫️128 GB • eSIM • Seminuevo • Equipo de exhibición",p:2248890,notes:"Pantalla Super Retina XDR OLED 6,1”; Dynamic Island; chip A16 Bionic; cámara principal 48 MP; USB-C; 5G."},{n:"iPhone 15 Pro ▫️256 GB • eSIM • Seminuevo • Equipo de exhibición",p:2248890,notes:"Pantalla Super Retina XDR OLED 6,1”; Dynamic Island; chip A16 Bionic; cámara principal 48 MP; USB-C; 5G."},{n:"iPhone 15 Pro ▫️512 GB • eSIM • Seminuevo • Equipo de exhibición ⚪ Titanio Natural",p:2575990,notes:"Pantalla Super Retina XDR OLED 6,1”; Dynamic Island; chip A16 Bionic; cámara principal 48 MP; USB-C; 5G."},{n:"iPhone 15 Pro Max ▫️256 GB • eSIM • Seminuevo • Equipo de exhibición",p:2693990,notes:"Pantalla Super Retina XDR OLED 6,1”; Dynamic Island; chip A16 Bionic; cámara principal 48 MP; USB-C; 5G."},{n:"iPhone 16 ▫️128 GB • eSIM • Seminuevo ⚫ Negro 🔋 Batería 89%",p:2301990,notes:"Pantalla Super Retina XDR OLED 6,1”; chip A18; cámara principal 48 MP; Control de Cámara; Apple Intelligence; USB-C; 5G."},{n:"iPhone 16 Plus ▫️128 GB • eSIM • Seminuevo • Equipo de exhibición 🔵 Azul 🔋 Batería 92%",p:2348890,notes:"Pantalla Super Retina XDR OLED 6,1”; chip A18; cámara principal 48 MP; Control de Cámara; Apple Intelligence; USB-C; 5G."},{n:"iPhone 16 Pro ▫️256 GB • eSIM • Seminuevo • Equipo de exhibición",p:2898890,notes:"Pantalla Super Retina XDR OLED 6,1”; chip A18; cámara principal 48 MP; Control de Cámara; Apple Intelligence; USB-C; 5G."},{n:"iPhone 16 Pro Max ▫️256 GB • eSIM • Seminuevo • Equipo de exhibición 🔋 Batería inferior al 100%",p:3330990,notes:"Pantalla Super Retina XDR OLED 6,1”; chip A18; cámara principal 48 MP; Control de Cámara; Apple Intelligence; USB-C; 5G."},{n:"iPhone 17 ▫️256 GB • SIM física • Nuevo",p:3281990,notes:"Pantalla Super Retina XDR; chip de nueva generación; cámara principal de alta resolución; USB-C; 5G; Apple Intelligence. Especificaciones exactas según versión."},{n:"iPhone 17 Pro Max ▫️256 GB • eSIM • Nuevo ⚪ Silver",p:4506990,notes:"Pantalla Super Retina XDR; chip de nueva generación; cámara principal de alta resolución; USB-C; 5G; Apple Intelligence. Especificaciones exactas según versión."}];
 
 const ANDROID_BRANDS_DATA = [
@@ -2244,6 +2580,15 @@ const ACCESORIO_BRANDS_DATA = [
   {name:"Wearables", models:[{n:"WATCH 5 ACTIVE",p:155990,notes:"Wearable inteligente. Datos técnicos detallados: por confirmar según referencia exacta."},{n:"Band 9 Active",p:110490,notes:"Wearable inteligente. Datos técnicos detallados: por confirmar según referencia exacta."},{n:"Band 10",p:207990,notes:"Wearable inteligente. Datos técnicos detallados: por confirmar según referencia exacta."},{n:"honor WATCH 2i",p:144290,notes:"Wearable inteligente. Datos técnicos detallados: por confirmar según referencia exacta."},{n:"watch fit 3",p:630490,notes:"Wearable inteligente. Datos técnicos detallados: por confirmar según referencia exacta."}]},
   {name:"Cómputo", models:[{n:"MOUSE LENOVO",p:70190,notes:"Mouse. Datos técnicos detallados: por confirmar según referencia exacta."}]},
 ];
+
+// Red de seguridad: productos cuya columna "categoria" en la Hoja de Google
+// no coincide con ninguna palabra clave conocida (celular/tablet/computador/
+// impresora/accesorio), o llegó vacía/mal escrita. En vez de perderse en
+// silencio, caen aquí — así ningún producto de la Hoja queda invisible o
+// sin vender. El nombre de "marca" que se les da es el texto exacto que
+// llegó en la columna categoria, para que sea fácil ver en el sitio qué hay
+// que corregir en la Hoja. Se llena solo desde aplicarFilasCatalogo().
+const OTROS_BRANDS_DATA = [];
 
 const CATALOG = {
   apple: {
@@ -2275,6 +2620,13 @@ const CATALOG = {
     label:"Accesorios", count:"Cargadores, audio, wearables", photo:null,
     icon:'<circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 3"/>',
     brands: ACCESORIO_BRANDS_DATA
+  },
+  // Solo aparece en "Tecnología" cuando de verdad hay algo sin categorizar
+  // (ver renderCatGrid) — así no se ve un tile vacío el resto del tiempo.
+  otros: {
+    label:"Otros productos", count:"Revisa la columna \"categoria\" de tu Hoja para ubicarlos bien", photo:null,
+    icon:'<circle cx="12" cy="12" r="9.5"/><path d="M12 7.5v5M12 16.2h.01"/>',
+    brands: OTROS_BRANDS_DATA
   }
 };
 
@@ -2330,9 +2682,9 @@ function productImageList(m){
 function productMediaHTML(m){
   if(m.img && /^https?:\/\//i.test(m.img)){
     const src = optimizeImageUrl(m.img);
-    return `<img class="img-fade" src="${src}" alt="" loading="lazy" decoding="async" onerror="this.parentElement.innerHTML='<span class=\\'pc-noimg\\'>📷</span>'">`;
+    return `<img class="img-fade" src="${src}" alt="" loading="lazy" decoding="async" onerror="this.parentElement.innerHTML='<span class=\\'pc-noimg\\'><svg width=\\'20\\' height=\\'20\\' viewBox=\\'0 0 24 24\\' fill=\\'none\\' stroke=\\'currentColor\\' stroke-width=\\'1.6\\'><rect x=\\'3\\' y=\\'4.5\\' width=\\'18\\' height=\\'15\\' rx=\\'2\\'/><circle cx=\\'9\\' cy=\\'10\\' r=\\'1.8\\'/><path d=\\'M21 16l-5.5-5-4 4-2.5-2L3 18\\'/></svg></span>'">`;
   }
-  return `<span class="pc-noimg">📷</span>`;
+  return `<span class="pc-noimg">${ICON_PHOTO}</span>`;
 }
 
 // Identificador estable del producto para el carrito — no depende de dónde
@@ -2462,6 +2814,12 @@ function onFilterChange(panelKey, field, value){
 function clearFilters(panelKey){
   FILTER_STATE[panelKey] = {};
   if(panelKey === 'accesorios'){ renderAccesoriosGrid(); return; }
+  if(panelKey === 'celulares'){ renderCelularesGrid(); return; }
+  if(panelKey === 'tablets'){ renderTabletsGrid(); return; }
+  if(panelKey === 'computadores'){ renderComputadoresGrid(); return; }
+  if(panelKey === 'relojes'){ renderRelojesGrid(); return; }
+  if(panelKey === 'audifonos'){ renderAudifonosGrid(); return; }
+  if(panelKey === 'techoficina'){ renderTechOficinaGrid(); return; }
   const panel = document.getElementById('panel-'+panelKey);
   if(panel) panel.innerHTML = buildCatPanelHTML(panelKey);
 }
@@ -2506,6 +2864,12 @@ let PROMO_BANNER_INDEX = 0;
 let PROMO_BANNER_TIMER = null;
 
 /* ===================== CARRITO DE COMPRAS ===================== */
+// Meta de "envío gratis" que se muestra arriba del carrito (estilo Apple:
+// "Te faltan $X para envío gratis"). Valor de partida razonable para una
+// tienda de celulares (casi cualquier compra de equipo ya la supera; sirve
+// sobre todo para animar a sumar accesorios). Andrés: cambia solo este
+// número si quieres otro monto — se recalcula solo en toda la página.
+const FREE_SHIPPING_THRESHOLD = 200000;
 const CART_KEY = 'camand_cart_v1';
 let CART = [];
 try {
@@ -2516,6 +2880,96 @@ try {
 function saveCart(){
   try { localStorage.setItem(CART_KEY, JSON.stringify(CART)); } catch(e){}
   renderCartUI();
+}
+
+// Nota de entrega y código de descuento del carrito — se guardan igual que
+// el carrito (en este navegador), para que no se pierdan si la persona
+// cierra la pestaña antes de finalizar el pedido.
+const CART_NOTE_KEY = 'camand_cart_nota_v1';
+const CART_DISCOUNT_KEY = 'camand_cart_descuento_v1';
+let CART_NOTE = '';
+try { CART_NOTE = localStorage.getItem(CART_NOTE_KEY) || ''; } catch(e){ CART_NOTE = ''; }
+let CART_DISCOUNT_CODE = null;
+try { CART_DISCOUNT_CODE = JSON.parse(localStorage.getItem(CART_DISCOUNT_KEY) || 'null'); } catch(e){ CART_DISCOUNT_CODE = null; }
+
+// Códigos de descuento activos — Andrés: para crear uno nuevo, agrega una
+// línea aquí con el código en mayúsculas y el % de descuento sobre el
+// subtotal del carrito. Ejemplo: "BIENVENIDA10": 10 (10% de descuento).
+// Bórralo de aquí el día que quieras darlo de baja.
+const DISCOUNT_CODES = {
+  // "BIENVENIDA10": 10,
+};
+
+function cartDiscountAmount(){
+  if(!CART_DISCOUNT_CODE || !DISCOUNT_CODES[CART_DISCOUNT_CODE.code]) return 0;
+  return Math.round(cartTotal() * (DISCOUNT_CODES[CART_DISCOUNT_CODE.code] / 100));
+}
+
+// Muestra/oculta "Notas para entrega" y "Descuento" como pestañas
+// exclusivas (abrir una cierra la otra) para que el pie del carrito se
+// mantenga compacto la mayor parte del tiempo.
+function toggleCartExtra(kind){
+  const panels = { nota: 'cartNotaPanel', descuento: 'cartDescuentoPanel' };
+  Object.entries(panels).forEach(([k, id]) => {
+    const el = document.getElementById(id);
+    if(!el) return;
+    el.hidden = (k === kind) ? !el.hidden : true;
+  });
+}
+
+function onCartNotaChange(value){
+  CART_NOTE = value;
+  try { localStorage.setItem(CART_NOTE_KEY, value); } catch(e){}
+}
+
+function applyDiscountCode(){
+  const input = document.getElementById('cartDescuentoInput');
+  const msgEl = document.getElementById('cartDescuentoMsg');
+  if(!input || !msgEl) return;
+  const code = input.value.trim().toUpperCase();
+  if(!code){
+    CART_DISCOUNT_CODE = null;
+    msgEl.textContent = '';
+    msgEl.className = 'cart-discount-msg';
+  } else if(!DISCOUNT_CODES[code]){
+    CART_DISCOUNT_CODE = null;
+    msgEl.textContent = 'Ese código no existe o ya venció.';
+    msgEl.className = 'cart-discount-msg is-error';
+  } else {
+    CART_DISCOUNT_CODE = { code };
+    msgEl.textContent = `Código aplicado: -${DISCOUNT_CODES[code]}% sobre el subtotal.`;
+    msgEl.className = 'cart-discount-msg is-ok';
+  }
+  try { localStorage.setItem(CART_DISCOUNT_KEY, JSON.stringify(CART_DISCOUNT_CODE)); } catch(e){}
+  renderCartUI();
+}
+
+// Deja el campo de nota y el de código de descuento con lo que la persona
+// ya había escrito antes (si cerró y volvió a abrir el sitio), y muestra
+// el mensaje de "código aplicado" si ya tenía uno activo.
+function initCartExtras(){
+  const notaInput = document.getElementById('cartNotaInput');
+  if(notaInput && CART_NOTE) notaInput.value = CART_NOTE;
+  const descInput = document.getElementById('cartDescuentoInput');
+  const msgEl = document.getElementById('cartDescuentoMsg');
+  if(CART_DISCOUNT_CODE && DISCOUNT_CODES[CART_DISCOUNT_CODE.code]){
+    if(descInput) descInput.value = CART_DISCOUNT_CODE.code;
+    if(msgEl){ msgEl.textContent = `Código aplicado: -${DISCOUNT_CODES[CART_DISCOUNT_CODE.code]}% sobre el subtotal.`; msgEl.className = 'cart-discount-msg is-ok'; }
+  }
+}
+
+// Separa un nombre de producto compuesto (ej. "iPhone 17 Pro Max ▫️256 GB •
+// eSIM • Nuevo ⚪ Silver") en un título limpio + su almacenamiento, solo
+// cuando el nombre sigue ese patrón (la mayoría de los Android, escritos
+// más simples como "A07 128/6", no lo tienen y se muestran tal cual — no
+// se inventa una variante que no se pueda leer con certeza).
+function splitCartItemVariant(n){
+  const idx = n.indexOf('▫️');
+  if(idx === -1) return { title: n, variant: '' };
+  const title = n.slice(0, idx).trim();
+  const resto = n.slice(idx + 2);
+  const m = resto.match(/(\d+\s?(?:GB|TB))/i);
+  return { title, variant: m ? m[1].replace(/\s+/g, ' ').toUpperCase() : '' };
 }
 
 function addToCart(id, n, p, img, cat, btn){
@@ -2619,7 +3073,7 @@ function renderFavUI(){
       const imgJs = (it.img || '').replace(/\\/g, '\\\\').replace(/'/g, "\\'");
       return `
       <div class="cart-item">
-        ${it.img ? `<img src="${it.img}" alt="" loading="lazy" onerror="this.outerHTML='<div class=\\'cart-item-noimg\\'>📦</div>'">` : `<div class="cart-item-noimg">📦</div>`}
+        ${it.img ? `<img src="${it.img}" alt="" loading="lazy" onerror="this.outerHTML='<div class=\\'cart-item-noimg\\'>${ICON_BOX_ESC}</div>'">` : `<div class="cart-item-noimg">${ICON_BOX}</div>`}
         <div class="cart-item-info">
           <span class="cart-item-name">${it.n}</span>
           <span class="cart-item-price">${formatCOP(it.p)}</span>
@@ -2629,7 +3083,7 @@ function renderFavUI(){
           </div>
         </div>
       </div>`;
-    }).join('') : `<p class="cart-empty">Aún no has guardado favoritos. Toca el ❤️ en cualquier producto.</p>`;
+    }).join('') : `<p class="cart-empty">Aún no has guardado favoritos. Toca el ícono de corazón en cualquier producto.</p>`;
   }
 }
 
@@ -2813,63 +3267,144 @@ function sugerenciasAccesorios(idsEnCarrito){
   return resultado;
 }
 
+// Estuche personalizado e Hidrogel no tienen precio fijo en el catálogo (se
+// cotizan según el equipo), así que en vez de "+ Agregar" llevan a diseñar
+// o a pedir cotización por WhatsApp — nunca se inventa un precio para ellos.
+function crossSellExtrasHTML(){
+  const waHidrogel = waLink('Hola, quiero instalar Hidrogel para mi equipo').replace(/'/g, "\\'");
+  return [
+    {
+      media: `<div class="cart-item-noimg">${ICON_SPARKLE}</div>`,
+      name: 'Estuche personalizado Acrygel', price: 'Diseño a tu gusto',
+      btnLabel: 'Diseñar →', btnAttr: `onclick="openCart(false);go('cases')"`
+    },
+    {
+      media: `<div class="cart-item-noimg">${ICON_SHIELD}</div>`,
+      name: 'Hidrogel con instalación', price: 'Cotiza tu equipo',
+      btnLabel: 'Cotizar →', btnAttr: `onclick="window.open('${waHidrogel}','_blank','noopener')"`
+    }
+  ];
+}
+
 function crossSellHTML(){
   if(!CART.length) return '';
   const hayDispositivo = CART.some(it => it.cat !== 'Accesorios');
   const hayAccesorio = CART.some(it => it.cat === 'Accesorios');
   if(!hayDispositivo || hayAccesorio) return '';
   const idsEnCarrito = new Set(CART.map(it => it.id));
-  const sugeridos = sugerenciasAccesorios(idsEnCarrito);
+  const reales = sugerenciasAccesorios(idsEnCarrito).map(({marca, m}) => {
+    const id = productId(marca, m);
+    const idJs = id.replace(/'/g, "\\'");
+    const nJs = m.n.replace(/\\/g, '\\\\').replace(/'/g, "\\'").replace(/"/g, '&quot;');
+    const imgJs = (m.img || '').replace(/\\/g, '\\\\').replace(/'/g, "\\'");
+    return {
+      media: m.img ? `<img src="${optimizeImageUrl(m.img)}" alt="" loading="lazy" onerror="this.outerHTML='<div class=\\'cart-item-noimg\\'>${ICON_BOX_ESC}</div>'">` : `<div class="cart-item-noimg">${ICON_BOX}</div>`,
+      name: m.n, price: formatCOP(m.p),
+      btnLabel: '+ Agregar', btnAttr: `onclick="addToCart('${idJs}','${nJs}',${m.p},'${imgJs}','Accesorios',this)"`
+    };
+  });
+  // Estuche e Hidrogel van primero (son el producto insignia del negocio),
+  // y el resto de espacio se llena con accesorios reales agregables.
+  const sugeridos = [...crossSellExtrasHTML(), ...reales].slice(0, 3);
   if(!sugeridos.length) return '';
   return `
     <div class="cart-crosssell">
-      <span class="cart-crosssell-title">✨ Completa tu compra</span>
-      ${sugeridos.map(({marca, m}) => {
-        const id = productId(marca, m);
-        const idJs = id.replace(/'/g, "\\'");
-        const nJs = m.n.replace(/\\/g, '\\\\').replace(/'/g, "\\'").replace(/"/g, '&quot;');
-        const imgJs = (m.img || '').replace(/\\/g, '\\\\').replace(/'/g, "\\'");
-        return `
+      <span class="cart-crosssell-title">Completa tu compra</span>
+      ${sugeridos.map(s => `
         <div class="cart-crosssell-item">
-          ${m.img ? `<img src="${optimizeImageUrl(m.img)}" alt="" loading="lazy" onerror="this.outerHTML='<div class=\\'cart-item-noimg\\'>📦</div>'">` : `<div class="cart-item-noimg">📦</div>`}
+          ${s.media}
           <div class="cart-crosssell-info">
-            <span>${m.n}</span>
-            <b>${formatCOP(m.p)}</b>
+            <span>${s.name}</span>
+            <b>${s.price}</b>
           </div>
-          <button type="button" onclick="addToCart('${idJs}','${nJs}',${m.p},'${imgJs}','Accesorios',this)">+ Agregar</button>
-        </div>`;
-      }).join('')}
+          <button type="button" ${s.btnAttr}>${s.btnLabel}</button>
+        </div>`).join('')}
     </div>`;
 }
 
 function renderCartUI(){
-  const badge = document.getElementById('cartBadge');
-  if(badge){
-    const n = cartCount();
-    badge.textContent = n;
-    badge.style.display = n > 0 ? 'flex' : 'none';
-  }
+  const n = cartCount();
+  ['cartBadge','cartBadgeNav'].forEach(id => {
+    const badge = document.getElementById(id);
+    if(badge){
+      badge.textContent = n;
+      badge.style.display = n > 0 ? 'flex' : 'none';
+    }
+  });
+  const countEl = document.getElementById('cartHeadCount');
+  if(countEl) countEl.textContent = n > 0 ? n : '';
   const body = document.getElementById('cartBody');
   if(body){
-    body.innerHTML = CART.length ? CART.map(it => `
+    body.innerHTML = CART.length ? CART.map(it => {
+      const { title, variant } = splitCartItemVariant(it.n);
+      return `
       <div class="cart-item">
-        ${it.img ? `<img src="${it.img}" alt="" loading="lazy" onerror="this.outerHTML='<div class=\\'cart-item-noimg\\'>📦</div>'">` : `<div class="cart-item-noimg">📦</div>`}
+        ${it.img ? `<img src="${it.img}" alt="" loading="lazy" onerror="this.outerHTML='<div class=\\'cart-item-noimg\\'>${ICON_BOX_ESC}</div>'">` : `<div class="cart-item-noimg">${ICON_BOX}</div>`}
         <div class="cart-item-info">
-          <span class="cart-item-name">${it.n}</span>
-          <span class="cart-item-price">${formatCOP(it.p)}</span>
-          <div class="cart-item-qty">
-            <button type="button" onclick="changeQty('${it.id}',-1)" aria-label="Restar">−</button>
-            <span>${it.qty}</span>
-            <button type="button" onclick="changeQty('${it.id}',1)" aria-label="Sumar">+</button>
-            <button type="button" class="cart-item-remove" onclick="removeFromCart('${it.id}')">Quitar</button>
-          </div>
+          <span class="cart-item-name">${title}</span>
+          ${variant ? `<span class="cart-item-variant">${variant}</span>` : ''}
         </div>
-      </div>`).join('') + crossSellHTML() : `<p class="cart-empty">Tu carrito está vacío. Agrega productos desde el catálogo.</p>`;
+        <div class="cart-item-right">
+          <span class="cart-item-price">${formatCOP(it.p)}</span>
+          <div class="cart-item-stepper">
+            <span class="cis-num">${it.qty}</span>
+            <div class="cis-arrows">
+              <button type="button" onclick="changeQty('${it.id}',1)" aria-label="Sumar"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><path d="M6 15l6-6 6 6"/></svg></button>
+              <button type="button" onclick="changeQty('${it.id}',-1)" aria-label="Restar"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><path d="M6 9l6 6 6-6"/></svg></button>
+            </div>
+          </div>
+          <button type="button" class="cart-item-remove" onclick="removeFromCart('${it.id}')">Quitar</button>
+        </div>
+      </div>`;
+    }).join('') + crossSellHTML() : `<p class="cart-empty">Tu carrito está vacío. Agrega productos desde el catálogo.</p>`;
   }
-  const totalEl = document.getElementById('cartTotal');
-  if(totalEl) totalEl.textContent = formatCOP(cartTotal());
+  const totalsWrap = document.getElementById('cartTotalsWrap');
+  if(totalsWrap){
+    const subtotal = cartTotal();
+    const descuento = cartDiscountAmount();
+    if(descuento > 0){
+      totalsWrap.innerHTML = `
+        <div class="cart-total-row is-sub"><span>Subtotal</span><span>${formatCOP(subtotal)} COP</span></div>
+        <div class="cart-total-row is-sub is-discount"><span>Descuento (${CART_DISCOUNT_CODE.code})</span><span>-${formatCOP(descuento)}</span></div>
+        <div class="cart-total-row"><span>Total</span><span>${formatCOP(subtotal - descuento)} COP</span></div>`;
+    } else {
+      totalsWrap.innerHTML = `<div class="cart-total-row"><span>Subtotal</span><span>${formatCOP(subtotal)} COP</span></div>`;
+    }
+  }
   const checkoutBtn = document.getElementById('cartCheckoutBtn');
   if(checkoutBtn) checkoutBtn.disabled = CART.length === 0;
+  renderShippingBar();
+}
+
+// Barra de meta de envío gratis, arriba del carrito. Si el carrito está
+// vacío no se muestra (no tiene sentido pedir que "agreguen más" a un
+// carrito vacío); en cuanto se supera la meta, cambia a un mensaje de
+// confirmación minimalista (sin ícono ni color, solo texto y la barra
+// totalmente negra).
+function renderShippingBar(){
+  const el = document.getElementById('cartShippingBar');
+  if(!el) return;
+  if(!CART.length){ el.innerHTML = ''; return; }
+  const total = cartTotal();
+  const falta = FREE_SHIPPING_THRESHOLD - total;
+  const pct = Math.min(100, Math.round((total / FREE_SHIPPING_THRESHOLD) * 100));
+  if(falta <= 0){
+    el.innerHTML = `
+      <p class="csb-msg is-done">Has conseguido envío gratis.</p>
+      <div class="csb-track"><div class="csb-fill is-done" style="width:100%;"></div></div>`;
+  } else {
+    el.innerHTML = `
+      <p class="csb-msg">Te faltan <b>${formatCOP(falta)}</b> para envío gratis</p>
+      <div class="csb-track"><div class="csb-fill" style="width:${pct}%;"></div></div>`;
+  }
+}
+
+// Mantiene el texto de la barra superior negra ("Envío gratis desde $X")
+// sincronizado con la misma constante que usa el carrito — cambiar
+// FREE_SHIPPING_THRESHOLD arriba actualiza los dos lugares a la vez.
+function applyTopBarMsg(){
+  const el = document.getElementById('topBarShippingMsg');
+  if(el) el.textContent = `Envío gratis desde ${formatCOP(FREE_SHIPPING_THRESHOLD)}`;
 }
 
 function openCart(open){
@@ -2884,14 +3419,33 @@ function openCart(open){
 function checkoutWhatsApp(){
   if(!CART.length) return;
   const lineas = CART.map(it => `• ${it.n} — ${formatCOP(it.p)} x ${it.qty} = ${formatCOP(it.p*it.qty)}`).join('\n');
-  const msg = `Hola Camand Mobile 👋, quiero hacer este pedido:\n\n${lineas}\n\nTotal: ${formatCOP(cartTotal())}\n\n¿Cómo puedo pagar? Me interesa transferencia o Sistecrédito a cuotas.`;
+  const subtotal = cartTotal();
+  const descuento = cartDiscountAmount();
+  let msg = `Hola Camand Mobile, quiero hacer este pedido:\n\n${lineas}`;
+  if(descuento > 0){
+    msg += `\n\nSubtotal: ${formatCOP(subtotal)}\nDescuento (${CART_DISCOUNT_CODE.code}): -${formatCOP(descuento)}\nTotal: ${formatCOP(subtotal - descuento)}`;
+  } else {
+    msg += `\n\nTotal: ${formatCOP(subtotal)}`;
+  }
+  if(CART_NOTE && CART_NOTE.trim()){
+    msg += `\n\nNota para la entrega: ${CART_NOTE.trim()}`;
+  }
+  msg += `\n\n¿Cómo puedo pagar? Me interesa transferencia o pago a cuotas.`;
   window.open(waLink(msg), '_blank', 'noopener');
 }
+
+// Categorías que ya viven en su propia página directa (Apple + Android →
+// Celulares; Tablets y Computadores tienen su propia vista; Accesorios
+// también) y por lo tanto no se repiten como tile dentro del hub general
+// de Tecnología (que ahora solo agrupa Impresoras y, si aplica, "Otros").
+const CATGRID_OCULTAS = ['accesorios', 'apple', 'android', 'tablets', 'computadores'];
 
 function renderCatGrid(){
   const grid = document.getElementById('catGrid');
   grid.innerHTML = '';
-  Object.entries(CATALOG).filter(([key]) => key !== 'accesorios').forEach(([key, cat]) => {
+  Object.entries(CATALOG)
+    .filter(([key, cat]) => !CATGRID_OCULTAS.includes(key) && (key !== 'otros' || flattenItems(cat).length))
+    .forEach(([key, cat]) => {
     const tile = document.createElement('button');
     tile.className = 'cat-tile' + (cat.photo ? ' has-photo' : '');
     tile.id = 'tile-'+key;
@@ -3005,7 +3559,7 @@ function performTechSearch(query){
   catGrid.style.display = 'none';
 
   const matches = [];
-  Object.entries(CATALOG).filter(([key]) => key !== 'accesorios').forEach(([key, cat]) => {
+  Object.entries(CATALOG).filter(([key]) => !CATGRID_OCULTAS.includes(key)).forEach(([key, cat]) => {
     cat.brands.forEach(b => {
       b.models.forEach(m => {
         if (m.n.toLowerCase().includes(q)) matches.push({ cat, brand: b.name, m });
@@ -3057,11 +3611,118 @@ function renderAccesoriosGrid(){
     </div>`;
 }
 
+/* ===================== SUBCATEGORÍAS DERIVADAS DE ACCESORIOS ===================== */
+// Relojes, Audífonos y Tech & Oficina no son datos nuevos: se arman "al vuelo"
+// filtrando por el nombre de marca/subcategoría que ya trae cada producto de
+// Accesorios (viene de la columna "subcategoria" de tu Hoja de Google:
+// "Wearables" = Relojes, "Audio" = Audífonos; el resto + Impresoras = Tech &
+// Oficina). No se duplica ningún dato ni se toca CATALOG — si mañana cambias
+// nombres o agregas subcategorías nuevas en la Hoja, ajusta las listas de
+// abajo (WEARABLE_BRAND_NAMES / AUDIO_BRAND_NAMES) para que sigan cayendo en
+// el tile correcto.
+const WEARABLE_BRAND_NAMES = ["Wearables", "Relojes", "Smartwatches"];
+const AUDIO_BRAND_NAMES = ["Audio", "Audífonos", "Audifonos"];
+
+function buildHub(label, brands){
+  return { label, brands };
+}
+
+function getExtraHub(key){
+  const accBrands = CATALOG.accesorios.brands;
+  const esWearable = b => WEARABLE_BRAND_NAMES.some(n => n.toLowerCase() === b.name.toLowerCase());
+  const esAudio = b => AUDIO_BRAND_NAMES.some(n => n.toLowerCase() === b.name.toLowerCase());
+  // "Celulares" unifica Apple (iPhone) y Android en una sola búsqueda/filtro,
+  // en vez de dos categorías separadas dentro del hub de Tecnología — así
+  // el ícono "Equipos" del inicio lleva directo a un solo lugar con todos
+  // los celulares, con la Marca (iPhone, Samsung, Xiaomi...) como filtro.
+  if(key === 'celulares'){
+    return buildHub('Celulares', [...CATALOG.apple.brands, ...CATALOG.android.brands]);
+  }
+  // Tablets y Computadores también tienen su propia página directa (antes
+  // solo se abrían como panel desplegable dentro de Tecnología, lo que
+  // confundía porque el botón parecía no llevar a ningún lado).
+  if(key === 'tablets'){
+    return buildHub(CATALOG.tablets.label, CATALOG.tablets.brands);
+  }
+  if(key === 'computadores'){
+    return buildHub(CATALOG.computadores.label, CATALOG.computadores.brands);
+  }
+  if(key === 'relojes'){
+    return buildHub('Relojes', accBrands.filter(esWearable));
+  }
+  if(key === 'audifonos'){
+    return buildHub('Audífonos', accBrands.filter(esAudio));
+  }
+  if(key === 'techoficina'){
+    const resto = accBrands.filter(b => !esWearable(b) && !esAudio(b));
+    return buildHub('Tech & Oficina', [...CATALOG.impresoras.brands, ...resto]);
+  }
+  return null;
+}
+
+// Igual que renderAccesoriosGrid(), pero para las 3 subcategorías derivadas
+// de arriba — reutiliza toda la infraestructura de filtros/carrito existente
+// (FILTER_STATE, PANEL_SOURCE, flattenItems, filteredItems, renderFilterBar).
+function renderExtraHubGrid(key, gridId){
+  const grid = document.getElementById(gridId);
+  if(!grid) return;
+  const hub = getExtraHub(key);
+  const items = flattenItems(hub);
+  PANEL_SOURCE[key] = { items, label: hub.label };
+  const filtered = filteredItems(key, items);
+  grid.innerHTML = `
+    <p class="note">Agrega al carrito o pregúntanos por WhatsApp.</p>
+    ${renderFilterBar(key, items)}
+    ${items.length ? `<p class="filters-count" id="count-${key}">${filtered.length} de ${items.length} producto${items.length===1?'':'s'}</p>` : ''}
+    <div class="product-grid" id="grid-${key}">
+      ${filtered.length ? filtered.map(({marca, m}) => productCardHTML(hub.label, marca, m)).join('') : `<p class="grid-empty">No hay productos disponibles por ahora en esta categoría.</p>`}
+    </div>`;
+}
+
+function renderRelojesGrid(){ renderExtraHubGrid('relojes', 'relojesGrid'); }
+function renderAudifonosGrid(){ renderExtraHubGrid('audifonos', 'audifonosGrid'); }
+function renderTechOficinaGrid(){ renderExtraHubGrid('techoficina', 'techOficinaGrid'); }
+function renderCelularesGrid(){ renderExtraHubGrid('celulares', 'celularesGrid'); }
+function renderTabletsGrid(){ renderExtraHubGrid('tablets', 'tabletsGrid'); }
+function renderComputadoresGrid(){ renderExtraHubGrid('computadores', 'computadoresGrid'); }
+
+// Buscador propio de "Celulares" (igual que performTechSearch, pero acotado
+// a Apple + Android) — al escribir, oculta la grilla con filtros y muestra
+// los resultados; al borrar, la vuelve a mostrar.
+function performCelularesSearch(query){
+  const q = query.trim().toLowerCase();
+  const panel = document.getElementById('celularesGrid');
+  const resultsEl = document.getElementById('celularesSearchResults');
+  if(!panel || !resultsEl) return;
+
+  if(q.length < 2){
+    resultsEl.innerHTML = '';
+    panel.style.display = '';
+    return;
+  }
+  panel.style.display = 'none';
+
+  const hub = getExtraHub('celulares');
+  const matches = [];
+  hub.brands.forEach(b => b.models.forEach(m => {
+    if(m.n.toLowerCase().includes(q)) matches.push({ marca: b.name, m });
+  }));
+
+  if(!matches.length){
+    resultsEl.innerHTML = `<p class="note">No encontramos modelos con "${query}" — prueba con otra palabra o pregúntanos por WhatsApp.</p>`;
+    return;
+  }
+  resultsEl.innerHTML = `<p class="note">${matches.length} resultado${matches.length===1?'':'s'} para "${query}"</p>
+    <div class="product-grid">
+      ${matches.map(({marca,m}) => productCardHTML(hub.label, marca, m)).join('')}
+    </div>`;
+}
+
 /* ===================== VIEW SWITCH ===================== */
 // Vistas con URL propia (hash) para poder compartir o recargar el link
 // directamente en esa sección. "product" se maneja aparte en openProduct(),
 // porque su hash lleva el id del producto (#/producto/<id>).
-const HASH_VIEWS = ['home','tech','accesorios','cases','faq','privacidad'];
+const HASH_VIEWS = ['home','tech','celulares','tablets','computadores','accesorios','relojes','audifonos','techoficina','cases','faq','privacidad'];
 
 function go(view, opts){
   opts = opts || {};
@@ -3134,13 +3795,21 @@ function applyCamandLogo(){
 function renderTodo(){
   renderCatGrid();
   renderAccesoriosGrid();
+  renderCelularesGrid();
+  renderTabletsGrid();
+  renderComputadoresGrid();
+  renderRelojesGrid();
+  renderAudifonosGrid();
+  renderTechOficinaGrid();
   renderHomeFeatured();
   renderPromoBanner();
   renderGallery();
   renderHeroShowcase();
   applySistecreditoLogos();
   applyCamandLogo();
+  applyTopBarMsg();
   renderCartUI();
+  initCartExtras();
   renderFavUI();
   // Si el catálogo se actualiza (llega la Hoja de Google) mientras alguien
   // tiene abierta la página de un producto, se refresca esa misma ficha
@@ -3278,8 +3947,8 @@ function productDetailHTML(catKey, catLabel, marca, m){
   const hasImgs = PDP_IMAGES.length > 0;
 
   const mainImgHTML = hasImgs
-    ? `<img id="pdpMainImg" class="img-fade" src="${optimizeImageUrl(PDP_IMAGES[0], 900)}" alt="${nJs}" onerror="this.parentElement.innerHTML='&lt;span class=\\'pc-noimg\\'&gt;📷&lt;/span&gt;'">`
-    : `<span class="pc-noimg">📷</span>`;
+    ? `<img id="pdpMainImg" class="img-fade" src="${optimizeImageUrl(PDP_IMAGES[0], 900)}" alt="${nJs}" onerror="this.parentElement.innerHTML='&lt;span class=\\'pc-noimg\\'&gt;&lt;svg width=\\'20\\' height=\\'20\\' viewBox=\\'0 0 24 24\\' fill=\\'none\\' stroke=\\'currentColor\\' stroke-width=\\'1.6\\'&gt;&lt;rect x=\\'3\\' y=\\'4.5\\' width=\\'18\\' height=\\'15\\' rx=\\'2\\'/&gt;&lt;circle cx=\\'9\\' cy=\\'10\\' r=\\'1.8\\'/&gt;&lt;path d=\\'M21 16l-5.5-5-4 4-2.5-2L3 18\\'/&gt;&lt;/svg&gt;&lt;/span&gt;'">`
+    : `<span class="pc-noimg">${ICON_PHOTO}</span>`;
 
   const thumbsHTML = PDP_IMAGES.length > 1
     ? `<div class="pdp-thumbs">${PDP_IMAGES.map((src, i) => `
@@ -3323,8 +3992,6 @@ function productDetailHTML(catKey, catLabel, marca, m){
           ${tieneDescuento ? `<span class="pdp-price-old">${formatCOP(m.pAntes)}</span><span class="pc-discount-badge">-${pctDescuento}%</span>` : ''}
           <span class="pdp-price">${formatCOP(m.p)}</span>
         </div>
-        <a class="pdp-sistecredito-link" href="${waLink('Hola, quiero saber cuánto me quedaría la cuota con Sistecrédito para: ' + m.n + ' (' + formatCOP(m.p) + ')')}" target="_blank" rel="noopener">💳 Consulta tu cuota con Sistecrédito →</a>
-
         <button type="button" class="pdp-share-btn" onclick="shareProduct('${idJs}','${nJs}',${m.p})">
           <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="18" cy="5" r="3"/><circle cx="6" cy="12" r="3"/><circle cx="18" cy="19" r="3"/><path d="M8.6 10.6l6.8-3.2M8.6 13.4l6.8 3.2"/></svg>
           Compartir este producto
@@ -3333,9 +4000,8 @@ function productDetailHTML(catKey, catLabel, marca, m){
         ${variantsHTML}
 
         <div class="pdp-section-block">
-          <h5><span class="emoji">💳</span>Métodos de pago aceptados</h5>
+          <h5>${ICON_CARD}Métodos de pago aceptados</h5>
           <div class="pdp-pay-grid">
-            <div class="pdp-pay-item is-sc"><span class="pdp-pay-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="5" width="18" height="14" rx="2"/><path d="M8 15l8-8M9 9h.01M15 15h.01"/></svg></span>Sistecrédito<br>a cuotas</div>
             <div class="pdp-pay-item"><span class="pdp-pay-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="5" width="18" height="14" rx="2"/><path d="M3 10h18"/></svg></span>PSE</div>
             <div class="pdp-pay-item"><span class="pdp-pay-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="4" y="3" width="16" height="18" rx="2"/><path d="M9 7h6M9 11h6M9 15h3"/></svg></span>Nequi</div>
             <div class="pdp-pay-item"><span class="pdp-pay-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="6" width="18" height="12" rx="2"/><circle cx="12" cy="12" r="2.4"/></svg></span>Bancolombia<br>(transferencia)</div>
@@ -3345,11 +4011,11 @@ function productDetailHTML(catKey, catLabel, marca, m){
         </div>
 
         <div class="pdp-section-block">
-          <h5><span class="emoji">🚚</span>Tiempos y métodos de envío</h5>
+          <h5>${ICON_TRUCK}Tiempos y métodos de envío</h5>
           <div class="pdp-ship-row">
-            <div class="pdp-ship-item"><span class="emoji">🏍️</span><div><b>Bogotá: 24–48 horas hábiles</b><span class="sub">Entrega local, coordinada por WhatsApp.</span></div></div>
-            <div class="pdp-ship-item"><span class="emoji">📦</span><div><b>Envíos nacionales: 2–4 días hábiles</b><span class="sub">Vía Interrapidísimo, con número de guía para rastreo.</span></div></div>
-            <div class="pdp-ship-item"><span class="emoji">🎁</span><div><b>Envío gratis en compras desde $150.000</b><span class="sub">Pedidos menores: costo según tu ciudad, confirmado por WhatsApp.</span></div></div>
+            <div class="pdp-ship-item"><span class="emoji">${ICON_ZAP}</span><div><b>Bogotá: 24–48 horas hábiles</b><span class="sub">Entrega local, coordinada por WhatsApp.</span></div></div>
+            <div class="pdp-ship-item"><span class="emoji">${ICON_BOX}</span><div><b>Envíos nacionales: 2–4 días hábiles</b><span class="sub">Vía Interrapidísimo, con número de guía para rastreo.</span></div></div>
+            <div class="pdp-ship-item"><span class="emoji">${ICON_GIFT}</span><div><b>Envío gratis en compras desde ${formatCOP(FREE_SHIPPING_THRESHOLD)}</b><span class="sub">Pedidos menores: costo según tu ciudad, confirmado por WhatsApp.</span></div></div>
           </div>
         </div>
 
@@ -3409,7 +4075,15 @@ function renderProductInto(id){
   }
 
   const { catKey, catLabel, marca, m } = found;
-  const hubView = catKey === 'accesorios' ? 'accesorios' : 'tech';
+  // A qué página vuelve el botón "Volver" según de dónde es el producto —
+  // cada categoría con página propia (Celulares, Tablets, Computadores,
+  // Accesorios) regresa a la suya; el resto (Impresoras, Otros) vuelve al
+  // hub general de Tecnología.
+  const HUB_VIEW_BY_CAT = {
+    accesorios: 'accesorios', apple: 'celulares', android: 'celulares',
+    tablets: 'tablets', computadores: 'computadores'
+  };
+  const hubView = HUB_VIEW_BY_CAT[catKey] || 'tech';
   document.title = m.n.split('•')[0].trim() + ' — Camand Mobile';
 
   crumbEl.innerHTML = `
@@ -3566,6 +4240,40 @@ if(legalDateEl){
 
 /* ===================== BANNER PUBLICITARIO ROTATIVO ===================== */
 
+// La columna IMAGEN de la pestaña de banners ahora también admite un VIDEO,
+// además de una foto — no hace falta ninguna columna nueva en la Hoja:
+// - Un link que termine en .mp4/.webm/.mov/.m4v (por ejemplo, subido a
+//   Cloudinary como video, no como imagen) se reproduce como video, en
+//   automático, sin sonido y en bucle.
+// - Un link de YouTube (youtube.com/watch?v=..., youtu.be/... o ya en
+//   formato /embed/...) se incrusta igual, en automático y sin sonido.
+// - Cualquier otro link (jpg, png, webp...) sigue funcionando como imagen,
+//   exactamente igual que antes.
+// Un link de Google Drive NO funciona bien aquí (Drive no deja reproducir
+// el video directo desde otra página) — para video, usa Cloudinary (igual
+// que las fotos) o sube el video a YouTube como "oculto" y pega ese link.
+function isVideoUrl(url){
+  return /\.(mp4|webm|mov|m4v)(\?|#|$)/i.test(String(url || ''));
+}
+function youtubeEmbedUrl(url){
+  const s = String(url || '');
+  const m = s.match(/(?:youtu\.be\/|youtube\.com\/(?:watch\?v=|embed\/|shorts\/))([\w-]{6,})/i);
+  const id = m ? m[1] : null;
+  if(!id) return null;
+  return `https://www.youtube.com/embed/${id}?autoplay=1&mute=1&loop=1&playlist=${id}&controls=0&modestbranding=1&playsinline=1`;
+}
+function promoBannerMediaHTML(b, i){
+  const altJs = (b.alt || 'Publicidad Camand Mobile').replace(/"/g, '&quot;');
+  const yt = youtubeEmbedUrl(b.img);
+  if(yt){
+    return `<iframe src="${yt}" title="${altJs}" allow="autoplay; encrypted-media" loading="${i === 0 ? 'eager' : 'lazy'}"></iframe>`;
+  }
+  if(isVideoUrl(b.img)){
+    return `<video src="${b.img}" autoplay muted loop playsinline preload="${i === 0 ? 'auto' : 'metadata'}" aria-label="${altJs}"></video>`;
+  }
+  return `<img class="img-fade" src="${optimizeImageUrl(b.img, 1600)}" alt="${altJs}" loading="${i === 0 ? 'eager' : 'lazy'}">`;
+}
+
 function renderPromoBanner(){
   const strip = document.getElementById('promoBannerStrip');
   const track = document.getElementById('promoBannerTrack');
@@ -3588,7 +4296,7 @@ function renderPromoBanner(){
     const altJs = (b.alt || 'Publicidad Camand Mobile').replace(/"/g, '&quot;');
     return `
     <a class="promo-banner-slide" href="javascript:void(0)" onclick="promoBannerActivate(${i})" aria-label="${altJs}">
-      <img class="img-fade" src="${optimizeImageUrl(b.img, 1600)}" alt="${altJs}" loading="${i === 0 ? 'eager' : 'lazy'}">
+      ${promoBannerMediaHTML(b, i)}
     </a>`;
   }).join('');
 
@@ -3602,19 +4310,46 @@ function renderPromoBanner(){
   strip.onmouseenter = () => { if(PROMO_BANNER_TIMER){ clearInterval(PROMO_BANNER_TIMER); PROMO_BANNER_TIMER = null; } };
   strip.onmouseleave = () => promoBannerAutoplayStart();
 
-  promoBannerUpdate();
+  // Si la persona desliza el carril a mano (o con el trackpad/touch), se
+  // detecta cuál tarjeta quedó más cerca del centro y se sincronizan los
+  // puntitos y el índice — así el autoplay retoma desde ahí, no desde 0.
+  let scrollSyncTimer = null;
+  track.onscroll = () => {
+    clearTimeout(scrollSyncTimer);
+    scrollSyncTimer = setTimeout(() => {
+      const slides = [...track.querySelectorAll('.promo-banner-slide')];
+      if(!slides.length) return;
+      const trackCenter = track.scrollLeft + track.clientWidth / 2;
+      let closest = 0, closestDist = Infinity;
+      slides.forEach((s, i) => {
+        const dist = Math.abs((s.offsetLeft + s.offsetWidth / 2) - trackCenter);
+        if(dist < closestDist){ closestDist = dist; closest = i; }
+      });
+      PROMO_BANNER_INDEX = closest;
+      promoBannerUpdate(false);
+    }, 120);
+  };
+
+  promoBannerUpdate(false);
   promoBannerAutoplayStart();
 }
 
-function promoBannerUpdate(){
+function promoBannerUpdate(shouldScroll){
+  const track = document.getElementById('promoBannerTrack');
   document.querySelectorAll('.promo-banner-slide').forEach((s, i) => s.classList.toggle('is-active', i === PROMO_BANNER_INDEX));
   document.querySelectorAll('.promo-banner-dot').forEach((d, i) => d.classList.toggle('is-active', i === PROMO_BANNER_INDEX));
+  if(shouldScroll && track){
+    const active = track.querySelectorAll('.promo-banner-slide')[PROMO_BANNER_INDEX];
+    if(active){
+      track.scrollTo({ left: active.offsetLeft - (track.clientWidth - active.offsetWidth) / 2, behavior: 'smooth' });
+    }
+  }
 }
 
 function promoBannerGoTo(i){
   if(!PROMO_BANNERS.length) return;
   PROMO_BANNER_INDEX = ((i % PROMO_BANNERS.length) + PROMO_BANNERS.length) % PROMO_BANNERS.length;
-  promoBannerUpdate();
+  promoBannerUpdate(true);
   promoBannerAutoplayStart();
 }
 function promoBannerNext(){ promoBannerGoTo(PROMO_BANNER_INDEX + 1); }
@@ -3650,6 +4385,8 @@ function promoBannerActivate(i){
    texto de abajo. Instrucciones completas en el documento del proyecto.
    Mientras esto quede como está (sin una URL real), el banner simplemente
    no se muestra — el sitio no se rompe por esto.
+   La columna IMAGEN admite tanto una foto como un VIDEO (ver
+   promoBannerMediaHTML más abajo) — no se necesita ninguna columna nueva.
    ============================================================ */
 const BANNERS_CSV_URL = "https://docs.google.com/spreadsheets/d/e/2PACX-1vTVTMXRy1SKrWUR512KBjjWJ0__CcP5g19K2QK7YfVSr5FBeH8PZHMxBAeCKdxQuawOgi-IjsfF4Pvp/pub?gid=639175825&single=true&output=csv";
 
@@ -3705,6 +4442,79 @@ async function cargarBannersDesdeSheet(){
 }
 
 /* ============================================================
+   FOTOS DE LOS 6 BOTONES PRINCIPALES (Equipos, Tablets, Relojes,
+   Audífonos, Computadores, Tech & Oficina) — DESDE GOOGLE SHEETS
+   Crea una pestaña nueva en tu Hoja (ej. "CATEGORIAS PAGINA") con dos
+   columnas: CATEGORIA e IMAGEN. En CATEGORIA escribe exactamente una de
+   estas palabras (tal cual, sin tildes ni mayúsculas necesarias):
+     equipos, tablets, relojes, audifonos, computadores, techoficina
+   y en IMAGEN pega el link de la foto (igual que en el catálogo de
+   productos: Cloudinary, ImgBB, etc.). Publica esa pestaña como CSV
+   (Archivo → Compartir → Publicar en la web → esa pestaña → formato CSV)
+   y pega aquí ese link, reemplazando el texto de abajo.
+   Mientras esto quede como está (sin una URL real), cada botón sigue
+   mostrando su ícono de siempre — el sitio no se rompe por esto. Si solo
+   agregas la foto de una categoría, las demás simplemente conservan su
+   ícono normal.
+   ============================================================ */
+const CATEGORIAS_CSV_URL = "https://docs.google.com/spreadsheets/d/e/2PACX-1vTVTMXRy1SKrWUR512KBjjWJ0__CcP5g19K2QK7YfVSr5FBeH8PZHMxBAeCKdxQuawOgi-IjsfF4Pvp/pub?gid=1772621644&single=true&output=csv";
+
+const CATEGORIAS_CACHE_KEY = 'camand_categorias_cache_v1';
+let CAT_HOME_PHOTOS = {};
+
+// Reemplaza el ícono de un botón principal por su foto, cuando hay una
+// configurada — si no hay foto para esa categoría, el ícono de siempre
+// se queda tal cual (nunca se rompe el diseño por una fila vacía).
+function applyCatHomePhotos(){
+  Object.entries(CAT_HOME_PHOTOS).forEach(([key, url]) => {
+    if(!url) return;
+    const el = document.getElementById('cchm-' + key);
+    if(!el) return;
+    el.innerHTML = `<img src="${optimizeImageUrl(url, 200)}" alt="">`;
+  });
+}
+
+async function cargarCategoriasDesdeSheet(){
+  if(!/^https?:\/\//i.test(CATEGORIAS_CSV_URL)) return;
+  try{
+    const cache = JSON.parse(sessionStorage.getItem(CATEGORIAS_CACHE_KEY) || 'null');
+    if(cache && cache.fotos && Object.keys(cache.fotos).length){
+      CAT_HOME_PHOTOS = cache.fotos;
+      applyCatHomePhotos();
+    }
+  }catch(e){}
+  try{
+    const res = await fetch(CATEGORIAS_CSV_URL, { cache: "no-store" });
+    if(!res.ok) throw new Error("HTTP " + res.status);
+    const texto = await res.text();
+    const filasCrudas = window.Papa.parse(texto, { header: true, skipEmptyLines: true }).data;
+
+    const filas = filasCrudas.map(filaCruda => {
+      const norm = {};
+      Object.keys(filaCruda).forEach(k => {
+        const clave = k.trim().toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g, "").replace(/\s+/g, "");
+        norm[clave] = filaCruda[k];
+      });
+      return norm;
+    });
+
+    const fotos = {};
+    filas.forEach(f => {
+      const key = String(f.categoria || "").trim().toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g, "");
+      const img = String(f.imagen || "").trim();
+      if(key && img) fotos[key] = img;
+    });
+
+    CAT_HOME_PHOTOS = fotos;
+    applyCatHomePhotos();
+    try{ sessionStorage.setItem(CATEGORIAS_CACHE_KEY, JSON.stringify({ fotos, ts: Date.now() })); }catch(e){}
+    console.log("[Camand] Fotos de categorías cargadas desde Google Sheets:", Object.keys(fotos).length);
+  }catch(err){
+    console.warn("[Camand] No se pudo leer las fotos de categorías desde Google Sheets, se muestran los íconos de siempre:", err.message);
+  }
+}
+
+/* ============================================================
    CATÁLOGO DESDE GOOGLE SHEETS
    Pega aquí la URL de "Publicar en la Web" (formato CSV) de tu
    pestaña "CATALOGO PAGINA". Si la fila tiene disponible=no, se
@@ -3724,17 +4534,52 @@ const SHEET_CACHE_KEY = 'camand_catalogo_cache_v1';
 // caché de esta pestaña) al catálogo en memoria y vuelve a pintar el sitio.
 function aplicarFilasCatalogo(filas, origen){
     const parsearPrecio = valor => {
-      const t = String(valor || "").trim();
+      let t = String(valor || "").trim();
       if(!t) return 0;
-      // Formato colombiano "$ 40.000,00": se toma lo que hay antes de la
-      // coma decimal y se descartan los puntos de miles y el símbolo $.
-      const antesDeComa = t.split(",")[0];
-      return Number(antesDeComa.replace(/[^\d]/g, "")) || 0;
+      // Se acepta cualquier formato de precio, sea cual sea la configuración
+      // regional de la Hoja de Google (Colombia usa coma decimal y punto de
+      // miles: "$ 40.000,00" — pero si la Hoja está en formato Estados
+      // Unidos, exporta al revés: "40,000.00", con coma de miles y punto
+      // decimal). Antes solo se reconocía el formato colombiano, así que un
+      // precio en formato "40,000.00" se cortaba en la primera coma y
+      // quedaba en "40" en vez de 40000 — o, peor, un precio simple como
+      // "40,000" (coma de miles sin decimales) también se cortaba mal.
+      // Ahora se detecta cuál de los dos símbolos (, o .) es el separador
+      // decimal según cuál aparece más a la derecha y cuántos dígitos le
+      // siguen, y el otro símbolo se trata como separador de miles.
+      t = t.replace(/[^\d.,]/g, "");
+      if(!t) return 0;
+      const posComa = t.lastIndexOf(",");
+      const posPunto = t.lastIndexOf(".");
+      let separadorDecimal = null;
+      if(posComa > -1 && posPunto > -1){
+        separadorDecimal = posComa > posPunto ? "," : ".";
+      } else if(posComa > -1 || posPunto > -1){
+        const sep = posComa > -1 ? "," : ".";
+        const pos = posComa > -1 ? posComa : posPunto;
+        const repetido = t.indexOf(sep) !== t.lastIndexOf(sep);
+        const digitosDespues = t.length - pos - 1;
+        // Un solo símbolo con 1 o 2 dígitos después ("40000,5" o "40000.99")
+        // es decimal; si se repite o le siguen 3 dígitos ("40.000" o
+        // "40,000") es separador de miles.
+        if(!repetido && digitosDespues > 0 && digitosDespues <= 2) separadorDecimal = sep;
+      }
+      const entero = separadorDecimal ? t.slice(0, t.lastIndexOf(separadorDecimal)) : t;
+      return Number(entero.replace(/[^\d]/g, "")) || 0;
     };
 
     const nuevoIphone = [], nuevoTablets = [], nuevoComputadores = [], nuevoImpresoras = [];
     const androidPorMarca = new Map();
     const accesoriosPorMarca = new Map();
+    // Fila cuya "categoria" no calzó con ninguna palabra clave conocida
+    // (vacía, mal escrita, o una categoría nueva que el sitio aún no
+    // reconoce) — en vez de perderla en silencio, se guarda aquí.
+    const otrosPorMarca = new Map();
+    // Filas con nombre pero sin precio válido (columna vacía, texto que no
+    // se pudo interpretar como número, etc.) — antes se descartaban en
+    // silencio; ahora quedan aquí para avisar por consola cuáles hay que
+    // revisar en la Hoja.
+    const sinPrecioValido = [];
 
     filas.forEach(fila => {
       const disponible = String(fila.disponible || "").trim().toLowerCase();
@@ -3744,13 +4589,20 @@ function aplicarFilasCatalogo(filas, origen){
       const almacenamiento = (fila.almacenamiento || "").trim();
       const condicion = (fila.condicion || "").trim();
       const precio = parsearPrecio(fila.precio);
-      if(!nombreBase || !precio) return;
+      if(!nombreBase) return;
+      if(!precio){ sinPrecioValido.push(nombreBase + (fila.precio ? ` (precio escrito: "${fila.precio}")` : ' (columna precio vacía)')); return; }
 
       // El nombre solo (ej. "Samsung Galaxy A07") se repite en varias filas
       // con distinto almacenamiento/precio, así que se le agrega para
       // diferenciarlas en el chip.
       const nombre = almacenamiento ? `${nombreBase} — ${almacenamiento}` : nombreBase;
-      const notes = [condicion, almacenamiento ? "Almacenamiento: " + almacenamiento : ""]
+      // ESPECIFICACIONES (opcional): texto libre de la Hoja (ej. "Pantalla
+      // 6.1 pulgadas; Chip A16 Bionic; Cámara 48 MP; Batería 3349 mAh") —
+      // se agrega a las notas y aparece como lista en la pestaña
+      // "Especificaciones técnicas" de la ficha de producto. Sepára cada
+      // punto con ";" o "." en la Hoja para que salgan como líneas separadas.
+      const especificaciones = (fila.especificaciones || fila.especificacion || fila.specs || "").trim();
+      const notes = [condicion, almacenamiento ? "Almacenamiento: " + almacenamiento : "", especificaciones]
         .filter(Boolean).join(". ");
 
       const categoria = (fila.categoria || "").trim().toLowerCase();
@@ -3798,6 +4650,14 @@ function aplicarFilasCatalogo(filas, origen){
         const marca = sub || "Otros";
         if(!accesoriosPorMarca.has(marca)) accesoriosPorMarca.set(marca, []);
         accesoriosPorMarca.get(marca).push(modelo);
+      } else {
+        // Ninguna palabra clave calzó (categoria vacía, mal escrita o nueva).
+        // Se guarda con el texto exacto que llegó en la columna categoria,
+        // para que sea fácil identificar en el sitio (tile "Otros productos"
+        // dentro de Tecnología) qué fila hay que corregir en la Hoja.
+        const marca = (fila.categoria || "").trim() || "Sin categoría";
+        if(!otrosPorMarca.has(marca)) otrosPorMarca.set(marca, []);
+        otrosPorMarca.get(marca).push(modelo);
       }
     });
 
@@ -3815,16 +4675,35 @@ function aplicarFilasCatalogo(filas, origen){
       ACCESORIO_BRANDS_DATA.length = 0;
       accesoriosPorMarca.forEach((models, name) => ACCESORIO_BRANDS_DATA.push({ name, models }));
     }
+    if(otrosPorMarca.size){
+      OTROS_BRANDS_DATA.length = 0;
+      otrosPorMarca.forEach((models, name) => OTROS_BRANDS_DATA.push({ name, models }));
+    }
 
     renderTodo();
     const totalAndroid = [...androidPorMarca.values()].reduce((a,b)=>a+b.length,0);
     const totalAccesorios = [...accesoriosPorMarca.values()].reduce((a,b)=>a+b.length,0);
+    const totalOtros = [...otrosPorMarca.values()].reduce((a,b)=>a+b.length,0);
     console.log(
       "[Camand] Catálogo actualizado desde " + origen + ":", filas.length, "filas leídas —",
       nuevoIphone.length, "iPhone,", totalAndroid, "Android,", nuevoTablets.length, "tablets,",
       nuevoComputadores.length, "computadores,", nuevoImpresoras.length, "impresoras,",
       totalAccesorios, "accesorios."
     );
+    if(totalOtros > 0){
+      console.warn(
+        "[Camand] " + totalOtros + " producto(s) con columna 'categoria' no reconocida — " +
+        "quedaron visibles en el tile 'Otros productos' dentro de Tecnología para que no se pierdan, " +
+        "pero conviene corregir la columna categoria en la Hoja:", [...otrosPorMarca.keys()]
+      );
+    }
+    if(sinPrecioValido.length){
+      console.warn(
+        "[Camand] " + sinPrecioValido.length + " producto(s) NO se cargaron por no tener un precio " +
+        "válido en la columna 'precio' de la Hoja (revisa que no esté vacía y que sea un número, " +
+        "por ejemplo 500000 o $500.000):", sinPrecioValido
+      );
+    }
 }
 
 async function cargarCatalogoDesdeSheet(){
@@ -3867,6 +4746,7 @@ async function cargarCatalogoDesdeSheet(){
 renderTodo();
 cargarCatalogoDesdeSheet();
 cargarBannersDesdeSheet();
+cargarCategoriasDesdeSheet();
 initCookieBanner();
 routeFromHash();
 
