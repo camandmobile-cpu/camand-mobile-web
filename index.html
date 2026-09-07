@@ -356,8 +356,11 @@ nav.links button.is-active::after{
 @media (max-width:560px){.instagram-cta-arrow{display:none;}}
 
 /* ---------- ANIMACIÓN AL HACER SCROLL ---------- */
-.reveal{opacity:0;transform:translateY(24px);transition:opacity .7s var(--ease),transform .7s var(--ease);}
-.reveal.in-view{opacity:1;transform:translateY(0);}
+/* "Encaje": el elemento entra un poco más chico y da un leve rebote al
+   acomodarse en su tamaño final (cubic-bezier con overshoot), en vez de
+   solo aparecer con un fundido plano. */
+.reveal{opacity:0;transform:translateY(24px) scale(.94);transition:opacity .6s var(--ease),transform .6s cubic-bezier(.34,1.56,.64,1);}
+.reveal.in-view{opacity:1;transform:translateY(0) scale(1);}
 @media (prefers-reduced-motion:reduce){
   .reveal{opacity:1;transform:none;transition:none;}
 }
@@ -706,7 +709,7 @@ footer.site{
 .product-card .pc-price{font-size:16px;font-weight:800;color:var(--tech-dark);}
 .product-card .pc-price-old{font-size:12px;color:var(--ink-faint);text-decoration:line-through;}
 .product-card .pc-discount-badge{
-  background:#e11d3c;color:#fff;font-size:10px;font-weight:800;padding:2px 6px;border-radius:6px;
+  background:#e11d3c;color:#fff;font-size:10px;font-weight:800;padding:2px 8px;border-radius:100px;
 }
 .product-card .pc-actions{display:flex;gap:6px;margin-top:8px;}
 .product-card .pc-add{
@@ -719,6 +722,7 @@ footer.site{
 .product-card .pc-ask{
   display:flex;align-items:center;justify-content:center;width:38px;flex-shrink:0;
   border:1px solid var(--line);border-radius:10px;color:var(--ink-soft);
+  transition:border-color .2s,color .2s;
 }
 .product-card .pc-ask:hover{border-color:var(--tech);color:var(--tech);}
 .product-card .pc-ask svg{width:16px;height:16px;}
@@ -1276,14 +1280,14 @@ footer.site{
 /* ===================== BANNER PUBLICITARIO ROTATIVO ===================== */
 .promo-banner-strip{
   position:relative;width:100%;overflow:hidden;background:var(--surface);
-  aspect-ratio:3.2/1;
+  aspect-ratio:3.2/1;border-radius:18px;
 }
 .promo-banner-track{position:relative;width:100%;height:100%;}
 /* Cada foto se superpone en el mismo lugar y se desvanece (crossfade) en vez
    de deslizarse — la que entra y la que sale se cruzan suavemente. */
 .promo-banner-slide{
   position:absolute;inset:0;cursor:pointer;display:block;
-  opacity:0;pointer-events:none;transition:opacity 1s ease;
+  opacity:0;pointer-events:none;transition:opacity .7s ease;
 }
 .promo-banner-slide.is-active{opacity:1;pointer-events:auto;}
 /* object-fit:contain (no "cover") — la foto siempre se ve completa, nunca
@@ -2349,7 +2353,7 @@ function productCardHTML(catLabel, marca, m){
   const tieneDescuento = m.pAntes && m.pAntes > m.p;
   const pctDescuento = tieneDescuento ? Math.round((1 - m.p / m.pAntes) * 100) : 0;
   return `
-    <div class="product-card">
+    <div class="product-card reveal">
       <div class="pc-media" onclick="openProduct('${idJs}')" style="cursor:pointer;" role="button" tabindex="0" onkeydown="if(event.key==='Enter')openProduct('${idJs}')" aria-label="Ver detalle de ${nJs}">
         ${m.cond ? `<span class="pc-badge${esNuevo ? ' nuevo' : ''}">${m.cond}</span>` : ''}
         ${m.tag ? `<span class="pc-tag">${m.tag}</span>` : ''}
@@ -3619,7 +3623,7 @@ function promoBannerPrev(){ promoBannerGoTo(PROMO_BANNER_INDEX - 1); }
 function promoBannerAutoplayStart(){
   if(PROMO_BANNER_TIMER){ clearInterval(PROMO_BANNER_TIMER); PROMO_BANNER_TIMER = null; }
   if(PROMO_BANNERS.length < 2) return;
-  PROMO_BANNER_TIMER = setInterval(() => promoBannerGoTo(PROMO_BANNER_INDEX + 1), 5000);
+  PROMO_BANNER_TIMER = setInterval(() => promoBannerGoTo(PROMO_BANNER_INDEX + 1), 3800);
 }
 
 // La columna LINK de la pestaña de banners admite dos formas:
