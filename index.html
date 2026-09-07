@@ -1443,29 +1443,33 @@ footer.site{
 .promo-banner-track::-webkit-scrollbar{display:none;}
 .promo-banner-slide{
   flex:0 0 78%;scroll-snap-align:center;cursor:pointer;display:block;
-  /* Misma proporción (32:15 = 1600x750) en TODOS los tamaños de pantalla —
-     así, si subes las fotos exactamente en esa medida, se ven completas
-     de borde a borde en computador y en celular, sin ningún relleno. */
-  aspect-ratio:32/15;border-radius:18px;overflow:hidden;background:#fff;
+  /* Misma proporción (2269x756) en TODOS los tamaños de pantalla — así, si
+     subes las fotos exactamente en esa medida, se ven completas de borde
+     a borde en computador y en celular, sin ningún relleno. */
+  aspect-ratio:2269/756;border-radius:var(--radius-md);overflow:hidden;background:#fff;
   opacity:.4;transform:scale(.82);filter:blur(1.5px);
   transition:opacity .6s var(--ease),transform .6s var(--ease),box-shadow .6s var(--ease),filter .6s var(--ease);
 }
 .promo-banner-slide.is-active{opacity:1;transform:scale(1);box-shadow:0 20px 40px -16px rgba(0,0,0,.22);filter:blur(0);}
-.promo-banner-slide iframe{width:100%;height:100%;border:0;display:block;pointer-events:none;}
+.promo-banner-slide iframe{width:100%;height:100%;border:0;display:block;pointer-events:none;border-radius:var(--radius-md);}
 /* La foto/video siempre se ve completa, sin recortarse (object-fit:contain
    en el elemento de encima, "promo-banner-fg"). Cuando la proporción de la
    foto no calza exacto con la caja del banner, en vez de dejar un
    recuadro blanco a los lados o arriba/abajo, se rellena con la misma
    foto ampliada y muy desenfocada de fondo — efecto "halo", como en
-   Spotify o Apple Music — así nunca se ve un borde en blanco. */
-.promo-banner-media-wrap{position:relative;width:100%;height:100%;overflow:hidden;background:#111;}
+   Spotify o Apple Music — así nunca se ve un borde en blanco. El radio de
+   esquina se repite también aquí (no solo en el "marco" exterior) porque
+   algunos navegadores de celular no recortan bien un <video> solo con el
+   overflow:hidden del contenedor — así las esquinas quedan redondas
+   siempre, en cualquier dispositivo. */
+.promo-banner-media-wrap{position:relative;width:100%;height:100%;overflow:hidden;background:#111;border-radius:var(--radius-md);}
 .promo-banner-bg,.promo-banner-bg-video{
   position:absolute;top:-8%;left:-8%;right:-8%;bottom:-8%;
   background-size:cover;background-position:center;
   filter:blur(26px) brightness(.72) saturate(1.15);
 }
 .promo-banner-bg-video{width:116%;height:116%;object-fit:cover;}
-.promo-banner-fg{position:relative;z-index:1;width:100%;height:100%;object-fit:contain;display:block;}
+.promo-banner-fg{position:relative;z-index:1;width:100%;height:100%;object-fit:contain;display:block;border-radius:var(--radius-md);}
 .promo-banner-nav{
   position:absolute;top:50%;transform:translateY(-50%);width:38px;height:38px;border-radius:50%;
   background:rgba(255,255,255,.9);border:none;font-size:20px;line-height:1;
