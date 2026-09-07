@@ -343,32 +343,38 @@ nav.links button.is-active::after{
 .portal .go svg{width:15px;height:15px;transition:transform .25s var(--ease);}
 .portal:hover .go svg{transform:translateX(4px);}
 
-/* ---------- CUADRÍCULA DE CATEGORÍAS ESTILO APPLE / ARTEZCOM ---------- */
+/* ---------- CUADRÍCULA DE CATEGORÍAS ESTILO APPLE / ARTEZCOM ----------
+   3 columnas (2 filas de 3, en vez de 6 columnas en una sola fila) para
+   que cada tarjeta sea el doble de ancha y la foto se vea mucho más
+   grande — como las tarjetas de iPhone/iPad/Watch/etc. de Artezcom. */
 .cat-grid-home{
-  display:grid;grid-template-columns:repeat(6,1fr);gap:14px;margin:40px 0 0;
+  display:grid;grid-template-columns:repeat(3,1fr);gap:18px;margin:40px 0 0;
 }
-@media (max-width:900px){ .cat-grid-home{grid-template-columns:repeat(3,1fr);} }
-@media (max-width:560px){ .cat-grid-home{grid-template-columns:repeat(2,1fr);gap:10px;} }
+@media (max-width:900px){ .cat-grid-home{grid-template-columns:repeat(2,1fr);gap:14px;} }
+@media (max-width:480px){ .cat-grid-home{gap:10px;} }
 .cat-card-home{
-  background:#F5F5F7;border:none;border-radius:20px;padding:26px 14px 20px;cursor:pointer;
+  background:#F5F5F7;border:none;border-radius:22px;padding:36px 20px 26px;cursor:pointer;
   display:flex;flex-direction:column;align-items:center;text-align:center;gap:0;
   transition:transform .3s var(--ease),box-shadow .3s var(--ease);
 }
 .cat-card-home:hover{transform:translateY(-4px);box-shadow:0 14px 30px -10px rgba(0,0,0,.14);}
 .cat-card-home:active{transform:translateY(-1px);}
 .cch-media{
-  width:100%;height:104px;display:flex;align-items:center;justify-content:center;margin-bottom:12px;
+  width:100%;height:190px;display:flex;align-items:center;justify-content:center;margin-bottom:18px;
 }
+@media (max-width:900px){ .cch-media{height:150px;} }
+@media (max-width:480px){ .cch-media{height:120px;margin-bottom:12px;} }
 /* Espacio para la foto de cada categoría (viene de Google Sheets, pestaña
    CATEGORIAS PAGINA). Se ve mejor si la foto tiene fondo transparente (PNG)
    en vez de un fondo blanco/gris propio — así no se nota un "recuadro"
    dentro de la tarjeta. Herramientas gratis para quitar el fondo de una
    foto ya tomada: remove.bg, o la opción "Fondo" al editar la imagen en
    Canva. */
-.cch-media img{max-width:100%;max-height:96px;object-fit:contain;}
-.cch-media svg{width:38px;height:38px;stroke:var(--ink);}
+.cch-media img{max-width:100%;max-height:100%;object-fit:contain;}
+.cch-media svg{width:64px;height:64px;stroke:var(--ink);}
+@media (max-width:480px){ .cch-media svg{width:46px;height:46px;} }
 .cat-card-home h4{
-  margin:0;font-size:13.5px;font-weight:600;color:var(--ink);letter-spacing:-0.01em;
+  margin:0;font-size:16px;font-weight:600;color:var(--ink);letter-spacing:-0.01em;
   display:flex;align-items:center;justify-content:center;gap:5px;
 }
 .cat-card-home h4 .arrow{display:inline-block;transition:transform .25s var(--ease);}
@@ -1442,11 +1448,21 @@ footer.site{
   transition:opacity .6s var(--ease),transform .6s var(--ease),box-shadow .6s var(--ease),filter .6s var(--ease);
 }
 .promo-banner-slide.is-active{opacity:1;transform:scale(1);box-shadow:0 20px 40px -16px rgba(0,0,0,.22);filter:blur(0);}
-/* object-fit:contain (no "cover") — la foto siempre se ve completa, nunca
-   se recorta ni en computador ni en celular; si sobra espacio se rellena
-   con el fondo, no cortando los bordes de la imagen. */
-.promo-banner-slide img,.promo-banner-slide video{width:100%;height:100%;object-fit:contain;display:block;}
 .promo-banner-slide iframe{width:100%;height:100%;border:0;display:block;pointer-events:none;}
+/* La foto/video siempre se ve completa, sin recortarse (object-fit:contain
+   en el elemento de encima, "promo-banner-fg"). Cuando la proporción de la
+   foto no calza exacto con la caja del banner, en vez de dejar un
+   recuadro blanco a los lados o arriba/abajo, se rellena con la misma
+   foto ampliada y muy desenfocada de fondo — efecto "halo", como en
+   Spotify o Apple Music — así nunca se ve un borde en blanco. */
+.promo-banner-media-wrap{position:relative;width:100%;height:100%;overflow:hidden;background:#111;}
+.promo-banner-bg,.promo-banner-bg-video{
+  position:absolute;top:-8%;left:-8%;right:-8%;bottom:-8%;
+  background-size:cover;background-position:center;
+  filter:blur(26px) brightness(.72) saturate(1.15);
+}
+.promo-banner-bg-video{width:116%;height:116%;object-fit:cover;}
+.promo-banner-fg{position:relative;z-index:1;width:100%;height:100%;object-fit:contain;display:block;}
 .promo-banner-nav{
   position:absolute;top:50%;transform:translateY(-50%);width:38px;height:38px;border-radius:50%;
   background:rgba(255,255,255,.9);border:none;font-size:20px;line-height:1;
@@ -4272,9 +4288,24 @@ function promoBannerMediaHTML(b, i){
     return `<iframe src="${yt}" title="${altJs}" allow="autoplay; encrypted-media" loading="${i === 0 ? 'eager' : 'lazy'}"></iframe>`;
   }
   if(isVideoUrl(b.img)){
-    return `<video src="${b.img}" autoplay muted loop playsinline preload="${i === 0 ? 'auto' : 'metadata'}" aria-label="${altJs}"></video>`;
+    // Mismo video de fondo, ampliado y desenfocado, para rellenar los bordes
+    // sin recortar el video principal (mismo truco que con las fotos, ver
+    // más abajo) — el navegador reutiliza la copia ya descargada, así que
+    // no duplica la descarga.
+    return `<div class="promo-banner-media-wrap">
+      <video class="promo-banner-bg-video" src="${b.img}" autoplay muted loop playsinline aria-hidden="true"></video>
+      <video class="promo-banner-fg" src="${b.img}" autoplay muted loop playsinline preload="${i === 0 ? 'auto' : 'metadata'}" aria-label="${altJs}"></video>
+    </div>`;
   }
-  return `<img class="img-fade" src="${optimizeImageUrl(b.img, 1600)}" alt="${altJs}" loading="${i === 0 ? 'eager' : 'lazy'}">`;
+  // Foto de fondo ampliada y desenfocada detrás de la foto real (que se ve
+  // completa, sin recortar) — así se rellenan los bordes con un efecto
+  // "halo" en vez de dejar un recuadro blanco cuando la foto no calza
+  // exacto con la proporción de la caja del banner.
+  const bgUrl = optimizeImageUrl(b.img, 500).replace(/"/g, '&quot;');
+  return `<div class="promo-banner-media-wrap">
+    <div class="promo-banner-bg" style="background-image:url('${bgUrl}')" aria-hidden="true"></div>
+    <img class="promo-banner-fg img-fade" src="${optimizeImageUrl(b.img, 1600)}" alt="${altJs}" loading="${i === 0 ? 'eager' : 'lazy'}">
+  </div>`;
 }
 
 function renderPromoBanner(){
