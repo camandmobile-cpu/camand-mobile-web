@@ -1443,7 +1443,10 @@ footer.site{
 .promo-banner-track::-webkit-scrollbar{display:none;}
 .promo-banner-slide{
   flex:0 0 78%;scroll-snap-align:center;cursor:pointer;display:block;
-  aspect-ratio:2.15/1;border-radius:18px;overflow:hidden;background:#fff;
+  /* Misma proporción (32:15 = 1600x750) en TODOS los tamaños de pantalla —
+     así, si subes las fotos exactamente en esa medida, se ven completas
+     de borde a borde en computador y en celular, sin ningún relleno. */
+  aspect-ratio:32/15;border-radius:18px;overflow:hidden;background:#fff;
   opacity:.4;transform:scale(.82);filter:blur(1.5px);
   transition:opacity .6s var(--ease),transform .6s var(--ease),box-shadow .6s var(--ease),filter .6s var(--ease);
 }
@@ -1481,7 +1484,7 @@ footer.site{
 @media (max-width:700px){
   .promo-banner-strip{padding:20px 0;border-radius:20px;}
   .promo-banner-track{padding:0 6%;}
-  .promo-banner-slide{flex-basis:88%;aspect-ratio:1.55/1;}
+  .promo-banner-slide{flex-basis:88%;}
   .promo-banner-nav{width:32px;height:32px;font-size:16px;}
 }
 
