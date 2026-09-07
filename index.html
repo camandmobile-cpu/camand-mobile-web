@@ -183,6 +183,41 @@ nav.links button.is-active::after{
   content:"";position:absolute;left:0;right:0;bottom:-8px;height:2px;
   background:var(--ink);border-radius:2px;
 }
+/* ---------- MEGA-MENÚ (Equipos, Accesorios) ---------- */
+.nav-item{position:relative;display:flex;}
+.mega-menu{
+  position:absolute;top:100%;left:50%;transform:translateX(-50%) translateY(6px);
+  min-width:460px;max-width:640px;
+  background:rgba(255,255,255,.92);backdrop-filter:blur(20px);-webkit-backdrop-filter:blur(20px);
+  border:1px solid var(--line);border-radius:var(--radius-lg);box-shadow:var(--shadow-2);
+  padding:26px;padding-top:34px;display:flex;gap:32px;
+  opacity:0;visibility:hidden;pointer-events:none;
+  transition:opacity .25s var(--ease),transform .25s var(--ease),visibility .25s;
+  z-index:50;
+}
+/* padding-top de sobra + posición pegada (top:100%, sin gap real) hacen de
+   "puente" invisible para que el mouse pueda bajar del botón al menú sin
+   que el :hover se corte a mitad de camino. */
+.nav-item:hover .mega-menu,.nav-item:focus-within .mega-menu{
+  opacity:1;visibility:visible;pointer-events:auto;transform:translateX(-50%) translateY(0);
+}
+.mega-menu-col{display:flex;flex-direction:column;gap:2px;min-width:150px;}
+.mega-menu-col-wide{flex:1;}
+.mega-menu-heading{font-size:11px;font-weight:700;letter-spacing:.06em;text-transform:uppercase;color:var(--ink-faint);margin:0 0 8px 8px;}
+.mega-menu-col button{
+  all:unset;cursor:pointer;font-size:14px;color:var(--ink);padding:7px 8px;border-radius:8px;
+}
+.mega-menu-col button:hover,.mega-menu-col button:focus-visible{background:var(--surface);color:var(--tech);}
+.mega-menu-grid{display:grid;grid-template-columns:1fr 1fr;gap:0 8px;}
+.mega-menu-viewall{margin-top:6px;font-weight:600 !important;color:var(--tech) !important;}
+.mega-menu-cta{
+  width:190px;flex-shrink:0;background:var(--surface);border-radius:var(--radius-md);padding:18px;
+  display:flex;flex-direction:column;gap:6px;
+}
+.mega-menu-cta-eyebrow{font-size:11px;font-weight:700;letter-spacing:.05em;text-transform:uppercase;color:var(--tech);}
+.mega-menu-cta p{margin:0;font-size:13px;color:var(--ink-soft);line-height:1.4;}
+.mega-menu-cta a{margin-top:2px;font-size:13.5px;font-weight:600;color:var(--ink);transition:color .15s;}
+.mega-menu-cta a:hover{color:var(--tech);}
 .nav-actions{display:flex;align-items:center;gap:8px;justify-self:end;}
 .nav-cta{
   display:flex;align-items:center;gap:8px;
@@ -687,6 +722,8 @@ footer.site{
 }
 .filters-clear:hover{color:var(--ink);border-color:var(--ink-faint);}
 .filters-count{font-size:12.5px;color:var(--ink-soft);margin:0 0 14px;}
+.filters-search-hint{font-size:13px;color:var(--ink-soft);margin:0 0 14px;}
+.filters-search-hint a{color:var(--tech);font-weight:600;}
 @media (max-width:560px){
   .filters-bar{padding:14px;}
   .filter-field{min-width:46%;flex:1 1 46%;}
@@ -1470,12 +1507,38 @@ footer.site{
 }
 .promo-banner-bg-video{width:116%;height:116%;object-fit:cover;}
 .promo-banner-fg{position:relative;z-index:1;width:100%;height:100%;object-fit:contain;display:block;border-radius:var(--radius-md);}
+/* ---------- Texto + CTA sobre el banner (solo cuando la fila de la Hoja
+   trae KICKER/TITULO/SUBTITULO/CTA — ver promoBannerSlideHTML) ---------- */
+.promo-banner-slide.has-content{cursor:default;}
+.promo-banner-copy{
+  position:absolute;z-index:2;left:0;right:0;bottom:0;padding:28px 32px 26px;
+  display:flex;flex-direction:column;align-items:flex-start;gap:6px;
+  background:linear-gradient(180deg,rgba(0,0,0,0) 0%,rgba(0,0,0,.55) 65%,rgba(0,0,0,.72) 100%);
+  border-radius:0 0 var(--radius-md) var(--radius-md);
+}
+.promo-banner-kicker{color:#fff;opacity:.85;font-size:12.5px;font-weight:700;letter-spacing:.06em;text-transform:uppercase;}
+.promo-banner-title{color:#fff;margin:0;font-size:26px;font-weight:700;letter-spacing:-0.01em;line-height:1.15;}
+.promo-banner-subtitle{color:#fff;opacity:.9;margin:0;font-size:14.5px;line-height:1.4;max-width:440px;}
+.promo-banner-cta{
+  margin-top:8px;display:inline-flex;align-items:center;gap:8px;background:#fff;color:var(--ink);
+  border:none;border-radius:100px;padding:10px 18px;font-size:14px;font-weight:600;cursor:pointer;
+  transition:transform .2s var(--ease),box-shadow .2s var(--ease);
+}
+.promo-banner-cta:hover{transform:translateY(-1px);box-shadow:0 8px 20px -8px rgba(0,0,0,.35);}
+.promo-banner-cta-arrow{width:15px;height:15px;flex-shrink:0;transition:transform .2s var(--ease);}
+.promo-banner-cta:hover .promo-banner-cta-arrow{transform:translateX(2px);}
 .promo-banner-nav{
   position:absolute;top:50%;transform:translateY(-50%);width:38px;height:38px;border-radius:50%;
   background:rgba(255,255,255,.9);border:none;font-size:20px;line-height:1;
   color:var(--ink);cursor:pointer;display:flex;align-items:center;justify-content:center;
-  z-index:2;transition:background .2s,transform .2s;box-shadow:0 4px 14px rgba(0,0,0,.08);
+  z-index:2;transition:background .2s,transform .2s,opacity .2s;box-shadow:0 4px 14px rgba(0,0,0,.08);
+  /* Baja presencia por defecto en escritorio: aparecen sobre todo al pasar
+     el mouse por el carrusel (o al enfocarlas con teclado), no siempre
+     encendidas — así no compiten visualmente con el banner. */
+  opacity:0;pointer-events:none;
 }
+.promo-banner-strip:hover .promo-banner-nav,
+.promo-banner-nav:focus-visible{opacity:1;pointer-events:auto;}
 .promo-banner-nav:hover{background:#fff;transform:translateY(-50%) scale(1.06);}
 .promo-banner-nav.prev{left:14px;}
 .promo-banner-nav.next{right:14px;}
@@ -1495,6 +1558,10 @@ footer.site{
      centrarse), el botón de flecha se montaba encima de la esquina
      redondeada de la foto y parecía que la imagen "se salía" del marco. */
   .promo-banner-nav{display:none !important;}
+  .promo-banner-copy{padding:18px 18px 16px;}
+  .promo-banner-title{font-size:19px;}
+  .promo-banner-subtitle{font-size:13px;max-width:none;}
+  .promo-banner-cta{padding:9px 15px;font-size:13px;}
 }
 
 /* ---------- SPLASH SCREEN ---------- */
@@ -1620,12 +1687,18 @@ body.loaded header.nav {
     </button>
     <nav class="links">
       <button data-view="home" class="is-active" onclick="go('home')">Home</button>
-      <button data-view="celulares" onclick="go('celulares')">Equipos</button>
+      <div class="nav-item">
+        <button data-view="celulares" onclick="go('celulares')">Equipos</button>
+        <div class="mega-menu" id="megaEquipos"></div>
+      </div>
       <button data-view="tablets" onclick="go('tablets')">Tablets</button>
       <button data-view="relojes" onclick="go('relojes')">Relojes</button>
       <button data-view="audifonos" onclick="go('audifonos')">Audífonos</button>
       <button data-view="computadores" onclick="go('computadores')">Computadores</button>
-      <button data-view="techoficina" onclick="go('techoficina')">Accesorios</button>
+      <div class="nav-item">
+        <button data-view="techoficina" onclick="go('techoficina')">Accesorios</button>
+        <div class="mega-menu" id="megaAccesorios"></div>
+      </div>
       <button data-view="faq" onclick="go('faq')">Soporte</button>
     </nav>
     <div class="nav-actions">
@@ -1683,8 +1756,8 @@ body.loaded header.nav {
 
   <!-- ======================= HOME ======================= -->
   <section class="view active" id="view-home">
-    <div class="promo-banner-strip reveal" id="promoBannerStrip" style="display:none;">
-      <div class="promo-banner-track" id="promoBannerTrack"></div>
+    <div class="promo-banner-strip reveal" id="promoBannerStrip" style="display:none;" role="region" aria-roledescription="carrusel" aria-label="Banner promocional" tabindex="0" onkeydown="promoBannerKeyNav(event)">
+      <div class="promo-banner-track" id="promoBannerTrack" aria-live="polite"></div>
       <button type="button" class="promo-banner-nav prev" onclick="promoBannerPrev()" aria-label="Banner anterior">‹</button>
       <button type="button" class="promo-banner-nav next" onclick="promoBannerNext()" aria-label="Banner siguiente">›</button>
       <div class="promo-banner-dots" id="promoBannerDots"></div>
@@ -2792,6 +2865,10 @@ function filteredItems(panelKey, items){
     if(f.bat && m.bat !== f.bat) return false;
     if(f.min && m.p < Number(f.min)) return false;
     if(f.max && m.p > Number(f.max)) return false;
+    // "q" (opcional): búsqueda de texto libre por nombre — la usa el
+    // mega-menú del header para llevar a un modelo específico (ej. "iPhone
+    // 15") sin necesitar un campo de filtro visible en la barra.
+    if(f.q && !String(m.n).toLowerCase().includes(f.q.toLowerCase())) return false;
     return true;
   });
 }
@@ -3724,8 +3801,10 @@ function renderExtraHubGrid(key, gridId){
   const items = flattenItems(hub);
   PANEL_SOURCE[key] = { items, label: hub.label };
   const filtered = filteredItems(key, items);
+  const q = (FILTER_STATE[key] || {}).q;
   grid.innerHTML = `
     <p class="note">Agrega al carrito o pregúntanos por WhatsApp.</p>
+    ${q ? `<p class="filters-search-hint">Mostrando resultados para “${q}” — <a href="javascript:void(0)" onclick="megaMenuGoFiltered('${key}','${(FILTER_STATE[key].marca||'').replace(/'/g,"\\'")}','')">quitar búsqueda</a></p>` : ''}
     ${renderFilterBar(key, items)}
     ${items.length ? `<p class="filters-count" id="count-${key}">${filtered.length} de ${items.length} producto${items.length===1?'':'s'}</p>` : ''}
     <div class="product-grid" id="grid-${key}">
@@ -3739,6 +3818,90 @@ function renderTechOficinaGrid(){ renderExtraHubGrid('techoficina', 'techOficina
 function renderCelularesGrid(){ renderExtraHubGrid('celulares', 'celularesGrid'); }
 function renderTabletsGrid(){ renderExtraHubGrid('tablets', 'tabletsGrid'); }
 function renderComputadoresGrid(){ renderExtraHubGrid('computadores', 'computadoresGrid'); }
+
+/* ===================== MEGA-MENÚ DEL HEADER (Equipos, Accesorios) ===================== */
+// Aplica un filtro (marca y/o texto libre "q") a la sección indicada y
+// navega ahí — lo usan los enlaces del mega-menú para llevar directo a,
+// por ejemplo, "Samsung" dentro de Celulares o "Cargadores" dentro de
+// Accesorios, sin tener que entrar primero y filtrar a mano.
+const MEGA_HUB_RENDERERS = {
+  celulares: renderCelularesGrid, techoficina: renderTechOficinaGrid,
+  tablets: renderTabletsGrid, computadores: renderComputadoresGrid,
+  relojes: renderRelojesGrid, audifonos: renderAudifonosGrid
+};
+function megaMenuGoFiltered(hubKey, marca, q){
+  FILTER_STATE[hubKey] = {};
+  if(marca) FILTER_STATE[hubKey].marca = marca;
+  if(q) FILTER_STATE[hubKey].q = q;
+  if(MEGA_HUB_RENDERERS[hubKey]) MEGA_HUB_RENDERERS[hubKey]();
+  go(hubKey);
+}
+
+function renderMegaEquipos(){
+  const el = document.getElementById('megaEquipos');
+  if(!el) return;
+  // Nombres base de iPhone (sin el sufijo "— 128 GB", etc.), sin repetir,
+  // hasta 6 — se arman solos a partir de tu catálogo real, no están escritos
+  // a mano, así que se actualizan solos cuando cambias el inventario.
+  const iphoneBase = [...new Set(IPHONE_CATALOG.map(m => m.n.replace(/\s*—\s*[^—]*$/, '')))].slice(0, 6);
+  const androidBrands = ANDROID_BRANDS_DATA.filter(b => b.models.length).map(b => b.name).slice(0, 6);
+
+  if(!iphoneBase.length && !androidBrands.length){ el.innerHTML = ''; return; }
+
+  const esc = s => String(s).replace(/'/g, "\\'");
+  el.innerHTML = `
+    ${iphoneBase.length ? `<div class="mega-menu-col">
+      <span class="mega-menu-heading">iPhone</span>
+      ${iphoneBase.map(n => `<button type="button" onclick="megaMenuGoFiltered('celulares','iPhone','${esc(n)}')">${n}</button>`).join('')}
+      <button type="button" class="mega-menu-viewall" onclick="megaMenuGoFiltered('celulares','iPhone','')">Ver todos →</button>
+    </div>` : ''}
+    ${androidBrands.length ? `<div class="mega-menu-col">
+      <span class="mega-menu-heading">Android</span>
+      ${androidBrands.map(b => `<button type="button" onclick="megaMenuGoFiltered('celulares','${esc(b)}','')">${b}</button>`).join('')}
+      <button type="button" class="mega-menu-viewall" onclick="megaMenuGoFiltered('celulares','','')">Ver todos →</button>
+    </div>` : ''}
+    <div class="mega-menu-cta">
+      <span class="mega-menu-cta-eyebrow">Sistecrédito</span>
+      <p>Llévate tu equipo hoy y paga a cuotas, sin tarjeta.</p>
+      <a href="${waLink('Hola, quiero saber cómo comprar con Sistecrédito')}" target="_blank" rel="noopener">Consultar por WhatsApp →</a>
+    </div>`;
+}
+
+function renderMegaAccesorios(){
+  const el = document.getElementById('megaAccesorios');
+  if(!el) return;
+  const hub = getExtraHub('techoficina');
+  const brands = [...hub.brands].filter(b => b.models.length).sort((a, b) => b.models.length - a.models.length).slice(0, 8);
+  if(!brands.length){ el.innerHTML = ''; return; }
+
+  const esc = s => String(s).replace(/'/g, "\\'");
+  el.innerHTML = `
+    <div class="mega-menu-col mega-menu-col-wide">
+      <span class="mega-menu-heading">Accesorios y Tech</span>
+      <div class="mega-menu-grid">
+        ${brands.map(b => `<button type="button" onclick="megaMenuGoFiltered('techoficina','${esc(b.name)}','')">${b.name}</button>`).join('')}
+      </div>
+      <button type="button" class="mega-menu-viewall" onclick="megaMenuGoFiltered('techoficina','','')">Ver todo Accesorios →</button>
+    </div>
+    <div class="mega-menu-cta">
+      <span class="mega-menu-cta-eyebrow">Estuches Acrygel</span>
+      <p>Funda personalizada con tu foto — grado militar y anti-amarilleo.</p>
+      <a href="javascript:void(0)" onclick="go('cases')">Diseñar mi estuche →</a>
+    </div>`;
+}
+
+function renderMegaMenus(){
+  renderMegaEquipos();
+  renderMegaAccesorios();
+}
+
+// Cierra el mega-menú abierto al presionar Escape (quita el foco de
+// cualquier elemento adentro, con lo que deja de cumplir :focus-within).
+document.addEventListener('keydown', e => {
+  if(e.key !== 'Escape') return;
+  const abierto = document.activeElement && document.activeElement.closest('.nav-item');
+  if(abierto) document.activeElement.blur();
+});
 
 // Buscador propio de "Celulares" (igual que performTechSearch, pero acotado
 // a Apple + Android) — al escribir, oculta la grilla con filtros y muestra
@@ -3856,6 +4019,7 @@ function renderTodo(){
   renderAudifonosGrid();
   renderTechOficinaGrid();
   renderHomeFeatured();
+  renderMegaMenus();
   renderPromoBanner();
   renderGallery();
   renderHeroShowcase();
@@ -4308,28 +4472,74 @@ function youtubeEmbedUrl(url){
 }
 function promoBannerMediaHTML(b, i){
   const altJs = (b.alt || 'Publicidad Camand Mobile').replace(/"/g, '&quot;');
-  const yt = youtubeEmbedUrl(b.img);
+  // Columna VIDEO (opcional, nueva): si viene llena, tiene prioridad y se
+  // trata siempre como video/YouTube, sin adivinar por la extensión. Si
+  // viene vacía, se sigue detectando automáticamente dentro de la columna
+  // IMAGEN (foto o video), exactamente igual que hasta ahora — así ningún
+  // banner que ya tengas configurado se ve afectado por este cambio.
+  const mediaUrl = b.vid || b.img;
+  const yt = youtubeEmbedUrl(mediaUrl);
   if(yt){
     return `<iframe src="${yt}" title="${altJs}" allow="autoplay; encrypted-media" loading="${i === 0 ? 'eager' : 'lazy'}"></iframe>`;
   }
-  if(isVideoUrl(b.img)){
+  if(b.vid || isVideoUrl(mediaUrl)){
     // Mismo video de fondo, ampliado y desenfocado, para rellenar los bordes
     // sin recortar el video principal (mismo truco que con las fotos, ver
     // más abajo) — el navegador reutiliza la copia ya descargada, así que
     // no duplica la descarga.
     return `<div class="promo-banner-media-wrap">
-      <video class="promo-banner-bg-video" src="${b.img}" autoplay muted loop playsinline aria-hidden="true"></video>
-      <video class="promo-banner-fg" src="${b.img}" autoplay muted loop playsinline preload="${i === 0 ? 'auto' : 'metadata'}" aria-label="${altJs}"></video>
+      <video class="promo-banner-bg-video" src="${mediaUrl}" autoplay muted loop playsinline aria-hidden="true"></video>
+      <video class="promo-banner-fg" src="${mediaUrl}" autoplay muted loop playsinline preload="${i === 0 ? 'auto' : 'metadata'}" aria-label="${altJs}"></video>
     </div>`;
   }
   // Foto de fondo ampliada y desenfocada detrás de la foto real (que se ve
   // completa, sin recortar) — así se rellenan los bordes con un efecto
   // "halo" en vez de dejar un recuadro blanco cuando la foto no calza
   // exacto con la proporción de la caja del banner.
-  const bgUrl = optimizeImageUrl(b.img, 500).replace(/"/g, '&quot;');
+  const bgUrl = optimizeImageUrl(mediaUrl, 500).replace(/"/g, '&quot;');
   return `<div class="promo-banner-media-wrap">
     <div class="promo-banner-bg" style="background-image:url('${bgUrl}')" aria-hidden="true"></div>
-    <img class="promo-banner-fg img-fade" src="${optimizeImageUrl(b.img, 1600)}" alt="${altJs}" loading="${i === 0 ? 'eager' : 'lazy'}">
+    <img class="promo-banner-fg img-fade" src="${optimizeImageUrl(mediaUrl, 1600)}" alt="${altJs}" loading="${i === 0 ? 'eager' : 'lazy'}">
+  </div>`;
+}
+
+// Arma el HTML de una diapositiva completa (media + texto + CTA si aplica).
+// Dos modos, según si la fila de la Hoja trae KICKER/TITULO/SUBTITULO/CTA:
+//
+// 1) SIN esos campos (como todos tus banners de hoy): se comporta EXACTO
+//    igual que siempre — toda la tarjeta es un enlace a LINK.
+// 2) CON al menos uno de esos campos: la imagen deja de ser el enlace: se
+//    muestra el texto encima y el ÚNICO elemento clicable es un botón CTA
+//    explícito, independiente de la imagen, que usa el mismo LINK — así
+//    cumple con no depender solo de la foto para poder actuar sobre el
+//    banner.
+function promoBannerSlideHTML(b, i){
+  const altJs = (b.alt || 'Publicidad Camand Mobile').replace(/"/g, '&quot;');
+  const media = promoBannerMediaHTML(b, i);
+  const tieneTexto = !!(b.kicker || b.titulo || b.subtitulo || b.cta);
+
+  if(!tieneTexto){
+    return `
+    <a class="promo-banner-slide" href="javascript:void(0)" onclick="promoBannerActivate(${i})" aria-label="${altJs}" role="group" aria-roledescription="diapositiva">
+      ${media}
+    </a>`;
+  }
+
+  const kickerJs = (b.kicker || '').replace(/</g, '&lt;');
+  const tituloJs = (b.titulo || '').replace(/</g, '&lt;');
+  const subtituloJs = (b.subtitulo || '').replace(/</g, '&lt;');
+  const ctaJs = (b.cta || 'Ver más').replace(/</g, '&lt;');
+  const tieneLink = !!(b.link || '').trim();
+
+  return `
+  <div class="promo-banner-slide has-content" role="group" aria-roledescription="diapositiva" aria-label="${altJs}">
+    ${media}
+    <div class="promo-banner-copy">
+      ${kickerJs ? `<span class="promo-banner-kicker">${kickerJs}</span>` : ''}
+      ${tituloJs ? `<h3 class="promo-banner-title">${tituloJs}</h3>` : ''}
+      ${subtituloJs ? `<p class="promo-banner-subtitle">${subtituloJs}</p>` : ''}
+      ${tieneLink ? `<button type="button" class="promo-banner-cta" onclick="promoBannerActivate(${i})">${ctaJs}<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" class="promo-banner-cta-arrow" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6"/></svg></button>` : ''}
+    </div>
   </div>`;
 }
 
@@ -4351,13 +4561,7 @@ function renderPromoBanner(){
   strip.style.display = '';
   PROMO_BANNER_INDEX = 0;
 
-  track.innerHTML = PROMO_BANNERS.map((b, i) => {
-    const altJs = (b.alt || 'Publicidad Camand Mobile').replace(/"/g, '&quot;');
-    return `
-    <a class="promo-banner-slide" href="javascript:void(0)" onclick="promoBannerActivate(${i})" aria-label="${altJs}">
-      ${promoBannerMediaHTML(b, i)}
-    </a>`;
-  }).join('');
+  track.innerHTML = PROMO_BANNERS.map((b, i) => promoBannerSlideHTML(b, i)).join('');
 
   const showNav = PROMO_BANNERS.length > 1;
   strip.querySelectorAll('.promo-banner-nav').forEach(btn => { btn.style.display = showNav ? '' : 'none'; });
@@ -4414,6 +4618,19 @@ function promoBannerGoTo(i){
 function promoBannerNext(){ promoBannerGoTo(PROMO_BANNER_INDEX + 1); }
 function promoBannerPrev(){ promoBannerGoTo(PROMO_BANNER_INDEX - 1); }
 
+// Navegación por teclado del carrusel: funciona con el foco en cualquier
+// parte de adentro (la región, una diapositiva enlazada, o el botón CTA),
+// porque el evento sube por burbujeo hasta el contenedor que tiene este
+// onkeydown. Flechas izquierda/derecha = anterior/siguiente, Inicio/Fin =
+// primera/última diapositiva.
+function promoBannerKeyNav(e){
+  if(!PROMO_BANNERS.length || PROMO_BANNERS.length < 2) return;
+  if(e.key === 'ArrowLeft'){ e.preventDefault(); promoBannerPrev(); }
+  else if(e.key === 'ArrowRight'){ e.preventDefault(); promoBannerNext(); }
+  else if(e.key === 'Home'){ e.preventDefault(); promoBannerGoTo(0); }
+  else if(e.key === 'End'){ e.preventDefault(); promoBannerGoTo(PROMO_BANNERS.length - 1); }
+}
+
 function promoBannerAutoplayStart(){
   if(PROMO_BANNER_TIMER){ clearInterval(PROMO_BANNER_TIMER); PROMO_BANNER_TIMER = null; }
   if(PROMO_BANNERS.length < 2) return;
@@ -4438,14 +4655,39 @@ function promoBannerActivate(i){
 /* ============================================================
    BANNER PUBLICITARIO — DESDE GOOGLE SHEETS
    Mismo mecanismo que el catálogo de productos: crea una pestaña nueva en
-   tu Hoja de Google (ej. "BANNERS PAGINA") con columnas IMAGEN, LINK, ALT,
-   ACTIVO y ORDEN, publícala como CSV (Archivo → Compartir → Publicar en la
-   web → esa pestaña → formato CSV) y pega aquí ese link, reemplazando el
-   texto de abajo. Instrucciones completas en el documento del proyecto.
-   Mientras esto quede como está (sin una URL real), el banner simplemente
+   tu Hoja de Google (ej. "BANNERS PAGINA") y publícala como CSV (Archivo →
+   Compartir → Publicar en la web → esa pestaña → formato CSV). Columnas:
+
+     IMAGEN     (obligatoria) URL directa de la foto o el video del banner.
+                Admite tanto foto como video/YouTube (ver más abajo) — si
+                usas la columna VIDEO de abajo, esta puede quedar como
+                imagen de referencia o dejarse igual, no importa.
+     VIDEO      (opcional) alternativa a poner un video dentro de IMAGEN:
+                pega aquí directamente el link del video (Cloudinary o
+                YouTube) y se usa ese, sin que el sitio tenga que adivinar
+                por la extensión del archivo.
+     KICKER     (opcional) texto pequeño arriba del título, ej. "NUEVO".
+     TITULO     (opcional) título grande del banner.
+     SUBTITULO  (opcional) texto secundario, una línea corta.
+     CTA        (opcional) texto del botón, ej. "Comprar ahora". Si dejas
+                TITULO/KICKER/SUBTITULO llenos pero CTA vacío, el botón
+                aparece igual con el texto "Ver más".
+     LINK       (opcional) a dónde lleva al hacer clic — puede ser una
+                palabra clave de sección interna (home, tech, accesorios,
+                cases, faq, privacidad) o una URL completa (WhatsApp,
+                Sistecrédito, producto, promoción externa, etc.).
+     ALT        (opcional) nombre corto del banner, solo accesibilidad.
+     ACTIVO     (opcional) si / no — vacío se toma como "si".
+     ORDEN      (opcional) número para el orden de aparición.
+
+   IMPORTANTE: si dejas KICKER, TITULO, SUBTITULO y CTA vacíos en una fila,
+   ese banner se comporta EXACTO igual que siempre (toda la imagen es el
+   enlace) — no necesitas cambiar nada en los banners que ya tienes.
+   Solo cuando llenes alguno de esos 4 campos, el banner pasa a mostrar
+   texto encima con un botón CTA propio (ver promoBannerSlideHTML).
+
+   Mientras BANNERS_CSV_URL quede sin una URL real, el banner simplemente
    no se muestra — el sitio no se rompe por esto.
-   La columna IMAGEN admite tanto una foto como un VIDEO (ver
-   promoBannerMediaHTML más abajo) — no se necesita ninguna columna nueva.
    ============================================================ */
 const BANNERS_CSV_URL = "https://docs.google.com/spreadsheets/d/e/2PACX-1vTVTMXRy1SKrWUR512KBjjWJ0__CcP5g19K2QK7YfVSr5FBeH8PZHMxBAeCKdxQuawOgi-IjsfF4Pvp/pub?gid=639175825&single=true&output=csv";
 
@@ -4481,11 +4723,16 @@ async function cargarBannersDesdeSheet(){
 
     const nuevos = filas
       .filter(f => String(f.activo || "si").trim().toLowerCase() !== "no")
-      .filter(f => (f.imagen || "").trim())
+      .filter(f => (f.imagen || "").trim() || (f.video || "").trim())
       .map(f => ({
         img: (f.imagen || "").trim(),
+        vid: (f.video || "").trim(),
         link: (f.link || "").trim(),
         alt: (f.alt || f.nombre || "").trim(),
+        kicker: (f.kicker || "").trim(),
+        titulo: (f.titulo || "").trim(),
+        subtitulo: (f.subtitulo || "").trim(),
+        cta: (f.cta || "").trim(),
         orden: Number(f.orden) || 0
       }))
       .sort((a, b) => a.orden - b.orden);
