@@ -120,17 +120,11 @@ header.top{
 }
 
 /* ---------- LAYOUT PRINCIPAL ---------- */
-/* El lienzo es el protagonista a pantalla completa; el panel de
-   herramientas ya no es una columna con borde recto que "parte" la
-   pantalla en dos — flota encima como una tarjeta elevada, con aire
-   alrededor, dejando ver el fondo del escenario asomando por los
-   bordes. .app pasa a llevar el color de fondo del escenario (antes
-   vivía en .stage-wrap) para que ese fondo se sienta continuo detrás
-   de la tarjeta flotante, no cortado en seco donde empezaba el panel. */
+/* En escritorio, el panel de herramientas flota como una tarjeta
+   elevada junto al lienzo (esquinas redondeadas en las 4 puntas, vidrio
+   esmerilado, sombra), en vez de ser una columna con borde recto — así
+   no se siente como una pantalla partida en dos bloques. */
 .app{display:flex;flex:1;min-height:0;background:var(--stage-bg);}
-@media (max-width:900px){
-  .app{position:relative;overflow:hidden;}
-}
 
 .panel{
   width:320px;flex-shrink:0;background:rgba(255,255,255,.92);
@@ -140,40 +134,23 @@ header.top{
   margin:20px;
   display:flex;flex-direction:column;overflow:hidden;
 }
-@media (max-width:900px){
-  /* Hoja inferior ("bottom sheet") estilo app nativa: flota sobre el
-     lienzo en vez de empujarlo hacia abajo, y ahora también "flota" de
-     verdad (con margen a los lados y esquinas redondeadas en las 4
-     puntas, no solo arriba) para que se sienta como una tarjeta y no
-     como un bloque pegado al borde. Empieza SIEMPRE recogida (solo se
-     ve la manija) para que el lienzo domine la pantalla de entrada — se
-     despliega recién cuando la persona la toca o arrastra. */
-  .panel{
-    position:fixed;left:10px;right:10px;bottom:calc(var(--bottombar-h) + 8px);width:auto;
-    margin:0;border-radius:24px;border:1px solid rgba(0,0,0,.06);
-    box-shadow:0 -10px 34px -8px rgba(0,0,0,.2);
-    max-height:50vh;height:auto;z-index:80;
-    transform:translateY(calc(100% - 52px));transition:transform .32s var(--ease);
-  }
-  .panel.is-collapsed{transform:translateY(calc(100% - 52px));}
-  .panel.is-expanded{transform:translateY(0);}
-  .panel.is-dragging{transition:none;}
-}
 
-/* Manija para arrastrar/tocar y recoger o desplegar la hoja — solo
-   existe visualmente en celular; en escritorio el panel es fijo. El
-   nombre del paso actual queda visible incluso recogida, como una
-   invitación clara a tocarla ("hay más aquí abajo"). */
-.sheet-handle{display:none;}
+/* En celular, en cambio, NO flota sobre el lienzo — se probó como hoja
+   deslizable y no era práctico para editar de verdad (había que
+   cerrarla para ver la foto, y volver a abrirla para seguir
+   ajustándola). Ahora es un layout apilado normal, sin superponerse:
+   el lienzo ocupa una franja fija arriba (siempre visible, sin taparse)
+   y el panel de herramientas va justo debajo, también siempre visible
+   — los dos a la vista al mismo tiempo, como en cualquier editor de
+   fotos real. Mantiene las esquinas redondeadas arriba para que se
+   siga viendo como una tarjeta y no como un bloque pegado sin más. */
 @media (max-width:900px){
-  .sheet-handle{
-    display:flex;flex-direction:column;align-items:center;justify-content:center;gap:3px;
-    height:52px;flex-shrink:0;position:relative;touch-action:none;cursor:grab;
+  .app{flex-direction:column;overflow:hidden;}
+  .panel{
+    width:auto;flex:1;min-height:0;margin:0;
+    border-radius:24px 24px 0 0;border:1px solid rgba(0,0,0,.06);border-bottom:none;
+    box-shadow:0 -8px 26px -14px rgba(0,0,0,.16);
   }
-  .sheet-handle .grip{width:36px;height:4px;border-radius:100px;background:var(--line);position:absolute;top:8px;left:50%;transform:translateX(-50%);}
-  .sheet-handle .label{display:flex;align-items:center;gap:6px;margin-top:6px;color:var(--ink);font-size:13px;font-weight:700;}
-  .sheet-handle .chev{width:13px;height:13px;color:var(--ink-soft);transition:transform .25s var(--ease);}
-  .panel.is-expanded .sheet-handle .chev{transform:rotate(180deg);}
 }
 
 .step-pane{display:none;flex:1;min-height:0;flex-direction:column;overflow:hidden;}
@@ -195,12 +172,10 @@ header.top{
   position:relative;overflow:auto;padding:28px;
 }
 @media (max-width:900px){
-  /* Ya no hace falta "order" ni min-height: al ser único hijo en flujo
-     dentro de .app (el panel es fixed), el lienzo llena todo el alto
-     disponible por sí solo — es el efecto de "lienzo a pantalla casi
-     completa" pedido. padding-bottom deja aire para que la manija de la
-     hoja colapsada no tape la parte baja del estuche. */
-  .stage-wrap{padding:16px 16px 66px;}
+  /* Franja fija de alto para el lienzo (no crece ni se encoge según el
+     contenido) — deja una porción generosa y predecible siempre
+     visible arriba, con el panel de herramientas ocupando el resto. */
+  .stage-wrap{flex:0 0 40vh;min-height:230px;padding:14px;}
 }
 .stage-shadow{filter:drop-shadow(0 20px 44px rgba(0,0,0,.16));}
 #editorCanvasWrap{position:relative;touch-action:none;}
@@ -698,13 +673,6 @@ body.preview-mode .progress-strip{display:none;}
 
   <!-- ============ PANEL IZQUIERDO — cambia según el paso ============ -->
   <aside class="panel" id="editorPanel">
-    <div class="sheet-handle" id="sheetHandle">
-      <div class="grip"></div>
-      <div class="label">
-        <span id="sheetHandleLabel">Imagen</span>
-        <svg class="chev" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4"><path d="M6 9l6 6 6-6"/></svg>
-      </div>
-    </div>
 
     <!-- ======= PASO 1 · IMAGEN ======= -->
     <div class="step-pane active" id="stepPane-image">
@@ -1271,7 +1239,6 @@ function applyTemplate(id){
   bringOverlayToFront();
   canvas.renderAll();
   showToast('Plantilla aplicada — súmale texto o una foto encima');
-  collapseSheet();
 }
 
 /* ---------------------------------------------------------------------
@@ -1679,11 +1646,6 @@ async function addImageFile(file){
     updateFiltersVisibility();
     if(typeof updateStageHint === 'function') updateStageHint();
     showToast('Imagen añadida — ajústala y confirma su posición');
-    // En celular, se recoge la hoja apenas se agrega la foto — así se ve
-    // de inmediato en el lienzo en vez de quedar escondida detrás del
-    // panel de herramientas (que es justo lo que generaba la sensación
-    // de "la subí y no apareció").
-    collapseSheet();
   }, { crossOrigin:'anonymous' });
 }
 
@@ -1705,7 +1667,6 @@ function addText(){
   canvas.setActiveObject(text);
   bringOverlayToFront();
   canvas.renderAll();
-  collapseSheet();
 }
 
 function addClipart(glyph){
@@ -1720,7 +1681,6 @@ function addClipart(glyph){
   canvas.setActiveObject(t);
   bringOverlayToFront();
   canvas.renderAll();
-  collapseSheet();
 }
 
 /* ---------------------------------------------------------------------
@@ -2332,23 +2292,15 @@ function goToStep(step){
   updateProgressUI();
   updateBottomBarForStep();
   updateStageHint();
-  updateSheetLabel();
   if(step === 'confirm') refreshConfirmStep();
-  // En escritorio, el panel de la izquierda se desplaza de forma
-  // independiente (.pane-scroll), así que basta con resetear su scroll.
-  // En celular, el panel es una hoja flotante que ahora SIEMPRE arranca
-  // recogida al cambiar de paso — así el lienzo queda visible de
-  // inmediato y la persona decide ella misma cuándo quiere ver las
-  // herramientas del paso nuevo tocando la manija (antes se abría sola
-  // y dejaba el lienzo reducido a una franja mínima arriba).
+  // El panel de herramientas se desplaza de forma independiente
+  // (.pane-scroll) tanto en escritorio como en celular — el lienzo, en
+  // su propia franja fija, no se ve afectado por ese scroll.
   const panel = document.querySelector('.panel');
   if(panel) panel.scrollTop = 0;
-  collapseSheet();
   const appEl = document.querySelector('.app');
   if(appEl) appEl.scrollTop = 0;
   window.scrollTo({ top:0, behavior:'instant' });
-  // El área visible del lienzo cambia según si la hoja está abierta o no
-  // (en celular) — se reajusta después de que termine la transición.
   setTimeout(() => { if(currentModel) fitCanvasToContainer(); }, 340);
 }
 
@@ -2369,84 +2321,6 @@ function goBackStep(){
   const idx = STEP_ORDER.indexOf(currentStep);
   if(idx <= 0) return;
   goToStep(STEP_ORDER[idx - 1]);
-}
-
-/* ---------------------------------------------------------------------
-   11) HOJA INFERIOR (bottom sheet) — solo tiene efecto visual en
-   celular (el CSS de escritorio ignora estas clases). Empieza siempre
-   recogida (solo la manija visible) para que el lienzo domine la
-   pantalla; se abre al tocarla/arrastrarla, y se vuelve a recoger sola
-   apenas agregas algo al diseño (foto, texto, clipart o plantilla), para
-   que veas de inmediato el resultado en el lienzo en vez de tener que
-   cerrarla tú mismo cada vez.
---------------------------------------------------------------------- */
-const STEP_LABELS = { image:'Imagen', edit:'Editar', extras:'Extras', confirm:'Confirmar' };
-function updateSheetLabel(){
-  const label = document.getElementById('sheetHandleLabel');
-  if(label) label.textContent = STEP_LABELS[currentStep] || '';
-}
-
-function collapseSheet(){
-  const panel = document.getElementById('editorPanel');
-  if(panel) panel.classList.remove('is-expanded');
-  setTimeout(() => { if(currentModel) fitCanvasToContainer(); }, 340);
-}
-function expandSheet(){
-  const panel = document.getElementById('editorPanel');
-  if(panel) panel.classList.add('is-expanded');
-  setTimeout(() => { if(currentModel) fitCanvasToContainer(); }, 340);
-}
-function toggleSheet(){
-  const panel = document.getElementById('editorPanel');
-  if(!panel) return;
-  if(panel.classList.contains('is-expanded')) collapseSheet(); else expandSheet();
-}
-
-// Arrastre táctil de la manija: sigue al dedo en tiempo real y, al
-// soltar, se queda abierta o recogida según hacia dónde iba el gesto
-// (no necesariamente hasta el final del recorrido — un arrastre corto
-// pero decidido ya alcanza para abrir o cerrar, como en una app nativa).
-function wireSheetDrag(){
-  const handle = document.getElementById('sheetHandle');
-  const panel = document.getElementById('editorPanel');
-  if(!handle || !panel) return;
-  const PEEK = 52;
-  let dragging = false, startY = 0, startWasExpanded = false, currentDelta = 0;
-  const maxOpenPx = () => panel.scrollHeight || panel.offsetHeight || 1;
-
-  handle.addEventListener('pointerdown', e => {
-    dragging = true;
-    startY = e.clientY;
-    startWasExpanded = panel.classList.contains('is-expanded');
-    panel.classList.add('is-dragging');
-    handle.setPointerCapture(e.pointerId);
-  });
-  handle.addEventListener('pointermove', e => {
-    if(!dragging) return;
-    currentDelta = e.clientY - startY;
-    // Desde abierta, arrastrar hacia abajo (delta positivo) la recoge;
-    // desde recogida, arrastrar hacia arriba (delta negativo) la abre.
-    const base = startWasExpanded ? 0 : (maxOpenPx() - PEEK);
-    const y = Math.max(0, Math.min(maxOpenPx() - PEEK, base + currentDelta));
-    panel.style.transform = `translateY(${y}px)`;
-  });
-  const stop = () => {
-    if(!dragging) return;
-    dragging = false;
-    panel.classList.remove('is-dragging');
-    panel.style.transform = '';
-    // Umbral generoso (40px) para que un pequeño temblor de la mano no
-    // cambie el estado sin querer.
-    if(startWasExpanded){
-      if(currentDelta > 40) collapseSheet(); else expandSheet();
-    } else {
-      if(currentDelta < -40) expandSheet(); else collapseSheet();
-    }
-    currentDelta = 0;
-  };
-  handle.addEventListener('pointerup', stop);
-  handle.addEventListener('pointercancel', stop);
-  handle.addEventListener('click', () => { if(Math.abs(currentDelta) < 4) toggleSheet(); });
 }
 
 /* ---------------------------------------------------------------------
@@ -2475,7 +2349,6 @@ function wireUI(){
   populateBrandSelect();
   populateModelSelect(currentBrandKey);
   renderTemplateGrid();
-  wireSheetDrag();
   wireTouchGestures();
 
   document.getElementById('brandSelect').addEventListener('change', e=>{
@@ -2631,12 +2504,6 @@ window.addEventListener('load', ()=>{
   setModel('apple', 'iphone16', {silent:true});
   updateFiltersVisibility();
   goToStep('image');
-  // Única excepción a "la hoja siempre arranca recogida": la primerísima
-  // vez que se carga la página, se muestra abierta para que sea obvio
-  // desde el primer segundo que hay que elegir el equipo — de ahí en
-  // adelante (cambios de paso, "empezar de nuevo", etc.) sí arranca
-  // recogida cada vez, como se explica en goToStep().
-  expandSheet();
   cargarAccesoriosSugeridos(); // en segundo plano — no bloquea el resto de la carga
 });
 </script>
