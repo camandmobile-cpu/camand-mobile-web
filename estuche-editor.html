@@ -120,47 +120,60 @@ header.top{
 }
 
 /* ---------- LAYOUT PRINCIPAL ---------- */
-.app{display:flex;flex:1;min-height:0;}
+/* El lienzo es el protagonista a pantalla completa; el panel de
+   herramientas ya no es una columna con borde recto que "parte" la
+   pantalla en dos — flota encima como una tarjeta elevada, con aire
+   alrededor, dejando ver el fondo del escenario asomando por los
+   bordes. .app pasa a llevar el color de fondo del escenario (antes
+   vivía en .stage-wrap) para que ese fondo se sienta continuo detrás
+   de la tarjeta flotante, no cortado en seco donde empezaba el panel. */
+.app{display:flex;flex:1;min-height:0;background:var(--stage-bg);}
 @media (max-width:900px){
-  /* El panel pasa a ser una "hoja" flotante (position:fixed) en vez de
-     apilarse en el flujo normal — por eso .app ya no necesita scroll
-     propio ni dirección de columna: el lienzo (.stage-wrap) queda como
-     único elemento en el flujo y ocupa todo el alto disponible. */
   .app{position:relative;overflow:hidden;}
 }
 
 .panel{
-  width:340px;flex-shrink:0;border-right:1px solid var(--line);background:#fff;
+  width:320px;flex-shrink:0;background:rgba(255,255,255,.92);
+  backdrop-filter:blur(22px);-webkit-backdrop-filter:blur(22px);
+  border:1px solid rgba(0,0,0,.06);border-radius:24px;
+  box-shadow:0 16px 44px -14px rgba(0,0,0,.18), 0 2px 10px rgba(0,0,0,.05);
+  margin:20px;
   display:flex;flex-direction:column;overflow:hidden;
 }
 @media (max-width:900px){
   /* Hoja inferior ("bottom sheet") estilo app nativa: flota sobre el
-     lienzo en vez de empujarlo hacia abajo. Por defecto se abre expandida
-     al entrar a un paso (mismo contenido que antes), pero ahora se puede
-     recoger arrastrando o tocando la manija, para dejar el lienzo a
-     pantalla casi completa sin perder el paso en el que estás. */
+     lienzo en vez de empujarlo hacia abajo, y ahora también "flota" de
+     verdad (con margen a los lados y esquinas redondeadas en las 4
+     puntas, no solo arriba) para que se sienta como una tarjeta y no
+     como un bloque pegado al borde. Empieza SIEMPRE recogida (solo se
+     ve la manija) para que el lienzo domine la pantalla de entrada — se
+     despliega recién cuando la persona la toca o arrastra. */
   .panel{
-    position:fixed;left:0;right:0;bottom:var(--bottombar-h);width:auto;
-    border-right:none;border-top:1px solid var(--line);
-    border-radius:20px 20px 0 0;box-shadow:0 -10px 30px -6px rgba(0,0,0,.16);
-    max-height:64vh;height:auto;z-index:80;
-    transform:translateY(0);transition:transform .32s var(--ease);
+    position:fixed;left:10px;right:10px;bottom:calc(var(--bottombar-h) + 8px);width:auto;
+    margin:0;border-radius:24px;border:1px solid rgba(0,0,0,.06);
+    box-shadow:0 -10px 34px -8px rgba(0,0,0,.2);
+    max-height:50vh;height:auto;z-index:80;
+    transform:translateY(calc(100% - 52px));transition:transform .32s var(--ease);
   }
-  .panel.is-collapsed{transform:translateY(calc(100% - 44px));}
+  .panel.is-collapsed{transform:translateY(calc(100% - 52px));}
+  .panel.is-expanded{transform:translateY(0);}
   .panel.is-dragging{transition:none;}
 }
 
 /* Manija para arrastrar/tocar y recoger o desplegar la hoja — solo
-   existe visualmente en celular; en escritorio el panel es fijo. */
+   existe visualmente en celular; en escritorio el panel es fijo. El
+   nombre del paso actual queda visible incluso recogida, como una
+   invitación clara a tocarla ("hay más aquí abajo"). */
 .sheet-handle{display:none;}
 @media (max-width:900px){
   .sheet-handle{
-    display:flex;align-items:center;justify-content:center;gap:8px;height:44px;flex-shrink:0;
-    touch-action:none;cursor:grab;color:var(--ink-soft);font-size:12px;font-weight:700;
+    display:flex;flex-direction:column;align-items:center;justify-content:center;gap:3px;
+    height:52px;flex-shrink:0;position:relative;touch-action:none;cursor:grab;
   }
   .sheet-handle .grip{width:36px;height:4px;border-radius:100px;background:var(--line);position:absolute;top:8px;left:50%;transform:translateX(-50%);}
-  .sheet-handle .chev{width:13px;height:13px;transition:transform .25s var(--ease);}
-  .panel.is-collapsed .sheet-handle .chev{transform:rotate(180deg);}
+  .sheet-handle .label{display:flex;align-items:center;gap:6px;margin-top:6px;color:var(--ink);font-size:13px;font-weight:700;}
+  .sheet-handle .chev{width:13px;height:13px;color:var(--ink-soft);transition:transform .25s var(--ease);}
+  .panel.is-expanded .sheet-handle .chev{transform:rotate(180deg);}
 }
 
 .step-pane{display:none;flex:1;min-height:0;flex-direction:column;overflow:hidden;}
@@ -175,9 +188,10 @@ header.top{
 
 /* center stage — permanece visible en todos los pasos, para que el
    avance por el asistente se sienta como pulir un mismo diseño y no
-   como formularios sueltos. */
+   como formularios sueltos. El color de fondo del escenario ahora vive
+   en .app (ver arriba), así que aquí queda transparente a propósito. */
 .stage-wrap{
-  flex:1;display:flex;align-items:center;justify-content:center;background:var(--stage-bg);
+  flex:1;display:flex;align-items:center;justify-content:center;background:transparent;
   position:relative;overflow:auto;padding:28px;
 }
 @media (max-width:900px){
@@ -186,7 +200,7 @@ header.top{
      disponible por sí solo — es el efecto de "lienzo a pantalla casi
      completa" pedido. padding-bottom deja aire para que la manija de la
      hoja colapsada no tape la parte baja del estuche. */
-  .stage-wrap{padding:16px 16px 60px;}
+  .stage-wrap{padding:16px 16px 66px;}
 }
 .stage-shadow{filter:drop-shadow(0 20px 44px rgba(0,0,0,.16));}
 #editorCanvasWrap{position:relative;touch-action:none;}
@@ -236,26 +250,36 @@ body.preview-mode .stage-hint{opacity:0;}
 .drop-zone b{color:var(--ink);font-weight:700;}
 .upload-note{font-size:11.5px;color:var(--ink-faint);margin-top:10px;line-height:1.5;}
 
-/* Galería de plantillas premium — fondos listos para empezar sin foto */
-.template-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:9px;}
+/* Galería de plantillas — muestras pequeñas y circulares en una fila
+   con scroll horizontal, como el selector de correa de Apple Watch, en
+   vez de fichas grandes con forma de estuche. El nombre aparece debajo
+   en texto chico; la seleccionada se marca con un aro alrededor, sin
+   ocupar más espacio que las demás. */
+.template-grid{display:flex;gap:14px;overflow-x:auto;padding:4px 2px 6px;scrollbar-width:none;}
+.template-grid::-webkit-scrollbar{display:none;}
 .template-swatch{
-  aspect-ratio:0.62;border-radius:13px;border:2px solid transparent;position:relative;overflow:hidden;
-  transition:transform .18s var(--ease),border-color .18s var(--ease);padding:0;
+  flex-shrink:0;width:50px;display:flex;flex-direction:column;align-items:center;gap:6px;
+  background:none;border:none;padding:2px;
 }
-.template-swatch:hover{transform:translateY(-2px);}
-.template-swatch.is-selected{border-color:var(--ink);}
-.template-swatch.is-selected::after{
-  content:"✓";position:absolute;top:5px;right:5px;width:17px;height:17px;border-radius:50%;
-  background:var(--ink);color:#fff;font-size:10px;font-weight:800;display:flex;align-items:center;justify-content:center;
+.template-swatch .ts-dot{
+  width:44px;height:44px;border-radius:50%;box-shadow:inset 0 0 0 1px rgba(0,0,0,.08);
+  transition:transform .16s var(--ease),box-shadow .16s var(--ease);
 }
+.template-swatch:hover .ts-dot{transform:translateY(-2px);}
+.template-swatch.is-selected .ts-dot{box-shadow:0 0 0 2px #fff, 0 0 0 3.5px var(--ink);}
 .template-swatch .ts-label{
-  position:absolute;left:0;right:0;bottom:0;padding:5px 6px 6px;font-size:9.5px;font-weight:700;color:#fff;
-  text-shadow:0 1px 3px rgba(0,0,0,.5);text-align:left;
+  font-size:10px;font-weight:600;color:var(--ink-soft);text-align:center;line-height:1.2;
+  max-width:52px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;
 }
-.template-none{
-  display:flex;align-items:center;justify-content:center;background:var(--surface);color:var(--ink-faint);font-size:10px;
-  font-weight:700;text-align:center;line-height:1.3;
+.template-swatch.is-selected .ts-label{color:var(--ink);font-weight:700;}
+.template-none .ts-dot{
+  background:var(--surface);display:flex;align-items:center;justify-content:center;position:relative;
 }
+.template-none .ts-dot::before,.template-none .ts-dot::after{
+  content:"";position:absolute;width:20px;height:1.5px;background:var(--ink-faint);
+}
+.template-none .ts-dot::before{transform:rotate(45deg);}
+.template-none .ts-dot::after{transform:rotate(-45deg);}
 
 /* Ajustes / filtros de la foto — solo aparece si ya hay una foto */
 .filters-box{display:none;}
@@ -542,27 +566,31 @@ body.preview-mode .progress-strip{display:none;}
 .cart-total-row span:last-child{font-size:20px;font-weight:800;color:var(--ink);}
 #cartTotalsWrap{margin-top:10px;margin-bottom:8px;}
 .cart-checkout-row{display:flex;gap:10px;margin-top:14px;}
-/* OJO — antes estos dos botones usaban border-radius:100px (una
-   "píldora" perfecta). Eso se ve bien SOLO si el texto entra en una
-   sola línea; en el carrito (que es angosto, min(400px,92vw) sin
-   importar el celular) "Finalizar pedido" con el ícono de candado y
-   sobre todo "Seguir personalizando" no entraban en una línea, el
-   texto saltaba a dos renglones, el botón crecía en alto casi tanto
-   como en ancho, y un radio de 100px sobre una caja casi cuadrada da
-   un círculo enorme en vez de una píldora — exactamente lo que se veía
-   en la captura. Un radio fijo y moderado (16px) se queda como un
-   rectángulo redondeado sin importar cuántas líneas ocupe el texto. */
+/* La causa real de que el candado se viera enorme: el ícono usa la
+   clase .icon-inline, pero ese estilo nunca quedó definido en este
+   archivo (sí existe en index.html, se copió el nombre de la clase
+   pero no la regla) — sin un tamaño fijo, el SVG se dibuja a su tamaño
+   por defecto del navegador (mucho más grande que el texto de al
+   lado), inflando todo el botón. Con el tamaño fijo puesto, el ícono
+   vuelve a su proporción normal junto al texto. */
+.icon-inline{width:15px;height:15px;flex-shrink:0;}
+/* El otro motivo, ya corregido antes, era border-radius:100px (una
+   "píldora" perfecta) sobre texto que a veces saltaba a dos líneas en
+   este carrito angosto — eso convertía el botón en un círculo. Ahora
+   con el ícono a su tamaño real el texto entra casi siempre en una
+   sola línea, así que un radio más generoso (20px) ya se ve como una
+   píldora prolija sin volver a correr ese riesgo. */
 .cart-checkout{
-  flex:1.4;display:flex;align-items:center;justify-content:center;gap:6px;background:#000000;color:#fff;border:none;border-radius:16px;
-  padding:13px 10px;font-size:13px;font-weight:700;cursor:pointer;text-align:center;line-height:1.25;
+  flex:1.4;display:flex;align-items:center;justify-content:center;gap:6px;background:#000000;color:#fff;border:none;border-radius:20px;
+  padding:12px 8px;font-size:12.5px;font-weight:700;cursor:pointer;text-align:center;line-height:1.25;
   transition:background .2s,transform .2s;
 }
 .cart-checkout:hover{background:#1a1a1a;transform:translateY(-1px);}
 .cart-checkout:active{transform:translateY(0) scale(.98);}
 .cart-checkout:disabled{background:var(--ink-faint);cursor:not-allowed;transform:none;}
 .cart-continue-btn{
-  flex:1;background:none;border:1.5px solid var(--line);color:var(--ink);border-radius:16px;
-  padding:13px 10px;font-size:13px;font-weight:700;cursor:pointer;transition:border-color .2s,background .2s;line-height:1.25;
+  flex:1;background:none;border:1.5px solid var(--line);color:var(--ink);border-radius:20px;
+  padding:12px 8px;font-size:12.5px;font-weight:700;cursor:pointer;transition:border-color .2s,background .2s;line-height:1.25;
 }
 .cart-continue-btn:hover{border-color:var(--ink);background:var(--surface);}
 @media (max-width:360px){ .cart-checkout-row{flex-direction:column;} }
@@ -609,7 +637,6 @@ body.preview-mode .progress-strip{display:none;}
   footer.bottom-bar .bar-right .action-btn{flex:1;min-width:0;padding:13px 10px;font-size:13px;}
 
   .pane-scroll{padding:18px;}
-  .template-grid{grid-template-columns:repeat(4,1fr);}
 }
 @media (max-width:360px){
   .brand-mini .txt span{display:none;}
@@ -673,7 +700,10 @@ body.preview-mode .progress-strip{display:none;}
   <aside class="panel" id="editorPanel">
     <div class="sheet-handle" id="sheetHandle">
       <div class="grip"></div>
-      <svg class="chev" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4"><path d="M6 9l6 6 6-6"/></svg>
+      <div class="label">
+        <span id="sheetHandleLabel">Imagen</span>
+        <svg class="chev" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4"><path d="M6 9l6 6 6-6"/></svg>
+      </div>
     </div>
 
     <!-- ======= PASO 1 · IMAGEN ======= -->
@@ -1196,9 +1226,12 @@ const TEMPLATES = [
 function renderTemplateGrid(){
   const el = document.getElementById('templateGrid');
   if(!el) return;
-  const none = `<button type="button" class="template-swatch template-none is-selected" data-template="none">Sin plantilla</button>`;
+  const none = `<button type="button" class="template-swatch template-none is-selected" data-template="none">
+      <span class="ts-dot"></span><span class="ts-label">Ninguna</span>
+    </button>`;
   const rest = TEMPLATES.map(t =>
-    `<button type="button" class="template-swatch" data-template="${t.id}" style="background:${t.css}">
+    `<button type="button" class="template-swatch" data-template="${t.id}">
+      <span class="ts-dot" style="background:${t.css}"></span>
       <span class="ts-label">${t.name}</span>
     </button>`
   ).join('');
@@ -1238,6 +1271,7 @@ function applyTemplate(id){
   bringOverlayToFront();
   canvas.renderAll();
   showToast('Plantilla aplicada — súmale texto o una foto encima');
+  collapseSheet();
 }
 
 /* ---------------------------------------------------------------------
@@ -1645,6 +1679,11 @@ async function addImageFile(file){
     updateFiltersVisibility();
     if(typeof updateStageHint === 'function') updateStageHint();
     showToast('Imagen añadida — ajústala y confirma su posición');
+    // En celular, se recoge la hoja apenas se agrega la foto — así se ve
+    // de inmediato en el lienzo en vez de quedar escondida detrás del
+    // panel de herramientas (que es justo lo que generaba la sensación
+    // de "la subí y no apareció").
+    collapseSheet();
   }, { crossOrigin:'anonymous' });
 }
 
@@ -1666,6 +1705,7 @@ function addText(){
   canvas.setActiveObject(text);
   bringOverlayToFront();
   canvas.renderAll();
+  collapseSheet();
 }
 
 function addClipart(glyph){
@@ -1680,6 +1720,7 @@ function addClipart(glyph){
   canvas.setActiveObject(t);
   bringOverlayToFront();
   canvas.renderAll();
+  collapseSheet();
 }
 
 /* ---------------------------------------------------------------------
@@ -2291,15 +2332,18 @@ function goToStep(step){
   updateProgressUI();
   updateBottomBarForStep();
   updateStageHint();
+  updateSheetLabel();
   if(step === 'confirm') refreshConfirmStep();
   // En escritorio, el panel de la izquierda se desplaza de forma
   // independiente (.pane-scroll), así que basta con resetear su scroll.
-  // En celular, el panel es una hoja flotante — se abre de nuevo cada vez
-  // que se cambia de paso (para que el contenido nuevo sea visible sin
-  // que la persona tenga que recordar destaparla ella misma) y su propio
-  // scroll interno también se resetea.
+  // En celular, el panel es una hoja flotante que ahora SIEMPRE arranca
+  // recogida al cambiar de paso — así el lienzo queda visible de
+  // inmediato y la persona decide ella misma cuándo quiere ver las
+  // herramientas del paso nuevo tocando la manija (antes se abría sola
+  // y dejaba el lienzo reducido a una franja mínima arriba).
   const panel = document.querySelector('.panel');
-  if(panel){ panel.scrollTop = 0; expandSheet(); }
+  if(panel) panel.scrollTop = 0;
+  collapseSheet();
   const appEl = document.querySelector('.app');
   if(appEl) appEl.scrollTop = 0;
   window.scrollTo({ top:0, behavior:'instant' });
@@ -2329,24 +2373,33 @@ function goBackStep(){
 
 /* ---------------------------------------------------------------------
    11) HOJA INFERIOR (bottom sheet) — solo tiene efecto visual en
-   celular (el CSS de escritorio ignora estas clases). Se puede recoger
-   arrastrando la manija con el dedo o tocándola, para ver el lienzo a
-   pantalla casi completa sin perder el paso en el que estás.
+   celular (el CSS de escritorio ignora estas clases). Empieza siempre
+   recogida (solo la manija visible) para que el lienzo domine la
+   pantalla; se abre al tocarla/arrastrarla, y se vuelve a recoger sola
+   apenas agregas algo al diseño (foto, texto, clipart o plantilla), para
+   que veas de inmediato el resultado en el lienzo en vez de tener que
+   cerrarla tú mismo cada vez.
 --------------------------------------------------------------------- */
+const STEP_LABELS = { image:'Imagen', edit:'Editar', extras:'Extras', confirm:'Confirmar' };
+function updateSheetLabel(){
+  const label = document.getElementById('sheetHandleLabel');
+  if(label) label.textContent = STEP_LABELS[currentStep] || '';
+}
+
 function collapseSheet(){
   const panel = document.getElementById('editorPanel');
-  if(panel) panel.classList.add('is-collapsed');
+  if(panel) panel.classList.remove('is-expanded');
   setTimeout(() => { if(currentModel) fitCanvasToContainer(); }, 340);
 }
 function expandSheet(){
   const panel = document.getElementById('editorPanel');
-  if(panel) panel.classList.remove('is-collapsed');
+  if(panel) panel.classList.add('is-expanded');
   setTimeout(() => { if(currentModel) fitCanvasToContainer(); }, 340);
 }
 function toggleSheet(){
   const panel = document.getElementById('editorPanel');
   if(!panel) return;
-  if(panel.classList.contains('is-collapsed')) expandSheet(); else collapseSheet();
+  if(panel.classList.contains('is-expanded')) collapseSheet(); else expandSheet();
 }
 
 // Arrastre táctil de la manija: sigue al dedo en tiempo real y, al
@@ -2357,13 +2410,14 @@ function wireSheetDrag(){
   const handle = document.getElementById('sheetHandle');
   const panel = document.getElementById('editorPanel');
   if(!handle || !panel) return;
-  let dragging = false, startY = 0, startWasCollapsed = false, currentDelta = 0;
+  const PEEK = 52;
+  let dragging = false, startY = 0, startWasExpanded = false, currentDelta = 0;
   const maxOpenPx = () => panel.scrollHeight || panel.offsetHeight || 1;
 
   handle.addEventListener('pointerdown', e => {
     dragging = true;
     startY = e.clientY;
-    startWasCollapsed = panel.classList.contains('is-collapsed');
+    startWasExpanded = panel.classList.contains('is-expanded');
     panel.classList.add('is-dragging');
     handle.setPointerCapture(e.pointerId);
   });
@@ -2372,8 +2426,8 @@ function wireSheetDrag(){
     currentDelta = e.clientY - startY;
     // Desde abierta, arrastrar hacia abajo (delta positivo) la recoge;
     // desde recogida, arrastrar hacia arriba (delta negativo) la abre.
-    const base = startWasCollapsed ? (maxOpenPx() - 44) : 0;
-    const y = Math.max(0, Math.min(maxOpenPx() - 44, base + currentDelta));
+    const base = startWasExpanded ? 0 : (maxOpenPx() - PEEK);
+    const y = Math.max(0, Math.min(maxOpenPx() - PEEK, base + currentDelta));
     panel.style.transform = `translateY(${y}px)`;
   });
   const stop = () => {
@@ -2383,10 +2437,10 @@ function wireSheetDrag(){
     panel.style.transform = '';
     // Umbral generoso (40px) para que un pequeño temblor de la mano no
     // cambie el estado sin querer.
-    if(startWasCollapsed){
-      if(currentDelta < -40) expandSheet(); else collapseSheet();
-    } else {
+    if(startWasExpanded){
       if(currentDelta > 40) collapseSheet(); else expandSheet();
+    } else {
+      if(currentDelta < -40) expandSheet(); else collapseSheet();
     }
     currentDelta = 0;
   };
@@ -2577,6 +2631,12 @@ window.addEventListener('load', ()=>{
   setModel('apple', 'iphone16', {silent:true});
   updateFiltersVisibility();
   goToStep('image');
+  // Única excepción a "la hoja siempre arranca recogida": la primerísima
+  // vez que se carga la página, se muestra abierta para que sea obvio
+  // desde el primer segundo que hay que elegir el equipo — de ahí en
+  // adelante (cambios de paso, "empezar de nuevo", etc.) sí arranca
+  // recogida cada vez, como se explica en goToStep().
+  expandSheet();
   cargarAccesoriosSugeridos(); // en segundo plano — no bloquea el resto de la carga
 });
 </script>
