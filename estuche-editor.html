@@ -34,6 +34,7 @@
   --header-h:60px;
   --progress-h:52px;
   --bottombar-h:78px;
+  --mt-h:66px;
 }
 *{box-sizing:border-box;}
 html{-webkit-text-size-adjust:100%;}
@@ -135,18 +136,34 @@ header.top{
   display:flex;flex-direction:column;overflow:hidden;
 }
 
-/* En celular, en cambio, NO flota sobre el lienzo — se probó como hoja
-   deslizable y no era práctico para editar de verdad (había que
-   cerrarla para ver la foto, y volver a abrirla para seguir
-   ajustándola). Ahora es un layout apilado normal, sin superponerse:
-   el lienzo ocupa una franja fija arriba (siempre visible, sin taparse)
-   y el panel de herramientas va justo debajo, también siempre visible
-   — los dos a la vista al mismo tiempo, como en cualquier editor de
-   fotos real. Mantiene las esquinas redondeadas arriba para que se
-   siga viendo como una tarjeta y no como un bloque pegado sin más. */
+/* En celular hay dos comportamientos distintos según qué se está
+   haciendo, controlados por una clase en <body> que pone goToStep():
+
+   · MIENTRAS SE DISEÑA (Imagen/Editar, body.mobile-design): el lienzo es
+     el protagonista (75-80% de la pantalla) y el panel se convierte en
+     un micro-panel angosto (máx. 20% de alto) que solo aparece al tocar
+     una herramienta en la barra inferior — nunca tapa el estuche
+     completo. Ver más abajo ".mobile-toolbar" y ".mt-btn".
+
+   · AL REVISAR EL PEDIDO (Extras/Confirmar, sin esa clase): ya no hace
+     falta ver el estuche mientras se edita, así que el panel vuelve a
+     ser un bloque normal apilado debajo del lienzo, con más espacio
+     para revisar tranquilo. */
 @media (max-width:900px){
   .app{flex-direction:column;overflow:hidden;}
-  .panel{
+
+  body.mobile-design .panel{
+    position:fixed;left:10px;right:10px;bottom:calc(var(--mt-h) + 8px);width:auto;
+    max-height:20vh;height:auto;margin:0;z-index:85;
+    border-radius:20px;border:1px solid rgba(0,0,0,.07);
+    box-shadow:0 -10px 30px -10px rgba(0,0,0,.24);
+    background:rgba(255,255,255,.97);backdrop-filter:blur(20px);-webkit-backdrop-filter:blur(20px);
+    opacity:0;pointer-events:none;transform:translateY(10px);
+    transition:opacity .2s var(--ease),transform .2s var(--ease);
+  }
+  body.mobile-design.mt-open .panel{opacity:1;pointer-events:auto;transform:translateY(0);}
+
+  body:not(.mobile-design) .panel{
     width:auto;flex:1;min-height:0;margin:0;
     border-radius:24px 24px 0 0;border:1px solid rgba(0,0,0,.06);border-bottom:none;
     box-shadow:0 -8px 26px -14px rgba(0,0,0,.16);
@@ -162,6 +179,21 @@ header.top{
 }
 .pane-head h2{margin:0 0 6px;font-size:21px;font-weight:800;letter-spacing:-.015em;}
 .pane-head p{margin:0;font-size:13px;color:var(--ink-soft);line-height:1.5;}
+/* En el micro-panel (celular, modo diseño) no hay espacio para el
+   título largo del paso — cada herramienta ya se explica sola por su
+   ícono en la barra, así que ese encabezado se oculta ahí. */
+@media (max-width:900px){ body.mobile-design .pane-head{display:none;} }
+
+/* Bloques de la pestaña "Imagen" (Modelo / Foto / Fondo) — en
+   escritorio los tres se ven juntos, uno debajo del otro, igual que
+   siempre. En celular, dentro del micro-panel, se comportan como las
+   pestañas de "Editar" (substep-pane): la barra de herramientas decide
+   cuál se muestra, nunca más de uno a la vez. */
+@media (max-width:900px){
+  body.mobile-design .tool-block{display:none;padding:16px 18px;margin:0;}
+  body.mobile-design .tool-block.active{display:block;}
+  body.mobile-design #stepPane-image .pane-scroll{padding:0;overflow:visible;}
+}
 
 /* center stage — permanece visible en todos los pasos, para que el
    avance por el asistente se sienta como pulir un mismo diseño y no
@@ -172,10 +204,18 @@ header.top{
   position:relative;overflow:auto;padding:28px;
 }
 @media (max-width:900px){
-  /* Franja fija de alto para el lienzo (no crece ni se encoge según el
-     contenido) — deja una porción generosa y predecible siempre
-     visible arriba, con el panel de herramientas ocupando el resto. */
-  .stage-wrap{flex:0 0 40vh;min-height:230px;padding:14px;}
+  /* Modo diseño: el lienzo llena TODO el alto disponible (75-80% real
+     de la pantalla, como pediste) — el micro-panel flota encima del
+     lienzo en vez de compartir el espacio en el layout, así que aquí
+     no necesita una franja fija reservada, solo aire abajo para que la
+     barra de herramientas y, si está abierto, el micro-panel, nunca
+     tapen la parte baja del estuche. */
+  body.mobile-design .stage-wrap{padding:14px 14px calc(var(--mt-h) + 14px);}
+  body.mobile-design.mt-open .stage-wrap{padding-bottom:calc(var(--mt-h) + 20vh + 14px);}
+
+  /* Modo compra: el lienzo vuelve a la franja fija de antes — el panel
+     grande de Extras/Confirmar ya no flota, comparte el layout apilado. */
+  body:not(.mobile-design) .stage-wrap{flex:0 0 40vh;min-height:230px;padding:14px;}
 }
 .stage-shadow{filter:drop-shadow(0 20px 44px rgba(0,0,0,.16));}
 #editorCanvasWrap{position:relative;touch-action:none;}
@@ -197,6 +237,40 @@ header.top{
   max-width:calc(100% - 32px);text-align:center;
 }
 body.preview-mode .stage-hint{opacity:0;}
+
+/* ---------- BARRA DE HERRAMIENTAS MÓVIL (estilo Canva / Instagram
+   Stories) — reemplaza la barra inferior normal SOLO en celular y SOLO
+   mientras se diseña (Imagen/Editar). Fija abajo, íconos discretos con
+   scroll horizontal si no caben todos, y el CTA con precio siempre a la
+   vista al final. ---------- */
+.mobile-toolbar{display:none;}
+@media (max-width:900px){
+  body.mobile-design .mobile-toolbar{
+    display:flex;align-items:stretch;position:fixed;left:0;right:0;bottom:0;
+    height:var(--mt-h);background:rgba(255,255,255,.96);backdrop-filter:blur(18px);-webkit-backdrop-filter:blur(18px);
+    border-top:1px solid var(--line);z-index:90;
+  }
+  /* Mientras la barra móvil está activa, se ocultan sus equivalentes de
+     escritorio para no duplicar navegación ni precio en pantalla. */
+  body.mobile-design .progress-strip,
+  body.mobile-design footer.bottom-bar{display:none;}
+}
+.mt-icons{flex:1;display:flex;overflow-x:auto;scrollbar-width:none;padding:0 4px;}
+.mt-icons::-webkit-scrollbar{display:none;}
+.mt-btn{
+  flex-shrink:0;width:60px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:4px;
+  background:none;border:none;color:var(--ink-soft);padding:6px 2px;
+}
+.mt-btn svg{width:20px;height:20px;transition:transform .15s var(--ease);}
+.mt-btn span{font-size:9.5px;font-weight:600;}
+.mt-btn.is-active{color:var(--cases);}
+.mt-btn.is-active svg{transform:translateY(-1px);}
+.mt-cta{
+  flex-shrink:0;display:flex;flex-direction:column;align-items:flex-start;justify-content:center;gap:1px;
+  background:var(--ink);color:#fff;border:none;padding:0 16px;margin:9px 9px 9px 4px;border-radius:16px;
+}
+.mt-cta-price{font-size:9.5px;font-weight:600;color:rgba(255,255,255,.65);}
+.mt-cta-label{font-size:12.5px;font-weight:700;}
 
 /* ---------- PASO 1 · IMAGEN (modelo, foto, plantillas, ajustes) ---------- */
 .field-label{font-size:11.5px;font-weight:700;color:var(--ink-soft);text-transform:uppercase;letter-spacing:.05em;margin:22px 0 10px;}
@@ -295,6 +369,13 @@ body.preview-mode .stage-hint{opacity:0;}
 .substep-content{flex:1;overflow-y:auto;padding:20px;}
 .substep-pane{display:none;}
 .substep-pane.active{display:block;}
+/* En el micro-panel de celular (modo diseño), la barra de sub-pestañas
+   propia de "Editar" ya no hace falta — la barra de herramientas de
+   abajo (Texto/Clipart/Capas) hace exactamente ese trabajo. */
+@media (max-width:900px){
+  body.mobile-design .substep-strip{display:none;}
+  body.mobile-design .substep-content{padding:16px 18px;}
+}
 
 textarea.text-input{
   width:100%;border:1px solid var(--line);border-radius:var(--radius-sm);padding:12px 14px;
@@ -631,7 +712,7 @@ body.preview-mode .progress-strip{display:none;}
 }
 </style>
 </head>
-<body>
+<body class="mobile-design">
 
 <header class="top">
   <div class="brand-mini">
@@ -696,46 +777,53 @@ body.preview-mode .progress-strip{display:none;}
           <p>Selecciona tu modelo, luego sube una foto o arranca desde una plantilla.</p>
         </div>
 
-        <div class="field-label" style="margin-top:0;">Tu equipo</div>
-        <div class="model-chooser">
-          <select id="brandSelect"></select>
-          <select id="modelSelect"></select>
+        <div class="tool-block active" id="tool-model">
+          <div class="field-label" style="margin-top:0;">Tu equipo</div>
+          <div class="model-chooser">
+            <select id="brandSelect"></select>
+            <select id="modelSelect"></select>
+          </div>
         </div>
 
-        <div class="field-label">Tu foto</div>
-        <div class="drop-zone" id="dropZone">
-          <div class="dz-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M12 16V4M6 10l6-6 6 6"/><path d="M4 16v3a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2v-3"/></svg></div>
-          <div class="dz-text"><b>Subir foto</b><span class="dz-hint">Arrastra tu foto aquí o toca para elegir un archivo</span></div>
+        <div class="tool-block" id="tool-photo">
+          <div class="field-label" style="margin-top:0;">Tu foto</div>
+          <div class="drop-zone" id="dropZone">
+            <div class="dz-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M12 16V4M6 10l6-6 6 6"/><path d="M4 16v3a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2v-3"/></svg></div>
+            <div class="dz-text"><b>Subir foto</b><span class="dz-hint">Arrastra tu foto aquí o toca para elegir un archivo</span></div>
+          </div>
+          <input type="file" id="fileInput" accept="image/*" style="display:none" multiple>
+          <p class="upload-note">Usa la foto en la mayor resolución posible — guardamos el archivo original para producir tu estuche en alta calidad.</p>
+
+          <div class="filters-box" id="filtersBox">
+            <div class="field-label">Ajustes de tu foto</div>
+            <div class="filter-row">
+              <label>Brillo</label>
+              <input type="range" id="fltBrightness" min="-0.3" max="0.3" step="0.01" value="0">
+            </div>
+            <div class="filter-row">
+              <label>Contraste</label>
+              <input type="range" id="fltContrast" min="-0.3" max="0.3" step="0.01" value="0">
+            </div>
+            <div class="filter-row">
+              <label>Saturación</label>
+              <input type="range" id="fltSaturation" min="-0.6" max="0.6" step="0.01" value="0">
+            </div>
+            <div class="filter-presets">
+              <button type="button" class="filter-chip is-active" data-preset="none">Original</button>
+              <button type="button" class="filter-chip" data-preset="vivid">Vívido</button>
+              <button type="button" class="filter-chip" data-preset="bw">Blanco y negro</button>
+              <button type="button" class="filter-chip" data-preset="vintage">Vintage</button>
+            </div>
+          </div>
         </div>
-        <input type="file" id="fileInput" accept="image/*" style="display:none" multiple>
-        <p class="upload-note">Usa la foto en la mayor resolución posible — guardamos el archivo original para producir tu estuche en alta calidad.</p>
 
-        <div class="field-label">O empieza con una plantilla</div>
-        <div class="template-grid" id="templateGrid"></div>
-
-        <div class="filters-box" id="filtersBox">
-          <div class="field-label">Ajustes de tu foto</div>
-          <div class="filter-row">
-            <label>Brillo</label>
-            <input type="range" id="fltBrightness" min="-0.3" max="0.3" step="0.01" value="0">
-          </div>
-          <div class="filter-row">
-            <label>Contraste</label>
-            <input type="range" id="fltContrast" min="-0.3" max="0.3" step="0.01" value="0">
-          </div>
-          <div class="filter-row">
-            <label>Saturación</label>
-            <input type="range" id="fltSaturation" min="-0.6" max="0.6" step="0.01" value="0">
-          </div>
-          <div class="filter-presets">
-            <button type="button" class="filter-chip is-active" data-preset="none">Original</button>
-            <button type="button" class="filter-chip" data-preset="vivid">Vívido</button>
-            <button type="button" class="filter-chip" data-preset="bw">Blanco y negro</button>
-            <button type="button" class="filter-chip" data-preset="vintage">Vintage</button>
-          </div>
+        <div class="tool-block" id="tool-template">
+          <div class="field-label" style="margin-top:0;">O empieza con una plantilla</div>
+          <div class="template-grid" id="templateGrid"></div>
         </div>
       </div>
     </div>
+
 
     <!-- ======= PASO 2 · EDITAR ======= -->
     <div class="step-pane" id="stepPane-edit">
@@ -887,7 +975,56 @@ body.preview-mode .progress-strip{display:none;}
   </main>
 </div>
 
-<!-- ============ BARRA INFERIOR — navegación del asistente ============ -->
+<!-- ============ BARRA DE HERRAMIENTAS — solo celular, mientras se diseña
+     (Paso 1/2). Reemplaza la división de pantalla por una barra fija
+     estilo app nativa: el lienzo queda libre arriba y cada herramienta
+     abre solo una franja angosta encima de esta barra (ver micro-panel
+     más abajo), nunca el estuche completo tapado. ============ -->
+<div class="mobile-toolbar" id="mobileToolbar">
+  <div class="mt-icons" id="mtIcons">
+    <button type="button" class="mt-btn" data-tool="model">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><rect x="7" y="2" width="10" height="20" rx="2.5"/><path d="M11 18h2"/></svg>
+      <span>Modelo</span>
+    </button>
+    <button type="button" class="mt-btn" data-tool="photo">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="8.5" cy="8.5" r="1.5"/><path d="M21 15l-5-5L5 21"/></svg>
+      <span>Foto</span>
+    </button>
+    <button type="button" class="mt-btn" data-tool="text">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M4 7V4h16v3M9 20h6M12 4v16"/></svg>
+      <span>Texto</span>
+    </button>
+    <button type="button" class="mt-btn" data-tool="clipart">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M12 2l2.6 6.6L21 11l-6.4 2.4L12 20l-2.6-6.6L3 11l6.4-2.4L12 2Z"/></svg>
+      <span>Clipart</span>
+    </button>
+    <button type="button" class="mt-btn" data-tool="template">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><circle cx="12" cy="12" r="9"/><circle cx="12" cy="12" r="3"/></svg>
+      <span>Fondo</span>
+    </button>
+    <button type="button" class="mt-btn" data-tool="layers">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="m12 2 9 5-9 5-9-5 9-5Z"/><path d="m3 12 9 5 9-5M3 17l9 5 9-5"/></svg>
+      <span>Capas</span>
+    </button>
+    <button type="button" class="mt-btn" data-tool="rotate360">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M21 12a9 9 0 1 1-3-6.7"/><path d="M21 3v6h-6"/></svg>
+      <span>360°</span>
+    </button>
+  </div>
+  <button type="button" class="mt-cta" id="mtCtaBtn">
+    <span class="mt-cta-price" id="mtCtaPrice">$39.990</span>
+    <span class="mt-cta-label">Siguiente →</span>
+  </button>
+</div>
+
+<!-- Micro-panel contextual: franja angosta (máx. 20% de pantalla) que
+     aparece justo encima de la barra al tocar una herramienta. Reutiliza
+     el mismo panel de siempre (#editorPanel) — en celular, mientras se
+     está diseñando, ese panel se comporta como esta franja chica en vez
+     de como un panel grande; en la pantalla de Extras/Confirmar vuelve a
+     su tamaño normal, porque ahí ya no hace falta ver el lienzo mientras
+     se edita, sino revisar el pedido con calma. -->
+
 <footer class="bottom-bar">
   <div class="bar-left">
     <button class="back-link" id="backStepBtn" hidden>
@@ -2306,6 +2443,17 @@ function goToStep(step){
   updateBottomBarForStep();
   updateStageHint();
   if(step === 'confirm') refreshConfirmStep();
+
+  // Alterna entre el modo "diseño" (celular: barra de herramientas +
+  // micro-panel angosto, lienzo protagonista) y el modo "revisar pedido"
+  // (celular: panel grande apilado, como en Extras/Confirmar — ahí ya
+  // no hace falta ver el estuche mientras se edita). En escritorio esta
+  // clase no tiene ningún efecto visual, así que no hay riesgo de
+  // afectar cómo se ve ahí.
+  const isDesignStep = (step === 'image' || step === 'edit');
+  document.body.classList.toggle('mobile-design', isDesignStep);
+  if(!isDesignStep) closeMobileTool();
+
   // El panel de herramientas se desplaza de forma independiente
   // (.pane-scroll) tanto en escritorio como en celular — el lienzo, en
   // su propia franja fija, no se ve afectado por ese scroll.
@@ -2317,6 +2465,83 @@ function goToStep(step){
   setTimeout(() => { if(currentModel) fitCanvasToContainer(); }, 340);
 }
 
+/* ---------------------------------------------------------------------
+   12) BARRA DE HERRAMIENTAS MÓVIL — cada ícono corresponde a una
+   herramienta ya existente (modelo, foto, texto, clipart, plantilla,
+   capas) o abre la vista 360°. Tocar una la abre en el micro-panel;
+   tocarla de nuevo la cierra; tocar otra cambia el contenido sin cerrar
+   y volver a abrir. No duplica ningún control — reutiliza los mismos
+   elementos que ya usa el panel de escritorio, solo cambia cuál se
+   muestra y qué tan grande es el contenedor alrededor.
+--------------------------------------------------------------------- */
+const MOBILE_TOOLS = {
+  model:    { step:'image', block:'tool-model' },
+  photo:    { step:'image', block:'tool-photo' },
+  template: { step:'image', block:'tool-template' },
+  text:     { step:'edit',  substep:'text' },
+  clipart:  { step:'edit',  substep:'clipart' },
+  layers:   { step:'edit',  substep:'layers' }
+};
+let activeMobileTool = null;
+
+function activateTool(name){
+  if(name === 'rotate360'){ openRotateView(); return; }
+  const cfg = MOBILE_TOOLS[name];
+  if(!cfg) return;
+
+  // Tocar la misma herramienta que ya está abierta la cierra (como
+  // plegar un acordeón), en vez de dejarla forzosamente abierta.
+  if(activeMobileTool === name && document.body.classList.contains('mt-open')){
+    closeMobileTool();
+    return;
+  }
+
+  // La navegación aquí es libre (no secuencial) — se activa el paso
+  // correcto sin pasar por el guardia de goToStep() pensado para el
+  // asistente de escritorio.
+  currentStep = cfg.step;
+  maxStepReached = Math.max(maxStepReached, STEP_ORDER.indexOf(cfg.step));
+  document.body.classList.add('mobile-design');
+  document.querySelectorAll('.step-pane').forEach(p => p.classList.remove('active'));
+  document.getElementById('stepPane-' + cfg.step).classList.add('active');
+
+  if(cfg.block){
+    document.querySelectorAll('#stepPane-image .tool-block').forEach(b => b.classList.remove('active'));
+    document.getElementById(cfg.block).classList.add('active');
+  }
+  if(cfg.substep){
+    document.querySelectorAll('.substep-btn').forEach(b => b.classList.remove('active'));
+    document.querySelectorAll('.substep-pane').forEach(p => p.classList.remove('active'));
+    const btn = document.querySelector('.substep-btn[data-substep="' + cfg.substep + '"]');
+    if(btn) btn.classList.add('active');
+    const pane = document.getElementById('substep-' + cfg.substep);
+    if(pane) pane.classList.add('active');
+  }
+
+  activeMobileTool = name;
+  document.querySelectorAll('.mt-btn').forEach(b => b.classList.toggle('is-active', b.dataset.tool === name));
+  document.body.classList.add('mt-open');
+  updateProgressUI();
+  updateStageHint();
+  setTimeout(() => { if(currentModel) fitCanvasToContainer(); }, 240);
+}
+
+function closeMobileTool(){
+  document.body.classList.remove('mt-open');
+  document.querySelectorAll('.mt-btn').forEach(b => b.classList.remove('is-active'));
+  activeMobileTool = null;
+  setTimeout(() => { if(currentModel) fitCanvasToContainer(); }, 240);
+}
+
+// El CTA de la barra móvil ("Siguiente") lleva directo a Extras sin
+// importar si se estaba en la herramienta "Imagen" o en alguna de
+// "Editar" — en este modo ya no son pasos uno-tras-otro, son solo
+// herramientas dentro de la misma actividad de diseño.
+function mobileCtaAdvance(){
+  closeMobileTool();
+  maxStepReached = Math.max(maxStepReached, STEP_ORDER.indexOf('extras'));
+  goToStep('extras');
+}
 function goNextStep(){
   const idx = STEP_ORDER.indexOf(currentStep);
   if(idx >= STEP_ORDER.length - 1) return;
@@ -2363,6 +2588,13 @@ function wireUI(){
   populateModelSelect(currentBrandKey);
   renderTemplateGrid();
   wireTouchGestures();
+
+  // Barra de herramientas móvil (estilo Canva/Instagram Stories)
+  document.getElementById('mtIcons').addEventListener('click', e => {
+    const btn = e.target.closest('.mt-btn');
+    if(btn) activateTool(btn.dataset.tool);
+  });
+  document.getElementById('mtCtaBtn').addEventListener('click', mobileCtaAdvance);
 
   document.getElementById('brandSelect').addEventListener('change', e=>{
     const bk = e.target.value;
