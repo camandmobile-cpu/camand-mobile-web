@@ -208,7 +208,7 @@ nav.links button.is-active::after{
 .nav-item{position:relative;display:flex;}
 .mega-menu{
   position:absolute;top:100%;left:50%;transform:translateX(-50%) translateY(6px);
-  min-width:300px;max-width:640px;box-sizing:border-box;
+  min-width:300px;max-width:660px;box-sizing:border-box;
   /* Estilo "limpio" tipo Artezcom/Apple: fondo blanco sólido en vez de
      translúcido con blur (se veía "sucio" contra fotos de fondo), esquinas
      bien redondeadas y sombra suave. */
@@ -251,34 +251,31 @@ nav.links button.is-active::after{
 .nav-item:focus-within #megaComputadores,.nav-item:focus-within #megaAccesorios{
   transform:translateY(0);
 }
-/* flex:1 + min-width:0 es la corrección real del bug de "el texto se sale
-   del recuadro" en Equipos: antes cada columna (iPhone / Android) se
-   ensanchaba sola hasta caber su texto más largo EN UNA sola línea (el
-   comportamiento por defecto de un elemento flex es no encogerse más allá
-   del ancho de su contenido) — con nombres de producto largos, la columna
-   terminaba empujando el borde del recuadro y el texto quedaba cortado o
-   asomado fuera. Con min-width:0 la columna sí puede encogerse hasta el
-   ancho disponible real, y el texto envuelve en vez de desbordar. */
-.mega-menu-col{display:flex;flex-direction:column;gap:2px;flex:1 1 0;min-width:0;}
-.mega-menu-col-wide{flex:1 1 0;min-width:0;}
+/* Primer intento (min-width:0) encogía tanto la columna que las palabras
+   se partían a la mitad ("iPhon" / "e 12") — se veía peor que el desborde
+   original. La corrección real es darle a la columna un ancho MÍNIMO
+   razonable (150px, suficiente para que "iPhone 14 Pro Max" haga salto de
+   línea entre palabras completas) en vez de dejarla encoger a cero — así
+   el texto envuelve de forma legible y el recuadro completo (.mega-menu)
+   es lo bastante ancho (max-width:660px) para que ninguna columna tenga
+   que apretarse más allá de eso en la práctica. */
+.mega-menu-col{display:flex;flex-direction:column;gap:2px;flex:1 1 170px;min-width:150px;}
+.mega-menu-col-wide{flex:1 1 300px;min-width:260px;}
 .mega-menu-heading{font-size:11px;font-weight:700;letter-spacing:.06em;text-transform:uppercase;color:var(--ink-faint);margin:0 0 8px 8px;}
 .mega-menu-col button{
   all:unset;cursor:pointer;font-size:14px;color:var(--ink);padding:8px 10px;border-radius:10px;
   display:block;width:100%;box-sizing:border-box;
-  white-space:normal;overflow-wrap:break-word;word-break:break-word;text-align:left;line-height:1.3;
+  white-space:normal;overflow-wrap:break-word;text-align:left;line-height:1.3;
   transition:background .15s,color .15s;
 }
 /* Hover "limpio" tipo Artezcom: texto negro + fondo gris clarito, sin el
    azul de acento que se sentía más "link de sistema" que menú de tienda. */
 .mega-menu-col button:hover,.mega-menu-col button:focus-visible{background:var(--surface);color:#000;}
-/* minmax(0,1fr) en vez de 1fr en cada columna es la corrección real del
-   bug de "el texto se sale del recuadro" en Accesorios: una columna de
-   grid con "1fr" a secas igual respeta el ancho de su contenido más ancho
-   como mínimo (el mismo problema de fondo que en Equipos, pero en grid en
-   vez de flex) — con minmax(0,1fr) la columna sí se puede encoger por
-   debajo de eso y el nombre largo de una marca/subcategoría envuelve en
-   vez de desbordar el recuadro del mega-menú. */
-.mega-menu-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:0 8px;}
+/* Mismo ajuste que en .mega-menu-col: minmax(120px,1fr) en vez de
+   minmax(0,1fr), para que cada columna de la cuadrícula de Accesorios
+   tenga un mínimo legible y el texto haga salto de línea entre palabras
+   en vez de partirlas a la mitad. */
+.mega-menu-grid{display:grid;grid-template-columns:repeat(2,minmax(120px,1fr));gap:0 8px;}
 .mega-menu-viewall{margin-top:6px;font-weight:600 !important;color:var(--ink) !important;}
 .mega-menu-cta{
   width:190px;min-width:0;flex-shrink:0;background:var(--surface);border-radius:var(--radius-md);padding:18px;
@@ -3000,7 +2997,7 @@ function clearFilters(panelKey){
   if(panelKey === 'audifonos'){ renderAudifonosGrid(); return; }
   if(panelKey === 'techoficina'){ renderTechOficinaGrid(); return; }
   const panel = document.getElementById('panel-'+panelKey);
-  if(panel) panel.innerHTML = buildCatPanelHTML(panelKey);
+  if(panel){ panel.innerHTML = buildCatPanelHTML(panelKey); initScrollReveal(); }
 }
 
 // Solo vuelve a pintar la grilla de productos (no el panel de filtros), para
@@ -3015,6 +3012,17 @@ function refreshPanelGrid(panelKey){
     : `<p class="grid-empty">Ningún producto coincide con estos filtros — prueba con otro rango o pregúntanos por WhatsApp.</p>`;
   const countEl = document.getElementById('count-'+panelKey);
   if(countEl) countEl.textContent = `${items.length} de ${source.items.length} producto${source.items.length===1?'':'s'}`;
+  // BUG corregido: cada tarjeta se crea con class="reveal" (fade-in al
+  // hacer scroll), pero esa animación solo se "activa" cuando algo la
+  // observa con IntersectionObserver — initScrollReveal() es lo que hace
+  // esa conexión. Como esta función solo repinta la grilla (no pasa por
+  // renderTodo(), que es donde antes se llamaba), las tarjetas nuevas se
+  // quedaban con opacity:0 PARA SIEMPRE (nunca nadie las "activaba") —
+  // el filtro funcionaba bien por dentro (el contador de arriba mostraba
+  // el número correcto) pero no se veía ninguna tarjeta debajo. Por eso
+  // cualquier cambio de filtro (marca, condición, almacenamiento, precio)
+  // dejaba la grilla en blanco.
+  initScrollReveal();
 }
 
 function buildCatPanelHTML(key){
@@ -3768,6 +3776,7 @@ function performTechSearch(query){
     <div class="product-grid">
       ${matches.map(({cat,brand,m}) => productCardHTML(cat.label, brand, m)).join('')}
     </div>`;
+  initScrollReveal();
 }
 
 let openCat = null;
@@ -3786,6 +3795,7 @@ function toggleCategory(key){
   panel.innerHTML = buildCatPanelHTML(key);
 
   document.getElementById('tile-'+key).insertAdjacentElement('afterend', panel);
+  initScrollReveal();
 }
 
 function renderAccesoriosGrid(){
@@ -3802,6 +3812,7 @@ function renderAccesoriosGrid(){
     <div class="product-grid" id="grid-accesorios">
       ${filtered.length ? filtered.map(({marca, m}) => productCardHTML(cat.label, marca, m)).join('') : `<p class="grid-empty">No hay accesorios disponibles por ahora.</p>`}
     </div>`;
+  initScrollReveal();
 }
 
 /* ===================== SUBCATEGORÍAS DERIVADAS DE ACCESORIOS ===================== */
@@ -3880,6 +3891,7 @@ function renderExtraHubGrid(key, gridId){
     <div class="product-grid" id="grid-${key}">
       ${filtered.length ? filtered.map(({marca, m}) => productCardHTML(hub.label, marca, m)).join('') : `<p class="grid-empty">No hay productos disponibles por ahora en esta categoría.</p>`}
     </div>`;
+  initScrollReveal();
 }
 
 function renderRelojesGrid(){ renderExtraHubGrid('relojes', 'relojesGrid'); }
@@ -4046,6 +4058,7 @@ function performCelularesSearch(query){
     <div class="product-grid">
       ${matches.map(({marca,m}) => productCardHTML(hub.label, marca, m)).join('')}
     </div>`;
+  initScrollReveal();
 }
 
 /* ===================== VIEW SWITCH ===================== */
@@ -4602,6 +4615,7 @@ function renderHomeFeatured(){
   const elegidos = destacados.slice(0, HOME_FEATURED_LIMIT);
 
   grid.innerHTML = elegidos.map(({ marca, m, catLabel }) => productCardHTML(catLabel, marca, m)).join('');
+  initScrollReveal();
 }
 
 /* ===================== AVISO DE COOKIES / HABEAS DATA ===================== */
