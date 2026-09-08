@@ -189,11 +189,11 @@ nav.links button.is-active::after{
   content:"";position:absolute;left:0;right:0;bottom:-8px;height:2px;
   background:var(--ink);border-radius:2px;
 }
-/* ---------- MEGA-MENÚ (Equipos, Accesorios) ---------- */
+/* ---------- MEGA-MENÚ (Equipos, Tablets, Relojes, Audífonos, Computadores, Accesorios) ---------- */
 .nav-item{position:relative;display:flex;}
 .mega-menu{
-  position:absolute;top:100%;
-  min-width:460px;max-width:640px;
+  position:absolute;top:100%;left:50%;transform:translateX(-50%) translateY(6px);
+  min-width:300px;max-width:640px;
   background:rgba(255,255,255,.92);backdrop-filter:blur(20px);-webkit-backdrop-filter:blur(20px);
   border:1px solid var(--line);border-radius:var(--radius-lg);box-shadow:var(--shadow-2);
   padding:26px;padding-top:34px;display:flex;gap:32px;
@@ -201,15 +201,15 @@ nav.links button.is-active::after{
   transition:opacity .25s var(--ease),transform .25s var(--ease),visibility .25s;
   z-index:50;
 }
-/* Centrado bajo el botón (left:50% + translateX(-50%)) se ve bien en
-   pantallas anchas, pero en laptops de ancho mediano (1080-1300px, justo
-   donde el menú de escritorio recién aparece) "Equipos" queda cerca del
-   borde izquierdo del header y "Accesorios" cerca del derecho — centrado
-   ahí haría que el mega-menú se saliera del header por ese lado. Por eso
-   cada uno se ancla a su lado natural en vez de centrarse: Equipos crece
-   hacia la derecha, Accesorios hacia la izquierda. */
-#megaEquipos{left:0;transform:translateY(6px);}
-#megaAccesorios{left:auto;right:0;transform:translateY(6px);}
+/* Centrado bajo el botón (left:50% + translateX(-50%)) se ve bien para los
+   que quedan más al centro del menú, pero en laptops de ancho mediano
+   (1080-1300px, justo donde el menú de escritorio recién aparece) los que
+   quedan más pegados a una punta (Equipos/Tablets a la izquierda,
+   Computadores/Accesorios a la derecha) se saldrían del header si también
+   se centraran. Por eso esos 4 se anclan a su lado natural en vez de
+   centrarse. */
+#megaEquipos,#megaTablets{left:0;transform:translateY(6px);}
+#megaComputadores,#megaAccesorios{left:auto;right:0;transform:translateY(6px);}
 /* padding-top de sobra + posición pegada (top:100%, sin gap real) hacen de
    "puente" invisible para que el mouse pueda bajar del botón al menú sin
    que el :hover se corte a mitad de camino. */
@@ -217,6 +217,8 @@ nav.links button.is-active::after{
   opacity:1;visibility:visible;pointer-events:auto;
 }
 .nav-item:hover #megaEquipos,.nav-item:focus-within #megaEquipos,
+.nav-item:hover #megaTablets,.nav-item:focus-within #megaTablets,
+.nav-item:hover #megaComputadores,.nav-item:focus-within #megaComputadores,
 .nav-item:hover #megaAccesorios,.nav-item:focus-within #megaAccesorios{
   transform:translateY(0);
 }
@@ -230,11 +232,11 @@ nav.links button.is-active::after{
 .mega-menu-grid{display:grid;grid-template-columns:1fr 1fr;gap:0 8px;}
 .mega-menu-viewall{margin-top:6px;font-weight:600 !important;color:var(--tech) !important;}
 .mega-menu-cta{
-  width:190px;flex-shrink:0;background:var(--surface);border-radius:var(--radius-md);padding:18px;
+  width:190px;min-width:0;flex-shrink:0;background:var(--surface);border-radius:var(--radius-md);padding:18px;
   display:flex;flex-direction:column;gap:6px;
 }
 .mega-menu-cta-eyebrow{font-size:11px;font-weight:700;letter-spacing:.05em;text-transform:uppercase;color:var(--tech);}
-.mega-menu-cta p{margin:0;font-size:13px;color:var(--ink-soft);line-height:1.4;}
+.mega-menu-cta p{margin:0;font-size:13px;color:var(--ink-soft);line-height:1.4;overflow-wrap:break-word;}
 .mega-menu-cta a{margin-top:2px;font-size:13.5px;font-weight:600;color:var(--ink);transition:color .15s;}
 .mega-menu-cta a:hover{color:var(--tech);}
 .nav-actions{display:flex;align-items:center;gap:8px;justify-self:end;}
@@ -1489,56 +1491,39 @@ footer.site{
 .legal-updated{font-size:12.5px;color:var(--ink-faint);margin-bottom:28px;}
 
 /* ===================== BANNER PUBLICITARIO ROTATIVO (Hero Carousel estilo Artezcom) ===================== */
-/* Ahora es un carril horizontal real (scroll-snap) en vez de fotos superpuestas
-   con crossfade — así el slide activo queda centrado y se alcanzan a ver
-   "mordidas" de las tarjetas vecinas a los lados, como en Artezcom/Apple.
-   También se puede deslizar con el dedo en celular, no solo con las flechas. */
-.promo-banner-strip{
-  position:relative;width:100%;background:#f5f5f7;border-radius:24px;
-  padding:28px 0;
+/* Rediseño: antes era un carril de scroll-snap con "peek" de las tarjetas
+   vecinas + una copia ampliada/borrosa de la foto para rellenar bordes
+   ("halo"). Esa combinación (transform de escala + overflow:hidden +
+   border-radius + blur) es un patrón conocido por fallar el recorte de
+   esquinas en Safari de iPhone — coincide exactamente con lo que
+   reportaste ("en pc se ve bien, en móvil se sale"). Ahora es un carrusel
+   de una sola diapositiva a pantalla completa (igual que Artezcom): la
+   foto llena todo el recuadro (object-fit:cover, sin recortar esquinas
+   raras) y el carril se mueve con JS (transform), no con scroll nativo —
+   así el loop puede ser realmente continuo en vez de "regresar" al
+   principio (ver promoBannerGoTrack más abajo). */
+.promo-banner-strip{position:relative;width:100%;}
+.promo-banner-viewport{
+  position:relative;width:100%;overflow:hidden;border-radius:var(--radius-md);
+  aspect-ratio:2269/756;background:#f5f5f7;
 }
 .promo-banner-track{
-  position:relative;display:flex;gap:16px;overflow-x:auto;scroll-snap-type:x mandatory;
-  scroll-behavior:smooth;padding:0 10%;-ms-overflow-style:none;scrollbar-width:none;
+  display:flex;width:100%;height:100%;
+  transition:transform .48s cubic-bezier(.65,0,.35,1);
 }
-.promo-banner-track::-webkit-scrollbar{display:none;}
+.promo-banner-track.no-transition{transition:none;}
 .promo-banner-slide{
-  flex:0 0 78%;scroll-snap-align:center;cursor:pointer;display:block;
-  /* Misma proporción (2269x756) en TODOS los tamaños de pantalla — así, si
-     subes las fotos exactamente en esa medida, se ven completas de borde
-     a borde en computador y en celular, sin ningún relleno. */
-  aspect-ratio:2269/756;border-radius:var(--radius-md);overflow:hidden;background:#fff;
-  opacity:.4;transform:scale(.82);filter:blur(1.5px);
-  transition:opacity .6s var(--ease),transform .6s var(--ease),box-shadow .6s var(--ease),filter .6s var(--ease);
+  position:relative;flex:0 0 100%;width:100%;height:100%;cursor:pointer;display:block;overflow:hidden;
 }
-.promo-banner-slide.is-active{opacity:1;transform:scale(1);box-shadow:0 20px 40px -16px rgba(0,0,0,.22);filter:blur(0);}
-.promo-banner-slide iframe{width:100%;height:100%;border:0;display:block;pointer-events:none;border-radius:var(--radius-md);}
-/* La foto/video siempre se ve completa, sin recortarse (object-fit:contain
-   en el elemento de encima, "promo-banner-fg"). Cuando la proporción de la
-   foto no calza exacto con la caja del banner, en vez de dejar un
-   recuadro blanco a los lados o arriba/abajo, se rellena con la misma
-   foto ampliada y muy desenfocada de fondo — efecto "halo", como en
-   Spotify o Apple Music — así nunca se ve un borde en blanco. El radio de
-   esquina se repite también aquí (no solo en el "marco" exterior) porque
-   algunos navegadores de celular no recortan bien un <video> solo con el
-   overflow:hidden del contenedor — así las esquinas quedan redondas
-   siempre, en cualquier dispositivo. */
-.promo-banner-media-wrap{position:relative;width:100%;height:100%;overflow:hidden;background:#111;border-radius:var(--radius-md);}
-.promo-banner-bg,.promo-banner-bg-video{
-  position:absolute;top:-8%;left:-8%;right:-8%;bottom:-8%;
-  background-size:cover;background-position:center;
-  filter:blur(26px) brightness(.72) saturate(1.15);
-}
-.promo-banner-bg-video{width:116%;height:116%;object-fit:cover;}
-.promo-banner-fg{position:relative;z-index:1;width:100%;height:100%;object-fit:contain;display:block;border-radius:var(--radius-md);}
+.promo-banner-slide.has-content{cursor:default;}
+.promo-banner-slide img,.promo-banner-slide video{width:100%;height:100%;object-fit:cover;display:block;}
+.promo-banner-slide iframe{width:100%;height:100%;border:0;display:block;pointer-events:none;}
 /* ---------- Texto + CTA sobre el banner (solo cuando la fila de la Hoja
    trae KICKER/TITULO/SUBTITULO/CTA — ver promoBannerSlideHTML) ---------- */
-.promo-banner-slide.has-content{cursor:default;}
 .promo-banner-copy{
   position:absolute;z-index:2;left:0;right:0;bottom:0;padding:28px 32px 26px;
   display:flex;flex-direction:column;align-items:flex-start;gap:6px;
   background:linear-gradient(180deg,rgba(0,0,0,0) 0%,rgba(0,0,0,.55) 65%,rgba(0,0,0,.72) 100%);
-  border-radius:0 0 var(--radius-md) var(--radius-md);
 }
 .promo-banner-kicker{color:#fff;opacity:.85;font-size:12.5px;font-weight:700;letter-spacing:.06em;text-transform:uppercase;}
 .promo-banner-title{color:#fff;margin:0;font-size:26px;font-weight:700;letter-spacing:-0.01em;line-height:1.15;}
@@ -1555,7 +1540,7 @@ footer.site{
   position:absolute;top:50%;transform:translateY(-50%);width:38px;height:38px;border-radius:50%;
   background:rgba(255,255,255,.9);border:none;font-size:20px;line-height:1;
   color:var(--ink);cursor:pointer;display:flex;align-items:center;justify-content:center;
-  z-index:2;transition:background .2s,transform .2s,opacity .2s;box-shadow:0 4px 14px rgba(0,0,0,.08);
+  z-index:3;transition:background .2s,transform .2s,opacity .2s;box-shadow:0 4px 14px rgba(0,0,0,.08);
   /* Baja presencia por defecto en escritorio: aparecen sobre todo al pasar
      el mouse por el carrusel (o al enfocarlas con teclado), no siempre
      encendidas — así no compiten visualmente con el banner. */
@@ -1566,26 +1551,21 @@ footer.site{
 .promo-banner-nav:hover{background:#fff;transform:translateY(-50%) scale(1.06);}
 .promo-banner-nav.prev{left:14px;}
 .promo-banner-nav.next{right:14px;}
-.promo-banner-dots{position:relative;margin-top:14px;display:flex;justify-content:center;gap:6px;z-index:2;}
+.promo-banner-dots{position:relative;margin-top:14px;display:flex;justify-content:center;gap:2px;z-index:2;}
 .promo-banner-dot{
-  width:7px;height:7px;border-radius:100px;background:rgba(0,0,0,.18);border:none;padding:0;
-  cursor:pointer;transition:background .3s var(--ease),width .3s var(--ease);
+  width:7px;height:7px;border-radius:100px;background:rgba(0,0,0,.18);background-clip:content-box;
+  border:none;padding:11px;cursor:pointer;transition:background .3s var(--ease),width .3s var(--ease);
 }
 .promo-banner-dot.is-active{background:#000;width:20px;}
 @media (max-width:700px){
-  .promo-banner-strip{padding:20px 0;border-radius:20px;}
-  .promo-banner-track{padding:0 6%;}
-  .promo-banner-slide{flex-basis:88%;}
-  /* En celular las flechas se ocultan (se navega deslizando el dedo, como
-     cualquier carrusel de app) — antes, cuando un banner quedaba pegado al
-     borde (el primero o el último, que no tienen más espacio para
-     centrarse), el botón de flecha se montaba encima de la esquina
-     redondeada de la foto y parecía que la imagen "se salía" del marco. */
-  .promo-banner-nav{display:none !important;}
   .promo-banner-copy{padding:18px 18px 16px;}
   .promo-banner-title{font-size:19px;}
   .promo-banner-subtitle{font-size:13px;max-width:none;}
   .promo-banner-cta{padding:9px 15px;font-size:13px;}
+  /* Las flechas ya se ocultaban en celular (se navega deslizando el dedo o
+     tocando los puntos, que ahora tienen un área de toque mucho más
+     grande que el punto visible — ver .promo-banner-dot arriba). */
+  .promo-banner-nav{display:none !important;}
 }
 
 /* ---------- SPLASH SCREEN ---------- */
@@ -1715,10 +1695,22 @@ body.loaded header.nav {
         <button data-view="celulares" onclick="go('celulares')">Equipos</button>
         <div class="mega-menu" id="megaEquipos"></div>
       </div>
-      <button data-view="tablets" onclick="go('tablets')">Tablets</button>
-      <button data-view="relojes" onclick="go('relojes')">Relojes</button>
-      <button data-view="audifonos" onclick="go('audifonos')">Audífonos</button>
-      <button data-view="computadores" onclick="go('computadores')">Computadores</button>
+      <div class="nav-item">
+        <button data-view="tablets" onclick="go('tablets')">Tablets</button>
+        <div class="mega-menu" id="megaTablets"></div>
+      </div>
+      <div class="nav-item">
+        <button data-view="relojes" onclick="go('relojes')">Relojes</button>
+        <div class="mega-menu" id="megaRelojes"></div>
+      </div>
+      <div class="nav-item">
+        <button data-view="audifonos" onclick="go('audifonos')">Audífonos</button>
+        <div class="mega-menu" id="megaAudifonos"></div>
+      </div>
+      <div class="nav-item">
+        <button data-view="computadores" onclick="go('computadores')">Computadores</button>
+        <div class="mega-menu" id="megaComputadores"></div>
+      </div>
       <div class="nav-item">
         <button data-view="techoficina" onclick="go('techoficina')">Accesorios</button>
         <div class="mega-menu" id="megaAccesorios"></div>
@@ -1781,7 +1773,9 @@ body.loaded header.nav {
   <!-- ======================= HOME ======================= -->
   <section class="view active" id="view-home">
     <div class="promo-banner-strip reveal" id="promoBannerStrip" style="display:none;" role="region" aria-roledescription="carrusel" aria-label="Banner promocional" tabindex="0" onkeydown="promoBannerKeyNav(event)">
-      <div class="promo-banner-track" id="promoBannerTrack" aria-live="polite"></div>
+      <div class="promo-banner-viewport" id="promoBannerViewport">
+        <div class="promo-banner-track" id="promoBannerTrack" aria-live="polite"></div>
+      </div>
       <button type="button" class="promo-banner-nav prev" onclick="promoBannerPrev()" aria-label="Banner anterior">‹</button>
       <button type="button" class="promo-banner-nav next" onclick="promoBannerNext()" aria-label="Banner siguiente">›</button>
       <div class="promo-banner-dots" id="promoBannerDots"></div>
@@ -2996,7 +2990,6 @@ let PDP_ACTIVE_IMG = 0;
 
 /* ===================== ESTADO — BANNER PUBLICITARIO ===================== */
 let PROMO_BANNERS = [];
-let PROMO_BANNER_INDEX = 0;
 let PROMO_BANNER_TIMER = null;
 
 /* ===================== DIAGNÓSTICO — DESTACADO / GOOGLE SHEETS ===================== */
@@ -3847,7 +3840,7 @@ function renderCelularesGrid(){ renderExtraHubGrid('celulares', 'celularesGrid')
 function renderTabletsGrid(){ renderExtraHubGrid('tablets', 'tabletsGrid'); }
 function renderComputadoresGrid(){ renderExtraHubGrid('computadores', 'computadoresGrid'); }
 
-/* ===================== MEGA-MENÚ DEL HEADER (Equipos, Accesorios) ===================== */
+/* ===================== MEGA-MENÚ DEL HEADER (todas las categorías) ===================== */
 // Aplica un filtro (marca y/o texto libre "q") a la sección indicada y
 // navega ahí — lo usan los enlaces del mega-menú para llevar directo a,
 // por ejemplo, "Samsung" dentro de Celulares o "Cargadores" dentro de
@@ -3865,34 +3858,73 @@ function megaMenuGoFiltered(hubKey, marca, q){
   go(hubKey);
 }
 
+// Genera UNA columna del mega-menú a partir de las "marcas" reales de una
+// categoría (CATALOG[x].brands o getExtraHub(x).brands):
+// - Si hay MÁS DE UNA marca con productos (ej. Android: Samsung, Xiaomi...
+//   o Accesorios: Cargadores, Cables...), lista cada marca — clic filtra
+//   por esa marca.
+// - Si solo hay UNA (categorías sin sub-marca en tu Hoja, como Tablets o
+//   Computadores, que hoy son una sola lista), lista en cambio los nombres
+//   de producto distintos (sin el sufijo de almacenamiento) y filtra por
+//   texto en vez de marca.
+// Así una sola función arma el mega-menú de cualquier categoría del sitio,
+// se actualiza sola con tu catálogo real, y no hay que escribir nada a mano.
+function megaMenuColumnHTML(heading, hubKey, brands, cap){
+  cap = cap || 6;
+  const esc = s => String(s).replace(/'/g, "\\'");
+  const conStock = (brands || []).filter(b => b.models && b.models.length);
+  if(!conStock.length) return '';
+
+  let itemsHTML;
+  if(conStock.length > 1){
+    const list = [...conStock].sort((a, b) => b.models.length - a.models.length).slice(0, cap);
+    itemsHTML = list.map(b => `<button type="button" onclick="megaMenuGoFiltered('${hubKey}','${esc(b.name)}','')">${b.name}</button>`).join('');
+  } else {
+    const nombres = [...new Set(conStock[0].models.map(m => (m.n || '').replace(/\s*—\s*[^—]*$/, '')).filter(Boolean))].slice(0, cap);
+    if(!nombres.length) return '';
+    itemsHTML = nombres.map(n => `<button type="button" onclick="megaMenuGoFiltered('${hubKey}','','${esc(n)}')">${n}</button>`).join('');
+  }
+
+  return `<div class="mega-menu-col">
+    <span class="mega-menu-heading">${heading}</span>
+    ${itemsHTML}
+    <button type="button" class="mega-menu-viewall" onclick="megaMenuGoFiltered('${hubKey}','','')">Ver todos →</button>
+  </div>`;
+}
+
 function renderMegaEquipos(){
   const el = document.getElementById('megaEquipos');
   if(!el) return;
-  // Nombres base de iPhone (sin el sufijo "— 128 GB", etc.), sin repetir,
-  // hasta 6 — se arman solos a partir de tu catálogo real, no están escritos
-  // a mano, así que se actualizan solos cuando cambias el inventario.
-  const iphoneBase = [...new Set(IPHONE_CATALOG.map(m => m.n.replace(/\s*—\s*[^—]*$/, '')))].slice(0, 6);
-  const androidBrands = ANDROID_BRANDS_DATA.filter(b => b.models.length).map(b => b.name).slice(0, 6);
-
-  if(!iphoneBase.length && !androidBrands.length){ el.innerHTML = ''; return; }
-
-  const esc = s => String(s).replace(/'/g, "\\'");
+  // CATALOG.apple.brands trae una sola "marca" (iPhone) con todos los
+  // modelos adentro → megaMenuColumnHTML lista los nombres de modelo.
+  // CATALOG.android.brands trae varias marcas reales → lista las marcas.
+  const col1 = megaMenuColumnHTML('iPhone', 'celulares', CATALOG.apple.brands, 6);
+  const col2 = megaMenuColumnHTML('Android', 'celulares', CATALOG.android.brands, 6);
+  if(!col1 && !col2){ el.innerHTML = ''; return; }
   el.innerHTML = `
-    ${iphoneBase.length ? `<div class="mega-menu-col">
-      <span class="mega-menu-heading">iPhone</span>
-      ${iphoneBase.map(n => `<button type="button" onclick="megaMenuGoFiltered('celulares','iPhone','${esc(n)}')">${n}</button>`).join('')}
-      <button type="button" class="mega-menu-viewall" onclick="megaMenuGoFiltered('celulares','iPhone','')">Ver todos →</button>
-    </div>` : ''}
-    ${androidBrands.length ? `<div class="mega-menu-col">
-      <span class="mega-menu-heading">Android</span>
-      ${androidBrands.map(b => `<button type="button" onclick="megaMenuGoFiltered('celulares','${esc(b)}','')">${b}</button>`).join('')}
-      <button type="button" class="mega-menu-viewall" onclick="megaMenuGoFiltered('celulares','','')">Ver todos →</button>
-    </div>` : ''}
+    ${col1}${col2}
     <div class="mega-menu-cta">
       <span class="mega-menu-cta-eyebrow">Sistecrédito</span>
       <p>Llévate tu equipo hoy y paga a cuotas, sin tarjeta.</p>
       <a href="${waLink('Hola, quiero saber cómo comprar con Sistecrédito')}" target="_blank" rel="noopener">Consultar por WhatsApp →</a>
     </div>`;
+}
+
+function renderMegaTablets(){
+  const el = document.getElementById('megaTablets');
+  if(el) el.innerHTML = megaMenuColumnHTML('Tablets', 'tablets', CATALOG.tablets.brands, 8);
+}
+function renderMegaComputadores(){
+  const el = document.getElementById('megaComputadores');
+  if(el) el.innerHTML = megaMenuColumnHTML('Computadores', 'computadores', CATALOG.computadores.brands, 8);
+}
+function renderMegaRelojes(){
+  const el = document.getElementById('megaRelojes');
+  if(el) el.innerHTML = megaMenuColumnHTML('Relojes', 'relojes', getExtraHub('relojes').brands, 8);
+}
+function renderMegaAudifonos(){
+  const el = document.getElementById('megaAudifonos');
+  if(el) el.innerHTML = megaMenuColumnHTML('Audífonos', 'audifonos', getExtraHub('audifonos').brands, 8);
 }
 
 function renderMegaAccesorios(){
@@ -3920,6 +3952,10 @@ function renderMegaAccesorios(){
 
 function renderMegaMenus(){
   renderMegaEquipos();
+  renderMegaTablets();
+  renderMegaRelojes();
+  renderMegaAudifonos();
+  renderMegaComputadores();
   renderMegaAccesorios();
 }
 
@@ -4552,37 +4588,29 @@ function youtubeEmbedUrl(url){
   if(!id) return null;
   return `https://www.youtube.com/embed/${id}?autoplay=1&mute=1&loop=1&playlist=${id}&controls=0&modestbranding=1&playsinline=1`;
 }
+// La foto/video ahora llena todo el recuadro del banner (object-fit:cover),
+// igual que un carrusel de tienda normal (Artezcom y la enorme mayoría de
+// sitios Shopify) — antes se mostraba completa sin recortar y se rellenaban
+// los bordes con una copia ampliada/borrosa de la misma foto ("halo"), pero
+// esa combinación (transform + overflow:hidden + border-radius + blur)
+// falla el recorte de esquinas en Safari de iPhone, que era justo el "se
+// sale del borde en móvil" que reportaste. Quitar el halo resuelve eso de
+// raíz y de paso simplifica el HTML.
 function promoBannerMediaHTML(b, i){
   const altJs = (b.alt || 'Publicidad Camand Mobile').replace(/"/g, '&quot;');
-  // Columna VIDEO (opcional, nueva): si viene llena, tiene prioridad y se
-  // trata siempre como video/YouTube, sin adivinar por la extensión. Si
-  // viene vacía, se sigue detectando automáticamente dentro de la columna
-  // IMAGEN (foto o video), exactamente igual que hasta ahora — así ningún
-  // banner que ya tengas configurado se ve afectado por este cambio.
+  // Columna VIDEO (opcional): si viene llena, tiene prioridad y se trata
+  // siempre como video/YouTube, sin adivinar por la extensión. Si viene
+  // vacía, se sigue detectando automáticamente dentro de la columna IMAGEN
+  // (foto o video), igual que hasta ahora.
   const mediaUrl = b.vid || b.img;
   const yt = youtubeEmbedUrl(mediaUrl);
   if(yt){
     return `<iframe src="${yt}" title="${altJs}" allow="autoplay; encrypted-media" loading="${i === 0 ? 'eager' : 'lazy'}"></iframe>`;
   }
   if(b.vid || isVideoUrl(mediaUrl)){
-    // Mismo video de fondo, ampliado y desenfocado, para rellenar los bordes
-    // sin recortar el video principal (mismo truco que con las fotos, ver
-    // más abajo) — el navegador reutiliza la copia ya descargada, así que
-    // no duplica la descarga.
-    return `<div class="promo-banner-media-wrap">
-      <video class="promo-banner-bg-video" src="${mediaUrl}" autoplay muted loop playsinline aria-hidden="true"></video>
-      <video class="promo-banner-fg" src="${mediaUrl}" autoplay muted loop playsinline preload="${i === 0 ? 'auto' : 'metadata'}" aria-label="${altJs}"></video>
-    </div>`;
+    return `<video src="${mediaUrl}" autoplay muted loop playsinline preload="${i === 0 ? 'auto' : 'metadata'}" aria-label="${altJs}"></video>`;
   }
-  // Foto de fondo ampliada y desenfocada detrás de la foto real (que se ve
-  // completa, sin recortar) — así se rellenan los bordes con un efecto
-  // "halo" en vez de dejar un recuadro blanco cuando la foto no calza
-  // exacto con la proporción de la caja del banner.
-  const bgUrl = optimizeImageUrl(mediaUrl, 500).replace(/"/g, '&quot;');
-  return `<div class="promo-banner-media-wrap">
-    <div class="promo-banner-bg" style="background-image:url('${bgUrl}')" aria-hidden="true"></div>
-    <img class="promo-banner-fg img-fade" src="${optimizeImageUrl(mediaUrl, 1600)}" alt="${altJs}" loading="${i === 0 ? 'eager' : 'lazy'}">
-  </div>`;
+  return `<img class="img-fade" src="${optimizeImageUrl(mediaUrl, 1600)}" alt="${altJs}" loading="${i === 0 ? 'eager' : 'lazy'}">`;
 }
 
 // Arma el HTML de una diapositiva completa (media + texto + CTA si aplica).
@@ -4625,11 +4653,24 @@ function promoBannerSlideHTML(b, i){
   </div>`;
 }
 
+/* ===================== CARRUSEL DE BANNERS — LOOP CONTINUO ===================== */
+// Técnica estándar de "carrusel infinito": el carril lleva un CLON del
+// último banner al principio y un CLON del primero al final. Al llegar al
+// último y seguir hacia adelante, el carril desliza hacia ese clon (idéntico
+// al primero) y, apenas termina la animación, salta SIN transición a la
+// diapositiva real correspondiente. El ojo nunca nota el salto porque la
+// imagen es exactamente la misma — el efecto que se siente es de loop
+// continuo, nunca de "regresar" al principio.
+// PROMO_TRACK_INDEX = posición dentro del carril (contando los clones).
+// Con loop activo, la diapositiva real 0 vive en la posición 1 del carril.
+let PROMO_TRACK_INDEX = 0;
+
 function renderPromoBanner(){
   const strip = document.getElementById('promoBannerStrip');
+  const viewport = document.getElementById('promoBannerViewport');
   const track = document.getElementById('promoBannerTrack');
   const dotsEl = document.getElementById('promoBannerDots');
-  if(!strip || !track || !dotsEl) return;
+  if(!strip || !viewport || !track || !dotsEl) return;
 
   if(PROMO_BANNER_TIMER){ clearInterval(PROMO_BANNER_TIMER); PROMO_BANNER_TIMER = null; }
 
@@ -4641,64 +4682,88 @@ function renderPromoBanner(){
   }
 
   strip.style.display = '';
-  PROMO_BANNER_INDEX = 0;
+  const n = PROMO_BANNERS.length;
+  const loop = n > 1;
 
-  track.innerHTML = PROMO_BANNERS.map((b, i) => promoBannerSlideHTML(b, i)).join('');
+  // Con 2+ banners: [clon del último, ...reales, clon del primero], para
+  // poder hacer el salto invisible al llegar a cualquiera de las puntas.
+  // Con exactamente 1 banner no hay nada que recorrer: sin clones ni loop.
+  const slidesHTML = loop
+    ? [promoBannerSlideHTML(PROMO_BANNERS[n - 1], n - 1)]
+        .concat(PROMO_BANNERS.map((b, i) => promoBannerSlideHTML(b, i)))
+        .concat([promoBannerSlideHTML(PROMO_BANNERS[0], 0)])
+    : [promoBannerSlideHTML(PROMO_BANNERS[0], 0)];
+  track.innerHTML = slidesHTML.join('');
 
-  const showNav = PROMO_BANNERS.length > 1;
-  strip.querySelectorAll('.promo-banner-nav').forEach(btn => { btn.style.display = showNav ? '' : 'none'; });
+  strip.querySelectorAll('.promo-banner-nav').forEach(btn => { btn.style.display = loop ? '' : 'none'; });
 
-  dotsEl.innerHTML = showNav ? PROMO_BANNERS.map((_, i) =>
+  dotsEl.innerHTML = loop ? PROMO_BANNERS.map((_, i) =>
     `<button type="button" class="promo-banner-dot${i === 0 ? ' is-active' : ''}" onclick="promoBannerGoTo(${i})" aria-label="Ir al banner ${i + 1}"></button>`
   ).join('') : '';
+
+  PROMO_TRACK_INDEX = loop ? 1 : 0;
+  promoBannerSetPosition(false);
+  promoBannerInitDrag(viewport);
 
   strip.onmouseenter = () => { if(PROMO_BANNER_TIMER){ clearInterval(PROMO_BANNER_TIMER); PROMO_BANNER_TIMER = null; } };
   strip.onmouseleave = () => promoBannerAutoplayStart();
 
-  // Si la persona desliza el carril a mano (o con el trackpad/touch), se
-  // detecta cuál tarjeta quedó más cerca del centro y se sincronizan los
-  // puntitos y el índice — así el autoplay retoma desde ahí, no desde 0.
-  let scrollSyncTimer = null;
-  track.onscroll = () => {
-    clearTimeout(scrollSyncTimer);
-    scrollSyncTimer = setTimeout(() => {
-      const slides = [...track.querySelectorAll('.promo-banner-slide')];
-      if(!slides.length) return;
-      const trackCenter = track.scrollLeft + track.clientWidth / 2;
-      let closest = 0, closestDist = Infinity;
-      slides.forEach((s, i) => {
-        const dist = Math.abs((s.offsetLeft + s.offsetWidth / 2) - trackCenter);
-        if(dist < closestDist){ closestDist = dist; closest = i; }
-      });
-      PROMO_BANNER_INDEX = closest;
-      promoBannerUpdate(false);
-    }, 120);
-  };
-
-  promoBannerUpdate(false);
   promoBannerAutoplayStart();
 }
 
-function promoBannerUpdate(shouldScroll){
+// Mueve el carril a PROMO_TRACK_INDEX. conTransicion=false se usa tanto
+// para el posicionamiento inicial como para el "salto" invisible entre un
+// clon y su diapositiva real — en esos casos NO debe animarse.
+function promoBannerSetPosition(conTransicion){
   const track = document.getElementById('promoBannerTrack');
-  document.querySelectorAll('.promo-banner-slide').forEach((s, i) => s.classList.toggle('is-active', i === PROMO_BANNER_INDEX));
-  document.querySelectorAll('.promo-banner-dot').forEach((d, i) => d.classList.toggle('is-active', i === PROMO_BANNER_INDEX));
-  if(shouldScroll && track){
-    const active = track.querySelectorAll('.promo-banner-slide')[PROMO_BANNER_INDEX];
-    if(active){
-      track.scrollTo({ left: active.offsetLeft - (track.clientWidth - active.offsetWidth) / 2, behavior: 'smooth' });
-    }
+  if(!track) return;
+  track.classList.toggle('no-transition', !conTransicion);
+  track.style.transform = `translateX(-${PROMO_TRACK_INDEX * 100}%)`;
+  if(!conTransicion){
+    // Fuerza al navegador a aplicar el cambio "sin transición" de inmediato
+    // — si no, el siguiente movimiento a veces hereda el salto animado.
+    void track.offsetWidth;
   }
+  promoBannerUpdateDots();
 }
 
-function promoBannerGoTo(i){
-  if(!PROMO_BANNERS.length) return;
-  PROMO_BANNER_INDEX = ((i % PROMO_BANNERS.length) + PROMO_BANNERS.length) % PROMO_BANNERS.length;
-  promoBannerUpdate(true);
+function promoBannerRealIndex(){
+  const n = PROMO_BANNERS.length;
+  if(!n) return 0;
+  return ((PROMO_TRACK_INDEX - 1) % n + n) % n;
+}
+
+function promoBannerUpdateDots(){
+  const real = promoBannerRealIndex();
+  document.querySelectorAll('.promo-banner-dot').forEach((d, i) => d.classList.toggle('is-active', i === real));
+}
+
+// Cuando termina la animación del carril, si quedamos parados sobre uno de
+// los dos clones de las puntas, saltamos sin animar a la diapositiva real
+// equivalente (se ve idéntica, así que el salto es imperceptible). Esto es
+// lo que hace que ir "siguiente" desde el último banner se sienta como
+// continuar hacia el primero, en vez de devolverse de golpe.
+document.addEventListener('transitionend', (e) => {
+  if(e.target.id !== 'promoBannerTrack' || e.propertyName !== 'transform') return;
+  const n = PROMO_BANNERS.length;
+  if(n < 2) return;
+  if(PROMO_TRACK_INDEX === n + 1){ PROMO_TRACK_INDEX = 1; promoBannerSetPosition(false); }
+  else if(PROMO_TRACK_INDEX === 0){ PROMO_TRACK_INDEX = n; promoBannerSetPosition(false); }
+});
+
+function promoBannerGoTrack(newTrackIndex){
+  PROMO_TRACK_INDEX = newTrackIndex;
+  promoBannerSetPosition(true);
   promoBannerAutoplayStart();
 }
-function promoBannerNext(){ promoBannerGoTo(PROMO_BANNER_INDEX + 1); }
-function promoBannerPrev(){ promoBannerGoTo(PROMO_BANNER_INDEX - 1); }
+function promoBannerNext(){ promoBannerGoTrack(PROMO_TRACK_INDEX + 1); }
+function promoBannerPrev(){ promoBannerGoTrack(PROMO_TRACK_INDEX - 1); }
+// Usada por los puntitos: recibe el índice REAL (0 a n-1), no la posición
+// dentro del carril con clones.
+function promoBannerGoTo(realIndex){
+  if(!PROMO_BANNERS.length) return;
+  promoBannerGoTrack(realIndex + 1);
+}
 
 // Navegación por teclado del carrusel: funciona con el foco en cualquier
 // parte de adentro (la región, una diapositiva enlazada, o el botón CTA),
@@ -4706,7 +4771,7 @@ function promoBannerPrev(){ promoBannerGoTo(PROMO_BANNER_INDEX - 1); }
 // onkeydown. Flechas izquierda/derecha = anterior/siguiente, Inicio/Fin =
 // primera/última diapositiva.
 function promoBannerKeyNav(e){
-  if(!PROMO_BANNERS.length || PROMO_BANNERS.length < 2) return;
+  if(PROMO_BANNERS.length < 2) return;
   if(e.key === 'ArrowLeft'){ e.preventDefault(); promoBannerPrev(); }
   else if(e.key === 'ArrowRight'){ e.preventDefault(); promoBannerNext(); }
   else if(e.key === 'Home'){ e.preventDefault(); promoBannerGoTo(0); }
@@ -4716,7 +4781,54 @@ function promoBannerKeyNav(e){
 function promoBannerAutoplayStart(){
   if(PROMO_BANNER_TIMER){ clearInterval(PROMO_BANNER_TIMER); PROMO_BANNER_TIMER = null; }
   if(PROMO_BANNERS.length < 2) return;
-  PROMO_BANNER_TIMER = setInterval(() => promoBannerGoTo(PROMO_BANNER_INDEX + 1), 3800);
+  PROMO_BANNER_TIMER = setInterval(() => promoBannerNext(), 3800);
+}
+
+/* ---------- Deslizar con el dedo (swipe) — antes no existía en celular,
+   solo servían las flechas (que además se ocultan en pantallas chicas).
+   Ahora el carril responde al dedo en tiempo real mientras se arrastra, y
+   al soltar decide si avanza, retrocede o vuelve a acomodarse. ---------- */
+let PROMO_DRAG = null;
+let PROMO_SUPPRESS_CLICK = false;
+
+function promoBannerInitDrag(viewport){
+  // Los listeners se ponen una sola vez (el elemento persiste entre
+  // recargas del catálogo/banners; solo cambia su contenido interno).
+  if(viewport._dragBound) return;
+  viewport._dragBound = true;
+
+  const onStart = (clientX) => {
+    if(PROMO_BANNERS.length < 2) return;
+    PROMO_SUPPRESS_CLICK = false;
+    if(PROMO_BANNER_TIMER){ clearInterval(PROMO_BANNER_TIMER); PROMO_BANNER_TIMER = null; }
+    PROMO_DRAG = { startX: clientX, deltaX: 0, width: viewport.clientWidth || 1 };
+    const track = document.getElementById('promoBannerTrack');
+    if(track) track.classList.add('no-transition');
+  };
+  const onMove = (clientX) => {
+    if(!PROMO_DRAG) return;
+    PROMO_DRAG.deltaX = clientX - PROMO_DRAG.startX;
+    if(Math.abs(PROMO_DRAG.deltaX) > 10) PROMO_SUPPRESS_CLICK = true;
+    const track = document.getElementById('promoBannerTrack');
+    if(track){
+      const pct = (PROMO_DRAG.deltaX / PROMO_DRAG.width) * 100;
+      track.style.transform = `translateX(calc(-${PROMO_TRACK_INDEX * 100}% + ${pct}%))`;
+    }
+  };
+  const onEnd = () => {
+    if(!PROMO_DRAG) return;
+    const threshold = PROMO_DRAG.width * 0.15;
+    const delta = PROMO_DRAG.deltaX;
+    PROMO_DRAG = null;
+    if(delta > threshold) promoBannerPrev();
+    else if(delta < -threshold) promoBannerNext();
+    else promoBannerSetPosition(true);
+  };
+
+  viewport.addEventListener('touchstart', (e) => onStart(e.touches[0].clientX), { passive: true });
+  viewport.addEventListener('touchmove', (e) => onMove(e.touches[0].clientX), { passive: true });
+  viewport.addEventListener('touchend', onEnd);
+  viewport.addEventListener('touchcancel', onEnd);
 }
 
 // La columna LINK de la pestaña de banners admite dos formas:
@@ -4726,6 +4838,10 @@ function promoBannerAutoplayStart(){
 //   una promoción externa, etc.), que se abre en una pestaña nueva.
 // Si LINK queda vacío, el banner es solo decorativo — no hace nada al tocarlo.
 function promoBannerActivate(i){
+  // Si la persona acaba de deslizar el dedo (arrastre real, no un simple
+  // toque), el "click" que dispara el navegador justo después de soltar no
+  // debe abrir el link — si no, cada swipe también activaría el banner.
+  if(PROMO_SUPPRESS_CLICK){ PROMO_SUPPRESS_CLICK = false; return; }
   const b = PROMO_BANNERS[i];
   if(!b) return;
   const link = (b.link || '').trim();
