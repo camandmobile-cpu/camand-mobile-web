@@ -3962,13 +3962,10 @@ function renderMegaEquipos(){
   const col1 = megaMenuColumnHTML('iPhone', 'celulares', CATALOG.apple.brands, 6);
   const col2 = megaMenuColumnHTML('Android', 'celulares', CATALOG.android.brands, 6);
   if(!col1 && !col2){ el.innerHTML = ''; return; }
-  el.innerHTML = `
-    ${col1}${col2}
-    <div class="mega-menu-cta">
-      <span class="mega-menu-cta-eyebrow">Sistecrédito</span>
-      <p>Llévate tu equipo hoy y paga a cuotas, sin tarjeta.</p>
-      <a href="${waLink('Hola, quiero saber cómo comprar con Sistecrédito')}" target="_blank" rel="noopener">Consultar por WhatsApp →</a>
-    </div>`;
+  // A pedido de Andrés: se quitó el recuadro de Sistecrédito que iba al
+  // lado de las columnas — el mega-menú ahora solo muestra los productos
+  // (iPhone / Android), sin nada promocional adicional.
+  el.innerHTML = `${col1}${col2}`;
 }
 
 function renderMegaTablets(){
@@ -3996,6 +3993,8 @@ function renderMegaAccesorios(){
   if(!brands.length){ el.innerHTML = ''; return; }
 
   const esc = s => String(s).replace(/'/g, "\\'");
+  // A pedido de Andrés: se quitó el recuadro de "Estuches Acrygel" que iba
+  // al lado — el mega-menú de Accesorios ahora solo muestra los productos.
   el.innerHTML = `
     <div class="mega-menu-col mega-menu-col-wide">
       <span class="mega-menu-heading">Accesorios y Tech</span>
@@ -4003,11 +4002,6 @@ function renderMegaAccesorios(){
         ${brands.map(b => `<button type="button" onclick="megaMenuGoFiltered('techoficina','${esc(b.name)}','')">${b.name}</button>`).join('')}
       </div>
       <button type="button" class="mega-menu-viewall" onclick="megaMenuGoFiltered('techoficina','','')">Ver todo Accesorios →</button>
-    </div>
-    <div class="mega-menu-cta">
-      <span class="mega-menu-cta-eyebrow">Estuches Acrygel</span>
-      <p>Funda personalizada con tu foto — grado militar y anti-amarilleo.</p>
-      <a href="javascript:void(0)" onclick="go('cases')">Diseñar mi estuche →</a>
     </div>`;
 }
 
