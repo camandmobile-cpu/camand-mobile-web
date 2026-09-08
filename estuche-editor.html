@@ -542,17 +542,27 @@ body.preview-mode .progress-strip{display:none;}
 .cart-total-row span:last-child{font-size:20px;font-weight:800;color:var(--ink);}
 #cartTotalsWrap{margin-top:10px;margin-bottom:8px;}
 .cart-checkout-row{display:flex;gap:10px;margin-top:14px;}
+/* OJO — antes estos dos botones usaban border-radius:100px (una
+   "píldora" perfecta). Eso se ve bien SOLO si el texto entra en una
+   sola línea; en el carrito (que es angosto, min(400px,92vw) sin
+   importar el celular) "Finalizar pedido" con el ícono de candado y
+   sobre todo "Seguir personalizando" no entraban en una línea, el
+   texto saltaba a dos renglones, el botón crecía en alto casi tanto
+   como en ancho, y un radio de 100px sobre una caja casi cuadrada da
+   un círculo enorme en vez de una píldora — exactamente lo que se veía
+   en la captura. Un radio fijo y moderado (16px) se queda como un
+   rectángulo redondeado sin importar cuántas líneas ocupe el texto. */
 .cart-checkout{
-  flex:1.4;display:flex;align-items:center;justify-content:center;gap:6px;background:#000000;color:#fff;border:none;border-radius:100px;
-  padding:14px;font-size:13.5px;font-weight:700;cursor:pointer;text-align:center;
+  flex:1.4;display:flex;align-items:center;justify-content:center;gap:6px;background:#000000;color:#fff;border:none;border-radius:16px;
+  padding:13px 10px;font-size:13px;font-weight:700;cursor:pointer;text-align:center;line-height:1.25;
   transition:background .2s,transform .2s;
 }
 .cart-checkout:hover{background:#1a1a1a;transform:translateY(-1px);}
 .cart-checkout:active{transform:translateY(0) scale(.98);}
 .cart-checkout:disabled{background:var(--ink-faint);cursor:not-allowed;transform:none;}
 .cart-continue-btn{
-  flex:1;background:none;border:1.5px solid var(--line);color:var(--ink);border-radius:100px;
-  padding:14px;font-size:13.5px;font-weight:700;cursor:pointer;transition:border-color .2s,background .2s;
+  flex:1;background:none;border:1.5px solid var(--line);color:var(--ink);border-radius:16px;
+  padding:13px 10px;font-size:13px;font-weight:700;cursor:pointer;transition:border-color .2s,background .2s;line-height:1.25;
 }
 .cart-continue-btn:hover{border-color:var(--ink);background:var(--surface);}
 @media (max-width:360px){ .cart-checkout-row{flex-direction:column;} }
@@ -910,7 +920,7 @@ body.preview-mode .progress-strip{display:none;}
         <svg class="icon-inline" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><rect x="5" y="10.5" width="14" height="9" rx="2"/><path d="M8 10.5V7a4 4 0 0 1 8 0v3.5"/></svg>
         Finalizar pedido
       </button>
-      <button type="button" class="cart-continue-btn" id="cartContinueBtn">Seguir personalizando</button>
+      <button type="button" class="cart-continue-btn" id="cartContinueBtn">Seguir editando</button>
     </div>
   </div>
 </aside>
