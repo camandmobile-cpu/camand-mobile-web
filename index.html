@@ -185,24 +185,38 @@ header.nav{
 .brand .brand-logo{
   height:30px;width:auto;flex-shrink:0;display:block;
 }
-nav.links{display:flex;align-items:center;gap:20px;font-size:12px;font-weight:500;color:var(--ink);justify-self:center;white-space:nowrap;}
-nav.links button{background:none;border:none;color:var(--ink-soft);cursor:pointer;font-size:12px;padding:4px 0;position:relative;transition:color .2s;}
-nav.links button:hover{color:#000;}
+nav.links{display:flex;align-items:center;gap:4px;font-size:12px;font-weight:500;color:var(--ink);justify-self:center;white-space:nowrap;}
+/* Pastilla negra al pasar el mouse, como en la referencia de Artezcom que
+   enviaste: fondo negro sólido + texto blanco en vez de solo cambiar el
+   color del texto. Padding moderado (6px/10px) para no perder el ancho
+   extra que ya se había ganado antes moviendo el punto donde el menú pasa
+   a modo hamburguesa (de 734px a 1080px, ver el media query de abajo) —
+   con 9 opciones en el menú, un padding muy grande volvería a apretar el
+   header en pantallas medianas. */
+nav.links button{
+  background:none;border:none;color:var(--ink-soft);cursor:pointer;font-size:12px;
+  padding:6px 10px;position:relative;border-radius:100px;
+  transition:color .18s,background .18s;
+}
+nav.links button:hover:not(.is-active){color:#fff;background:#000;}
 nav.links button.is-active{color:#000;}
 nav.links button.is-active::after{
-  content:"";position:absolute;left:0;right:0;bottom:-8px;height:2px;
+  content:"";position:absolute;left:10px;right:10px;bottom:-6px;height:2px;
   background:var(--ink);border-radius:2px;
 }
 /* ---------- MEGA-MENÚ (Equipos, Tablets, Relojes, Audífonos, Computadores, Accesorios) ---------- */
 .nav-item{position:relative;display:flex;}
 .mega-menu{
   position:absolute;top:100%;left:50%;transform:translateX(-50%) translateY(6px);
-  min-width:300px;max-width:640px;
-  background:rgba(255,255,255,.92);backdrop-filter:blur(20px);-webkit-backdrop-filter:blur(20px);
-  border:1px solid var(--line);border-radius:var(--radius-lg);box-shadow:var(--shadow-2);
-  padding:26px;padding-top:34px;display:flex;gap:32px;
+  min-width:300px;max-width:640px;box-sizing:border-box;
+  /* Estilo "limpio" tipo Artezcom/Apple: fondo blanco sólido en vez de
+     translúcido con blur (se veía "sucio" contra fotos de fondo), esquinas
+     bien redondeadas y sombra suave. */
+  background:#fff;
+  border:1px solid var(--line);border-radius:20px;box-shadow:0 20px 45px -12px rgba(0,0,0,.18);
+  padding:22px;padding-top:30px;display:flex;gap:28px;
   opacity:0;visibility:hidden;pointer-events:none;
-  transition:opacity .25s var(--ease),transform .25s var(--ease),visibility .25s;
+  transition:opacity .2s var(--ease),transform .2s var(--ease),visibility .2s;
   z-index:50;
 }
 /* Centrado bajo el botón (left:50% + translateX(-50%)) se ve bien para los
@@ -216,28 +230,59 @@ nav.links button.is-active::after{
 #megaComputadores,#megaAccesorios{left:auto;right:0;transform:translateY(6px);}
 /* padding-top de sobra + posición pegada (top:100%, sin gap real) hacen de
    "puente" invisible para que el mouse pueda bajar del botón al menú sin
-   que el :hover se corte a mitad de camino. */
-.nav-item:hover .mega-menu,.nav-item:focus-within .mega-menu{
+   que el :hover se corte a mitad de camino.
+   El ":hover" que abre el menú solo se activa en dispositivos con mouse de
+   verdad (hover:hover) — en celular/tablet, un toque también cuenta como
+   "hover" para el navegador y, como no hay forma de "quitar el mouse de
+   encima", el menú se quedaba abierto pegado en pantalla hasta tocar en
+   otro lado. En touch, el botón sigue funcionando igual (onclick lleva
+   directo a la categoría), solo que ya no aparece el desplegable. El
+   teclado (:focus-within) sigue abriendo el menú siempre, en cualquier
+   dispositivo, para no perder accesibilidad. */
+@media (hover:hover) and (pointer:fine){
+  .nav-item:hover .mega-menu{ opacity:1;visibility:visible;pointer-events:auto; }
+  .nav-item:hover #megaEquipos,.nav-item:hover #megaTablets,
+  .nav-item:hover #megaComputadores,.nav-item:hover #megaAccesorios{ transform:translateY(0); }
+}
+.nav-item:focus-within .mega-menu{
   opacity:1;visibility:visible;pointer-events:auto;
 }
-.nav-item:hover #megaEquipos,.nav-item:focus-within #megaEquipos,
-.nav-item:hover #megaTablets,.nav-item:focus-within #megaTablets,
-.nav-item:hover #megaComputadores,.nav-item:focus-within #megaComputadores,
-.nav-item:hover #megaAccesorios,.nav-item:focus-within #megaAccesorios{
+.nav-item:focus-within #megaEquipos,.nav-item:focus-within #megaTablets,
+.nav-item:focus-within #megaComputadores,.nav-item:focus-within #megaAccesorios{
   transform:translateY(0);
 }
-.mega-menu-col{display:flex;flex-direction:column;gap:2px;min-width:150px;}
-.mega-menu-col-wide{flex:1;}
+/* flex:1 + min-width:0 es la corrección real del bug de "el texto se sale
+   del recuadro" en Equipos: antes cada columna (iPhone / Android) se
+   ensanchaba sola hasta caber su texto más largo EN UNA sola línea (el
+   comportamiento por defecto de un elemento flex es no encogerse más allá
+   del ancho de su contenido) — con nombres de producto largos, la columna
+   terminaba empujando el borde del recuadro y el texto quedaba cortado o
+   asomado fuera. Con min-width:0 la columna sí puede encogerse hasta el
+   ancho disponible real, y el texto envuelve en vez de desbordar. */
+.mega-menu-col{display:flex;flex-direction:column;gap:2px;flex:1 1 0;min-width:0;}
+.mega-menu-col-wide{flex:1 1 0;min-width:0;}
 .mega-menu-heading{font-size:11px;font-weight:700;letter-spacing:.06em;text-transform:uppercase;color:var(--ink-faint);margin:0 0 8px 8px;}
 .mega-menu-col button{
-  all:unset;cursor:pointer;font-size:14px;color:var(--ink);padding:7px 8px;border-radius:8px;
+  all:unset;cursor:pointer;font-size:14px;color:var(--ink);padding:8px 10px;border-radius:10px;
+  display:block;width:100%;box-sizing:border-box;
+  white-space:normal;overflow-wrap:break-word;word-break:break-word;text-align:left;line-height:1.3;
+  transition:background .15s,color .15s;
 }
-.mega-menu-col button:hover,.mega-menu-col button:focus-visible{background:var(--surface);color:var(--tech);}
-.mega-menu-grid{display:grid;grid-template-columns:1fr 1fr;gap:0 8px;}
-.mega-menu-viewall{margin-top:6px;font-weight:600 !important;color:var(--tech) !important;}
+/* Hover "limpio" tipo Artezcom: texto negro + fondo gris clarito, sin el
+   azul de acento que se sentía más "link de sistema" que menú de tienda. */
+.mega-menu-col button:hover,.mega-menu-col button:focus-visible{background:var(--surface);color:#000;}
+/* minmax(0,1fr) en vez de 1fr en cada columna es la corrección real del
+   bug de "el texto se sale del recuadro" en Accesorios: una columna de
+   grid con "1fr" a secas igual respeta el ancho de su contenido más ancho
+   como mínimo (el mismo problema de fondo que en Equipos, pero en grid en
+   vez de flex) — con minmax(0,1fr) la columna sí se puede encoger por
+   debajo de eso y el nombre largo de una marca/subcategoría envuelve en
+   vez de desbordar el recuadro del mega-menú. */
+.mega-menu-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:0 8px;}
+.mega-menu-viewall{margin-top:6px;font-weight:600 !important;color:var(--ink) !important;}
 .mega-menu-cta{
   width:190px;min-width:0;flex-shrink:0;background:var(--surface);border-radius:var(--radius-md);padding:18px;
-  display:flex;flex-direction:column;gap:6px;
+  display:flex;flex-direction:column;gap:6px;box-sizing:border-box;
 }
 .mega-menu-cta-eyebrow{font-size:11px;font-weight:700;letter-spacing:.05em;text-transform:uppercase;color:var(--tech);}
 .mega-menu-cta p{margin:0;font-size:13px;color:var(--ink-soft);line-height:1.4;overflow-wrap:break-word;}
@@ -1795,7 +1840,7 @@ body.loaded header.nav {
         </button>
       </div>
 
-      <div class="cat-grid-home reveal">
+      <div class="cat-grid-home reveal" id="catGridHome">
         <button type="button" class="cat-card-home" onclick="go('celulares')">
           <div class="cch-media" id="cchm-equipos"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><rect x="7" y="2" width="10" height="20" rx="2"/><path d="M11 18h2"/></svg></div>
           <h4>Equipos<span class="arrow">→</span></h4>
@@ -1850,7 +1895,7 @@ body.loaded header.nav {
       <div class="wrap">
         <div class="home-featured-head">
           <h2>Productos más vendidos</h2>
-          <a onclick="go('tech')">Ver todo el catálogo →</a>
+          <a onclick="goToCatGrid()">Ver todo el catálogo →</a>
         </div>
         <div class="product-grid" id="homeFeaturedGrid"></div>
       </div>
@@ -4009,6 +4054,17 @@ function performCelularesSearch(query){
 // porque su hash lleva el id del producto (#/producto/<id>).
 const HASH_VIEWS = ['home','tech','celulares','tablets','computadores','accesorios','relojes','audifonos','techoficina','cases','faq','privacidad'];
 
+// Contador que identifica la navegación más reciente. Antes, si go() se
+// llamaba dos veces seguidas muy rápido (doble clic, o un clic mientras la
+// animación anterior no había terminado), podían quedar VARIOS listeners de
+// "transitionend" esperando a la vez y la vista terminaba mostrando el
+// resultado de la llamada equivocada — o, si ninguno de los dos disparaba
+// realmente el evento (ver nota más abajo), la página se quedaba
+// "pegada" sin cambiar de sección. Cada llamada a go() recibe un número
+// nuevo; si para cuando el cambio de vista se ejecuta ya hay una llamada
+// más reciente en curso, esa ejecución se cancela sola.
+let _goToken = 0;
+
 function go(view, opts){
   opts = opts || {};
   if(view !== 'product') CURRENT_PRODUCT_ID = null;
@@ -4017,8 +4073,21 @@ function go(view, opts){
 
   const app = document.getElementById('app');
   toggleMenu(false);
+  // Quita el foco de lo que se haya clicado (un enlace del mega-menú, el
+  // botón "Relojes", un resultado de búsqueda...). Sin esto, el elemento
+  // clicado se queda enfocado y el mega-menú (que se abre con
+  // ":focus-within") sigue visible/pegado encima del contenido nuevo aunque
+  // ya hayas navegado a otra sección.
+  if(document.activeElement && typeof document.activeElement.blur === 'function'){
+    document.activeElement.blur();
+  }
 
+  const myToken = ++_goToken;
   const swapView = () => {
+    // Si mientras esperábamos la animación se lanzó OTRA navegación más
+    // reciente (por ejemplo, un segundo clic), esta ya quedó obsoleta —
+    // no pisar lo que la navegación más nueva ya esté mostrando.
+    if(myToken !== _goToken) return;
     document.querySelectorAll('.view').forEach(v => v.classList.remove('active'));
     const target = document.getElementById('view-'+view);
     if(target) target.classList.add('active');
@@ -4027,12 +4096,57 @@ function go(view, opts){
     requestAnimationFrame(() => app.classList.remove('transitioning'));
   };
 
-  app.addEventListener('transitionend', swapView, {once:true});
+  const onTransitionEnd = (e) => {
+    // "transitionend" hace bubbling — sin este chequeo, la transición de
+    // CUALQUIER hijo (un botón, una foto, el carrito) que termine mientras
+    // #app también está en transición dispara el cambio de vista antes de
+    // tiempo, o consume el listener "once" sin que #app haya terminado.
+    if(e.target !== app) return;
+    app.removeEventListener('transitionend', onTransitionEnd);
+    clearTimeout(fallbackTimer);
+    swapView();
+  };
+  app.addEventListener('transitionend', onTransitionEnd);
+  // Red de seguridad: si por lo que sea el evento "transitionend" nunca
+  // llega a disparar en #app (pestaña en segundo plano, el sistema del
+  // visitante tiene activado "reducir movimiento", o cualquier otro caso
+  // donde el navegador no complete la transición), la vista igual cambia
+  // pasado el tiempo que dura la animación en el CSS (.4s) + un margen —
+  // así nunca se queda "pegada" sin reaccionar al clic.
+  const fallbackTimer = setTimeout(() => {
+    app.removeEventListener('transitionend', onTransitionEnd);
+    swapView();
+  }, 450);
+
   app.classList.add('transitioning');
 
   if(!opts.fromHash && HASH_VIEWS.includes(view)){
     const newHash = '#/' + view;
     if(location.hash !== newHash) history.pushState(null, '', newHash);
+  }
+}
+
+// "Ver todo el catálogo →" (debajo de "Productos más vendidos" en el
+// inicio): antes llevaba a go('tech'), el hub genérico de "Tecnología" —
+// pero desde que Equipos, Tablets y Computadores pasaron a tener su propia
+// página (ver mejoras-web-sep-2026.md, tercera ronda), ese hub quedó casi
+// vacío (solo Impresoras, y "Otros productos" si aplica), así que el botón
+// ya no llevaba a nada útil como "catálogo completo". Como el sitio no
+// tiene una única página con TODO junto, lo que de verdad funciona como
+// "ver todo el catálogo" hoy es la cuadrícula de 6 categorías que ya está
+// arriba, en el propio inicio — así que este botón sube hasta ahí (o
+// primero te lleva al inicio y luego sube, si estabas en otra página).
+function goToCatGrid(){
+  const scrollToGrid = () => {
+    const el = document.getElementById('catGridHome');
+    if(el) el.scrollIntoView({behavior:'smooth', block:'start'});
+  };
+  const homeView = document.getElementById('view-home');
+  if(homeView && homeView.classList.contains('active')){
+    scrollToGrid();
+  } else {
+    go('home');
+    setTimeout(scrollToGrid, 500);
   }
 }
 
