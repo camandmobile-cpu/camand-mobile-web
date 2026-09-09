@@ -2510,6 +2510,45 @@ body.loaded header.nav {
 
 </div>
 
+<!-- ===== Formulario de suscripción — Camand Mobile ===== -->
+<div id="suscripcion" style="max-width:420px;margin:40px auto;padding:28px;background:#F5F5F7;border-radius:20px;font-family:-apple-system,BlinkMacSystemFont,Arial,sans-serif;text-align:center;">
+  <h3 style="margin:0 0 6px;color:#1D1D1F;font-size:19px;letter-spacing:-0.2px;">Recibe ofertas antes que nadie</h3>
+  <p style="margin:0 0 18px;color:#6E6E73;font-size:13.5px;">Celulares, audífonos y relojes con precio especial, directo a tu correo.</p>
+
+  <form id="form-suscripcion" action="https://script.google.com/macros/s/AKfycbwEdtFcKkD-FkHsaZWCfc72_yltZV3bbp4Z2ZtarDwXyZsmR18W55kTZpalETJhBWFD/exec" method="POST" target="frame-suscripcion" onsubmit="mostrarGraciasSuscripcion()">
+    <input type="text" name="empresa" style="position:absolute;left:-9999px;" tabindex="-1" autocomplete="off">
+
+    <input type="text" name="nombre" placeholder="Tu nombre" required
+      style="width:100%;box-sizing:border-box;padding:12px 14px;margin-bottom:10px;border-radius:10px;border:1px solid rgba(0,0,0,0.12);font-size:14px;">
+
+    <input type="email" name="correo" placeholder="Tu correo" required
+      style="width:100%;box-sizing:border-box;padding:12px 14px;margin-bottom:10px;border-radius:10px;border:1px solid rgba(0,0,0,0.12);font-size:14px;">
+
+    <label style="display:flex;align-items:flex-start;gap:8px;font-size:11.5px;color:#6E6E73;text-align:left;margin-bottom:14px;">
+      <input type="checkbox" required style="margin-top:2px;">
+      Acepto la <a href="#/privacidad" style="color:#0071E3;">Política de Privacidad y Tratamiento de Datos</a> y quiero recibir correos promocionales.
+    </label>
+
+    <button type="submit"
+      style="width:100%;background:#000000;color:#fff;border:none;border-radius:100px;padding:13px;font-size:14.5px;font-weight:600;cursor:pointer;">
+      Suscribirme
+    </button>
+  </form>
+
+  <p id="mensaje-gracias-suscripcion" style="display:none;margin-top:6px;color:#1D1D1F;font-size:14px;">
+    ¡Listo! Ya quedaste suscrito.
+  </p>
+
+  <iframe name="frame-suscripcion" style="display:none;"></iframe>
+</div>
+
+<script>
+function mostrarGraciasSuscripcion() {
+  document.getElementById('form-suscripcion').style.display = 'none';
+  document.getElementById('mensaje-gracias-suscripcion').style.display = 'block';
+}
+</script>
+
 <footer class="site" id="contacto">
   <div class="wrap">
     <div class="foot-top reveal">
