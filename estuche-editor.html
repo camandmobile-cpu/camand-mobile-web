@@ -204,6 +204,23 @@ header.top{
   position:relative;overflow:auto;padding:28px;
 }
 @media (max-width:900px){
+  /* Bug real reportado (captura de celular, 10 sep): al llegar a Revisa o
+     Pide, el lienzo editable de fondo (con su botón flotante "Subir foto"
+     y las asas de selección) seguía visible debajo del panel — en celular
+     el layout pasa a apilado (columna) y el panel queda PRIMERO en el DOM,
+     así que ese lienzo grande aparecía justo debajo, con su foto y los
+     lentes de cámara superpuestos de forma confusa (se veía como si el
+     diseño estuviera duplicado/roto). Cada uno de esos dos pasos ya
+     muestra su propia miniatura estática del diseño (ver .confirm-preview
+     más abajo), así que el lienzo interactivo completo ya no hace falta
+     ahí — se oculta, dejando una pantalla de revisión limpia y compacta,
+     enfocada en confirmar/comprar. Si el cliente quiere seguir editando,
+     "Atrás" o la píldora "Personaliza" lo regresan al lienzo grande.
+     No afecta a escritorio (ahí panel y lienzo van lado a lado, sin este
+     problema de apilado). */
+  body:not(.mobile-design) .stage-wrap{ display:none; }
+}
+@media (max-width:900px){
   /* Modo diseño: el lienzo llena TODO el alto disponible (75-80% real
      de la pantalla, como pediste) — el micro-panel flota encima del
      lienzo en vez de compartir el espacio en el layout, así que aquí
@@ -472,6 +489,15 @@ input[type=range]{flex:1;accent-color:var(--cases);}
   display:flex;flex-direction:column;align-items:center;padding:20px;gap:14px;margin-bottom:20px;
 }
 .confirm-preview img{max-width:150px;border-radius:20px;box-shadow:0 12px 28px -8px rgba(0,0,0,.22);}
+/* Versión compacta reutilizada en el paso "Revisa" — mismo look, sin el
+   botón 360° (eso queda para el paso final "Pide"). */
+.confirm-preview.mini{padding:12px;gap:0;margin-bottom:18px;}
+.confirm-preview.mini img{max-width:104px;}
+.confirm-trust-row{
+  display:flex;flex-wrap:wrap;gap:8px 16px;margin-top:18px;padding-top:16px;border-top:1px solid var(--line);
+}
+.confirm-trust-row span{display:flex;align-items:center;gap:6px;font-size:11.5px;font-weight:600;color:var(--ink-soft);}
+.confirm-trust-row svg{width:14px;height:14px;color:var(--trust);flex-shrink:0;}
 .rotate-cta{
   display:flex;align-items:center;gap:7px;background:#fff;border:1px solid var(--line);border-radius:100px;
   padding:9px 16px;font-size:12.5px;font-weight:700;color:var(--ink);transition:border-color .18s,transform .12s;
@@ -954,6 +980,13 @@ body.preview-mode .progress-strip{display:none;}
           <p>Todo opcional — súmalo si quieres llevarte más, directo en el mismo pedido.</p>
         </div>
 
+        <!-- Miniatura del diseño (en celular el lienzo grande queda oculto
+             en este paso, ver CSS de .stage-wrap — esto reemplaza esa
+             referencia visual sin el desorden de los controles de edición). -->
+        <div class="confirm-preview mini">
+          <img id="extrasThumb" src="" alt="Vista previa de tu estuche">
+        </div>
+
         <label class="addon-card">
           <input type="checkbox" id="addonHidrogel">
           <div class="ac-info"><b>Vidrio Hidrogel Mate/Anti-espía</b><span>Protege tu pantalla y mantiene tu privacidad.</span></div>
@@ -998,6 +1031,14 @@ body.preview-mode .progress-strip{display:none;}
           <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M12 16V4M6 10l6 6 6-6"/><path d="M4 20h16"/></svg>
           Descargar mi diseño
         </button>
+
+        <!-- Confianza (punto: "generar confianza") — mismos hechos ya
+             usados en el resto de la tienda (Sistecrédito, envíos,
+             garantía), no se inventa nada nuevo aquí. -->
+        <div class="confirm-trust-row">
+          <span><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 6L9 17l-5-5"/></svg>Aceptamos Sistecrédito a cuotas</span>
+          <span><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><rect x="1" y="6" width="14" height="11" rx="1.5"/><path d="M15 10h4l3 3.5V17h-7"/><circle cx="6" cy="19" r="1.6"/><circle cx="17.5" cy="19" r="1.6"/></svg>Envíos a toda Colombia</span>
+        </div>
       </div>
     </div>
 
@@ -1650,6 +1691,12 @@ function removeOverlay(){
 let userZoom = 1;
 function fitCanvasToContainer(){
   const wrap = document.querySelector('.stage-wrap');
+  // El contenedor puede estar oculto (display:none) mientras se revisa el
+  // pedido en celular (ver regla en el CSS, arriba) — ahí clientWidth/
+  // clientHeight dan 0, y seguir de largo calcularía un zoom/tamaño
+  // negativo para el lienzo. Simplemente no hay nada que ajustar mientras
+  // no esté visible; se vuelve a llamar solo al volver a mostrarse.
+  if(!wrap || !wrap.clientWidth || !wrap.clientHeight) return;
   const availW = wrap.clientWidth - 48;
   const availH = wrap.clientHeight - 48;
   const scale = Math.min(availW/currentModel.w, availH/currentModel.h, 1.15) * userZoom;
@@ -2486,6 +2533,11 @@ function refreshConfirmStep(){
   document.getElementById('summaryTotal').textContent = money(UNIT_PRICE + extra);
 }
 
+function refreshExtrasThumb(){
+  const img = document.getElementById('extrasThumb');
+  if(img) img.src = exportPreviewPNG();
+}
+
 function goToStep(step){
   if(!STEP_ORDER.includes(step)) return;
   const idx = STEP_ORDER.indexOf(step);
@@ -2496,6 +2548,7 @@ function goToStep(step){
   updateProgressUI();
   updateBottomBarForStep();
   updateStageHint();
+  if(step === 'extras') refreshExtrasThumb();
   if(step === 'confirm') refreshConfirmStep();
 
   // Alterna entre el modo "diseño" (celular: barra de herramientas +
