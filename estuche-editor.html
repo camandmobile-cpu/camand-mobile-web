@@ -299,6 +299,17 @@ body.preview-mode .stage-hint{opacity:0;}
 .drop-zone b{color:var(--ink);font-weight:700;}
 .drop-zone .dz-hint{display:block;margin-top:2px;}
 .upload-note{font-size:11.5px;color:var(--ink-faint);margin-top:10px;line-height:1.5;}
+/* CTA alternativo "que lo hagamos nosotros" (punto 9) — deliberadamente
+   discreto (texto+ícono, sin relleno de color) para no competir con
+   "Subir foto", que sigue siendo la acción principal de este bloque. */
+.wa-alt-cta{
+  width:100%;display:flex;align-items:center;gap:10px;margin-top:12px;padding:10px 12px;
+  background:var(--surface);border:1px solid var(--line);border-radius:var(--radius-sm);
+  color:var(--ink-soft);font-size:12px;line-height:1.4;text-align:left;transition:background .2s,border-color .2s;
+}
+.wa-alt-cta:hover{background:var(--surface-2);border-color:var(--ink-faint);}
+.wa-alt-cta svg{width:18px;height:18px;flex-shrink:0;color:var(--trust);}
+.wa-alt-cta b{color:var(--ink);font-weight:700;display:block;}
 /* En celular, "arrastrar" no es un gesto real (nadie arrastra un
    archivo sobre el celular) — la caja grande de escritorio, pensada
    para eso, ahí solo ocupaba espacio de sobra. En celular se condensa a
@@ -319,6 +330,16 @@ body.preview-mode .stage-hint{opacity:0;}
    ocupar más espacio que las demás. */
 .template-grid{display:flex;gap:14px;overflow-x:auto;padding:4px 2px 6px;scrollbar-width:none;}
 .template-grid::-webkit-scrollbar{display:none;}
+/* Punto 8 — galería de fotos reales (estuches ya entregados), mismo
+   patrón de scroll horizontal que las plantillas, pero rectangular en
+   vez de circular para que se note que son fotos de producto real y no
+   otra opción seleccionable. */
+.real-results-grid{display:flex;gap:8px;overflow-x:auto;padding:4px 2px 6px;scrollbar-width:none;}
+.real-results-grid::-webkit-scrollbar{display:none;}
+.real-results-grid img{
+  flex-shrink:0;width:64px;height:64px;border-radius:var(--radius-sm);object-fit:cover;
+  box-shadow:inset 0 0 0 1px rgba(0,0,0,.08);background:var(--surface);
+}
 .template-swatch{
   flex-shrink:0;width:50px;display:flex;flex-direction:column;align-items:center;gap:6px;
   background:none;border:none;padding:2px;
@@ -744,21 +765,23 @@ body.preview-mode .progress-strip{display:none;}
 </header>
 
 <div class="progress-strip">
+  <!-- Reducido de 4 pasos a 3 ETAPAS conceptuales (Personaliza / Revisa /
+       Pide) — por dentro siguen existiendo los mismos 4 STEP_ORDER de
+       siempre (image/edit/extras/confirm), así que no se tocó nada de la
+       lógica del asistente ni de goToStep(); "Personaliza" simplemente
+       agrupa visualmente image+edit (que además ya comparten el mismo
+       modo canvas-protagonista en celular, ver body.mobile-design). -->
   <div class="progress-track" id="progressTrack">
-    <button type="button" class="progress-step is-current" data-step="image">
-      <span class="num"><span>1</span></span><span class="lbl">Imagen</span>
+    <button type="button" class="progress-step is-current" data-group="personaliza">
+      <span class="num"><span>1</span></span><span class="lbl">Personaliza</span>
     </button>
     <div class="progress-line" data-line="0"></div>
-    <button type="button" class="progress-step" data-step="edit" disabled>
-      <span class="num"><span>2</span></span><span class="lbl">Editar</span>
+    <button type="button" class="progress-step" data-group="revisa" disabled>
+      <span class="num"><span>2</span></span><span class="lbl">Revisa</span>
     </button>
     <div class="progress-line" data-line="1"></div>
-    <button type="button" class="progress-step" data-step="extras" disabled>
-      <span class="num"><span>3</span></span><span class="lbl">Extras</span>
-    </button>
-    <div class="progress-line" data-line="2"></div>
-    <button type="button" class="progress-step" data-step="confirm" disabled>
-      <span class="num"><span>4</span></span><span class="lbl">Confirmar</span>
+    <button type="button" class="progress-step" data-group="pide" disabled>
+      <span class="num"><span>3</span></span><span class="lbl">Pide</span>
     </button>
   </div>
 </div>
@@ -772,7 +795,7 @@ body.preview-mode .progress-strip{display:none;}
     <div class="step-pane active" id="stepPane-image">
       <div class="pane-scroll">
         <div class="pane-head">
-          <p class="eyebrow">Paso 1 de 4</p>
+          <p class="eyebrow">01 · Personaliza</p>
           <h2>Elige tu equipo y tu punto de partida</h2>
           <p>Selecciona tu modelo, luego sube una foto o arranca desde una plantilla.</p>
         </div>
@@ -793,6 +816,15 @@ body.preview-mode .progress-strip{display:none;}
           </div>
           <input type="file" id="fileInput" accept="image/*" style="display:none" multiple>
           <p class="upload-note">Usa la foto en la mayor resolución posible — guardamos el archivo original para producir tu estuche en alta calidad.</p>
+
+          <!-- CTA alternativo (punto 9): para quien no quiere usar el editor,
+               deja el diseño en manos del equipo y sigue directo a WhatsApp —
+               nunca compite visualmente con "Subir foto", que sigue siendo la
+               acción principal de este bloque. -->
+          <button type="button" class="wa-alt-cta" id="waAltCta">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7"><path d="M3 21l1.4-4.2A8.5 8.5 0 1 1 8 19.6L3 21Z"/><path d="M8.2 8.6c.2-.5.5-.5.8-.5h.6c.2 0 .5 0 .7.5.2.6.7 1.9.8 2 .1.2.1.4 0 .6-.2.3-.3.4-.5.6s-.4.4-.2.8c.2.4.9 1.5 2 2.3 1.3 1 2 1.3 2.3 1.5.3.1.5.1.7-.1.2-.2.8-.9 1-1.2.2-.3.4-.2.7-.1.3.1 1.8.9 2.1 1 .3.2.5.2.6.4.1.2.1 1-.3 1.9-.4.9-2 1.7-2.8 1.8-.7.1-1.6.2-5-1.2-4.3-1.8-6.9-6.2-7.1-6.5-.2-.3-1.7-2.3-1.7-4.3 0-2.1 1.1-3.1 1.5-3.5Z"/></svg>
+            <span>¿Prefieres que nosotros lo hagamos? <b>Enviar diseño por WhatsApp</b></span>
+          </button>
 
           <div class="filters-box" id="filtersBox">
             <div class="field-label">Ajustes de tu foto</div>
@@ -818,8 +850,23 @@ body.preview-mode .progress-strip{display:none;}
         </div>
 
         <div class="tool-block" id="tool-template">
-          <div class="field-label" style="margin-top:0;">O empieza con una plantilla</div>
+          <div class="field-label" style="margin-top:0;">¿No tienes foto? Explora plantillas</div>
           <div class="template-grid" id="templateGrid"></div>
+
+          <!-- Punto 8: fotos REALES de estuches ya entregados (misma galería
+               que usa camand-mobile-web/index.html, carpeta img/galeria/,
+               reutilizada tal cual — nunca renders genéricos). Solo se
+               muestra si esas imágenes existen en el despliegue; si faltan,
+               el navegador simplemente no pinta nada en esta franja. -->
+          <div class="field-label">Así puede quedar el tuyo</div>
+          <div class="real-results-grid" id="realResultsGrid">
+            <img src="img/galeria/estuche-01.jpg" alt="Estuche personalizado Camand Mobile" loading="lazy" onerror="this.remove()">
+            <img src="img/galeria/estuche-02.jpg" alt="Estuche personalizado Camand Mobile" loading="lazy" onerror="this.remove()">
+            <img src="img/galeria/estuche-03.jpg" alt="Estuche personalizado Camand Mobile" loading="lazy" onerror="this.remove()">
+            <img src="img/galeria/estuche-04.jpg" alt="Estuche personalizado Camand Mobile" loading="lazy" onerror="this.remove()">
+            <img src="img/galeria/estuche-05.jpg" alt="Estuche personalizado Camand Mobile" loading="lazy" onerror="this.remove()">
+            <img src="img/galeria/estuche-06.jpg" alt="Estuche personalizado Camand Mobile" loading="lazy" onerror="this.remove()">
+          </div>
         </div>
       </div>
     </div>
@@ -828,7 +875,7 @@ body.preview-mode .progress-strip{display:none;}
     <!-- ======= PASO 2 · EDITAR ======= -->
     <div class="step-pane" id="stepPane-edit">
       <div class="pane-head" style="padding:22px 22px 0;">
-        <p class="eyebrow">Paso 2 de 4</p>
+        <p class="eyebrow">01 · Personaliza</p>
         <h2>Hazlo tuyo</h2>
         <p>Añade texto, íconos y ajusta cada elemento sobre tu estuche.</p>
       </div>
@@ -902,7 +949,7 @@ body.preview-mode .progress-strip{display:none;}
     <div class="step-pane" id="stepPane-extras">
       <div class="pane-scroll">
         <div class="pane-head">
-          <p class="eyebrow">Paso 3 de 4</p>
+          <p class="eyebrow">02 · Revisa</p>
           <h2>Completa la protección</h2>
           <p>Todo opcional — súmalo si quieres llevarte más, directo en el mismo pedido.</p>
         </div>
@@ -929,7 +976,7 @@ body.preview-mode .progress-strip{display:none;}
     <div class="step-pane" id="stepPane-confirm">
       <div class="pane-scroll">
         <div class="pane-head">
-          <p class="eyebrow">Paso 4 de 4</p>
+          <p class="eyebrow">03 · Pide</p>
           <h2>Así se verá</h2>
           <p>Revisa tu diseño y da el siguiente paso.</p>
         </div>
@@ -2374,6 +2421,12 @@ function wireRotateDrag(){
    ver el lienzo a pantalla casi completa (ver sección 11, más abajo).
 --------------------------------------------------------------------- */
 const STEP_ORDER = ["image", "edit", "extras", "confirm"];
+// Agrupa los 4 pasos internos en las 3 ETAPAS que ve el cliente en la
+// barra de progreso (01 Personaliza engloba Imagen+Editar). No reemplaza
+// STEP_ORDER — solo se usa para pintar/deshabilitar las 3 píldoras.
+const STEP_GROUP = { image:"personaliza", edit:"personaliza", extras:"revisa", confirm:"pide" };
+const GROUP_ORDER = ["personaliza", "revisa", "pide"];
+const GROUP_FIRST_STEP = { personaliza:"image", revisa:"extras", pide:"confirm" };
 let currentStep = "image";
 let maxStepReached = 0;
 
@@ -2385,15 +2438,16 @@ function hasDesignContent(){
 }
 
 function updateProgressUI(){
-  const idx = STEP_ORDER.indexOf(currentStep);
+  const curGroupIdx = GROUP_ORDER.indexOf(STEP_GROUP[currentStep]);
+  const maxGroupIdx = GROUP_ORDER.indexOf(STEP_GROUP[STEP_ORDER[maxStepReached]]);
   document.querySelectorAll('.progress-step').forEach(btn => {
-    const sIdx = STEP_ORDER.indexOf(btn.dataset.step);
-    btn.classList.toggle('is-current', sIdx === idx);
-    btn.classList.toggle('is-done', sIdx < idx);
-    btn.disabled = sIdx > maxStepReached;
+    const gIdx = GROUP_ORDER.indexOf(btn.dataset.group);
+    btn.classList.toggle('is-current', gIdx === curGroupIdx);
+    btn.classList.toggle('is-done', gIdx < curGroupIdx);
+    btn.disabled = gIdx > maxGroupIdx;
   });
   document.querySelectorAll('.progress-line').forEach(line => {
-    line.classList.toggle('is-filled', parseInt(line.dataset.line, 10) < idx);
+    line.classList.toggle('is-filled', parseInt(line.dataset.line, 10) < curGroupIdx);
   });
 }
 
@@ -2611,7 +2665,9 @@ function wireUI(){
   document.getElementById('progressTrack').addEventListener('click', e=>{
     const btn = e.target.closest('.progress-step');
     if(!btn || btn.disabled) return;
-    goToStep(btn.dataset.step);
+    const group = btn.dataset.group;
+    if(STEP_GROUP[currentStep] === group) return; // ya estás en esa etapa
+    goToStep(GROUP_FIRST_STEP[group]);
   });
   document.getElementById('nextStepBtn').addEventListener('click', goNextStep);
   document.getElementById('backStepBtn').addEventListener('click', goBackStep);
@@ -2642,6 +2698,16 @@ function wireUI(){
   });
   document.querySelectorAll('.filter-chip').forEach(chip=>{
     chip.addEventListener('click', ()=>applyFilterPreset(chip.dataset.preset));
+  });
+
+  // CTA alternativo "que lo hagamos nosotros" (punto 9) — abre WhatsApp
+  // con el modelo ya elegido (si lo hay) para que el cliente envíe su
+  // foto directo por el chat, sin pasar por el editor.
+  const waAltCta = document.getElementById('waAltCta');
+  if(waAltCta) waAltCta.addEventListener('click', () => {
+    const modelTxt = currentModel ? (BRANDS[currentBrandKey].label + ' ' + currentModel.name) : 'aún no lo elijo — me ayudan a confirmarlo';
+    const msg = `Hola, quiero un estuche personalizado pero prefiero que ustedes hagan el diseño por mí.\nMi equipo: ${modelTxt}.\nLes envío mi foto por este chat.`;
+    window.open(`https://wa.me/${WHATSAPP_NUMBER}?text=${encodeURIComponent(msg)}`, '_blank');
   });
 
   // Image upload

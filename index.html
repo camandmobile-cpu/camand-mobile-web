@@ -4140,6 +4140,10 @@ function go(view, opts){
     document.querySelectorAll('nav.links button[data-view]').forEach(b => b.classList.toggle('is-active', b.dataset.view === view));
     window.scrollTo({top:0, behavior:'instant'});
     requestAnimationFrame(() => app.classList.remove('transitioning'));
+    // Bug de banners sin imágenes al volver a Inicio (ver promoBannerSyncWithView
+    // más abajo, junto al carrusel): el autoplay del banner solo debe correr
+    // mientras Inicio está realmente visible.
+    promoBannerSyncWithView(view === 'home');
   };
 
   const onTransitionEnd = (e) => {
@@ -4873,7 +4877,14 @@ function renderPromoBanner(){
   strip.onmouseenter = () => { if(PROMO_BANNER_TIMER){ clearInterval(PROMO_BANNER_TIMER); PROMO_BANNER_TIMER = null; } };
   strip.onmouseleave = () => promoBannerAutoplayStart();
 
-  promoBannerAutoplayStart();
+  // renderPromoBanner() también se vuelve a llamar cuando termina de
+  // confirmarse en segundo plano la carga de banners desde la Hoja (ver
+  // cargarBannersDesdeSheet más abajo) — si para entonces el visitante ya
+  // navegó fuera de Inicio, no debe arrancar el autoplay igual (mismo
+  // arreglo que promoBannerSyncWithView, ver explicación junto a esa
+  // función, más abajo).
+  const homeEl = document.getElementById('view-home');
+  promoBannerSyncWithView(!homeEl || homeEl.classList.contains('active'));
 }
 
 // Mueve el carril a PROMO_TRACK_INDEX. conTransicion=false se usa tanto
@@ -4947,6 +4958,46 @@ function promoBannerAutoplayStart(){
   if(PROMO_BANNER_TIMER){ clearInterval(PROMO_BANNER_TIMER); PROMO_BANNER_TIMER = null; }
   if(PROMO_BANNERS.length < 2) return;
   PROMO_BANNER_TIMER = setInterval(() => promoBannerNext(), 3800);
+}
+
+/* ---------- BUG: banners sin imágenes tras Inicio → categoría → Inicio,
+   sin recargar (raíz encontrada, no es un problema de caché ni de carga
+   de imágenes) ----------
+   El intervalo de autoplay (arriba) NO se detenía al salir de Inicio —
+   #view-home simplemente pasa a display:none (go() solo mueve la clase
+   .active, nunca destruye ni vuelve a pintar el DOM), pero el temporizador
+   seguía llamando a promoBannerNext() cada 3.8s de todas formas mientras el
+   visitante navegaba por otra categoría.
+   Cada "siguiente" ejecutado así SÍ avanzaba PROMO_TRACK_INDEX y aplicaba el
+   nuevo transform, pero con el carril en display:none ningún navegador
+   dispara "transitionend" — y es justo ese evento (ver el listener global
+   más arriba) el que corrige el salto invisible al pasar por uno de los dos
+   clones de las puntas del carril infinito. Sin esa corrección, unos
+   cuantos ciclos de autoplay "fantasma" bastan para dejar PROMO_TRACK_INDEX
+   bastante fuera del rango real de diapositivas. Al volver a Inicio, el
+   carril seguía existiendo y con sus mismas imágenes de siempre — solo que
+   trasladado a un transform tan grande que quedaba completamente fuera del
+   área visible: de ahí la sensación de "se perdieron las imágenes". F5
+   "arreglaba" esto por accidente porque recarga la página entera y
+   renderPromoBanner() vuelve a arrancar PROMO_TRACK_INDEX en 1.
+   Arreglo de raíz (sin recargar nada): el autoplay se pausa apenas Inicio
+   deja de estar visible y solo se reanuda al volver — así el índice nunca
+   tiene ocasión de desincronizarse mientras nadie lo ve. Como red de
+   seguridad adicional (por si algún caso raro lo desincroniza igual, p.ej.
+   soltar un swipe justo al navegar), también se valida el rango al volver
+   y se corrige sin animación si hiciera falta. */
+function promoBannerSyncWithView(isHomeVisible){
+  if(!isHomeVisible){
+    if(PROMO_BANNER_TIMER){ clearInterval(PROMO_BANNER_TIMER); PROMO_BANNER_TIMER = null; }
+    return;
+  }
+  const n = PROMO_BANNERS.length;
+  const track = document.getElementById('promoBannerTrack');
+  if(track && n > 1 && (PROMO_TRACK_INDEX < 1 || PROMO_TRACK_INDEX > n)){
+    PROMO_TRACK_INDEX = 1;
+    promoBannerSetPosition(false);
+  }
+  promoBannerAutoplayStart();
 }
 
 /* ---------- Deslizar con el dedo (swipe) — antes no existía en celular,
