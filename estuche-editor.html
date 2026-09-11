@@ -2283,7 +2283,7 @@ async function buyNow(){
   if(!currentModel){ showToast('Elige tu equipo primero'); return; }
   if(!hasDesignContent()){ showToast('Añade una foto, texto o un clipart antes de comprar'); return; }
   const { extra, notes } = getAddons();
-  await downloadOrderPackage();
+  downloadOrderPackage();
   const addonsLine = notes.length ? `\nAdicionales:\n- ${notes.join('\n- ')}` : '';
   const msg = `Hola, quiero pedir mi estuche personalizado (${currentModel.name}) — ${money(UNIT_PRICE + extra)}.${addonsLine}\nYa descargué el archivo de mi diseño (ZIP), te lo envío por aquí.`;
   window.open(`https://wa.me/${WHATSAPP_NUMBER}?text=${encodeURIComponent(msg)}`, '_blank');
@@ -2291,7 +2291,7 @@ async function buyNow(){
 async function checkoutCart(){
   if(!cart.length){ showToast('Tu carrito está vacío'); return; }
   const hayEstuche = cart.some(it => !it.isAccessory);
-  if(hayEstuche) await downloadOrderPackage();
+  if(hayEstuche) downloadOrderPackage();
   const lineas = cart.map(it => `• ${it.n} — ${money(it.p)} x ${it.qty} = ${money(it.p*it.qty)}`).join('\n');
   let msg = `Hola Camand Mobile, quiero hacer este pedido:\n\n${lineas}\n\nTotal: ${money(cartTotal())}`;
   const nota = document.getElementById('cartNoteInput');
@@ -2873,3 +2873,4 @@ window.addEventListener('load', ()=>{
 </script>
 </body>
 </html>
+fix whatsapp movil
