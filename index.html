@@ -100,9 +100,9 @@
   --tech-dark:#0058b0;
   --tech-tint:#eaf3fe;
 
-  --cases:#c8447a;
-  --cases-dark:#a3345f;
-  --cases-tint:#fbeaf1;
+  --cases:#0071e3;
+  --cases-dark:#0058b0;
+  --cases-tint:#eaf3fe;
 
   --trust:#0f7a4d;
   --trust-tint:#e7f6ee;
@@ -1100,6 +1100,9 @@ footer.site{
 @media (max-width:800px){.cases-hero{grid-template-columns:1fr;}}
 .cases-hero h1{font-size:clamp(30px,4.4vw,48px);letter-spacing:-0.03em;font-weight:800;margin:0 0 16px;}
 .cases-hero p{color:var(--ink-soft);font-size:16px;line-height:1.6;margin:0 0 22px;}
+
+.cases-hero-simple{padding:34px 0 10px;text-align:center;max-width:640px;margin:0 auto;}
+.cases-hero-simple h1{font-size:clamp(30px,4.4vw,48px);letter-spacing:-0.03em;font-weight:800;margin:0 0 22px;}
 .btn-primary{
   display:inline-flex;align-items:center;gap:8px;background:var(--ink);color:#fff;
   padding:14px 24px;border-radius:100px;font-weight:700;font-size:14.5px;
@@ -1166,6 +1169,18 @@ footer.site{
 .showcase-page.active img:nth-child(1){transition-delay:.04s;}
 .showcase-page.active img:nth-child(2){transition-delay:.14s;}
 
+.compare-wrap{overflow-x:auto;border-radius:var(--radius-md);border:1px solid var(--line);margin-top:28px;}
+.compare-table{width:100%;border-collapse:collapse;min-width:520px;background:#fff;}
+.compare-table th,.compare-table td{padding:14px 18px;text-align:left;font-size:13.5px;border-bottom:1px solid var(--line);}
+.compare-table th{font-size:11.5px;text-transform:uppercase;letter-spacing:.04em;color:var(--ink-soft);background:var(--surface);}
+.compare-table td:first-child,.compare-table th:first-child{color:var(--ink-soft);font-weight:600;}
+.compare-table tbody tr:last-child td{border-bottom:none;}
+.compare-table .yes{color:var(--trust);font-weight:700;}
+
+.gallery-real-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:14px;}
+@media (max-width:800px){.gallery-real-grid{grid-template-columns:repeat(2,1fr);}}
+.gallery-real-grid img{width:100%;aspect-ratio:3/4;object-fit:cover;border-radius:var(--radius-md);box-shadow:var(--shadow-1);display:block;}
+
 .steps{display:grid;grid-template-columns:repeat(4,1fr);gap:16px;}
 @media (max-width:800px){.steps{grid-template-columns:repeat(2,1fr);}}
 .step{background:var(--surface);border-radius:var(--radius-md);padding:22px;}
@@ -1204,7 +1219,7 @@ footer.site{
   .promo-featured-img{width:120px;}
 }
 
-/* product lines: Essential / Pro MagSafe */
+/* product lines: Básica / Pro */
 .line-grid{display:grid;grid-template-columns:1fr 1fr;gap:20px;}
 @media (max-width:700px){.line-grid{grid-template-columns:1fr;}}
 .line-card{
@@ -1222,6 +1237,8 @@ footer.site{
 .line-eyebrow{font-size:12.5px;font-weight:700;letter-spacing:.05em;text-transform:uppercase;color:var(--cases-dark);margin:0 0 6px;}
 .line-card.pro .line-eyebrow{color:var(--ink-soft);}
 .line-card h3{font-size:21px;font-weight:800;letter-spacing:-0.02em;margin:0 0 10px;}
+.line-photo{width:100%;aspect-ratio:4/3;border-radius:var(--radius-md);overflow:hidden;background:var(--surface);margin:0 0 16px;}
+.line-photo img{width:100%;height:100%;object-fit:cover;display:block;}
 .line-card .line-desc{color:var(--ink-soft);font-size:13.5px;line-height:1.55;margin:0 0 18px;}
 .line-price{display:flex;align-items:baseline;gap:9px;margin-bottom:18px;}
 .line-price .old{font-size:14.5px;color:var(--ink-faint);text-decoration:line-through;}
@@ -1259,21 +1276,13 @@ footer.site{
 .bento-icon svg{width:22px;height:22px;}
 .bento-card h5{font-size:16px;font-weight:800;letter-spacing:-0.01em;margin:0 0 8px;}
 .bento-card p{margin:0;color:var(--ink-soft);font-size:13.5px;line-height:1.55;}
-
-/* trend inspiration grid */
-.trend-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:14px;}
-@media (max-width:800px){.trend-grid{grid-template-columns:repeat(2,1fr);}}
-.trend-tile{
-  position:relative;overflow:hidden;border-radius:var(--radius-md);
-  min-height:150px;display:flex;align-items:flex-end;padding:18px;
-  transition:transform .25s var(--ease), box-shadow .25s var(--ease);
+.bento-grid.cols-4{grid-template-columns:repeat(4,1fr);}
+@media (max-width:900px){.bento-grid.cols-4{grid-template-columns:repeat(2,1fr);}}
+@media (max-width:480px){.bento-grid.cols-4{grid-template-columns:1fr;}}
+.bento-tag{
+  display:inline-block;font-size:11px;font-weight:800;text-transform:uppercase;letter-spacing:.04em;
+  color:var(--cases-dark);background:var(--cases-tint);padding:3px 10px;border-radius:100px;margin-bottom:12px;
 }
-.trend-tile:hover{transform:translateY(-3px);box-shadow:var(--shadow-2);}
-.trend-tile::after{
-  content:"";position:absolute;inset:0;
-  background:linear-gradient(0deg, rgba(0,0,0,.45), rgba(0,0,0,0) 60%);
-}
-.trend-tile span{position:relative;z-index:1;color:#fff;font-size:15px;font-weight:800;letter-spacing:-0.01em;line-height:1.25;}
 
 .finish-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:14px;}
 @media (max-width:700px){.finish-grid{grid-template-columns:1fr;}}
@@ -1869,7 +1878,7 @@ body.loaded header.nav {
           <p class="af-kicker">Personalización premium</p>
           <h2>Estuches Personalizados Acrygel</h2>
           <ul class="af-benefits">
-            <li><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" style="flex-shrink:0;"><path d="M12 3l7 3v6c0 4.5-3 7.5-7 9-4-1.5-7-4.5-7-9V6z"/></svg> Grado militar</li>
+            <li><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" style="flex-shrink:0;"><path d="M12 3l7 3v6c0 4.5-3 7.5-7 9-4-1.5-7-4.5-7-9V6z"/></svg> Resistente a caídas</li>
             <li><svg width="15" height="15" viewBox="0 0 24 24" fill="currentColor" stroke="none" style="flex-shrink:0;"><path d="M12 2l1.8 5.6L19.5 9l-5.7 1.4L12 16l-1.8-5.6L4.5 9l5.7-1.4Z"/></svg> Anti-amarilleo</li>
             <li><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" style="flex-shrink:0;"><circle cx="13.5" cy="6.5" r="2.5"/><path d="M11.5 8.5 4 16l1 3 3 1 7.5-7.5"/></svg> Impresión UV de alta definición</li>
           </ul>
@@ -2142,76 +2151,88 @@ body.loaded header.nav {
         <span>/ Estuches personalizados</span>
       </div>
 
-      <div class="cases-hero">
-        <div>
-          <div class="design-hint"><span class="dot2"></span>Calidad Premium HD</div>
-          <p class="eyebrow" style="color:var(--cases);">Personalización</p>
-          <h1>Estuches transparentes en Acrygel, diseñados por ti.</h1>
-          <p>Usamos Acrygel híbrido de grado militar, anti-amarilleo, con impresión fotográfica UV de máxima definición — tu diseño se ve nítido y se mantiene así con el tiempo.</p>
-          <a class="btn-primary cases-btn" href="estuche-editor.html" target="_blank" rel="noopener">
-            Diseñar mi estuche
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M13 6l6 6-6 6"/></svg>
-          </a>
-        </div>
-        <div class="cases-showcase-card">
-          <div class="showcase-header">
-            <span class="tag">Trabajos reales</span>
-            <span class="tag">Acrygel Anti-Amarilleo</span>
-          </div>
-          <div class="showcase-grid-clean" id="heroShowcase"></div>
-        </div>
+      <div class="cases-hero-simple">
+        <div class="design-hint" style="margin:0 auto 12px;"><span class="dot2"></span>Calidad Premium HD</div>
+        <p class="eyebrow" style="color:var(--cases);">Personalización</p>
+        <h1>Estuches personalizados</h1>
+        <a class="btn-primary cases-btn" href="estuche-editor.html" target="_blank" rel="noopener">
+          Diseñar mi estuche
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M13 6l6 6-6 6"/></svg>
+        </a>
       </div>
     </div>
 
     <div class="section" style="padding-top:8px;">
       <div class="wrap">
+        <div class="section-head">
+          <h2>Elige tu línea</h2>
+          <p>Dos líneas, mismo Acrygel resistente a caídas — la diferencia está en el borde y en dónde va tu foto.</p>
+        </div>
         <div class="line-grid">
 
           <div class="line-card">
-            <span class="line-badge pink">Más vendido</span>
-            <p class="line-eyebrow">Línea Essential</p>
+            <span class="line-badge pink">Más vendida</span>
+            <p class="line-eyebrow">Línea Básica</p>
             <h3>Estuche Acrygel transparente</h3>
-            <p class="line-desc">No es una funda desechable más: es un estuche híbrido Acrygel de grado militar, con bordes compactos, protección de cámara y tecnología anti-amarilleo — personalizado con tu diseño favorito.</p>
+            <div class="line-photo" id="lineFoto_basica"><img src="img/estuches-ejemplo/basica.png" alt="Ejemplo de estuche Línea Básica" loading="lazy" onerror="this.closest('.line-photo').style.display='none'"></div>
+            <p class="line-desc">Un estuche híbrido Acrygel resistente a caídas, con bordes compactos, protección de cámara y tecnología anti-amarilleo (exclusiva de esta línea). Tú eliges si tu foto o diseño se imprime por el exterior o por el interior del acrílico.</p>
             <div class="line-price">
-              <span class="old">$59.990</span>
-              <span class="new">$39.990</span>
-              <span class="badge">-33%</span>
+              <span class="old">$41.880</span>
+              <span class="new">$34.900</span>
+              <span class="badge">-17%</span>
             </div>
             <ul class="line-features">
-              <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M4 12l5 5L20 6"/></svg>Impresión UV de alta resolución (no se pela ni se raya fácil)</li>
-              <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M4 12l5 5L20 6"/></svg>Híbrido Acrygel de grado militar — mucho más resistente que una funda común</li>
+              <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M4 12l5 5L20 6"/></svg>Impresión a elección: exterior o interior del acrílico</li>
+              <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M4 12l5 5L20 6"/></svg>Híbrido Acrygel resistente a caídas — mucho más resistente que una funda común</li>
               <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M4 12l5 5L20 6"/></svg>Bordes compactos con protección reforzada de cámara</li>
-              <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M4 12l5 5L20 6"/></svg>Tecnología anti-amarilleo: se mantiene transparente con el tiempo</li>
-              <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M4 12l5 5L20 6"/></svg>Visualízalo antes de pedir con nuestro editor</li>
+              <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M4 12l5 5L20 6"/></svg>Tecnología anti-amarilleo exclusiva: se mantiene transparente con el tiempo</li>
+              <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M4 12l5 5L20 6"/></svg>Garantía de 1 mes</li>
             </ul>
             <a class="btn-primary cases-btn line-cta" href="estuche-editor.html" target="_blank" rel="noopener">
               <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><path d="M12 20h9"/><path d="M16.5 3.5a2.12 2.12 0 0 1 3 3L7 19l-4 1 1-4Z"/></svg>
-              Diseñar Essential →
+              Diseñar Básica →
             </a>
           </div>
 
           <div class="line-card pro">
             <span class="line-badge ink">Máxima protección</span>
-            <p class="line-eyebrow">Línea Pro / MagSafe</p>
-            <h3>Estuche Pro con MagSafe</h3>
-            <p class="line-desc">Diseñado para los más exigentes. Incluye anillo MagSafe integrado, bordes reforzados de grado militar y tu vidrio templado de regalo.</p>
+            <p class="line-eyebrow">Línea Pro</p>
+            <h3>Estuche Pro, borde reforzado</h3>
+            <div class="line-photo" id="lineFoto_pro"><img src="img/estuches-ejemplo/pro.png" alt="Ejemplo de estuche Línea Pro" loading="lazy" onerror="this.closest('.line-photo').style.display='none'"></div>
+            <p class="line-desc">Para quienes quieren el máximo nivel de protección: bordes negros reforzados, de máxima calidad y protección, con impresión exterior UV de máxima definición.</p>
             <div class="line-price">
-              <span class="old">$89.990</span>
-              <span class="new">$69.990</span>
-              <span class="badge">-22%</span>
+              <span class="old">$53.880</span>
+              <span class="new">$44.900</span>
+              <span class="badge">-17%</span>
             </div>
             <ul class="line-features">
-              <li><svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 2l2.9 6.6L22 9.3l-5 4.8L18.2 21 12 17.3 5.8 21 7 14.1 2 9.3l7.1-.7Z"/></svg>Conexión MagSafe potente para cargadores y accesorios inalámbricos</li>
-              <li><svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 2l2.9 6.6L22 9.3l-5 4.8L18.2 21 12 17.3 5.8 21 7 14.1 2 9.3l7.1-.7Z"/></svg>Bordes reforzados de alto impacto (estilo Space / Camera Control)</li>
+              <li><svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 2l2.9 6.6L22 9.3l-5 4.8L18.2 21 12 17.3 5.8 21 7 14.1 2 9.3l7.1-.7Z"/></svg>Bordes negros reforzados de máxima calidad y protección</li>
               <li><svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 2l2.9 6.6L22 9.3l-5 4.8L18.2 21 12 17.3 5.8 21 7 14.1 2 9.3l7.1-.7Z"/></svg>Impresión UV HD personalizada a tu gusto</li>
+              <li><svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 2l2.9 6.6L22 9.3l-5 4.8L18.2 21 12 17.3 5.8 21 7 14.1 2 9.3l7.1-.7Z"/></svg>Garantía de 1 mes</li>
             </ul>
-            <div class="line-gift"><span class="emoji"><svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><rect x="3" y="8.5" width="18" height="12" rx="1.5"/><path d="M3 12.5h18M12 8.5v12"/><path d="M12 8.5C9 8.5 7.5 7 7.5 5.3 7.5 4 8.5 3 9.8 3 11.6 3 12 5.5 12 8.5ZM12 8.5c3 0 4.5-1.5 4.5-3.2C16.5 4 15.5 3 14.2 3 12.4 3 12 5.5 12 8.5Z"/></svg></span><span><b>Incluye gratis:</b> vidrio templado para tu pantalla</span></div>
-            <a class="btn-primary cases-btn line-cta" href="estuche-editor.html" target="_blank" rel="noopener">
+            <div class="line-gift"><span class="emoji"><svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M20 6L9 17l-5-5"/></svg></span><span><b>Tip:</b> si llevas 2 estuches (Básica, Pro o mezclados) el 2º tiene 10% de descuento y tus 2 vidrios de protección van gratis</span></div>
+            <a class="btn-primary cases-btn line-cta line-btn-pro" href="estuche-editor.html" target="_blank" rel="noopener">
               <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><path d="M12 20h9"/><path d="M16.5 3.5a2.12 2.12 0 0 1 3 3L7 19l-4 1 1-4Z"/></svg>
-              Diseñar Pro MagSafe →
+              Diseñar Pro →
             </a>
           </div>
 
+        </div>
+
+        <div class="compare-wrap">
+          <table class="compare-table">
+            <thead>
+              <tr><th>Comparar</th><th>Línea Básica</th><th>Línea Pro</th></tr>
+            </thead>
+            <tbody>
+              <tr><td>Precio</td><td>$34.900</td><td>$44.900</td></tr>
+              <tr><td>Impresión</td><td>Exterior o interior, tú eliges</td><td>Exterior</td></tr>
+              <tr><td>Borde</td><td>Compacto</td><td>Reforzado, negro, de máxima calidad</td></tr>
+              <tr><td>Material</td><td>Acrygel resistente a caídas + TPU anti-amarilleo</td><td>Acrygel resistente a caídas + borde reforzado premium</td></tr>
+              <tr><td>Garantía</td><td class="yes">1 mes</td><td class="yes">1 mes</td></tr>
+              <tr><td>2ª unidad</td><td>10% de descuento</td><td>10% de descuento</td></tr>
+            </tbody>
+          </table>
         </div>
       </div>
     </div>
@@ -2219,30 +2240,39 @@ body.loaded header.nav {
     <div class="section" style="padding-top:0;">
       <div class="wrap">
         <div class="section-head">
-          <h2>Protección Acrygel de grado militar</h2>
-          <p>La tecnología detrás de cada estuche — hecha para durar.</p>
+          <h2>Protección pensada para cada línea</h2>
+          <p>Acrygel resistente a caídas en las dos líneas — el diferencial está en el borde y el acabado de cada una.</p>
         </div>
-        <div class="bento-grid">
+        <div class="bento-grid cols-4">
           <div class="bento-card">
             <div class="bento-icon">
               <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M12 3l7 3v6c0 5-3.5 8-7 9-3.5-1-7-4-7-9V6l7-3z"/></svg>
             </div>
-            <h5>Grado Militar Anti-Caídas</h5>
-            <p>Absorbe impactos de hasta 2 metros de altura sin dañar tu celular.</p>
+            <h5>Resistente a Caídas</h5>
+            <p>Absorbe impactos de hasta 2 metros de altura sin dañar tu celular. En ambas líneas.</p>
           </div>
           <div class="bento-card">
             <div class="bento-icon">
               <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><rect x="3" y="7" width="18" height="13" rx="2"/><circle cx="12" cy="13.5" r="3.2"/><path d="M8 7l1.3-2h5.4L16 7"/></svg>
             </div>
             <h5>Bisel Elevado para Cámara</h5>
-            <p>1.5 mm de protección extra en los lentes — se apoya sobre superficies sin rayar la cámara.</p>
+            <p>1.5 mm de protección extra en los lentes — se apoya sobre superficies sin rayar la cámara. En ambas líneas.</p>
           </div>
           <div class="bento-card">
+            <span class="bento-tag">Línea Básica</span>
             <div class="bento-icon">
               <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><circle cx="12" cy="12" r="4"/><path d="M12 2v3M12 19v3M4.2 4.2l2.1 2.1M17.7 17.7l2.1 2.1M2 12h3M19 12h3M4.2 19.8l2.1-2.1M17.7 6.3l2.1-2.1"/></svg>
             </div>
-            <h5>TPU Alifático Anti-Amarilleo</h5>
-            <p>Filtro UV de alta resistencia que evita que el estuche se ponga amarillo con el tiempo.</p>
+            <h5>TPU Anti-Amarilleo</h5>
+            <p>Filtro UV de alta resistencia que evita que el estuche se ponga amarillo con el tiempo. Exclusivo de la Línea Básica.</p>
+          </div>
+          <div class="bento-card">
+            <span class="bento-tag">Línea Pro</span>
+            <div class="bento-icon">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M4 8V6a2 2 0 0 1 2-2h2M4 16v2a2 2 0 0 0 2 2h2M20 8V6a2 2 0 0 0-2-2h-2M20 16v2a2 2 0 0 1-2 2h-2"/><rect x="8" y="8" width="8" height="8" rx="1.5"/></svg>
+            </div>
+            <h5>Borde Reforzado Premium</h5>
+            <p>Bordes negros reforzados, de máxima calidad y protección. Exclusivo de la Línea Pro.</p>
           </div>
         </div>
       </div>
@@ -2251,22 +2281,16 @@ body.loaded header.nav {
     <div class="section" style="padding-top:0;">
       <div class="wrap">
         <div class="section-head">
-          <h2>Explora tendencias para tu estuche</h2>
-          <p>Ideas para inspirarte — toca la categoría que más te gusta y armamos tu diseño por WhatsApp.</p>
+          <h2>Hecho por Camand</h2>
+          <p>Estuches reales, entregados a clientes reales — no son renders.</p>
         </div>
-        <div class="trend-grid">
-          <a class="trend-tile" style="background:linear-gradient(160deg,#15803d,#0ea5e9)" href="https://wa.me/573122265799?text=Hola%2C%20quiero%20un%20estuche%20personalizado%20estilo%20Deportes%20%26%20F%C3%BAtbol" target="_blank" rel="noopener">
-            <span>Deportes &amp; Fútbol</span>
-          </a>
-          <a class="trend-tile" style="background:linear-gradient(160deg,#e11d48,#ec4899)" href="https://wa.me/573122265799?text=Hola%2C%20quiero%20un%20estuche%20personalizado%20estilo%20Parejas%20y%20Momentos" target="_blank" rel="noopener">
-            <span>Parejas y Momentos</span>
-          </a>
-          <a class="trend-tile" style="background:linear-gradient(160deg,#334155,#64748b)" href="https://wa.me/573122265799?text=Hola%2C%20quiero%20un%20estuche%20personalizado%20estilo%20Minimal%20%26%20Arte%20Vector" target="_blank" rel="noopener">
-            <span>Minimal &amp; Arte Vector</span>
-          </a>
-          <a class="trend-tile" style="background:linear-gradient(160deg,#6d28d9,#a855f7)" href="https://wa.me/573122265799?text=Hola%2C%20quiero%20un%20estuche%20personalizado%20estilo%20Anime%20%26%20Gaming" target="_blank" rel="noopener">
-            <span>Anime &amp; Gaming</span>
-          </a>
+        <div class="gallery-real-grid" id="galleryRealGrid">
+          <img src="img/galeria/estuche-01.jpg" alt="Estuche personalizado Camand Mobile" loading="lazy" onerror="this.remove()">
+          <img src="img/galeria/estuche-02.jpg" alt="Estuche personalizado Camand Mobile" loading="lazy" onerror="this.remove()">
+          <img src="img/galeria/estuche-03.jpg" alt="Estuche personalizado Camand Mobile" loading="lazy" onerror="this.remove()">
+          <img src="img/galeria/estuche-04.jpg" alt="Estuche personalizado Camand Mobile" loading="lazy" onerror="this.remove()">
+          <img src="img/galeria/estuche-05.jpg" alt="Estuche personalizado Camand Mobile" loading="lazy" onerror="this.remove()">
+          <img src="img/galeria/estuche-06.jpg" alt="Estuche personalizado Camand Mobile" loading="lazy" onerror="this.remove()">
         </div>
       </div>
     </div>
@@ -2277,10 +2301,10 @@ body.loaded header.nav {
           <h2>Cómo funciona</h2>
         </div>
         <div class="steps">
-          <div class="step"><div class="n">01</div><h5>Elige tu modelo</h5><p>Selecciona tu celular y sube la foto que quieres en el estuche.</p></div>
-          <div class="step"><div class="n">02</div><h5>Escríbenos</h5><p>Nos mandas esa misma foto por WhatsApp para confirmar el diseño.</p></div>
-          <div class="step"><div class="n">03</div><h5>Confirmamos</h5><p>Te decimos precio final y tiempo de entrega.</p></div>
-          <div class="step"><div class="n">04</div><h5>Apartas y fabricamos</h5><p>Con un anticipo, empezamos a producir tu estuche.</p></div>
+          <div class="step"><div class="n">01</div><h5>Elige tu línea y modelo</h5><p>Básica o Pro, y tu equipo — todo desde el mismo editor.</p></div>
+          <div class="step"><div class="n">02</div><h5>Sube tu foto y personaliza</h5><p>Ajusta, agrega texto o clipart y mira la vista previa en vivo, sin instalar nada.</p></div>
+          <div class="step"><div class="n">03</div><h5>Suma protección</h5><p>Si quieres, agrega hidrogel o vidrio de pantalla al mismo pedido.</p></div>
+          <div class="step"><div class="n">04</div><h5>Pide por WhatsApp</h5><p>Confirmamos precio final, forma de pago y tiempo de entrega.</p></div>
         </div>
       </div>
     </div>
@@ -2293,22 +2317,16 @@ body.loaded header.nav {
         </div>
         <div class="promo-grid">
           <div class="promo-card featured">
-            <span class="promo-badge">Recomendada</span>
-            <div class="promo-featured-body">
-              <img class="promo-featured-img" src="img/promo-featured.jpg" alt="Instalador Easy-Install para el vidrio templado">
-              <div class="promo-featured-text">
-                <h5>Combo Protección Total (Estuche + Vidrio Mágico)</h5>
-                <p>Personaliza tu estuche y protege la pantalla con nuestro vidrio templado. Viene con su <b>instalador Easy-Install</b> — alineas, presionas y queda perfecto, sin burbujas ni errores, en menos de 30 segundos desde tu casa.</p>
-                <a class="promo-link" href="https://wa.me/573122265799?text=Hola%2C%20quiero%20pedir%20el%20combo%20estuche%20%2B%20vidrio%20m%C3%A1gico%20con%20instalador%20Easy-Install" target="_blank" rel="noopener">Pedir Combo →</a>
-              </div>
-            </div>
+            <span class="promo-badge">Automática</span>
+            <h5>10% en tu 2ª unidad + 2 vidrios gratis</h5>
+            <p>Al llevar 2 estuches (Básica, Pro o mezclados), el segundo tiene 10% de descuento y te regalamos 2 vidrios de protección de pantalla. Se aplica solo al pedir desde el editor.</p>
+            <a class="promo-link" href="estuche-editor.html" target="_blank" rel="noopener">Diseñar mis 2 estuches →</a>
           </div>
           <div class="promo-card">
-            <span class="promo-badge alt">Oferta segunda unidad</span>
-            <h5>Lleva 2 Estuches con Descuento</h5>
-            <p>Compra el primero a $34.990 y llévate el segundo por solo $27.990. Ideal para combinar diseños o pedir con un amigo.</p>
-            <div class="promo-price"><b>$62.980</b> los dos <span>(ahorras $7.000)</span></div>
-            <a class="promo-link" href="https://wa.me/573122265799?text=Hola%2C%20quiero%20armar%20mi%20d%C3%BAo%20de%20estuches%20con%20descuento" target="_blank" rel="noopener">Armar mi Dúo →</a>
+            <span class="promo-badge alt">Próximamente</span>
+            <h5>Combo Protección Total (Estuche + Vidrio Mágico)</h5>
+            <p>Personaliza tu estuche y protege la pantalla con nuestro vidrio templado, con instalador Easy-Install — alineas, presionas y queda perfecto, sin burbujas, en menos de 30 segundos desde tu casa. Precio del combo a confirmar por WhatsApp.</p>
+            <a class="promo-link" href="https://wa.me/573122265799?text=Hola%2C%20quiero%20cotizar%20el%20combo%20estuche%20%2B%20vidrio%20m%C3%A1gico%20con%20instalador%20Easy-Install" target="_blank" rel="noopener">Cotizar combo →</a>
           </div>
         </div>
       </div>
@@ -2337,19 +2355,97 @@ body.loaded header.nav {
             <p>Transparencia total — mantiene el brillo original de tu pantalla.</p>
           </a>
         </div>
+        <div class="section-head" style="margin-top:36px;">
+          <h2 style="font-size:22px;">Vidrios de protección</h2>
+          <p>Ideales para combinar con tu estuche — y gratis al llevar 2 estuches.</p>
+        </div>
+        <div class="finish-grid">
+          <a class="finish-card" href="https://wa.me/573122265799?text=Hola%2C%20quiero%20un%20vidrio%20blindado%20para%20mi%20pantalla" target="_blank" rel="noopener">
+            <div class="finish-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M12 2l8 4v6c0 5-3.5 8-8 9-4.5-1-8-4-8-9V6l8-4z"/></svg></div>
+            <h5>Vidrio blindado — $15.000</h5>
+            <p>Templado resistente a golpes y rayones, instalación incluida.</p>
+          </a>
+          <a class="finish-card" href="https://wa.me/573122265799?text=Hola%2C%20quiero%20un%20vidrio%20sin%20borde%20para%20mi%20pantalla" target="_blank" rel="noopener">
+            <div class="finish-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><rect x="4" y="4" width="16" height="16" rx="3"/></svg></div>
+            <h5>Vidrio sin borde — $25.000</h5>
+            <p>Cobertura de pantalla a pantalla, acabado premium, instalación incluida.</p>
+          </a>
+        </div>
         <div class="sistecredito-banner" style="margin-top:24px;background:linear-gradient(120deg,var(--surface),#fff);">
           <div class="txt">
             <b>Instalación incluida, sin burbujas</b>
-            <span>Desde $19.990 según acabado — confirmamos el precio exacto por WhatsApp.</span>
+            <span>Hidrogel desde $25.000 según acabado — confirmamos el precio exacto por WhatsApp.</span>
           </div>
           <a class="sc-btn" style="background:var(--ink);" href="https://wa.me/573122265799?text=Hola%2C%20quiero%20agendar%20una%20instalaci%C3%B3n%20de%20Hidrogel" target="_blank" rel="noopener">Agendar instalación →</a>
+        </div>
+      </div>
+    </div>
+
+    <div class="section" style="padding-top:0;">
+      <div class="wrap">
+        <div class="section-head">
+          <h2>Preguntas frecuentes</h2>
+        </div>
+        <div class="faq-list">
+          <div class="faq-item">
+            <button class="faq-q" onclick="toggleFaq(this)">
+              <span class="faq-icon"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7"><path d="M12 3l7 3v6c0 4.5-3 7.5-7 9-4-1.5-7-4.5-7-9V6z"/></svg></span>
+              <span class="faq-q-text">¿Qué garantía tiene mi estuche?</span>
+              <svg class="faq-chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4"><path d="M6 9l6 6 6-6"/></svg>
+            </button>
+            <div class="faq-a-wrap"><div class="faq-a"><ul><li>1 mes de garantía en ambas líneas, Básica y Pro, por defectos de fabricación.</li></ul></div></div>
+          </div>
+          <div class="faq-item">
+            <button class="faq-q" onclick="toggleFaq(this)">
+              <span class="faq-icon"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7"><rect x="3" y="5" width="18" height="14" rx="2"/><circle cx="8.5" cy="10.5" r="1.5"/><path d="M21 15l-5-5L5 19"/></svg></span>
+              <span class="faq-q-text">¿Puedo elegir si mi foto va por dentro o por fuera?</span>
+              <svg class="faq-chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4"><path d="M6 9l6 6 6-6"/></svg>
+            </button>
+            <div class="faq-a-wrap"><div class="faq-a"><ul><li>Sí, en la Línea Básica eliges impresión exterior o interior desde el mismo editor. La Línea Pro se imprime en el exterior.</li></ul></div></div>
+          </div>
+          <div class="faq-item">
+            <button class="faq-q" onclick="toggleFaq(this)">
+              <span class="faq-icon"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7"><rect x="3" y="8" width="18" height="13" rx="1"/><path d="M3 8h18M12 8v13"/><path d="M12 8c-1.2-3.6-6-3.6-6-1.2C6 8 9 8 12 8Zm0 0c1.2-3.6 6-3.6 6-1.2C18 8 15 8 12 8Z"/></svg></span>
+              <span class="faq-q-text">¿Cómo funciona el 10% y los vidrios gratis?</span>
+              <svg class="faq-chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4"><path d="M6 9l6 6 6-6"/></svg>
+            </button>
+            <div class="faq-a-wrap"><div class="faq-a"><ul><li>Al agregar 2 estuches a tu pedido (cualquier combinación de Básica y Pro), el segundo tiene 10% de descuento automático y te regalamos 2 vidrios de protección de pantalla.</li></ul></div></div>
+          </div>
+          <div class="faq-item">
+            <button class="faq-q" onclick="toggleFaq(this)">
+              <span class="faq-icon"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3.2 3.2"/></svg></span>
+              <span class="faq-q-text">¿Cuánto tarda la fabricación?</span>
+              <svg class="faq-chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4"><path d="M6 9l6 6 6-6"/></svg>
+            </button>
+            <div class="faq-a-wrap"><div class="faq-a"><ul><li>Te confirmamos el tiempo exacto por WhatsApp al momento de apartar tu pedido, según la carga de producción del momento.</li></ul></div></div>
+          </div>
+          <div class="faq-item">
+            <button class="faq-q" onclick="toggleFaq(this)">
+              <span class="faq-icon"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7"><rect x="2.5" y="5.5" width="19" height="13" rx="2"/><path d="M2.5 10h19"/></svg></span>
+              <span class="faq-q-text">¿Puedo pagar a cuotas?</span>
+              <svg class="faq-chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4"><path d="M6 9l6 6 6-6"/></svg>
+            </button>
+            <div class="faq-a-wrap"><div class="faq-a"><ul><li>Sí, aceptamos Sistecrédito a cuotas, además de transferencia y pago contra entrega según la zona.</li></ul></div></div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="section" style="padding-top:0;">
+      <div class="wrap">
+        <div class="sistecredito-banner" style="background:linear-gradient(120deg,var(--cases-tint),#fff);border-color:var(--cases);">
+          <div class="txt">
+            <b>¿Listo para tu estuche?</b>
+            <span>Diséñalo ahora en el editor y mira la vista previa antes de pedir.</span>
+          </div>
+          <a class="sc-btn" style="background:var(--cases);" href="estuche-editor.html" target="_blank" rel="noopener">Diseñar mi estuche →</a>
         </div>
       </div>
     </div>
   </section>
 
   <!-- ======================= FAQ / POLÍTICAS ======================= -->
-  <section class="view" id="view-faq">
+<section class="view" id="view-faq">
     <div class="wrap">
       <div class="subnav">
         <button class="back-btn" onclick="go('home')">
@@ -5235,6 +5331,80 @@ async function cargarCategoriasDesdeSheet(){
 }
 
 /* ============================================================
+   FOTO DE EJEMPLO POR LÍNEA DE ESTUCHES (Básica / Pro) — DESDE
+   GOOGLE SHEETS
+   Crea una pestaña nueva en tu Hoja (ej. "FOTOS ESTUCHES") con dos
+   columnas: LINEA e IMAGEN. En LINEA escribe exactamente "Basica" o
+   "Pro" (sin tilde, mayúsculas no importan) y en IMAGEN pega el link
+   directo de la foto (Cloudinary recomendado, igual que el resto del
+   catálogo). Publica esa pestaña como CSV (Archivo → Compartir →
+   Publicar en la web → esa pestaña → formato CSV) y pega el link aquí
+   abajo en LINEA_FOTOS_CSV_URL.
+
+   Mientras esa URL quede como el texto de ejemplo (o si falla la
+   lectura), se muestran las 2 fotos de ejemplo guardadas en el código
+   (LINEA_FOTOS, más abajo) — el sitio nunca se rompe por esto.
+   ============================================================ */
+const LINEA_FOTOS_CSV_URL = "https://docs.google.com/spreadsheets/d/e/2PACX-1vTVTMXRy1SKrWUR512KBjjWJ0__CcP5g19K2QK7YfVSr5FBeH8PZHMxBAeCKdxQuawOgi-IjsfF4Pvp/pub?gid=208678463&single=true&output=csv";
+
+const LINEA_FOTOS_CACHE_KEY = 'camand_linea_fotos_cache_v1';
+
+let LINEA_FOTOS = {
+  basica: "img/estuches-ejemplo/basica.png",
+  pro: "img/estuches-ejemplo/pro.png"
+};
+
+function applyLineaFotos(){
+  Object.entries(LINEA_FOTOS).forEach(([key, url]) => {
+    if(!url) return;
+    const el = document.getElementById('lineFoto_' + key);
+    if(!el) return;
+    const nombreLinea = key === 'pro' ? 'Pro' : 'Básica';
+    el.innerHTML = `<img src="${optimizeImageUrl(url, 700)}" alt="Ejemplo de estuche Línea ${nombreLinea}" loading="lazy" onerror="this.closest('.line-photo').style.display='none'">`;
+  });
+}
+
+async function cargarFotosLineasDesdeSheet(){
+  if(!/^https?:\/\//i.test(LINEA_FOTOS_CSV_URL)) return;
+  try{
+    const cache = JSON.parse(sessionStorage.getItem(LINEA_FOTOS_CACHE_KEY) || 'null');
+    if(cache && cache.fotos && Object.keys(cache.fotos).length){
+      LINEA_FOTOS = Object.assign({}, LINEA_FOTOS, cache.fotos);
+      applyLineaFotos();
+    }
+  }catch(e){}
+  try{
+    const res = await fetch(LINEA_FOTOS_CSV_URL, { cache: "no-store" });
+    if(!res.ok) throw new Error("HTTP " + res.status);
+    const texto = await res.text();
+    const filasCrudas = window.Papa.parse(texto, { header: true, skipEmptyLines: true }).data;
+
+    const filas = filasCrudas.map(filaCruda => {
+      const norm = {};
+      Object.keys(filaCruda).forEach(k => {
+        const clave = k.trim().toLowerCase().normalize("NFD").replace(/[̀-ͯ]/g, "").replace(/\s+/g, "");
+        norm[clave] = filaCruda[k];
+      });
+      return norm;
+    });
+
+    const fotos = {};
+    filas.forEach(f => {
+      const key = String(f.linea || "").trim().toLowerCase().normalize("NFD").replace(/[̀-ͯ]/g, "");
+      const img = String(f.imagen || "").trim();
+      if(key && img) fotos[key] = img;
+    });
+
+    LINEA_FOTOS = Object.assign({}, LINEA_FOTOS, fotos);
+    applyLineaFotos();
+    try{ sessionStorage.setItem(LINEA_FOTOS_CACHE_KEY, JSON.stringify({ fotos, ts: Date.now() })); }catch(e){}
+    console.log("[Camand] Fotos de línea de estuches cargadas desde Google Sheets:", Object.keys(fotos).length);
+  }catch(err){
+    console.warn("[Camand] No se pudo leer las fotos de línea desde Google Sheets, se muestran las fotos de ejemplo guardadas en el código:", err.message);
+  }
+}
+
+/* ============================================================
    CATÁLOGO DESDE GOOGLE SHEETS
    Pega aquí la URL de "Publicar en la Web" (formato CSV) de tu
    pestaña "CATALOGO PAGINA". Si la fila tiene disponible=no, se
@@ -5521,6 +5691,7 @@ renderTodo();
 cargarCatalogoDesdeSheet();
 cargarBannersDesdeSheet();
 cargarCategoriasDesdeSheet();
+cargarFotosLineasDesdeSheet();
 initCookieBanner();
 routeFromHash();
 

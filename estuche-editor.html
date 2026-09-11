@@ -302,6 +302,26 @@ body.preview-mode .stage-hint{opacity:0;}
   background-repeat:no-repeat;background-position:right 12px center;background-size:14px;
 }
 
+.line-chooser{display:grid;grid-template-columns:1fr 1fr;gap:8px;}
+.line-opt{
+  position:relative;text-align:left;border:1.5px solid var(--line);border-radius:var(--radius-md);
+  background:#fff;padding:12px 14px;cursor:pointer;transition:border-color .18s,background .18s;
+}
+.line-opt:hover{border-color:var(--ink-faint);}
+.line-opt.active{border-color:var(--cases);background:var(--cases-tint);}
+.line-opt .lo-name{display:block;font-size:13.5px;font-weight:700;color:var(--ink);margin-bottom:3px;}
+.line-opt .lo-price{display:block;font-size:15px;font-weight:800;color:var(--ink);}
+.line-opt .lo-price .old{font-size:11.5px;font-weight:600;color:var(--ink-faint);text-decoration:line-through;margin-right:5px;}
+.side-chooser{display:flex;gap:8px;}
+.side-opt{
+  flex:1;text-align:center;border:1.5px solid var(--line);border-radius:100px;background:#fff;
+  padding:9px 10px;font-size:13px;font-weight:700;color:var(--ink-soft);cursor:pointer;
+  transition:border-color .18s,background .18s,color .18s;
+}
+.side-opt:hover{border-color:var(--ink-faint);}
+.side-opt.active{border-color:var(--cases);background:var(--cases-tint);color:var(--cases-dark);}
+.line-note{font-size:12px;color:var(--ink-soft);line-height:1.5;margin:8px 0 0;}
+
 .drop-zone{
   border:1.5px dashed var(--line);border-radius:var(--radius-md);padding:32px 18px;
   text-align:center;color:var(--ink-soft);font-size:13.5px;cursor:pointer;transition:border-color .2s,background .2s;
@@ -680,6 +700,8 @@ body.preview-mode .progress-strip{display:none;}
 .cart-total-row{display:flex;justify-content:space-between;align-items:baseline;margin-bottom:6px;}
 .cart-total-row span:first-child{font-size:13px;color:var(--ink-soft);}
 .cart-total-row span:last-child{font-size:20px;font-weight:800;color:var(--ink);}
+.cart-total-row.promo span:first-child{font-size:12.5px;color:var(--trust);}
+.cart-total-row.promo span:last-child{font-size:13px;font-weight:700;color:var(--trust);}
 #cartTotalsWrap{margin-top:10px;margin-bottom:8px;}
 .cart-checkout-row{display:flex;gap:10px;margin-top:14px;}
 /* La causa real de que el candado se viera enorme: el ícono usa la
@@ -832,6 +854,24 @@ body.preview-mode .progress-strip{display:none;}
             <select id="brandSelect"></select>
             <select id="modelSelect"></select>
           </div>
+
+          <div class="field-label">Tu línea</div>
+          <div class="line-chooser" id="lineChooser">
+            <button type="button" class="line-opt active" data-line="basica" onclick="selectLine('basica')">
+              <span class="lo-name">Línea Básica</span>
+              <span class="lo-price"><span class="old">$41.880</span>$34.900</span>
+            </button>
+            <button type="button" class="line-opt" data-line="pro" onclick="selectLine('pro')">
+              <span class="lo-name">Línea Pro</span>
+              <span class="lo-price"><span class="old">$53.880</span>$44.900</span>
+            </button>
+          </div>
+
+          <div class="side-chooser" id="sideChooser" style="margin-top:8px;">
+            <button type="button" class="side-opt active" data-side="exterior" onclick="selectSide('exterior')">Impresión exterior</button>
+            <button type="button" class="side-opt" data-side="interior" onclick="selectSide('interior')">Impresión interior</button>
+          </div>
+          <p class="line-note" id="lineNote">Elige si tu foto o diseño se imprime por fuera o por dentro del acrílico.</p>
         </div>
 
         <div class="tool-block" id="tool-photo">
@@ -989,19 +1029,20 @@ body.preview-mode .progress-strip{display:none;}
 
         <label class="addon-card">
           <input type="checkbox" id="addonHidrogel">
-          <div class="ac-info"><b>Vidrio Hidrogel Mate/Anti-espía</b><span>Protege tu pantalla y mantiene tu privacidad.</span></div>
-          <span class="ac-price">+$19.990</span>
+          <div class="ac-info"><b>Vidrio Hidrogel Mate/Anti-espía</b><span>Protege tu pantalla y mantiene tu privacidad. Instalación incluida.</span></div>
+          <span class="ac-price">Desde +$25.000</span>
         </label>
         <label class="addon-card">
-          <input type="checkbox" id="addonCombo">
-          <div class="ac-info"><b>Combo con Vidrio Mágico</b><span>Precio a confirmar por WhatsApp.</span></div>
-          <span class="ac-price">—</span>
+          <input type="checkbox" id="addonVidrioBlindado">
+          <div class="ac-info"><b>Vidrio blindado</b><span>Templado resistente a golpes y rayones.</span></div>
+          <span class="ac-price">+$15.000</span>
         </label>
         <label class="addon-card">
-          <input type="checkbox" id="addonSecond">
-          <div class="ac-info"><b>Un segundo estuche</b><span>Ideal para regalar, con descuento.</span></div>
-          <span class="ac-price">+$27.990</span>
+          <input type="checkbox" id="addonVidrioSinBorde">
+          <div class="ac-info"><b>Vidrio sin borde</b><span>Cobertura de pantalla a pantalla, acabado premium.</span></div>
+          <span class="ac-price">+$25.000</span>
         </label>
+        <p class="line-note">Llevando 2 estuches, tus 2 vidrios de protección van gratis y la 2ª unidad tiene 10% de descuento.</p>
       </div>
     </div>
 
@@ -1023,7 +1064,7 @@ body.preview-mode .progress-strip{display:none;}
         </div>
 
         <div class="summary-row"><span class="sr-label">Equipo</span><span class="sr-value" id="summaryModel">—</span></div>
-        <div class="summary-row"><span class="sr-label">Estuche personalizado</span><span class="sr-value">$39.990</span></div>
+        <div class="summary-row"><span class="sr-label" id="summaryLineLabel">Línea Básica</span><span class="sr-value" id="summaryLinePrice">$34.900</span></div>
         <div class="summary-row" id="summaryAddonsRow" style="display:none;"><span class="sr-label">Extras</span><span class="sr-value" id="summaryAddons">—</span></div>
         <div class="summary-total"><span class="st-label">Total</span><span class="st-value" id="summaryTotal">$39.990</span></div>
 
@@ -1038,6 +1079,7 @@ body.preview-mode .progress-strip{display:none;}
         <div class="confirm-trust-row">
           <span><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 6L9 17l-5-5"/></svg>Aceptamos Sistecrédito a cuotas</span>
           <span><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><rect x="1" y="6" width="14" height="11" rx="1.5"/><path d="M15 10h4l3 3.5V17h-7"/><circle cx="6" cy="19" r="1.6"/><circle cx="17.5" cy="19" r="1.6"/></svg>Envíos a toda Colombia</span>
+          <span><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 3"/></svg>Garantía de 1 mes</span>
         </div>
       </div>
     </div>
@@ -1410,7 +1452,12 @@ const BRANDS = {
 };
 const CLIPARTS = ["❤️","⭐","✨","👑","🌸","⚡","🐾","🔥","🎧","🌙","☀️","🍀"];
 const WHATSAPP_NUMBER = "573122265799";
-const UNIT_PRICE = 39990;
+const LINES = {
+  basica: { key:"basica", label:"Línea Básica", price:34900, oldPrice:41880, allowSides:true },
+  pro:    { key:"pro",    label:"Línea Pro",    price:44900, oldPrice:53880, allowSides:false }
+};
+let currentLine = LINES.basica;
+let currentSide = "exterior";
 const PRINT_SCALE = 4; // multiplicador de resolución para el archivo de impresión
 /* ---------------------------------------------------------------------
    8) PLANTILLAS PREMIUM — fondos listos para empezar sin foto. Cada una
@@ -2096,44 +2143,85 @@ function money(n){ return '$' + n.toLocaleString('es-CO'); }
 const FREE_SHIPPING_THRESHOLD = 200000;
 
 /* --- Adicionales del DISEÑO actual (Paso 3 · Extras) --- */
+function selectLine(key){
+  currentLine = LINES[key];
+  document.querySelectorAll('#lineChooser .line-opt').forEach(b=>b.classList.toggle('active', b.dataset.line === key));
+  const sideChooser = document.getElementById('sideChooser');
+  const lineNote = document.getElementById('lineNote');
+  if(currentLine.allowSides){
+    sideChooser.style.display = 'flex';
+    lineNote.textContent = 'Elige si tu foto o diseño se imprime por fuera o por dentro del acrílico.';
+  } else {
+    currentSide = 'exterior';
+    document.querySelectorAll('#sideChooser .side-opt').forEach(b=>b.classList.toggle('active', b.dataset.side === 'exterior'));
+    sideChooser.style.display = 'none';
+    lineNote.textContent = 'Línea Pro se imprime en el exterior, con borde reforzado.';
+  }
+  updateAddonsTotal();
+  if(currentModel && document.getElementById('summaryLinePrice')) refreshConfirmStep();
+}
+function selectSide(key){
+  if(!currentLine.allowSides) return;
+  currentSide = key;
+  document.querySelectorAll('#sideChooser .side-opt').forEach(b=>b.classList.toggle('active', b.dataset.side === key));
+}
 function getAddons(){
   const hidrogel = document.getElementById('addonHidrogel').checked;
-  const combo = document.getElementById('addonCombo').checked;
-  const second = document.getElementById('addonSecond').checked;
+  const vBlindado = document.getElementById('addonVidrioBlindado').checked;
+  const vSinBorde = document.getElementById('addonVidrioSinBorde').checked;
   let extra = 0;
   const notes = [];
-  if (hidrogel){ extra += 19990; notes.push('Vidrio Hidrogel Mate/Anti-espía (+$19.990)'); }
-  if (combo){ notes.push('Combo con Vidrio Mágico (precio a confirmar)'); }
-  if (second){ extra += 27990; notes.push('2º estuche con descuento (+$27.990)'); }
+  if (hidrogel){ extra += 25000; notes.push('Vidrio Hidrogel Mate/Anti-espía (+$25.000)'); }
+  if (vBlindado){ extra += 15000; notes.push('Vidrio blindado (+$15.000)'); }
+  if (vSinBorde){ extra += 25000; notes.push('Vidrio sin borde (+$25.000)'); }
   return { extra, notes };
 }
 function updateAddonsTotal(){
   const { extra } = getAddons();
-  document.getElementById('priceDisplay').textContent = money(UNIT_PRICE + extra);
+  document.getElementById('priceDisplay').textContent = money(currentLine.price + extra);
 }
 document.getElementById('addonHidrogel').addEventListener('change', function(){
-  if (this.checked) document.getElementById('addonCombo').checked = false;
+  if (this.checked){ document.getElementById('addonVidrioBlindado').checked = false; document.getElementById('addonVidrioSinBorde').checked = false; }
   updateAddonsTotal();
 });
-document.getElementById('addonCombo').addEventListener('change', function(){
-  if (this.checked) document.getElementById('addonHidrogel').checked = false;
+document.getElementById('addonVidrioBlindado').addEventListener('change', function(){
+  if (this.checked){ document.getElementById('addonHidrogel').checked = false; document.getElementById('addonVidrioSinBorde').checked = false; }
   updateAddonsTotal();
 });
-document.getElementById('addonSecond').addEventListener('change', updateAddonsTotal);
+document.getElementById('addonVidrioSinBorde').addEventListener('change', function(){
+  if (this.checked){ document.getElementById('addonHidrogel').checked = false; document.getElementById('addonVidrioBlindado').checked = false; }
+  updateAddonsTotal();
+});
 
 /* --- El carrito en sí: cada línea es { id, n, p, img, qty, addons, isAccessory } --- */
 function cartCount(){ return cart.reduce((s,it)=>s+it.qty, 0); }
-function cartTotal(){ return cart.reduce((s,it)=>s+it.p*it.qty, 0); }
+function caseUnitPrices(){
+  const prices = [];
+  cart.forEach(it => { if(!it.isAccessory){ for(let i=0;i<it.qty;i++) prices.push(it.p); } });
+  return prices;
+}
+function caseUnitsCount(){ return caseUnitPrices().length; }
+function casePromoDiscount(){
+  return caseUnitPrices().reduce((s,p,idx) => idx % 2 === 1 ? s + Math.round(p*0.10) : s, 0);
+}
+function freeVidriosCount(){
+  return Math.floor(caseUnitsCount()/2) * 2;
+}
+function cartTotal(){
+  const base = cart.reduce((s,it)=>s+it.p*it.qty, 0);
+  return Math.max(0, base - casePromoDiscount());
+}
 
 function addToCart(){
   // Validación rígida: no se agrega un estuche en blanco al carrito.
   if(!currentModel){ showToast('Elige tu equipo primero'); return; }
   if(!hasDesignContent()){ showToast('Añade una foto, texto o un clipart antes de agregarlo al carrito'); return; }
   const { extra, notes } = getAddons();
+  const sideTxt = (currentLine.allowSides && currentSide === 'interior') ? ' · Impresión interior' : '';
   cart.push({
     id: 'case-' + currentModel.id + '-' + Date.now(),
-    n: 'Estuche personalizado · ' + currentModel.name,
-    p: UNIT_PRICE + extra,
+    n: currentLine.label + ' · ' + currentModel.name + sideTxt,
+    p: currentLine.price + extra,
     img: exportPreviewPNG(),
     qty: 1,
     addons: notes,
@@ -2242,7 +2330,14 @@ function updateCartUI(){
     }
   }
   const totalsWrap = document.getElementById('cartTotalsWrap');
-  if(totalsWrap) totalsWrap.innerHTML = `<div class="cart-total-row"><span>Total</span><span>${money(cartTotal())}</span></div>`;
+  if(totalsWrap){
+    const descuento = casePromoDiscount();
+    const vidrios = freeVidriosCount();
+    let extraRows = '';
+    if(descuento > 0) extraRows += `<div class="cart-total-row promo"><span>Descuento 2ª unidad (10%)</span><span>-${money(descuento)}</span></div>`;
+    if(vidrios > 0) extraRows += `<div class="cart-total-row promo"><span>Regalo</span><span>${vidrios} vidrios de protección gratis</span></div>`;
+    totalsWrap.innerHTML = `${extraRows}<div class="cart-total-row"><span>Total</span><span>${money(cartTotal())}</span></div>`;
+  }
   const checkoutBtn = document.getElementById('checkoutBtn');
   if(checkoutBtn) checkoutBtn.disabled = cart.length === 0;
   renderShippingBar();
@@ -2283,9 +2378,10 @@ async function buyNow(){
   if(!currentModel){ showToast('Elige tu equipo primero'); return; }
   if(!hasDesignContent()){ showToast('Añade una foto, texto o un clipart antes de comprar'); return; }
   const { extra, notes } = getAddons();
+  const sideTxt = (currentLine.allowSides && currentSide === 'interior') ? ' · impresión interior' : '';
   downloadOrderPackage();
   const addonsLine = notes.length ? `\nAdicionales:\n- ${notes.join('\n- ')}` : '';
-  const msg = `Hola, quiero pedir mi estuche personalizado (${currentModel.name}) — ${money(UNIT_PRICE + extra)}.${addonsLine}\nYa descargué el archivo de mi diseño (ZIP), te lo envío por aquí.`;
+  const msg = `Hola, quiero pedir mi estuche ${currentLine.label} (${currentModel.name}${sideTxt}) — ${money(currentLine.price + extra)}.${addonsLine}\nYa descargué el archivo de mi diseño (ZIP), te lo envío por aquí.`;
   window.open(`https://wa.me/${WHATSAPP_NUMBER}?text=${encodeURIComponent(msg)}`, '_blank');
 }
 async function checkoutCart(){
@@ -2293,7 +2389,12 @@ async function checkoutCart(){
   const hayEstuche = cart.some(it => !it.isAccessory);
   if(hayEstuche) downloadOrderPackage();
   const lineas = cart.map(it => `• ${it.n} — ${money(it.p)} x ${it.qty} = ${money(it.p*it.qty)}`).join('\n');
-  let msg = `Hola Camand Mobile, quiero hacer este pedido:\n\n${lineas}\n\nTotal: ${money(cartTotal())}`;
+  const descuento = casePromoDiscount();
+  const vidrios = freeVidriosCount();
+  let promoLine = '';
+  if(descuento > 0) promoLine += `\nDescuento 2ª unidad (10%): -${money(descuento)}`;
+  if(vidrios > 0) promoLine += `\nRegalo: ${vidrios} vidrios de protección gratis`;
+  let msg = `Hola Camand Mobile, quiero hacer este pedido:\n\n${lineas}${promoLine}\n\nTotal: ${money(cartTotal())}`;
   const nota = document.getElementById('cartNoteInput');
   if(nota && nota.value.trim()) msg += `\n\nNota para la entrega: ${nota.value.trim()}`;
   if(hayEstuche) msg += `\n\n(Ya descargué el archivo de mi diseño de estuche más reciente — te lo comparto por aquí).`;
@@ -2521,7 +2622,12 @@ function updateStageHint(){
 
 function refreshConfirmStep(){
   document.getElementById('confirmThumb').src = exportPreviewPNG();
-  document.getElementById('summaryModel').textContent = BRANDS[currentBrandKey].label + ' ' + currentModel.name;
+  const sideTxt = (currentLine.allowSides && currentSide === 'interior') ? ' · impresión interior' : '';
+  document.getElementById('summaryModel').textContent = BRANDS[currentBrandKey].label + ' ' + currentModel.name + sideTxt;
+  const lineLabelEl = document.getElementById('summaryLineLabel');
+  const linePriceEl = document.getElementById('summaryLinePrice');
+  if(lineLabelEl) lineLabelEl.textContent = currentLine.label;
+  if(linePriceEl) linePriceEl.textContent = money(currentLine.price);
   const { extra, notes } = getAddons();
   const addonsRow = document.getElementById('summaryAddonsRow');
   if(notes.length){
@@ -2530,7 +2636,7 @@ function refreshConfirmStep(){
   } else {
     addonsRow.style.display = 'none';
   }
-  document.getElementById('summaryTotal').textContent = money(UNIT_PRICE + extra);
+  document.getElementById('summaryTotal').textContent = money(currentLine.price + extra);
 }
 
 function refreshExtrasThumb(){
@@ -2867,10 +2973,10 @@ window.addEventListener('load', ()=>{
   updateCartUI();
   setModel('apple', 'iphone16', {silent:true});
   updateFiltersVisibility();
+  updateAddonsTotal();
   goToStep('image');
   cargarAccesoriosSugeridos(); // en segundo plano — no bloquea el resto de la carga
 });
 </script>
 </body>
 </html>
-fix whatsapp movil
