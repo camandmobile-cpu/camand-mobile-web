@@ -2605,6 +2605,44 @@ body.loaded header.nav {
     </div>
   </section>
 
+  <section class="view" id="view-devoluciones">
+    <div class="wrap">
+      <div class="subnav">
+        <button class="back-btn" onclick="go('home')">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4"><path d="M15 6l-6 6 6 6"/></svg>
+          Inicio
+        </button>
+        <span>/ Política de Devoluciones</span>
+      </div>
+      <div class="hub-hero">
+        <h1>Política de Devoluciones y Cambios</h1>
+        <p>Condiciones bajo las cuales Camand Mobile acepta devoluciones de productos.</p>
+      </div>
+
+      <div class="legal-content">
+        <p class="legal-updated">Última actualización: <span id="legalUpdatedDate"></span> · Este documento es una guía general de referencia y no reemplaza una asesoría legal formal.</p>
+
+        <h2>1. Devoluciones por producto defectuoso</h2>
+        <p>Si el producto que recibes presenta una falla de fabricación o llega defectuoso, aceptamos su devolución. Escríbenos por WhatsApp lo antes posible, contándonos qué falla presenta el equipo y adjuntando fotos o video si es posible, para evaluar el caso y confirmarte los siguientes pasos.</p>
+
+        <h2>2. No aceptamos devoluciones por cambio de opinión</h2>
+        <p>Fuera de un defecto de fabricación, no realizamos devoluciones de dinero por motivos como cambio de opinión, no gustarle el color u otros similares. Te recomendamos revisar bien las características del producto (condición, almacenamiento, color) antes de finalizar tu compra, y escribirnos por WhatsApp si tienes cualquier duda previa.</p>
+
+        <h2>3. No realizamos cambios de producto</h2>
+        <p>Actualmente no ofrecemos cambios de un producto por otro (por ejemplo, cambiar de modelo, color o capacidad de almacenamiento una vez entregado el pedido).</p>
+
+        <h2>4. Garantía</h2>
+        <p>La garantía aplicable a cada producto depende de su condición (nuevo, seminuevo, remanufacturado, etc.) y se confirma directamente por WhatsApp al momento de la compra.</p>
+
+        <h2>5. Cómo solicitar una devolución por defecto</h2>
+        <p>Escríbenos por WhatsApp al <a href="https://wa.me/573122265799" target="_blank" rel="noopener">+57 312 226 5799</a> indicando tu número de pedido, el producto y la falla presentada. Evaluaremos el caso y te indicaremos los siguientes pasos.</p>
+
+        <h2>6. Tus derechos como consumidor</h2>
+        <p>Esta política no reemplaza los derechos que te otorga la legislación colombiana de protección al consumidor (Ley 1480 de 2011), la cual puede contemplar condiciones adicionales para compras a distancia. Ante cualquier duda, también puedes dirigirte a la Superintendencia de Industria y Comercio (SIC).</p>
+      </div>
+    </div>
+  </section>
+
 </div>
 
 <!-- ===== Formulario de suscripción — Camand Mobile ===== -->
@@ -2684,6 +2722,7 @@ function mostrarGraciasSuscripcion() {
         <h4>Ayuda</h4>
         <a onclick="go('faq')" style="cursor:pointer;">Políticas y Envíos</a>
         <a onclick="go('privacidad')" style="cursor:pointer;">Política de Privacidad</a>
+        <a onclick="go('devoluciones')" style="cursor:pointer;">Política de Devoluciones</a>
       </div>
     </div>
 
@@ -4195,7 +4234,7 @@ function performCelularesSearch(query){
 // Vistas con URL propia (hash) para poder compartir o recargar el link
 // directamente en esa sección. "product" se maneja aparte en openProduct(),
 // porque su hash lleva el id del producto (#/producto/<id>).
-const HASH_VIEWS = ['home','tech','celulares','tablets','computadores','accesorios','relojes','audifonos','techoficina','cases','faq','privacidad'];
+const HASH_VIEWS = ['home','tech','celulares','tablets','computadores','accesorios','relojes','audifonos','techoficina','cases','faq','privacidad','devoluciones'];
 
 // Contador que identifica la navegación más reciente. Antes, si go() se
 // llamaba dos veces seguidas muy rápido (doble clic, o un clic mientras la
@@ -4817,7 +4856,7 @@ function routeFromHash(){
   const hash = location.hash || '';
   const productMatch = hash.match(/^#\/producto\/(.+)$/);
   if(productMatch){ openProduct(decodeURIComponent(productMatch[1]), { fromHash: true }); return; }
-  const viewMatch = hash.match(/^#\/(tech|accesorios|cases|faq|privacidad)$/);
+  const viewMatch = hash.match(/^#\/(tech|accesorios|cases|faq|privacidad|devoluciones)$/);
   if(viewMatch){ go(viewMatch[1], { fromHash: true }); return; }
   if((hash === '' || hash === '#' || hash === '#/home') && CURRENT_PRODUCT_ID){
     go('home', { fromHash: true });
