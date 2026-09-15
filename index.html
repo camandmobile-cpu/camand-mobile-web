@@ -40,21 +40,21 @@
 <title>Camand Mobile — Celulares nuevos y usados Bogotá | iPhone y Android</title>
 <meta name="description" content="Compra celulares y tecnología Apple y Android, nuevos y usados (remanufacturados), en Bogotá. iPhone, Samsung, tablets, computadores y accesorios. Paga con Sistecrédito a cuotas o transferencia.">
 <meta name="keywords" content="celulares usados Bogotá, iPhone remanufacturado, iPhone 12 remanufacturado, Samsung usados, Sistecrédito celulares, tecnología usada y nueva, Camand Mobile">
-<link rel="canonical" href="https://camandmobile-cpu.github.io/camand-mobile-web/">
+<link rel="canonical" href="https://camandmobile.com/">
 
 <!-- Open Graph: como se ve al compartir el link en WhatsApp, Facebook, etc. -->
 <meta property="og:title" content="Camand Mobile — Celulares nuevos y usados Bogotá">
 <meta property="og:description" content="iPhone, Samsung y más, nuevos y usados. Paga con Sistecrédito a cuotas o transferencia.">
 <meta property="og:type" content="website">
-<meta property="og:url" content="https://camandmobile-cpu.github.io/camand-mobile-web/">
-<meta property="og:image" content="https://camandmobile-cpu.github.io/camand-mobile-web/img/camand-logo.png">
+<meta property="og:url" content="https://camandmobile.com/">
+<meta property="og:image" content="https://camandmobile.com/img/camand-logo.png">
 <meta property="og:locale" content="es_CO">
 
 <!-- Twitter/X Card: mismo propósito que Open Graph, para esa red específica -->
 <meta name="twitter:card" content="summary_large_image">
 <meta name="twitter:title" content="Camand Mobile — Celulares nuevos y usados Bogotá">
 <meta name="twitter:description" content="iPhone, Samsung y más, nuevos y usados. Paga con Sistecrédito a cuotas o transferencia.">
-<meta name="twitter:image" content="https://camandmobile-cpu.github.io/camand-mobile-web/img/camand-logo.png">
+<meta name="twitter:image" content="https://camandmobile.com/img/camand-logo.png">
 
 <!-- Datos estructurados: ayudan a Google a entender que esto es una tienda real -->
 <script type="application/ld+json">
@@ -63,8 +63,8 @@
   "@type": "ElectronicsStore",
   "name": "Camand Mobile",
   "description": "Tienda de tecnología: celulares y dispositivos electrónicos Android y Apple, nuevos y usados (remanufacturados). Pagos por transferencia o Sistecrédito a cuotas.",
-  "url": "https://camandmobile-cpu.github.io/camand-mobile-web/",
-  "image": "https://camandmobile-cpu.github.io/camand-mobile-web/img/camand-logo.png",
+  "url": "https://camandmobile.com/",
+  "image": "https://camandmobile.com/img/camand-logo.png",
   "telephone": "+57 312 2265799",
   "priceRange": "$$",
   "address": {
@@ -2816,7 +2816,7 @@ function mostrarGraciasSuscripcion() {
 <div class="cookie-modal-overlay" id="cookieModalOverlay" onclick="if(event.target===this) closeCookieSettings()">
   <div class="cookie-modal">
     <h4>Configurar preferencias de cookies</h4>
-    <p>Elige qué tipo de cookies permites en camandmobile-cpu.github.io. Puedes cambiar esta elección cuando quieras desde el enlace "Configurar cookies" en el pie de página.</p>
+    <p>Elige qué tipo de cookies permites en camandmobile.com. Puedes cambiar esta elección cuando quieras desde el enlace "Configurar cookies" en el pie de página.</p>
     <div class="cookie-modal-row">
       <div class="lbl"><b>Necesarias</b><span>Indispensables para que el carrito de compras y el sitio funcionen. Siempre están activas.</span></div>
       <label class="cookie-toggle"><input type="checkbox" checked disabled><span class="track"></span><span class="knob"></span></label>
@@ -4711,9 +4711,10 @@ function openProduct(id, opts){
 }
 
 /* ===================== HOME — PRODUCTOS MÁS VENDIDOS ===================== */
-// Límite de tarjetas que se muestran en esta sección del inicio (el mismo
-// límite de 8 que ya tenía "Destacados de hoy").
-const HOME_FEATURED_LIMIT = 8;
+// Límite de tarjetas que se muestran en esta sección del inicio (subido de
+// 8 a 10 el 15 sep 2026, a pedido de Andrés, para dar más visibilidad a
+// productos marcados DESTACADO=sí).
+const HOME_FEATURED_LIMIT = 10;
 
 function renderHomeFeatured(){
   const grid = document.getElementById('homeFeaturedGrid');
