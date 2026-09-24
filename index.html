@@ -888,6 +888,34 @@ footer.site{
 .compare-col-price{font-size:13px;font-weight:800;color:var(--tech);}
 .compare-remove{position:absolute;top:-6px;right:6px;background:var(--surface);border:none;border-radius:100px;width:20px;height:20px;font-size:10px;color:var(--ink-soft);cursor:pointer;}
 .compare-remove:hover{background:#fde2e2;color:#e11d3c;}
+/* Mejoras del comparador: se limita a la tabla DENTRO del modal para que no
+   la pise la otra .compare-table (Línea Básica vs Pro) definida más abajo. */
+.compare-modal .compare-table{min-width:0;background:transparent;}
+.compare-modal .compare-table th,.compare-modal .compare-table td{text-align:center;font-size:13.5px;color:var(--ink);font-weight:500;background:transparent;text-transform:none;letter-spacing:0;padding:12px 14px;}
+.compare-modal .compare-table thead th{background:var(--surface);}
+.compare-modal .compare-table td.compare-row-label,.compare-modal .compare-table th.compare-row-label{text-align:left;font-size:11.5px;font-weight:700;color:var(--ink-soft);text-transform:uppercase;letter-spacing:.03em;position:sticky;left:0;background:#fff;z-index:1;}
+.compare-modal .compare-table thead th.compare-row-label{background:var(--surface);}
+.compare-modal .compare-table tr.is-diff td.compare-row-label::after{content:"";display:inline-block;width:6px;height:6px;border-radius:50%;background:var(--tech);margin-left:6px;vertical-align:middle;}
+.compare-modal .compare-table tr.is-section td{background:var(--surface);font-size:11px;font-weight:800;color:var(--ink-soft);text-transform:uppercase;letter-spacing:.06em;text-align:left;padding:8px 14px;}
+.compare-best{display:inline-block;margin-top:4px;font-size:10.5px;font-weight:800;color:#0a7d3b;background:#e3f6ea;border-radius:100px;padding:2px 8px;}
+.compare-old-price{display:block;font-size:11.5px;color:var(--ink-soft);text-decoration:line-through;font-weight:500;}
+.compare-feat{list-style:none;margin:0;padding:0;text-align:left;font-size:12.5px;line-height:1.45;}
+.compare-feat li{position:relative;padding-left:14px;margin-bottom:4px;}
+.compare-feat li::before{content:"✓";position:absolute;left:0;color:var(--tech);font-weight:800;}
+.compare-empty-note{margin:14px 0 0;padding:12px 14px;background:var(--surface);border-radius:12px;font-size:13px;color:var(--ink-soft);}
+.compare-empty-note a{color:var(--tech);font-weight:700;}
+.compare-toolbar{display:flex;align-items:center;justify-content:space-between;gap:10px;margin:-6px 0 12px;font-size:12.5px;color:var(--ink-soft);flex-wrap:wrap;}
+.compare-toolbar label{display:flex;align-items:center;gap:6px;cursor:pointer;}
+.compare-toolbar input{accent-color:var(--tech);}
+.compare-modal.only-diff .compare-table tr.is-same{display:none;}
+@media (max-width:560px){
+  .compare-modal{padding:0;align-items:flex-end;}
+  .compare-modal-inner{padding:20px 14px;border-radius:20px 20px 0 0;max-height:92vh;}
+  .compare-modal .compare-table th,.compare-modal .compare-table td{padding:10px 8px;font-size:12.5px;}
+  .compare-modal .compare-table td.compare-row-label{white-space:normal;width:92px;min-width:92px;max-width:92px;font-size:9px;letter-spacing:0;overflow-wrap:break-word;}
+  .compare-col-media{width:54px;height:54px;}
+  .compare-col-name{font-size:11.5px;max-width:110px;}
+}
 
 /* ---------- AVISO FLOTANTE (TOAST) ---------- */
 .toast{
@@ -2829,6 +2857,10 @@ function mostrarGraciasSuscripcion() {
   <div class="compare-modal-inner">
     <button type="button" class="compare-modal-close" onclick="closeCompareModal()" aria-label="Cerrar comparación">✕</button>
     <h3>Comparar productos</h3>
+    <div class="compare-toolbar">
+      <span>El punto azul <span style="display:inline-block;width:6px;height:6px;border-radius:50%;background:var(--tech);vertical-align:middle"></span> marca en qué se diferencian.</span>
+      <label><input type="checkbox" id="compareOnlyDiff" onchange="document.getElementById('compareModal').classList.toggle('only-diff', this.checked)"> Mostrar solo diferencias</label>
+    </div>
     <div class="compare-table-wrap" id="compareTableWrap"></div>
   </div>
 </div>
@@ -3573,18 +3605,160 @@ function renderCompareBar(){
   if(btn) btn.disabled = n < 2;
 }
 
+// ---------- Lectura de especificaciones para el comparador ----------
+// Antes el comparador solo mostraba las columnas ALMACENAMIENTO / RAM /
+// CAMARA / BATERIA de la Hoja; si estaban vacías (audífonos, relojes,
+// accesorios, o celulares sin esas columnas llenas) salía todo en "—".
+// Ahora: (1) intenta sacar el dato del nombre ("128/4", "256 GB"),
+// (2) lee la columna ESPECIFICACIONES ("Clave: valor; Clave: valor") y
+// arma una fila por cada clave, (3) oculta las filas vacías en todos.
+function cmpEsc(t){ return String(t == null ? '' : t).replace(/[&<>"]/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c])); }
+function cmpNorm(t){ return String(t || '').toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g, '').replace(/\s+/g, ' ').trim(); }
+
+// Separa el texto de especificaciones en puntos. Acepta ";", "•", "|",
+// saltos de línea o ". " (sin romper decimales como "6.1").
+function cmpSpecItems(m){
+  const texto = String(m.esp || m.notes || '');
+  return texto
+    .split(/\s*(?:;|•|\||\n|\.(?=\s+[A-ZÁÉÍÓÚÑ¿]))\s*/)
+    .map(x => x.replace(/\.$/, '').trim())
+    .filter(x => x && !/^datos t[eé]cnicos detallados/i.test(x) && !/^referencia comercial/i.test(x));
+}
+
+// Nombres de fila reconocidos → clave interna (para agrupar "Batería",
+// "bateria", "Autonomía", etc. en una sola fila).
+const CMP_ALIAS = [
+  ['alm',  /^(almacenamiento|memoria interna|capacidad)$/],
+  ['ram',  /^(ram|memoria ram)$/],
+  ['cam',  /^(camara|camaras|camara principal|camara trasera)$/],
+  ['bat',  /^(bateria|autonomia|duracion de bateria|duracion)$/],
+  ['pant', /^(pantalla|display)$/],
+  ['chip', /^(chip|procesador|cpu)$/],
+  ['con',  /^(conectividad|red|bluetooth|conexion)$/],
+  ['carga',/^(carga|cargador|carga rapida|puerto)$/],
+  ['anc',  /^(cancelacion de ruido|anc)$/],
+  ['agua', /^(resistencia|resistencia al agua|ip)$/],
+  ['gar',  /^(garantia)$/],
+];
+const CMP_LABELS = { alm:'Almacenamiento', ram:'RAM', cam:'Cámara', bat:'Batería', pant:'Pantalla', chip:'Procesador', con:'Conectividad', carga:'Carga', anc:'Cancelación de ruido', agua:'Resistencia al agua', gar:'Garantía' };
+function cmpKeyFor(label){
+  const n = cmpNorm(label);
+  for(const [k, re] of CMP_ALIAS) if(re.test(n)) return k;
+  return 'x:' + n;
+}
+
+// Construye un mapa { clave: valor } + lista de características sueltas.
+function cmpSpecMap(m){
+  const map = {}; const labels = {}; const feats = [];
+  const put = (k, v, label) => { if(v && !map[k]){ map[k] = String(v).trim(); if(label) labels[k] = label; } };
+
+  // 1) Columnas dedicadas de la Hoja (tienen prioridad)
+  put('alm', m.alm); put('ram', m.ram); put('cam', m.cam); put('bat', m.bat);
+
+  // 2) ESPECIFICACIONES: "Clave: valor" → fila propia; lo demás → característica
+  cmpSpecItems(m).forEach(item => {
+    const mm = item.match(/^([^:]{2,32}):\s*(.+)$/);
+    if(mm){
+      const k = cmpKeyFor(mm[1]);
+      put(k, mm[2], mm[1].trim().replace(/^./, c => c.toUpperCase()));
+      return;
+    }
+    const n = cmpNorm(item);
+    if(/^(nuevo|usado|seminuevo|exhibicion)/.test(n)) return; // ya sale en Condición
+    // Datos reconocibles aunque no tengan "Clave:"
+    const almRam = item.match(/(\d{2,4})\s*GB almacenamiento\s*\/\s*(\d{1,2})\s*GB RAM/i);
+    if(almRam){ put('alm', almRam[1] + ' GB'); put('ram', almRam[2] + ' GB'); return; }
+    const soloAlm = item.match(/^almacenamiento:?\s*(\d+\s*(?:GB|TB))/i);
+    if(soloAlm){ put('alm', soloAlm[1]); return; }
+    if(/^(conectividad\s+)?(4g|5g|wi-?fi|bluetooth)/i.test(item)){ put('con', item.replace(/^conectividad\s+/i, '')); return; }
+    if(!map.bat && /(mah|\bhoras?\b|\d+\s*h\b|bateria|autonomia)/.test(n)) { put('bat', item); return; }
+    if(!map.cam && /(\d+\s*mp\b|camara)/.test(n)) { put('cam', item); return; }
+    if(!map.pant && /(pantalla|pulgadas|\d+[.,]\d+\s*["”])/.test(n)) { put('pant', item); return; }
+    if(!map.chip && /(chip|procesador|snapdragon|helio|dimensity|ryzen|intel|\ba1\d\b|bionic)/.test(n)) { put('chip', item); return; }
+    feats.push(item);
+  });
+
+  // 3) Último recurso: leer el nombre ("A17 256/8", "iPhone 15 128 GB")
+  const nombre = m.n || '';
+  const par = nombre.match(/\b(\d{2,4})\s*\/\s*(\d{1,2})\b/);
+  if(par){ put('alm', par[1] + ' GB'); put('ram', par[2] + ' GB'); }
+  const gb = nombre.match(/\b(\d{2,4})\s*(GB|TB)\b/i) || nombre.match(/\b(1)\s*(TB)\b/i);
+  if(gb) put('alm', gb[1] + ' ' + gb[2].toUpperCase());
+  if(/\b5g\b/i.test(nombre)) put('con', '5G');
+
+  return { map, labels, feats };
+}
+
 function openCompareModal(){
   if(COMPARE.length < 2) return;
   const productos = COMPARE.map(id => ({ id, ...findProductById(id) })).filter(p => p.m);
   const wrap = document.getElementById('compareTableWrap');
   if(!wrap) return;
-  const rows = [
-    { label: 'Condición', get: p => p.m.cond || '—' },
-    { label: 'Almacenamiento', get: p => p.m.alm || '—' },
-    { label: 'RAM', get: p => p.m.ram || '—' },
-    { label: 'Cámara', get: p => p.m.cam || '—' },
-    { label: 'Batería', get: p => p.m.bat || '—' },
-  ];
+
+  productos.forEach(p => { p.spec = cmpSpecMap(p.m); });
+
+  // Orden de filas: primero las conocidas, luego las claves libres de la Hoja
+  const orden = ['alm','ram','pant','chip','cam','bat','con','carga','anc','agua','gar'];
+  const libres = [];
+  productos.forEach(p => Object.keys(p.spec.map).forEach(k => {
+    if(!orden.includes(k) && !libres.includes(k)) libres.push(k);
+  }));
+  const specRows = [...orden, ...libres]
+    .filter(k => productos.some(p => p.spec.map[k]))
+    .map(k => ({
+      label: CMP_LABELS[k] || (productos.map(p => p.spec.labels[k]).find(Boolean)) || k.replace(/^x:/, ''),
+      vals: productos.map(p => p.spec.map[k] || '')
+    }));
+  const hayFeats = productos.some(p => p.spec.feats.length);
+
+  // Precio más bajo
+  const minP = Math.min(...productos.map(p => p.m.p));
+  const hayEmpate = productos.filter(p => p.m.p === minP).length > 1;
+
+  const esMovil = window.innerWidth <= 560;
+  const rowHTML = (label, vals, opts = {}) => {
+    const limpios = vals.map(v => cmpNorm(String(v).replace(/<[^>]*>/g, '')));
+    const distinto = new Set(limpios).size > 1;
+    const cls = opts.noDiff ? '' : (distinto ? 'is-diff' : 'is-same');
+    return `<tr class="${cls}">
+      <td class="compare-row-label">${cmpEsc(esMovil && label === 'Almacenamiento' ? 'Capacidad' : label)}</td>
+      ${vals.map(v => `<td>${opts.raw ? (v || '—') : (v ? cmpEsc(v) : '—')}</td>`).join('')}
+    </tr>`;
+  };
+  const cols = productos.length;
+
+  const filas = [];
+  // General
+  filas.push(rowHTML('Precio', productos.map(p => {
+    const antes = p.m.pAntes && p.m.pAntes > p.m.p ? `<span class="compare-old-price">${formatCOP(p.m.pAntes)}</span>` : '';
+    const best = (p.m.p === minP && !hayEmpate) ? '<br><span class="compare-best">Mejor precio</span>' : '';
+    return `${antes}<strong>${formatCOP(p.m.p)}</strong>${best}`;
+  }), { raw: true }));
+  filas.push(rowHTML('Categoría', productos.map(p => [p.catLabel, p.marca].filter(Boolean).filter((v, i, a) => a.indexOf(v) === i).join(' · '))));
+  if(productos.some(p => p.m.cond)) filas.push(rowHTML('Condición', productos.map(p => p.m.cond || '')));
+
+  // Ficha técnica
+  if(specRows.length || hayFeats){
+    filas.push(`<tr class="is-section"><td colspan="${cols + 1}">Ficha técnica</td></tr>`);
+    specRows.forEach(r => filas.push(rowHTML(r.label, r.vals)));
+    if(hayFeats){
+      filas.push(rowHTML('Características', productos.map(p => p.spec.feats.length
+        ? `<ul class="compare-feat">${p.spec.feats.slice(0, 6).map(f => `<li>${cmpEsc(f)}</li>`).join('')}</ul>` : ''), { raw: true, noDiff: true }));
+    }
+  }
+
+  // Pago: igual para todos, pero es un argumento de venta clave
+  filas.push(`<tr class="is-section"><td colspan="${cols + 1}">Formas de pago</td></tr>`);
+  filas.push(rowHTML('Financiación', productos.map(() => 'Sistecrédito · Addi'), { noDiff: true }));
+
+  // Botones
+  filas.push(`<tr><td class="compare-row-label"></td>${productos.map(p => `<td><a class="fav-add-btn" href="${waLink('Hola, quiero preguntar por: ' + p.m.n + ' (' + formatCOP(p.m.p) + ')')}" target="_blank" rel="noopener">Preguntar →</a></td>`).join('')}</tr>`);
+
+  const faltanDatos = productos.filter(p => !Object.keys(p.spec.map).length && !p.spec.feats.length);
+  const aviso = faltanDatos.length ? `
+    <p class="compare-empty-note">Aún no tenemos la ficha técnica completa de ${faltanDatos.map(p => '<b>' + cmpEsc(p.m.n) + '</b>').join(', ')}.
+    <a href="${waLink('Hola, quiero comparar: ' + productos.map(p => p.m.n).join(' vs ') + '. ¿Me ayudan con las diferencias?')}" target="_blank" rel="noopener">Pregúntanos por WhatsApp</a> y te contamos las diferencias.</p>` : '';
+
   wrap.innerHTML = `
     <table class="compare-table">
       <thead>
@@ -3596,25 +3770,19 @@ function openCompareModal(){
                 <button type="button" class="compare-remove" onclick="removeFromCompare('${p.id.replace(/'/g, "\\'")}')" aria-label="Quitar de la comparación">✕</button>
                 <div class="compare-col-media">${productMediaHTML(p.m)}</div>
                 <span class="compare-col-name">${p.m.n}</span>
-                <span class="compare-col-price">${formatCOP(p.m.p)}</span>
               </div>
             </th>`).join('')}
         </tr>
       </thead>
-      <tbody>
-        ${rows.map(r => `
-          <tr>
-            <td class="compare-row-label">${r.label}</td>
-            ${productos.map(p => `<td>${r.get(p)}</td>`).join('')}
-          </tr>`).join('')}
-        <tr>
-          <td class="compare-row-label"></td>
-          ${productos.map(p => `<td><a class="fav-add-btn" href="${waLink('Hola, quiero preguntar por: ' + p.m.n + ' (' + formatCOP(p.m.p) + ')')}" target="_blank" rel="noopener">Preguntar →</a></td>`).join('')}
-        </tr>
-      </tbody>
-    </table>`;
+      <tbody>${filas.join('')}</tbody>
+    </table>${aviso}`;
+
   const modal = document.getElementById('compareModal');
-  if(modal) modal.classList.add('open');
+  if(modal){
+    const chk = document.getElementById('compareOnlyDiff');
+    modal.classList.toggle('only-diff', !!(chk && chk.checked));
+    modal.classList.add('open');
+  }
   document.body.style.overflow = 'hidden';
 }
 
@@ -5600,7 +5768,7 @@ function aplicarFilasCatalogo(filas, origen){
       // disponibilidad) para que camandDebugDestacados() los pueda mostrar
       // de toda fila, se muestre o no en el sitio. idxOriginal es la
       // posición de esta fila en la Hoja, usada como orden de respaldo.
-      const modelo = { n: nombre, p: precio, notes, img: imagen, cond: condicion, alm: almacenamiento, ram, cam: camara, bat: bateria, pAntes: precioAntes, tag: etiqueta, dest: destacado, ordenDest, idxOriginal: idxOriginal++ };
+      const modelo = { n: nombre, p: precio, notes, esp: especificaciones, img: imagen, cond: condicion, alm: almacenamiento, ram, cam: camara, bat: bateria, pAntes: precioAntes, tag: etiqueta, dest: destacado, ordenDest, idxOriginal: idxOriginal++ };
 
       const esCelular = categoria.includes("celular");
       const esIphone = /iphone/i.test(nombreBase) || /iphone|apple/i.test(sub);
