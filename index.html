@@ -38,14 +38,14 @@
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
 <meta name="apple-mobile-web-app-title" content="Camand Mobile">
 <title>Camand Mobile — Celulares nuevos y usados Bogotá | iPhone y Android</title>
-<meta name="description" content="Compra celulares y tecnología Apple y Android, nuevos y usados (remanufacturados), en Bogotá. iPhone, Samsung, tablets, computadores y accesorios. Paga con Sistecrédito a cuotas o transferencia.">
-<meta name="keywords" content="celulares usados Bogotá, iPhone remanufacturado, iPhone 12 remanufacturado, Samsung usados, Sistecrédito celulares, tecnología usada y nueva, Camand Mobile">
+<meta name="description" content="Compra celulares y tecnología Apple y Android, nuevos y usados (remanufacturados), en Bogotá. iPhone, Samsung, tablets, computadores y accesorios. Paga contraentrega, con tarjeta de crédito a cuotas o transferencia.">
+<meta name="keywords" content="celulares usados Bogotá, iPhone remanufacturado, iPhone 12 remanufacturado, Samsung usados, celulares contraentrega Bogotá, celulares a cuotas con tarjeta de crédito, tecnología usada y nueva, Camand Mobile">
 <link rel="canonical" href="https://camandmobile.com/">
 
 <!-- Open Graph: como se ve al compartir el link en WhatsApp, Facebook, etc. -->
 <meta property="og:title" content="Camand Mobile — Celulares nuevos y usados Bogotá">
 <meta property="og:site_name" content="Camand Mobile">
-<meta property="og:description" content="iPhone, Samsung y más, nuevos y usados. Paga con Sistecrédito a cuotas o transferencia.">
+<meta property="og:description" content="iPhone, Samsung y más, nuevos y usados. Paga contraentrega, con tarjeta de crédito a cuotas o transferencia.">
 <meta property="og:type" content="website">
 <meta property="og:url" content="https://camandmobile.com/">
 <meta property="og:image" content="https://camandmobile.com/img/camand-logo.png">
@@ -54,7 +54,7 @@
 <!-- Twitter/X Card: mismo propósito que Open Graph, para esa red específica -->
 <meta name="twitter:card" content="summary_large_image">
 <meta name="twitter:title" content="Camand Mobile — Celulares nuevos y usados Bogotá">
-<meta name="twitter:description" content="iPhone, Samsung y más, nuevos y usados. Paga con Sistecrédito a cuotas o transferencia.">
+<meta name="twitter:description" content="iPhone, Samsung y más, nuevos y usados. Paga contraentrega, con tarjeta de crédito a cuotas o transferencia.">
 <meta name="twitter:image" content="https://camandmobile.com/img/camand-logo.png">
 
 <!-- Datos estructurados: ayudan a Google a entender que esto es una tienda real -->
@@ -63,7 +63,8 @@
   "@context": "https://schema.org",
   "@type": "ElectronicsStore",
   "name": "Camand Mobile",
-  "description": "Tienda de tecnología: celulares y dispositivos electrónicos Android y Apple, nuevos y usados (remanufacturados). Pagos por transferencia o Sistecrédito a cuotas.",
+  "description": "Tienda de tecnología: celulares y dispositivos electrónicos Android y Apple, nuevos y usados (remanufacturados). Pago contraentrega, tarjeta de crédito a cuotas o transferencia.",
+  "paymentAccepted": "Contraentrega, Tarjeta de crédito, Tarjeta débito, Transferencia, Nequi, Sistecrédito",
   "url": "https://camandmobile.com/",
   "image": "https://camandmobile.com/img/camand-logo.png",
   "telephone": "+57 312 2265799",
@@ -1452,6 +1453,9 @@ footer.site{
   display:flex;flex-direction:column;align-items:center;gap:6px;text-align:center;
   background:var(--surface);border-radius:12px;padding:12px 8px;font-size:11px;font-weight:700;color:var(--ink-soft);
 }
+.pdp-pay-item.is-featured{border-color:var(--tech);background:#f2f7ff;font-weight:700;}
+@media (max-width:560px){.pdp-pay-item.is-wide{grid-column:1/-1;}}
+.pdp-pay-item small{font-size:10.5px;font-weight:500;color:var(--ink-soft);}
 .pdp-pay-item .pdp-pay-icon{
   width:34px;height:34px;border-radius:10px;background:#fff;display:flex;align-items:center;justify-content:center;
   box-shadow:0 1px 2px rgba(0,0,0,.06);
@@ -1922,7 +1926,8 @@ body.loaded header.nav {
         <div class="pill"><span class="dot"></span>Envíos a Bogotá y a nivel nacional</div>
         <div class="pill"><span class="dot"></span>Productos de máxima calidad garantizada</div>
         <div class="pill"><span class="dot"></span>Compra 100% segura — abonas y apartas</div>
-        <div class="pill"><span class="dot"></span>Paga a cuotas, sin tarjeta</div>
+        <div class="pill"><span class="dot"></span>Paga contraentrega — al recibir</div>
+        <div class="pill"><span class="dot"></span>Tarjeta de crédito a cuotas</div>
       </div>
     </div>
 
@@ -1940,7 +1945,7 @@ body.loaded header.nav {
       <div class="wrap">
         <div class="about-block">
           <h2>Quiénes somos</h2>
-          <p>Somos Camand Mobile, una tienda 100% virtual con base en Bogotá especializada en la compra y venta de celulares y tecnología Android y Apple, nuevos y usados. Revisamos cada equipo antes de entregarlo, ofrecemos garantía real y crédito fácil con Sistecrédito. Todo el proceso — desde que preguntas hasta que recibes tu pedido — lo acompañamos por WhatsApp.</p>
+          <p>Somos Camand Mobile, una tienda 100% virtual con base en Bogotá especializada en la compra y venta de celulares y tecnología Android y Apple, nuevos y usados. Revisamos cada equipo antes de entregarlo, ofrecemos garantía real y puedes pagar contraentrega o con tarjeta de crédito a cuotas. Todo el proceso — desde que preguntas hasta que recibes tu pedido — lo acompañamos por WhatsApp.</p>
         </div>
       </div>
     </div>
@@ -2454,7 +2459,7 @@ body.loaded header.nav {
               <span class="faq-q-text">¿Puedo pagar a cuotas?</span>
               <svg class="faq-chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4"><path d="M6 9l6 6 6-6"/></svg>
             </button>
-            <div class="faq-a-wrap"><div class="faq-a"><ul><li>Sí, aceptamos Sistecrédito a cuotas, además de transferencia y pago contra entrega según la zona.</li></ul></div></div>
+            <div class="faq-a-wrap"><div class="faq-a"><ul><li>Sí, con tu <b>tarjeta de crédito</b> puedes diferir el pago a las cuotas que elijas con tu banco (el pago con tarjeta tiene un recargo del 6%).</li><li>También puedes pagar <b>contraentrega</b>: pagas cuando recibes el producto (te confirmamos la cobertura para tu ciudad por WhatsApp).</li><li>Con <b>Sistecrédito</b> también puedes pagar a cuotas sin tarjeta, usando tu cupo.</li><li>Además aceptamos transferencia y Nequi.</li></ul></div></div>
           </div>
         </div>
       </div>
@@ -2598,7 +2603,7 @@ body.loaded header.nav {
 
         <h2>3. Para qué usamos tus datos</h2>
         <ul>
-          <li>Procesar y confirmar tus pedidos, incluyendo el trámite de pago (transferencia, Sistecrédito, PSE, Nequi, Bancolombia o contraentrega) y el envío.</li>
+          <li>Procesar y confirmar tus pedidos, incluyendo el trámite de pago (contraentrega, tarjeta de crédito o débito, transferencia, PSE, Nequi, Bancolombia o Sistecrédito) y el envío.</li>
           <li>Responder tus consultas por WhatsApp o Instagram sobre productos, precios o garantías.</li>
           <li>Analizar el uso del sitio (Google Analytics) para mejorar el catálogo y la experiencia de compra.</li>
           <li>Enviarte información sobre promociones o novedades, únicamente si nos has dado tu autorización para esto.</li>
@@ -2719,7 +2724,7 @@ function mostrarGraciasSuscripcion() {
         <img class="camand-logo-img" alt="Camand Mobile" style="filter:brightness(0) invert(1);">
         <span class="foot-brand-name">Camand Mobile</span>
       </div>
-      <p class="foot-desc">Compra y venta de celulares y tecnología, nuevos y usados (Android y Apple), en Bogotá. Equipos revisados, con garantía y crédito fácil con Sistecrédito.</p>
+      <p class="foot-desc">Compra y venta de celulares y tecnología, nuevos y usados (Android y Apple), en Bogotá. Equipos revisados, con garantía. Paga contraentrega o con tarjeta de crédito a cuotas.</p>
       <div class="foot-socials">
         <a href="https://www.instagram.com/camand.mobile/" target="_blank" rel="noopener" aria-label="Instagram">
           <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="2" width="20" height="20" rx="5"/><circle cx="12" cy="12" r="4"/><circle cx="17.5" cy="6.5" r="1" fill="currentColor" stroke="none"/></svg>
@@ -2764,8 +2769,12 @@ function mostrarGraciasSuscripcion() {
         <span>Envíos a toda Colombia</span>
       </div>
       <div class="foot-badge">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 13h11l3 4h4v-4l-3-5H3z"/><circle cx="7.5" cy="18" r="1.6"/><circle cx="17.5" cy="18" r="1.6"/></svg>
+        <span>Pago contraentrega</span>
+      </div>
+      <div class="foot-badge">
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="5" width="20" height="14" rx="2"/><path d="M2 10h20"/></svg>
-        <span>Aliado autorizado Sistecrédito</span>
+        <span>Tarjetas de crédito a cuotas</span>
       </div>
       <div class="foot-badge">
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2 4 5v6c0 5 3.4 9.4 8 11 4.6-1.6 8-6 8-11V5l-8-3Z"/></svg>
@@ -2825,7 +2834,7 @@ function mostrarGraciasSuscripcion() {
       <p class="cart-discount-msg" id="cartDescuentoMsg"></p>
     </div>
     <div id="cartTotalsWrap"></div>
-    <div class="cart-pay-note"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" style="flex-shrink:0;"><rect x="2.5" y="5.5" width="19" height="13" rx="2"/><path d="M2.5 10h19"/></svg> Aceptamos <b>transferencia</b> y <b>pago a cuotas</b>. Confirmamos el método de pago al finalizar por WhatsApp.</div>
+    <div class="cart-pay-note"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" style="flex-shrink:0;"><rect x="2.5" y="5.5" width="19" height="13" rx="2"/><path d="M2.5 10h19"/></svg> Paga <b>contraentrega</b> o con <b>tarjeta de crédito a cuotas</b> (recargo 6%). También Sistecrédito y transferencia. Confirmamos el método al finalizar por WhatsApp.</div>
     <div class="cart-checkout-row">
       <button type="button" class="cart-checkout" id="cartCheckoutBtn" onclick="checkoutWhatsApp()" disabled>
         <svg class="icon-inline" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><rect x="5" y="10.5" width="14" height="9" rx="2"/><path d="M8 10.5V7a4 4 0 0 1 8 0v3.5"/></svg>
@@ -3749,7 +3758,7 @@ function openCompareModal(){
 
   // Pago: igual para todos, pero es un argumento de venta clave
   filas.push(`<tr class="is-section"><td colspan="${cols + 1}">Formas de pago</td></tr>`);
-  filas.push(rowHTML('Financiación', productos.map(() => 'Sistecrédito · Addi'), { noDiff: true }));
+  filas.push(rowHTML('Cómo pagar', productos.map(() => 'Contraentrega · Tarjeta de crédito · Sistecrédito'), { noDiff: true }));
 
   // Botones
   filas.push(`<tr><td class="compare-row-label"></td>${productos.map(p => `<td><a class="fav-add-btn" href="${waLink('Hola, quiero preguntar por: ' + p.m.n + ' (' + formatCOP(p.m.p) + ')')}" target="_blank" rel="noopener">Preguntar →</a></td>`).join('')}</tr>`);
@@ -3974,7 +3983,7 @@ function checkoutWhatsApp(){
   if(CART_NOTE && CART_NOTE.trim()){
     msg += `\n\nNota para la entrega: ${CART_NOTE.trim()}`;
   }
-  msg += `\n\n¿Cómo puedo pagar? Me interesa transferencia o pago a cuotas.`;
+  msg += `\n\n¿Puedo pagar contraentrega o con tarjeta de crédito?`;
   window.open(waLink(msg), '_blank', 'noopener');
 }
 
@@ -4757,10 +4766,11 @@ function productDetailHTML(catKey, catLabel, marca, m){
         <div class="pdp-section-block">
           <h5>${ICON_CARD}Métodos de pago aceptados</h5>
           <div class="pdp-pay-grid">
-            <div class="pdp-pay-item"><span class="pdp-pay-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="5" width="18" height="14" rx="2"/><path d="M3 10h18"/></svg></span>PSE</div>
+            <div class="pdp-pay-item is-featured"><span class="pdp-pay-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 13h11l3 4h4v-4l-3-5H3z"/><circle cx="7.5" cy="18" r="1.6"/><circle cx="17.5" cy="18" r="1.6"/></svg></span>Contraentrega<br><small>paga al recibir</small></div>
+            <div class="pdp-pay-item is-featured"><span class="pdp-pay-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="5" width="18" height="14" rx="2"/><path d="M3 10h18M7 15h4"/></svg></span>Tarjeta de crédito<br><small>a cuotas · recargo 6%</small></div>
+            <div class="pdp-pay-item"><span class="pdp-pay-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="6" width="18" height="12" rx="2"/><circle cx="12" cy="12" r="2.4"/></svg></span>Transferencia<br>/ PSE</div>
             <div class="pdp-pay-item"><span class="pdp-pay-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="4" y="3" width="16" height="18" rx="2"/><path d="M9 7h6M9 11h6M9 15h3"/></svg></span>Nequi</div>
-            <div class="pdp-pay-item"><span class="pdp-pay-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="6" width="18" height="12" rx="2"/><circle cx="12" cy="12" r="2.4"/></svg></span>Bancolombia<br>(transferencia)</div>
-            <div class="pdp-pay-item"><span class="pdp-pay-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 13h11l3 4h4v-4l-3-5H3z"/><circle cx="7.5" cy="18" r="1.6"/><circle cx="17.5" cy="18" r="1.6"/></svg></span>Contraentrega</div>
+            <div class="pdp-pay-item is-wide"><span class="pdp-pay-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 3v18M17 7.5c-.8-1.5-2.7-2.5-5-2.5-2.8 0-5 1.4-5 3.5S9.2 11.3 12 12s5 1.4 5 3.5-2.2 3.5-5 3.5c-2.3 0-4.2-1-5-2.5"/></svg></span>Sistecrédito<br><small>cuotas sin tarjeta</small></div>
           </div>
           <p class="pdp-pay-note">Confirmamos el método de pago directamente por <a href="${waLink('Hola, quiero preguntar los métodos de pago disponibles para: ' + m.n)}" target="_blank" rel="noopener">WhatsApp</a>.</p>
         </div>

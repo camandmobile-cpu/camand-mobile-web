@@ -1077,7 +1077,7 @@ body.preview-mode .progress-strip{display:none;}
              usados en el resto de la tienda (Sistecrédito, envíos,
              garantía), no se inventa nada nuevo aquí. -->
         <div class="confirm-trust-row">
-          <span><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 6L9 17l-5-5"/></svg>Aceptamos Sistecrédito a cuotas</span>
+          <span><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 6L9 17l-5-5"/></svg>Paga contraentrega o con tarjeta de crédito</span>
           <span><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><rect x="1" y="6" width="14" height="11" rx="1.5"/><path d="M15 10h4l3 3.5V17h-7"/><circle cx="6" cy="19" r="1.6"/><circle cx="17.5" cy="19" r="1.6"/></svg>Envíos a toda Colombia</span>
           <span><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 3"/></svg>Garantía de 1 mes</span>
         </div>
@@ -1192,7 +1192,7 @@ body.preview-mode .progress-strip{display:none;}
       <textarea id="cartNoteInput" rows="2" placeholder="Ej: dejar con portería, timbre 302, llamar antes de llegar..."></textarea>
     </div>
     <div id="cartTotalsWrap"></div>
-    <div class="cart-pay-note"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" style="flex-shrink:0;"><rect x="2.5" y="5.5" width="19" height="13" rx="2"/><path d="M2.5 10h19"/></svg> Aceptamos <b>transferencia</b> y <b>pago a cuotas</b>. Confirmamos el método de pago al finalizar por WhatsApp.</div>
+    <div class="cart-pay-note"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" style="flex-shrink:0;"><rect x="2.5" y="5.5" width="19" height="13" rx="2"/><path d="M2.5 10h19"/></svg> Paga <b>contraentrega</b> o con <b>tarjeta de crédito a cuotas</b> (recargo 6%). También Sistecrédito y transferencia. Confirmamos el método de pago al finalizar por WhatsApp.</div>
     <div class="cart-checkout-row">
       <button type="button" class="cart-checkout" id="checkoutBtn" disabled>
         <svg class="icon-inline" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><rect x="5" y="10.5" width="14" height="9" rx="2"/><path d="M8 10.5V7a4 4 0 0 1 8 0v3.5"/></svg>
@@ -2398,7 +2398,7 @@ async function checkoutCart(){
   const nota = document.getElementById('cartNoteInput');
   if(nota && nota.value.trim()) msg += `\n\nNota para la entrega: ${nota.value.trim()}`;
   if(hayEstuche) msg += `\n\n(Ya descargué el archivo de mi diseño de estuche más reciente — te lo comparto por aquí).`;
-  msg += `\n\n¿Cómo puedo pagar? Me interesa transferencia o pago a cuotas.`;
+  msg += `\n\n¿Puedo pagar contraentrega o con tarjeta de crédito?`;
   window.open(`https://wa.me/${WHATSAPP_NUMBER}?text=${encodeURIComponent(msg)}`, '_blank');
 }
 
