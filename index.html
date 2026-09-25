@@ -1815,13 +1815,15 @@ body.loaded header.nav {
 }
 .story-chip button{border:0;background:transparent;color:inherit;cursor:pointer;font-size:15px;line-height:1;padding:0 2px;}
 .story-list{
-  margin-top:8px;max-height:340px;overflow-y:auto;border:1px solid rgba(0,0,0,.06);border-radius:14px;background:#fff;
+  margin-top:8px;max-height:420px;overflow-y:auto;border:1px solid rgba(0,0,0,.06);border-radius:14px;background:#fff;
 }
 .story-item{
   display:flex;align-items:center;gap:12px;width:100%;padding:8px 12px;border:0;border-bottom:1px solid rgba(0,0,0,.05);
   background:transparent;text-align:left;cursor:pointer;font:inherit;color:var(--ink);
 }
 .story-item:last-child{border-bottom:0;}
+.story-group{position:sticky;top:0;z-index:1;padding:8px 12px;background:var(--surface);font-size:11.5px;font-weight:700;letter-spacing:.05em;text-transform:uppercase;color:var(--ink-soft);}
+.story-group span{color:var(--ink-faint);margin-left:4px;}
 .story-item:hover{background:var(--surface);}
 .story-item.is-sel{background:var(--tech-tint);}
 .story-item img,.story-item .si-noimg{width:40px;height:40px;object-fit:contain;border-radius:8px;background:var(--surface);flex-shrink:0;}
@@ -6473,18 +6475,25 @@ function storyRenderList(){
       return tokens.every(t => txt.includes(t));
     });
   }
-  lista = lista.slice(0, 60);
   if(!lista.length){ el.innerHTML = `<p class="story-hint" style="padding:14px;">Sin resultados.</p>`; return; }
-  el.innerHTML = lista.map(x => {
+  // Todos los productos del catálogo, agrupados por categoría (sin tope).
+  let html = '', grupo = null;
+  lista.forEach(x => {
+    if(x.catLabel !== grupo){
+      grupo = x.catLabel;
+      const n = lista.filter(y => y.catLabel === grupo).length;
+      html += `<div class="story-group">${cmpEsc(grupo)} <span>${n}</span></div>`;
+    }
     const img = storyFirstImg(x.m);
     const sel = STORY.sel.includes(x.id);
     const aviso = img && !storyIsCloudinary(img) ? ` · <span class="si-warn">foto fuera de Cloudinary</span>` : (!img ? ` · <span class="si-warn">sin foto</span>` : '');
-    return `<button type="button" class="story-item${sel ? ' is-sel' : ''}" onclick="storyToggle('${x.id.replace(/'/g, "\\'")}')">
+    html += `<button type="button" class="story-item${sel ? ' is-sel' : ''}" onclick="storyToggle('${x.id.replace(/'/g, "\\'")}')">
       ${img ? `<img src="${optimizeImageUrl(img, 80)}" alt="" loading="lazy">` : `<span class="si-noimg"></span>`}
       <span class="si-txt"><span class="si-name">${cmpEsc(x.m.n)}</span><span class="si-meta">${formatCOP(x.m.p)} · ${cmpEsc(x.m.cond || x.catLabel)}${aviso}</span></span>
       <span class="si-check">${sel ? '✓' : ''}</span>
     </button>`;
-  }).join('');
+  });
+  el.innerHTML = html;
 }
 
 /* ---------- Carga de imágenes para el lienzo ---------- */
