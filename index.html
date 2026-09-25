@@ -1725,6 +1725,130 @@ body.loaded header.nav {
   0% { transform: scale(0.97); opacity: 0; }
   100% { transform: scale(1); opacity: 1; }
 }
+
+/* ============================================================
+   CINTA DE TEXTO EN MOVIMIENTO (inicio, debajo del banner)
+   ============================================================ */
+.cinta{
+  position:relative;background:#1d1d1f;color:#fff;overflow:hidden;
+  height:44px;display:flex;align-items:center;
+  -webkit-mask-image:linear-gradient(90deg,transparent 0,#000 6%,#000 94%,transparent 100%);
+          mask-image:linear-gradient(90deg,transparent 0,#000 6%,#000 94%,transparent 100%);
+}
+.cinta-track{display:flex;width:max-content;animation:cintaScroll var(--cinta-dur,40s) linear infinite;will-change:transform;}
+.cinta:hover .cinta-track{animation-play-state:paused;}
+.cinta-group{display:flex;flex-shrink:0;}
+.cinta-item{
+  display:inline-flex;align-items:center;white-space:nowrap;
+  font-size:13.5px;font-weight:600;letter-spacing:.01em;padding-right:34px;
+}
+.cinta-item::before{
+  content:"";width:6px;height:6px;border-radius:50%;background:#2997ff;margin-right:34px;flex-shrink:0;
+}
+.cinta-item b{color:#2997ff;font-weight:700;margin-right:6px;}
+@keyframes cintaScroll{from{transform:translateX(0);}to{transform:translateX(-50%);}}
+@media (max-width:560px){ .cinta{height:38px;} .cinta-item{font-size:12.5px;padding-right:24px;} .cinta-item::before{margin-right:24px;} }
+@media (prefers-reduced-motion:reduce){
+  .cinta{overflow-x:auto;-webkit-mask-image:none;mask-image:none;}
+  .cinta-track{animation:none;}
+  .cinta-group[aria-hidden="true"]{display:none;}
+}
+
+/* ============================================================
+   CARRUSELES DE PRODUCTOS (inicio)
+   ============================================================ */
+.home-rails-section{padding-top:8px;padding-bottom:36px;}
+.home-rail{margin-bottom:44px;}
+.home-rail:last-child{margin-bottom:0;}
+.home-rail-head{display:flex;align-items:flex-end;justify-content:space-between;gap:14px;margin-bottom:16px;}
+.home-rail-head h2{font-size:clamp(21px,2.8vw,28px);letter-spacing:-0.02em;font-weight:800;margin:0;}
+.home-rail-head p{margin:4px 0 0;font-size:13.5px;color:var(--ink-soft);}
+.home-rail-tools{display:flex;align-items:center;gap:8px;flex-shrink:0;}
+.home-rail-tools a{font-size:13px;font-weight:700;color:var(--tech);cursor:pointer;white-space:nowrap;margin-right:6px;}
+.home-rail-tools a:hover{text-decoration:underline;}
+.home-rail-nav{
+  width:36px;height:36px;border-radius:50%;border:1px solid rgba(0,0,0,.08);background:#fff;color:var(--ink);
+  font-size:20px;line-height:1;cursor:pointer;display:flex;align-items:center;justify-content:center;
+  transition:border-color .2s,color .2s,transform .2s var(--ease);
+}
+.home-rail-nav:hover{border-color:var(--tech);color:var(--tech);transform:scale(1.06);}
+.home-rail-track{
+  display:flex;gap:16px;overflow-x:auto;scroll-snap-type:x mandatory;scroll-behavior:smooth;
+  padding:4px 2px 10px;margin:0 -2px;scrollbar-width:none;-webkit-overflow-scrolling:touch;
+}
+.home-rail-track::-webkit-scrollbar{display:none;}
+.home-rail-track > .product-card{flex:0 0 212px;scroll-snap-align:start;}
+@media (max-width:734px){
+  .home-rail-nav{display:none;}
+  .home-rail-track{margin:0 -20px;padding:4px 20px 10px;scroll-padding-left:20px;gap:12px;}
+  .home-rail-track > .product-card{flex-basis:168px;}
+  .home-rail-head p{display:none;}
+}
+
+/* ============================================================
+   GENERADOR DE HISTORIAS (#/historias — uso interno)
+   ============================================================ */
+.story-wrap{padding-top:36px;padding-bottom:72px;}
+.story-head h1{font-size:clamp(26px,3.6vw,38px);letter-spacing:-0.025em;font-weight:800;margin:0 0 10px;}
+.story-head p{color:var(--ink-soft);font-size:15px;line-height:1.55;margin:0;max-width:640px;}
+.story-layout{display:grid;grid-template-columns:minmax(0,1fr) 380px;gap:36px;margin-top:28px;align-items:start;}
+.story-controls{display:flex;flex-direction:column;gap:18px;}
+.story-field > label{display:block;font-size:11.5px;font-weight:700;letter-spacing:.06em;text-transform:uppercase;color:var(--ink-faint);margin-bottom:8px;}
+.story-field input[type=text]{
+  width:100%;padding:11px 14px;border-radius:12px;border:1px solid rgba(0,0,0,.1);background:#fff;
+  font:inherit;font-size:14px;color:var(--ink);
+}
+.story-field input[type=text]:focus{outline:none;border-color:var(--tech);box-shadow:0 0 0 3px var(--tech-tint);}
+.story-hint{font-size:12px;color:var(--ink-soft);margin:6px 0 0;}
+.story-seg{display:flex;gap:6px;flex-wrap:wrap;}
+.story-seg button{
+  padding:9px 14px;border-radius:999px;border:1px solid rgba(0,0,0,.1);background:#fff;
+  font-size:13px;font-weight:600;color:var(--ink);cursor:pointer;transition:all .2s;
+}
+.story-seg button:hover{border-color:var(--tech);}
+.story-seg button.is-active{background:var(--ink);border-color:var(--ink);color:#fff;}
+.story-selected{display:flex;flex-wrap:wrap;gap:6px;margin-bottom:10px;}
+.story-selected:empty{display:none;}
+.story-chip{
+  display:inline-flex;align-items:center;gap:6px;padding:6px 8px 6px 12px;border-radius:999px;
+  background:var(--tech-tint);color:var(--tech-dark);font-size:12.5px;font-weight:600;
+}
+.story-chip button{border:0;background:transparent;color:inherit;cursor:pointer;font-size:15px;line-height:1;padding:0 2px;}
+.story-list{
+  margin-top:8px;max-height:340px;overflow-y:auto;border:1px solid rgba(0,0,0,.06);border-radius:14px;background:#fff;
+}
+.story-item{
+  display:flex;align-items:center;gap:12px;width:100%;padding:8px 12px;border:0;border-bottom:1px solid rgba(0,0,0,.05);
+  background:transparent;text-align:left;cursor:pointer;font:inherit;color:var(--ink);
+}
+.story-item:last-child{border-bottom:0;}
+.story-item:hover{background:var(--surface);}
+.story-item.is-sel{background:var(--tech-tint);}
+.story-item img,.story-item .si-noimg{width:40px;height:40px;object-fit:contain;border-radius:8px;background:var(--surface);flex-shrink:0;}
+.story-item .si-txt{flex:1;min-width:0;}
+.story-item .si-name{display:block;font-size:13px;font-weight:600;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+.story-item .si-meta{display:block;font-size:12px;color:var(--ink-soft);}
+.story-item .si-warn{color:var(--acc-dark);}
+.story-item .si-check{width:20px;height:20px;border-radius:50%;border:1.5px solid rgba(0,0,0,.18);flex-shrink:0;display:flex;align-items:center;justify-content:center;color:#fff;font-size:12px;}
+.story-item.is-sel .si-check{background:var(--tech);border-color:var(--tech);}
+.story-preview{position:sticky;top:calc(var(--stack-h) + 20px);display:flex;flex-direction:column;align-items:center;gap:14px;}
+.story-preview canvas{width:100%;max-width:340px;aspect-ratio:9/16;height:auto;border-radius:22px;box-shadow:var(--shadow-2);background:var(--surface);}
+.story-actions{display:flex;flex-wrap:wrap;gap:8px;justify-content:center;width:100%;max-width:340px;}
+.story-btn{
+  flex:1 1 auto;padding:12px 16px;border-radius:999px;border:1px solid rgba(0,0,0,.12);background:#fff;
+  font-size:13.5px;font-weight:700;color:var(--ink);cursor:pointer;transition:all .2s;
+}
+.story-btn:hover{border-color:var(--ink);}
+.story-btn.primary{background:var(--tech);border-color:var(--tech);color:#fff;flex-basis:100%;}
+.story-btn.primary:hover{background:var(--tech-dark);}
+.story-warn{font-size:12.5px;line-height:1.45;color:var(--acc-dark);background:var(--acc-tint);border-radius:12px;padding:10px 12px;margin:0;max-width:340px;}
+.story-warn:empty{display:none;}
+.story-tip{font-size:12px;color:var(--ink-soft);line-height:1.5;text-align:center;max-width:340px;margin:0;}
+@media (max-width:900px){
+  .story-layout{grid-template-columns:minmax(0,1fr);gap:24px;}
+  .story-preview{position:static;order:-1;width:100%;}
+  .story-preview canvas{max-width:280px;}
+}
 </style>
 </head>
 <body>
@@ -1868,6 +1992,10 @@ body.loaded header.nav {
       <button type="button" class="promo-banner-nav next" onclick="promoBannerNext()" aria-label="Banner siguiente">›</button>
       <div class="promo-banner-dots" id="promoBannerDots"></div>
     </div>
+    <!-- Cinta de texto en movimiento — mensajes en CINTA_MENSAJES_BASE (o pestaña "CINTA PAGINA" de la Hoja) -->
+    <div class="cinta" id="cinta" role="marquee">
+      <div class="cinta-track" id="cintaTrack"></div>
+    </div>
     <div class="wrap">
       <div class="hero">
         <p class="eyebrow">Camand Mobile · Tecnología &amp; Personalización</p>
@@ -1941,6 +2069,11 @@ body.loaded header.nav {
       </div>
     </div>
 
+    <!-- Carruseles de productos por categoría — ver HOME_RAILS en el script -->
+    <div class="section home-rails-section" id="homeRailsSection">
+      <div class="wrap" id="homeRails"></div>
+    </div>
+
     <div class="section reveal">
       <div class="wrap">
         <div class="about-block">
@@ -1989,6 +2122,72 @@ body.loaded header.nav {
           </div>
         </div>
         <!-- PENDIENTE: agregar aquí el enlace real a las reseñas de Google cuando Andrés lo comparta. -->
+      </div>
+    </div>
+  </section>
+
+  <!-- ======================= GENERADOR DE HISTORIAS (uso interno) =======================
+       No aparece en el menú. Se abre escribiendo la dirección:
+       https://camandmobile.netlify.app/#/historias -->
+  <section class="view" id="view-historias">
+    <div class="wrap story-wrap">
+      <div class="story-head">
+        <p class="eyebrow">Uso interno · esta página no aparece en el menú</p>
+        <h1>Generador de Historias</h1>
+        <p>Elige una plantilla y los productos. La imagen sale lista en formato Historia de Instagram (1080 × 1920) con los precios actuales de tu Hoja.</p>
+      </div>
+      <div class="story-layout">
+        <div class="story-controls">
+          <div class="story-field">
+            <label>Plantilla</label>
+            <div class="story-seg" id="storyTplSeg">
+              <button type="button" data-v="producto" onclick="storySet('tpl','producto')">Producto</button>
+              <button type="button" data-v="comparar" onclick="storySet('tpl','comparar')">Elige tu modelo (2–4)</button>
+              <button type="button" data-v="oferta" onclick="storySet('tpl','oferta')">Oferta</button>
+            </div>
+          </div>
+          <div class="story-field">
+            <label>Fondo</label>
+            <div class="story-seg" id="storyThemeSeg">
+              <button type="button" data-v="claro" onclick="storySet('theme','claro')">Claro</button>
+              <button type="button" data-v="negro" onclick="storySet('theme','negro')">Negro</button>
+              <button type="button" data-v="azul" onclick="storySet('theme','azul')">Azul</button>
+            </div>
+          </div>
+          <div class="story-field">
+            <label>Productos <span id="storySelCount"></span></label>
+            <div class="story-selected" id="storySelected"></div>
+            <input type="text" id="storySearch" placeholder="Buscar en el catálogo — ej. iPhone 17, A57, cargador" oninput="storyRenderList()">
+            <div class="story-list" id="storyList"></div>
+          </div>
+          <div class="story-field">
+            <label for="storyKicker">Texto superior</label>
+            <input type="text" id="storyKicker" placeholder="Automático: etiqueta o condición del producto" oninput="storyDrawSoon()">
+          </div>
+          <div class="story-field">
+            <label for="storyTitle">Título</label>
+            <input type="text" id="storyTitle" placeholder="Automático: nombre del producto" oninput="storyDrawSoon()">
+          </div>
+          <div class="story-field">
+            <label for="storyCta">Botón</label>
+            <input type="text" id="storyCta" value="Escríbenos por WhatsApp" oninput="storyDrawSoon()">
+          </div>
+          <div class="story-field">
+            <label for="storyFoot">Texto inferior</label>
+            <input type="text" id="storyFoot" value="Envío gratis desde $200.000 · Paga contraentrega · Sistecrédito" oninput="storyDrawSoon()">
+            <p class="story-hint">Deja un campo vacío para ocultarlo en la imagen.</p>
+          </div>
+        </div>
+        <div class="story-preview">
+          <canvas id="storyCanvas" width="1080" height="1920" aria-label="Vista previa de la historia"></canvas>
+          <p class="story-warn" id="storyWarn"></p>
+          <div class="story-actions">
+            <button type="button" class="story-btn primary" onclick="storyDownload()">Descargar imagen</button>
+            <button type="button" class="story-btn" onclick="storyShare()">Compartir</button>
+            <button type="button" class="story-btn" onclick="storyCopyLink()">Copiar link</button>
+          </div>
+          <p class="story-tip">En el celular, «Compartir» abre directo Instagram. Luego pega el link copiado con el sticker de enlace para que el cliente llegue al producto.</p>
+        </div>
       </div>
     </div>
   </section>
@@ -4411,7 +4610,7 @@ function performCelularesSearch(query){
 // Vistas con URL propia (hash) para poder compartir o recargar el link
 // directamente en esa sección. "product" se maneja aparte en openProduct(),
 // porque su hash lleva el id del producto (#/producto/<id>).
-const HASH_VIEWS = ['home','tech','celulares','tablets','computadores','accesorios','relojes','audifonos','techoficina','cases','faq','privacidad','devoluciones'];
+const HASH_VIEWS = ['home','tech','celulares','tablets','computadores','accesorios','relojes','audifonos','techoficina','cases','faq','privacidad','devoluciones','historias'];
 
 // Contador que identifica la navegación más reciente. Antes, si go() se
 // llamaba dos veces seguidas muy rápido (doble clic, o un clic mientras la
@@ -4457,6 +4656,8 @@ function go(view, opts){
     // más abajo, junto al carrusel): el autoplay del banner solo debe correr
     // mientras Inicio está realmente visible.
     promoBannerSyncWithView(view === 'home');
+    // Generador de Historias (#/historias): se prepara al abrir la página.
+    if(view === 'historias') storyOpen();
   };
 
   const onTransitionEnd = (e) => {
@@ -4565,6 +4766,8 @@ function renderTodo(){
   renderAudifonosGrid();
   renderTechOficinaGrid();
   renderHomeFeatured();
+  renderHomeRails();
+  renderCinta();
   renderMegaMenus();
   renderPromoBanner();
   renderGallery();
@@ -4582,6 +4785,7 @@ function renderTodo(){
     const productView = document.getElementById('view-product');
     if(productView && productView.classList.contains('active')) renderProductInto(CURRENT_PRODUCT_ID);
   }
+  storyRefresh();
   initScrollReveal();
 }
 
@@ -5034,7 +5238,7 @@ function routeFromHash(){
   const hash = location.hash || '';
   const productMatch = hash.match(/^#\/producto\/(.+)$/);
   if(productMatch){ openProduct(decodeURIComponent(productMatch[1]), { fromHash: true }); return; }
-  const viewMatch = hash.match(/^#\/(tech|accesorios|cases|faq|privacidad|devoluciones)$/);
+  const viewMatch = hash.match(/^#\/(tech|accesorios|cases|faq|privacidad|devoluciones|historias)$/);
   if(viewMatch){ go(viewMatch[1], { fromHash: true }); return; }
   if((hash === '' || hash === '#' || hash === '#/home') && CURRENT_PRODUCT_ID){
     go('home', { fromHash: true });
@@ -5906,8 +6110,753 @@ async function cargarCatalogoDesdeSheet(){
   }
 }
 
+
+/* ============================================================
+   CINTA DE TEXTO EN MOVIMIENTO (inicio)
+   Mensajes que se desplazan solos debajo del banner. Se pausa al pasar
+   el mouse. Si alguien tiene activado "reducir movimiento" en su equipo,
+   queda quieta y se puede deslizar a mano.
+
+   OPCIONAL — cambiar los mensajes desde la Hoja sin tocar código:
+   crea una pestaña "CINTA PAGINA" con las columnas TEXTO, ACTIVO (Sí/No)
+   y ORDEN (1, 2, 3...). Publícala como CSV (Archivo → Compartir →
+   Publicar en la web → esa pestaña → CSV) y pega el link aquí abajo,
+   entre las comillas. Mientras quede vacío, se usan los mensajes base
+   de CINTA_MENSAJES_BASE más, automáticamente, hasta 3 productos que
+   tengan algo escrito en la columna ETIQUETA de tu catálogo.
+   ============================================================ */
+const CINTA_CSV_URL = "";
+const CINTA_CACHE_KEY = 'camand_cinta_cache_v1';
+const CINTA_MENSAJES_BASE = [
+  'Envío gratis desde ' + formatCOP(FREE_SHIPPING_THRESHOLD),
+  'Paga contraentrega al recibir',
+  'Crédito con Sistecrédito',
+  'Tarjeta de crédito a cuotas',
+  'Estuches personalizados Acrygel',
+  'iPhone y Android nuevos y seminuevos',
+  'Equipos revisados y con garantía',
+  'Atención directa por WhatsApp'
+];
+let CINTA_MENSAJES_SHEET = null;
+
+function cintaMensajes(){
+  if(CINTA_MENSAJES_SHEET && CINTA_MENSAJES_SHEET.length){
+    return CINTA_MENSAJES_SHEET.map(t => ({ t }));
+  }
+  const base = CINTA_MENSAJES_BASE.map(t => ({ t }));
+  const conEtiqueta = flattenAllProducts()
+    .filter(({ m }) => m.tag)
+    .slice(0, 3)
+    .map(({ m }) => ({ k: m.tag, t: `${m.n} a ${formatCOP(m.p)}` }));
+  // Los productos con etiqueta se intercalan después de los 2 primeros
+  // mensajes, para que aparezcan pronto en la cinta.
+  return [...base.slice(0, 2), ...conEtiqueta, ...base.slice(2)];
+}
+
+function renderCinta(){
+  const cinta = document.getElementById('cinta');
+  const track = document.getElementById('cintaTrack');
+  if(!cinta || !track) return;
+  const msgs = cintaMensajes();
+  if(!msgs.length){ cinta.style.display = 'none'; return; }
+  cinta.style.display = '';
+  // El grupo se repite hasta tener texto suficiente para cubrir pantallas
+  // anchas — así nunca queda un hueco vacío mientras se desplaza.
+  const largo = msgs.reduce((s, x) => s + (x.k ? x.k.length + 1 : 0) + x.t.length + 8, 0);
+  const repeticiones = Math.max(1, Math.ceil(260 / Math.max(largo, 1)));
+  const items = [];
+  for(let i = 0; i < repeticiones; i++) items.push(...msgs);
+  const itemsHTML = items.map(x => `<span class="cinta-item">${x.k ? `<b>${cmpEsc(x.k)}</b>` : ''}${cmpEsc(x.t)}</span>`).join('');
+  track.innerHTML = `<div class="cinta-group">${itemsHTML}</div><div class="cinta-group" aria-hidden="true">${itemsHTML}</div>`;
+  // Velocidad constante (~75 px por segundo) sin importar cuántos mensajes haya.
+  const caracteres = largo * repeticiones;
+  track.style.setProperty('--cinta-dur', Math.max(14, caracteres * 0.11).toFixed(1) + 's');
+  cinta.setAttribute('aria-label', msgs.map(x => (x.k ? x.k + ': ' : '') + x.t).join(' · '));
+}
+
+async function cargarCintaDesdeSheet(){
+  if(!/^https?:\/\//i.test(CINTA_CSV_URL)) return;
+  try{
+    const cache = JSON.parse(sessionStorage.getItem(CINTA_CACHE_KEY) || 'null');
+    if(cache && Array.isArray(cache.msgs) && cache.msgs.length){
+      CINTA_MENSAJES_SHEET = cache.msgs;
+      renderCinta();
+    }
+  }catch(e){}
+  try{
+    const res = await fetch(CINTA_CSV_URL, { cache: "no-store" });
+    if(!res.ok) throw new Error("HTTP " + res.status);
+    const filas = window.Papa.parse(await res.text(), { header: true, skipEmptyLines: true }).data.map(filaCruda => {
+      const norm = {};
+      Object.keys(filaCruda).forEach(k => {
+        norm[k.trim().toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g, "").replace(/\s+/g, "")] = filaCruda[k];
+      });
+      return norm;
+    });
+    const msgs = filas
+      .filter(f => String(f.activo || "si").trim().toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g, "") !== "no")
+      .map(f => ({ t: String(f.texto || f.mensaje || "").trim(), orden: Number(f.orden) || 0 }))
+      .filter(f => f.t)
+      .sort((a, b) => a.orden - b.orden)
+      .map(f => f.t);
+    CINTA_MENSAJES_SHEET = msgs;
+    renderCinta();
+    try{ sessionStorage.setItem(CINTA_CACHE_KEY, JSON.stringify({ msgs, ts: Date.now() })); }catch(e){}
+    console.log("[Camand] Cinta de texto cargada desde Google Sheets:", msgs.length, "mensajes");
+  }catch(err){
+    console.warn("[Camand] No se pudo leer la cinta desde Google Sheets, se usan los mensajes base:", err.message);
+  }
+}
+
+/* ============================================================
+   CARRUSELES DE PRODUCTOS (inicio)
+   Filas horizontales que avanzan solas (una tarjeta cada ~3 s), se
+   deslizan con el dedo en el celular y tienen flechas en el computador.
+   Se pausan cuando el cliente las toca o pasa el mouse, y solo se
+   mueven mientras están a la vista en el inicio. Se llenan solas con
+   tu catálogo — no hay que escribir nada a mano.
+   Para cambiar títulos, orden o qué muestra cada fila, edita HOME_RAILS.
+   ============================================================ */
+const HOME_RAIL_LIMIT = 14;
+
+function railItems(catKey){
+  const cat = CATALOG[catKey];
+  if(!cat) return [];
+  return flattenItems(cat).map(x => ({ ...x, catLabel: cat.label }));
+}
+// Nuevos primero; dentro de cada grupo, del más caro al más barato
+// (así los modelos más recientes quedan al inicio de la fila).
+function railOrdenNuevoPrecio(a, b){
+  const na = (a.m.cond || '').trim().toLowerCase() === 'nuevo' ? 0 : 1;
+  const nb = (b.m.cond || '').trim().toLowerCase() === 'nuevo' ? 0 : 1;
+  return na - nb || b.m.p - a.m.p;
+}
+
+const HOME_RAILS = [
+  {
+    id: 'iphone',
+    titulo: 'iPhone disponibles',
+    sub: 'Nuevos y seminuevos · revisados y con garantía',
+    items: () => railItems('apple').sort(railOrdenNuevoPrecio),
+    verTodos: "megaMenuGoFiltered('celulares','iPhone','')"
+  },
+  {
+    id: 'android',
+    titulo: 'Lo mejor en Android',
+    sub: 'Samsung, Xiaomi, Motorola y más',
+    items: () => railItems('android').sort(railOrdenNuevoPrecio),
+    verTodos: "go('celulares')"
+  },
+  {
+    // Aparece solo si hay al menos 3 productos con PRECIO ANTES mayor al
+    // precio actual, o con algo escrito en ETIQUETA.
+    id: 'ofertas',
+    titulo: 'Ofertas y últimas unidades',
+    sub: 'Precios rebajados y productos con etiqueta especial',
+    min: 3,
+    items: () => flattenAllProducts()
+      .filter(({ m }) => (m.pAntes && m.pAntes > m.p) || m.tag)
+      .sort((a, b) => ((b.m.pAntes || b.m.p) - b.m.p) - ((a.m.pAntes || a.m.p) - a.m.p)),
+    verTodos: null
+  },
+  {
+    id: 'accesorios',
+    titulo: 'Accesorios',
+    sub: 'Cargadores, audio y más para tu equipo',
+    items: () => railItems('accesorios').sort((a, b) => (b.m.dest === true) - (a.m.dest === true)),
+    verTodos: "go('accesorios')"
+  }
+];
+
+function renderHomeRails(){
+  const cont = document.getElementById('homeRails');
+  if(!cont) return;
+  const html = HOME_RAILS.map(r => {
+    let items = [];
+    try{ items = r.items() || []; }catch(e){ items = []; }
+    items = items.slice(0, HOME_RAIL_LIMIT);
+    if(items.length < (r.min || 2)) return '';
+    const cards = items
+      .map(({ marca, m, catLabel }) => productCardHTML(catLabel, marca, m).replace('class="product-card reveal"', 'class="product-card"'))
+      .join('');
+    return `
+      <div class="home-rail" data-rail="${r.id}">
+        <div class="home-rail-head">
+          <div>
+            <h2>${r.titulo}</h2>
+            ${r.sub ? `<p>${r.sub}</p>` : ''}
+          </div>
+          <div class="home-rail-tools">
+            ${r.verTodos ? `<a onclick="${r.verTodos}">Ver todos →</a>` : ''}
+            <button type="button" class="home-rail-nav" onclick="railStep('${r.id}',-1)" aria-label="Anterior">‹</button>
+            <button type="button" class="home-rail-nav" onclick="railStep('${r.id}',1)" aria-label="Siguiente">›</button>
+          </div>
+        </div>
+        <div class="home-rail-track" id="rail-${r.id}" role="region" aria-roledescription="carrusel" aria-label="${r.titulo}" tabindex="0">${cards}</div>
+      </div>`;
+  }).join('');
+  cont.innerHTML = html;
+  const section = document.getElementById('homeRailsSection');
+  if(section) section.style.display = html.trim() ? '' : 'none';
+  railsBindEvents();
+}
+
+const RAIL_PAUSE_UNTIL = {};
+let _railTimer = null;
+let _railTick = 0;
+
+function railPause(id, ms){ RAIL_PAUSE_UNTIL[id] = Date.now() + (ms || 8000); }
+
+function railStep(id, dir, auto){
+  const t = document.getElementById('rail-' + id);
+  if(!t) return;
+  const card = t.querySelector('.product-card');
+  if(!card) return;
+  const paso = card.getBoundingClientRect().width + parseFloat(getComputedStyle(t).columnGap || 16);
+  const max = t.scrollWidth - t.clientWidth;
+  if(max <= 4) return;
+  if(dir > 0 && t.scrollLeft >= max - 4) t.scrollTo({ left: 0, behavior: 'smooth' });
+  else if(dir < 0 && t.scrollLeft <= 4) t.scrollTo({ left: max, behavior: 'smooth' });
+  else t.scrollBy({ left: dir * paso, behavior: 'smooth' });
+  if(!auto) railPause(id, 10000);
+}
+
+function railsBindEvents(){
+  document.querySelectorAll('.home-rail-track:not(.rail-bound)').forEach(t => {
+    t.classList.add('rail-bound');
+    const id = t.id.replace('rail-', '');
+    ['pointerdown', 'touchstart', 'wheel', 'focusin'].forEach(ev =>
+      t.addEventListener(ev, () => railPause(id, 10000), { passive: true })
+    );
+    t.addEventListener('keydown', e => {
+      if(e.key === 'ArrowRight'){ e.preventDefault(); railStep(id, 1); }
+      if(e.key === 'ArrowLeft'){ e.preventDefault(); railStep(id, -1); }
+    });
+  });
+  const reduce = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+  if(!reduce && !_railTimer) _railTimer = setInterval(railsTick, 1600);
+}
+
+function railsTick(){
+  if(document.hidden) return;
+  const home = document.getElementById('view-home');
+  if(!home || !home.classList.contains('active')) return;
+  _railTick++;
+  document.querySelectorAll('.home-rail-track').forEach((t, i) => {
+    // Las filas se turnan (una avanza, la siguiente espera) para que no
+    // se muevan todas al mismo tiempo — se ve más natural.
+    if((_railTick + i) % 2 !== 0) return;
+    const id = t.id.replace('rail-', '');
+    if((RAIL_PAUSE_UNTIL[id] || 0) > Date.now()) return;
+    if(t.matches(':hover')) return;
+    const r = t.getBoundingClientRect();
+    if(r.bottom < 0 || r.top > window.innerHeight) return;
+    railStep(id, 1, true);
+  });
+}
+
+/* ============================================================
+   GENERADOR DE HISTORIAS PARA INSTAGRAM  (#/historias)
+   Página interna (no está en el menú). Arma una imagen 1080 × 1920 con
+   el logo, la foto, el nombre y el precio actual de los productos que
+   elijas, lista para descargar o compartir directo a Instagram.
+
+   IMPORTANTE: para poder exportar la imagen, el navegador exige que la
+   foto del producto venga de un servicio que lo permita. Cloudinary sí
+   lo permite; Postimages / ImgBB normalmente NO. Si una foto no se puede
+   usar, la historia se arma igual con un ícono en su lugar y aparece un
+   aviso indicando cuál producto conviene pasar a Cloudinary.
+   ============================================================ */
+const STORY = { tpl: 'producto', theme: 'claro', sel: [], opened: false };
+const STORY_W = 1080, STORY_H = 1920;
+const STORY_FONT = '"SF Pro Display", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif';
+const STORY_MAX_SEL = { producto: 1, oferta: 1, comparar: 4 };
+const STORY_THEMES = {
+  claro: { bg: ['#ffffff', '#e9ebef'], ink: '#1d1d1f', soft: '#6e6e73', price: '#0058b0',
+           pillBg: '#0071e3', pillInk: '#ffffff', ctaBg: '#1d1d1f', ctaInk: '#ffffff', card: '#ffffff',
+           cardShadow: 'rgba(0,0,0,0.10)', logoWhite: false, hot: '#e11d3c' },
+  negro: { bg: ['#1d1d1f', '#000000'], ink: '#ffffff', soft: '#a1a1a6', price: '#ffffff',
+           pillBg: '#2997ff', pillInk: '#ffffff', ctaBg: '#ffffff', ctaInk: '#1d1d1f', card: '#f5f5f7',
+           cardShadow: 'rgba(0,0,0,0.5)', logoWhite: true, hot: '#ff375f' },
+  azul:  { bg: ['#0a84ff', '#003d80'], ink: '#ffffff', soft: 'rgba(255,255,255,0.78)', price: '#ffffff',
+           pillBg: '#ffffff', pillInk: '#0058b0', ctaBg: '#ffffff', ctaInk: '#0058b0', card: '#ffffff',
+           cardShadow: 'rgba(0,20,60,0.35)', logoWhite: true, hot: '#ff375f' }
+};
+
+function storyAllProducts(){
+  return flattenAllProducts()
+    .filter(x => x.m && x.m.n)
+    .map(x => ({ ...x, id: productId(x.marca, x.m) }));
+}
+function storyFind(id){ return storyAllProducts().find(x => x.id === id) || null; }
+function storySelected(){ return STORY.sel.map(storyFind).filter(Boolean); }
+function storyIsCloudinary(url){ return /res\.cloudinary\.com\//i.test(url || ''); }
+function storyFirstImg(m){ return productImageList(m)[0] || ''; }
+
+function storyOpen(){
+  if(!STORY.opened){
+    STORY.opened = true;
+    if(!STORY.sel.length){
+      const primero = railItems('apple').sort(railOrdenNuevoPrecio)[0] || storyAllProducts()[0];
+      if(primero) STORY.sel = [productId(primero.marca, primero.m)];
+    }
+  }
+  storySyncSegs();
+  storyRenderSelected();
+  storyRenderList();
+  storyDraw();
+}
+
+// Se llama cada vez que se actualiza el catálogo (llega la Hoja): los
+// precios de la historia siempre quedan con el valor más reciente.
+function storyRefresh(){
+  const v = document.getElementById('view-historias');
+  if(!v || !v.classList.contains('active')) return;
+  storyOpen();
+}
+
+function storySet(key, value){
+  STORY[key] = value;
+  if(key === 'tpl'){
+    const max = STORY_MAX_SEL[value] || 1;
+    if(STORY.sel.length > max) STORY.sel = STORY.sel.slice(0, max);
+  }
+  storySyncSegs();
+  storyRenderSelected();
+  storyRenderList();
+  storyDraw();
+}
+
+function storySyncSegs(){
+  document.querySelectorAll('#storyTplSeg button').forEach(b => b.classList.toggle('is-active', b.dataset.v === STORY.tpl));
+  document.querySelectorAll('#storyThemeSeg button').forEach(b => b.classList.toggle('is-active', b.dataset.v === STORY.theme));
+  const count = document.getElementById('storySelCount');
+  const max = STORY_MAX_SEL[STORY.tpl] || 1;
+  if(count) count.textContent = max > 1 ? `(${STORY.sel.length} de ${max})` : '';
+}
+
+function storyToggle(id){
+  const max = STORY_MAX_SEL[STORY.tpl] || 1;
+  if(STORY.sel.includes(id)){
+    STORY.sel = STORY.sel.filter(x => x !== id);
+  } else if(max === 1){
+    STORY.sel = [id];
+  } else if(STORY.sel.length < max){
+    STORY.sel.push(id);
+  } else {
+    showToast(`Máximo ${max} productos en esta plantilla`);
+    return;
+  }
+  storySyncSegs();
+  storyRenderSelected();
+  storyRenderList();
+  storyDraw();
+}
+
+function storyRenderSelected(){
+  const el = document.getElementById('storySelected');
+  if(!el) return;
+  el.innerHTML = storySelected().map(x =>
+    `<span class="story-chip">${cmpEsc(x.m.n)}<button type="button" aria-label="Quitar" onclick="storyToggle('${x.id.replace(/'/g, "\\'")}')">×</button></span>`
+  ).join('');
+}
+
+function storyRenderList(){
+  const el = document.getElementById('storyList');
+  if(!el) return;
+  const q = cmpNorm((document.getElementById('storySearch') || {}).value || '');
+  const tokens = q.split(' ').filter(Boolean);
+  let lista = storyAllProducts();
+  if(tokens.length){
+    lista = lista.filter(x => {
+      const txt = cmpNorm(x.m.n + ' ' + x.marca + ' ' + x.catLabel);
+      return tokens.every(t => txt.includes(t));
+    });
+  }
+  lista = lista.slice(0, 60);
+  if(!lista.length){ el.innerHTML = `<p class="story-hint" style="padding:14px;">Sin resultados.</p>`; return; }
+  el.innerHTML = lista.map(x => {
+    const img = storyFirstImg(x.m);
+    const sel = STORY.sel.includes(x.id);
+    const aviso = img && !storyIsCloudinary(img) ? ` · <span class="si-warn">foto fuera de Cloudinary</span>` : (!img ? ` · <span class="si-warn">sin foto</span>` : '');
+    return `<button type="button" class="story-item${sel ? ' is-sel' : ''}" onclick="storyToggle('${x.id.replace(/'/g, "\\'")}')">
+      ${img ? `<img src="${optimizeImageUrl(img, 80)}" alt="" loading="lazy">` : `<span class="si-noimg"></span>`}
+      <span class="si-txt"><span class="si-name">${cmpEsc(x.m.n)}</span><span class="si-meta">${formatCOP(x.m.p)} · ${cmpEsc(x.m.cond || x.catLabel)}${aviso}</span></span>
+      <span class="si-check">${sel ? '✓' : ''}</span>
+    </button>`;
+  }).join('');
+}
+
+/* ---------- Carga de imágenes para el lienzo ---------- */
+const STORY_IMG_CACHE = new Map();
+function storyTryLoad(src){
+  return new Promise(resolve => {
+    const im = new Image();
+    im.crossOrigin = 'anonymous';
+    im.decoding = 'async';
+    im.onload = () => resolve(im);
+    im.onerror = () => resolve(null);
+    im.src = src;
+  });
+}
+function storyCloudName(){
+  for(const x of flattenAllProducts()){
+    const mt = String(x.m.img || '').match(/res\.cloudinary\.com\/([^/]+)\//i);
+    if(mt) return mt[1];
+  }
+  return null;
+}
+function storyLoadImage(url){
+  if(!url) return Promise.resolve(null);
+  if(STORY_IMG_CACHE.has(url)) return STORY_IMG_CACHE.get(url);
+  const p = (async () => {
+    let im = await storyTryLoad(optimizeImageUrl(url, 1100));
+    // Si la foto está en otro servicio, se intenta traerla a través de tu
+    // cuenta de Cloudinary (funciona solo si tu cuenta tiene habilitada la
+    // opción "Fetched URL"; si no, se usa el ícono de reemplazo).
+    if(!im && !storyIsCloudinary(url)){
+      const cloud = storyCloudName();
+      if(cloud) im = await storyTryLoad(`https://res.cloudinary.com/${cloud}/image/fetch/w_1100,q_auto/${encodeURIComponent(url)}`);
+    }
+    return im;
+  })();
+  STORY_IMG_CACHE.set(url, p);
+  return p;
+}
+let _storyLogoPromise = null;
+function storyLoadLogo(){
+  if(_storyLogoPromise) return _storyLogoPromise;
+  _storyLogoPromise = storyTryLoad(CAMAND_LOGO).then(im => {
+    if(!im) return { dark: null, white: null };
+    // Versión blanca del logo para los fondos oscuros (mismo efecto que
+    // el logo del pie de página).
+    let white = null;
+    try{
+      const c = document.createElement('canvas');
+      c.width = im.naturalWidth; c.height = im.naturalHeight;
+      const cx = c.getContext('2d');
+      cx.drawImage(im, 0, 0);
+      const d = cx.getImageData(0, 0, c.width, c.height);
+      for(let i = 0; i < d.data.length; i += 4){ d.data[i] = d.data[i+1] = d.data[i+2] = 255; }
+      cx.putImageData(d, 0, 0);
+      white = c;
+    }catch(e){}
+    return { dark: im, white };
+  });
+  return _storyLogoPromise;
+}
+
+/* ---------- Ayudas de dibujo ---------- */
+function sRound(ctx, x, y, w, h, r){
+  r = Math.min(r, w / 2, h / 2);
+  ctx.beginPath();
+  ctx.moveTo(x + r, y);
+  ctx.arcTo(x + w, y, x + w, y + h, r);
+  ctx.arcTo(x + w, y + h, x, y + h, r);
+  ctx.arcTo(x, y + h, x, y, r);
+  ctx.arcTo(x, y, x + w, y, r);
+  ctx.closePath();
+}
+function sFont(size, weight){ return `${weight || 700} ${size}px ${STORY_FONT}`; }
+function sWrap(ctx, text, maxW, maxLines){
+  const words = String(text || '').split(/\s+/).filter(Boolean);
+  const lines = [];
+  let line = '';
+  for(const w of words){
+    const test = line ? line + ' ' + w : w;
+    if(ctx.measureText(test).width <= maxW || !line){ line = test; }
+    else { lines.push(line); line = w; }
+  }
+  if(line) lines.push(line);
+  if(lines.length > maxLines){
+    const cut = lines.slice(0, maxLines);
+    let last = cut[maxLines - 1];
+    while(last.length > 1 && ctx.measureText(last + '…').width > maxW) last = last.slice(0, -1);
+    cut[maxLines - 1] = last.trim() + '…';
+    return cut;
+  }
+  return lines;
+}
+// Escribe texto centrado (con ajuste de líneas) y devuelve la nueva altura.
+function sText(ctx, text, cx, y, maxW, size, weight, color, maxLines, lineH){
+  ctx.font = sFont(size, weight);
+  ctx.fillStyle = color;
+  ctx.textAlign = 'center';
+  ctx.textBaseline = 'alphabetic';
+  const lines = sWrap(ctx, text, maxW, maxLines || 2);
+  const lh = lineH || Math.round(size * 1.16);
+  lines.forEach((l, i) => ctx.fillText(l, cx, y + size + i * lh));
+  return y + size + (lines.length - 1) * lh;
+}
+function sPill(ctx, text, cx, y, size, bg, ink, padX, h){
+  ctx.font = sFont(size, 800);
+  const w = ctx.measureText(text).width + (padX || 34) * 2;
+  const hh = h || Math.round(size * 1.9);
+  ctx.fillStyle = bg;
+  sRound(ctx, cx - w / 2, y, w, hh, hh / 2);
+  ctx.fill();
+  ctx.fillStyle = ink;
+  ctx.textAlign = 'center';
+  ctx.textBaseline = 'middle';
+  ctx.fillText(text, cx, y + hh / 2 + 1);
+  ctx.textBaseline = 'alphabetic';
+  return y + hh;
+}
+function sContain(ctx, img, x, y, w, h){
+  const r = Math.min(w / img.naturalWidth, h / img.naturalHeight);
+  const iw = img.naturalWidth * r, ih = img.naturalHeight * r;
+  ctx.drawImage(img, x + (w - iw) / 2, y + (h - ih) / 2, iw, ih);
+}
+function sCard(ctx, th, x, y, w, h, r){
+  ctx.save();
+  ctx.shadowColor = th.cardShadow;
+  ctx.shadowBlur = 60;
+  ctx.shadowOffsetY = 24;
+  ctx.fillStyle = th.card;
+  sRound(ctx, x, y, w, h, r);
+  ctx.fill();
+  ctx.restore();
+}
+function sNoImg(ctx, x, y, w, h){
+  ctx.save();
+  ctx.strokeStyle = 'rgba(0,0,0,0.18)';
+  ctx.lineWidth = 8;
+  const s = Math.min(w, h) * 0.28, cx = x + w / 2, cy = y + h / 2;
+  sRound(ctx, cx - s / 2, cy - s * 0.4, s, s * 0.8, 18);
+  ctx.stroke();
+  ctx.beginPath(); ctx.arc(cx, cy, s * 0.2, 0, Math.PI * 2); ctx.stroke();
+  ctx.restore();
+}
+function sBadge(ctx, text, cx, cy, r, bg){
+  ctx.save();
+  ctx.fillStyle = bg;
+  ctx.beginPath(); ctx.arc(cx, cy, r, 0, Math.PI * 2); ctx.fill();
+  ctx.fillStyle = '#fff';
+  ctx.font = sFont(Math.round(r * 0.62), 900);
+  ctx.textAlign = 'center'; ctx.textBaseline = 'middle';
+  ctx.fillText(text, cx, cy + 2);
+  ctx.restore();
+}
+function sPrice(ctx, th, m, cx, y, size){
+  const tieneDesc = m.pAntes && m.pAntes > m.p;
+  if(tieneDesc){
+    const antes = formatCOP(m.pAntes);
+    const fs = Math.round(size * 0.4);
+    ctx.font = sFont(fs, 600);
+    ctx.fillStyle = th.soft;
+    ctx.textAlign = 'center';
+    ctx.fillText('Antes ' + antes, cx, y + fs);
+    const w = ctx.measureText(antes).width;
+    const wTot = ctx.measureText('Antes ' + antes).width;
+    const x1 = cx + wTot / 2 - w;
+    ctx.fillRect(x1, y + fs * 0.62, w, Math.max(3, fs * 0.08));
+    y += fs + 18;
+  }
+  ctx.font = sFont(size, 800);
+  ctx.fillStyle = th.price;
+  ctx.textAlign = 'center';
+  ctx.fillText(formatCOP(m.p), cx, y + size * 0.9);
+  return y + size;
+}
+function sLogo(ctx, logo, th, cy, h){
+  const im = logo && (th.logoWhite ? (logo.white || logo.dark) : logo.dark);
+  if(im){
+    const iw = im.naturalWidth || im.width, ih = im.naturalHeight || im.height;
+    const w = iw * (h / ih);
+    ctx.drawImage(im, STORY_W / 2 - w / 2, cy - h / 2, w, h);
+  } else {
+    sText(ctx, 'Camand Mobile.', STORY_W / 2, cy - 30, 900, 52, 900, th.ink, 1);
+  }
+}
+function sBottom(ctx, th, y){
+  const cta = (document.getElementById('storyCta') || {}).value || '';
+  const foot = (document.getElementById('storyFoot') || {}).value || '';
+  if(cta.trim()) y = sPill(ctx, cta.trim(), STORY_W / 2, y, 40, th.ctaBg, th.ctaInk, 56, 104) + 34;
+  if(foot.trim()) sText(ctx, foot.trim(), STORY_W / 2, y, 920, 30, 600, th.soft, 2, 40);
+}
+
+/* ---------- Plantillas ---------- */
+// Márgenes pensados para Instagram: arriba (~200 px) y abajo (~220 px)
+// Instagram pone su barra de perfil y la de "Enviar mensaje", así que
+// todo lo importante queda dentro de la zona central.
+function storyTplProducto(ctx, th, logo, x, img, oferta){
+  const m = x.m;
+  const kicker = ((document.getElementById('storyKicker') || {}).value || '').trim()
+    || (oferta ? 'OFERTA DE LA SEMANA' : (m.tag || m.cond || ''));
+  const titulo = ((document.getElementById('storyTitle') || {}).value || '').trim() || m.n;
+  sLogo(ctx, logo, th, 225, 78);
+  let y = 305;
+  if(oferta){
+    y = sText(ctx, kicker.toUpperCase(), STORY_W / 2, y - 10, 960, 84, 900, th.ink, 2, 90) + 34;
+  } else if(kicker){
+    y = sPill(ctx, kicker.toUpperCase(), STORY_W / 2, y, 30, th.pillBg, th.pillInk) + 30;
+  } else {
+    y += 20;
+  }
+  const cardH = oferta ? 1170 - y : 1140 - y;
+  const cardW = Math.min(840, cardH + 80);
+  const cardX = (STORY_W - cardW) / 2;
+  sCard(ctx, th, cardX, y, cardW, cardH, 56);
+  if(img) sContain(ctx, img, cardX + 50, y + 50, cardW - 100, cardH - 100);
+  else sNoImg(ctx, cardX, y, cardW, cardH);
+  if(m.pAntes && m.pAntes > m.p){
+    const pct = Math.round((1 - m.p / m.pAntes) * 100);
+    sBadge(ctx, `-${pct}%`, cardX + cardW - 60, y + (oferta ? 90 : 60), oferta ? 105 : 88, th.hot);
+  }
+  y += cardH + 50;
+  y = sText(ctx, titulo, STORY_W / 2, y, 920, 64, 800, th.ink, 2, 74) + 18;
+  const specs = [m.alm, oferta ? (m.tag || '') : ''].filter(Boolean).join(' · ');
+  if(specs && !titulo.includes(specs)) y = sText(ctx, specs, STORY_W / 2, y, 900, 34, 600, th.soft, 1) + 14;
+  y = sPrice(ctx, th, m, STORY_W / 2, y + 8, oferta ? 128 : 112) + 44;
+  sBottom(ctx, th, Math.max(y, 1540));
+}
+
+function storyTplComparar(ctx, th, logo, lista, imgs){
+  const nombres = lista.map(x => x.m.n);
+  const todosIphone = nombres.length && nombres.every(n => /iphone/i.test(n));
+  const todosSamsung = nombres.length && nombres.every(n => /samsung|galaxy/i.test(n));
+  const titulo = ((document.getElementById('storyTitle') || {}).value || '').trim()
+    || (todosIphone ? 'Elige tu iPhone' : todosSamsung ? 'Elige tu Samsung' : 'Elige tu equipo');
+  const kicker = ((document.getElementById('storyKicker') || {}).value || '').trim();
+  sLogo(ctx, logo, th, 225, 78);
+  let y = 300;
+  if(kicker) y = sPill(ctx, kicker.toUpperCase(), STORY_W / 2, y, 28, th.pillBg, th.pillInk) + 22;
+  y = sText(ctx, titulo, STORY_W / 2, y, 960, 86, 900, th.ink, 1) + 44;
+
+  const n = lista.length;
+  const cols = n === 1 ? 1 : 2;
+  const rows = Math.ceil(n / cols);
+  const gap = 30;
+  const areaW = 960, areaTop = y, areaBottom = 1500;
+  const cardW = cols === 1 ? 700 : (areaW - gap) / 2;
+  const cardH = Math.min(rows === 1 ? 860 : 560, (areaBottom - areaTop - gap * (rows - 1)) / rows);
+  lista.forEach((x, i) => {
+    const r = Math.floor(i / cols);
+    const enFila = Math.min(cols, n - r * cols);
+    const c = i % cols;
+    const filaW = enFila * cardW + (enFila - 1) * gap;
+    const cx0 = (STORY_W - filaW) / 2 + c * (cardW + gap);
+    const cy0 = areaTop + r * (cardH + gap);
+    sCard(ctx, th, cx0, cy0, cardW, cardH, 40);
+    const imgH = cardH - 200;
+    if(imgs[i]) sContain(ctx, imgs[i], cx0 + 30, cy0 + 26, cardW - 60, imgH - 20);
+    else sNoImg(ctx, cx0, cy0, cardW, imgH);
+    const m = x.m;
+    if(m.pAntes && m.pAntes > m.p){
+      sBadge(ctx, `-${Math.round((1 - m.p / m.pAntes) * 100)}%`, cx0 + cardW - 58, cy0 + 58, 48, th.hot);
+    }
+    // El texto de la tarjeta siempre va oscuro (la tarjeta es clara).
+    const ty = sText(ctx, m.n, cx0 + cardW / 2, cy0 + imgH + 4, cardW - 40, 34, 700, '#1d1d1f', 2, 40);
+    ctx.font = sFont(52, 800);
+    ctx.fillStyle = '#0058b0';
+    ctx.textAlign = 'center';
+    ctx.fillText(formatCOP(m.p), cx0 + cardW / 2, Math.min(ty + 72, cy0 + cardH - 30));
+  });
+  const fin = areaTop + rows * cardH + (rows - 1) * gap;
+  sBottom(ctx, th, Math.max(fin + 50, 1540));
+}
+
+let _storyDrawToken = 0;
+let _storyDrawTimer = null;
+function storyDrawSoon(){
+  clearTimeout(_storyDrawTimer);
+  _storyDrawTimer = setTimeout(storyDraw, 160);
+}
+
+async function storyDraw(){
+  const canvas = document.getElementById('storyCanvas');
+  if(!canvas) return;
+  const token = ++_storyDrawToken;
+  const lista = storySelected();
+  const th = STORY_THEMES[STORY.theme] || STORY_THEMES.claro;
+  const [logo, ...imgs] = await Promise.all([storyLoadLogo(), ...lista.map(x => storyLoadImage(storyFirstImg(x.m)))]);
+  if(token !== _storyDrawToken) return;
+
+  const ctx = canvas.getContext('2d');
+  ctx.clearRect(0, 0, STORY_W, STORY_H);
+  const g = ctx.createLinearGradient(0, 0, 0, STORY_H);
+  g.addColorStop(0, th.bg[0]); g.addColorStop(1, th.bg[1]);
+  ctx.fillStyle = g;
+  ctx.fillRect(0, 0, STORY_W, STORY_H);
+
+  if(!lista.length){
+    sLogo(ctx, logo, th, 225, 78);
+    sText(ctx, 'Elige un producto de la lista', STORY_W / 2, 880, 900, 56, 700, th.soft, 2);
+  } else if(STORY.tpl === 'comparar'){
+    storyTplComparar(ctx, th, logo, lista, imgs);
+  } else {
+    storyTplProducto(ctx, th, logo, lista[0], imgs[0], STORY.tpl === 'oferta');
+  }
+
+  const warn = document.getElementById('storyWarn');
+  if(warn){
+    const fallidas = lista.filter((x, i) => !imgs[i]).map(x => x.m.n);
+    warn.textContent = fallidas.length
+      ? `No se pudo usar la foto de: ${fallidas.join(', ')}. Súbela a Cloudinary y pega ese link en la columna IMAGEN de la Hoja para que aparezca aquí.`
+      : '';
+  }
+}
+
+function storyFileName(){
+  const x = storySelected()[0];
+  const base = x ? x.m.n : 'camand';
+  return 'historia-' + cmpNorm(base).replace(/[^a-z0-9]+/g, '-').replace(/^-|-$/g, '').slice(0, 50) + '.png';
+}
+function storyBlob(){
+  return new Promise((resolve, reject) => {
+    const canvas = document.getElementById('storyCanvas');
+    try{ canvas.toBlob(b => b ? resolve(b) : reject(new Error('sin imagen')), 'image/png'); }
+    catch(e){ reject(e); }
+  });
+}
+async function storyDownload(){
+  try{
+    await storyDraw();
+    const blob = await storyBlob();
+    const a = document.createElement('a');
+    a.href = URL.createObjectURL(blob);
+    a.download = storyFileName();
+    document.body.appendChild(a);
+    a.click();
+    setTimeout(() => { URL.revokeObjectURL(a.href); a.remove(); }, 1500);
+    showToast('Imagen descargada');
+  }catch(e){
+    showToast('No se pudo generar la imagen');
+    console.warn('[Camand] Historias:', e);
+  }
+}
+async function storyShare(){
+  try{
+    await storyDraw();
+    const blob = await storyBlob();
+    const file = new File([blob], storyFileName(), { type: 'image/png' });
+    if(navigator.canShare && navigator.canShare({ files: [file] })){
+      await navigator.share({ files: [file] });
+    } else {
+      showToast('Este navegador no permite compartir directo — se descargará');
+      storyDownload();
+    }
+  }catch(e){
+    if(e && e.name === 'AbortError') return;
+    showToast('No se pudo compartir la imagen');
+  }
+}
+async function storyCopyLink(){
+  const x = storySelected()[0];
+  const url = x
+    ? location.origin + location.pathname + '#/producto/' + encodeURIComponent(x.id)
+    : location.origin + location.pathname;
+  try{
+    await navigator.clipboard.writeText(url);
+    showToast('Link copiado — pégalo en el sticker de enlace');
+  }catch(e){
+    window.prompt('Copia este link:', url);
+  }
+}
+
 renderTodo();
 cargarCatalogoDesdeSheet();
+cargarCintaDesdeSheet();
 cargarBannersDesdeSheet();
 cargarCategoriasDesdeSheet();
 cargarFotosLineasDesdeSheet();
