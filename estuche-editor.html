@@ -1669,6 +1669,33 @@ function initCanvas(){
 }
 
 /* ---------------------------------------------------------------------
+   PLANTILLAS v2 (biblioteca Camand, 29 sep 2026) — cuerpo con medidas
+   oficiales + cámara por modelo (módulo, lentes, flash, LiDAR, sensores)
+   en mm, vista trasera. Se convierten a las unidades del lienzo de cada
+   modelo manteniendo su ancho actual. Tipos: ver
+   CAM_TYPES (L lente, D LiDAR, F flash, M micrófono, S sensor). Fuente: camera_geometry.json de la biblioteca v2.
+--------------------------------------------------------------------- */
+const CASE_TEMPLATES_V2 = {"iphone17promax":{"wmm":78.0,"hmm":163.4,"r":11.31,"conf":"media","is":[2.73,2.34,72.54,36.66,8.58],"ho":[["L",13.65,11.7,15.99],["L",13.65,28.47,15.99],["L",28.86,20.09,15.99],["F",62.4,11.7,5.85],["D",62.4,28.08,5.85],["M",51.48,9.36,1.95]]},"iphone17pro":{"wmm":71.9,"hmm":150.0,"r":10.43,"conf":"media","is":[2.52,2.16,66.87,33.79,7.91],"ho":[["L",12.58,10.79,14.74],["L",12.58,26.24,14.74],["L",26.6,18.51,14.74],["F",57.52,10.79,5.39],["D",57.52,25.88,5.39],["M",47.45,8.63,1.8]]},"iphone17":{"wmm":71.5,"hmm":149.6,"r":10.37,"conf":"alta","is":[5.01,5.01,17.52,37.18,8.76],"ho":[["L",13.76,14.3,14.66],["L",13.76,32.89,14.66],["F",27.89,12.16,5.01],["M",27.89,20.73,1.79]]},"iphone16promax":{"wmm":77.6,"hmm":163.0,"r":11.25,"conf":"alta","is":[4.5,4.5,41.13,41.13,9.87],"ho":[["L",15.61,14.78,16.45],["L",15.61,35.35,16.45],["L",34.52,25.06,16.45],["F",35.35,12.32,5.35],["D",35.35,37.81,5.35]]},"iphone16pro":{"wmm":71.5,"hmm":149.6,"r":10.37,"conf":"alta","is":[4.15,4.15,37.9,37.9,9.09],"ho":[["L",14.38,13.62,15.16],["L",14.38,32.57,15.16],["L",31.81,23.09,15.16],["F",32.57,11.35,4.93],["D",32.57,34.84,4.93]]},"iphone16":{"wmm":71.6,"hmm":147.6,"r":10.38,"conf":"alta","is":[5.01,5.01,17.54,37.23,8.77],"ho":[["L",13.78,14.32,14.68],["L",13.78,32.94,14.68],["F",27.92,12.17,5.01],["M",27.92,20.76,1.79]]},"iphone16plus":{"wmm":77.8,"hmm":160.9,"r":11.28,"conf":"alta","is":[5.45,5.45,19.06,40.46,9.53],"ho":[["L",14.98,15.56,15.95],["L",14.98,35.79,15.95],["F",30.34,13.23,5.45],["M",30.34,22.56,1.95]]},"iphone15promax":{"wmm":76.7,"hmm":159.9,"r":11.12,"conf":"alta","is":[4.45,4.45,39.88,39.88,9.57],"ho":[["L",15.22,14.42,15.95],["L",15.22,34.36,15.95],["L",33.56,24.39,15.95],["F",34.36,12.03,5.18],["D",34.36,36.75,5.18]]},"iphone15pro":{"wmm":70.6,"hmm":146.6,"r":10.24,"conf":"alta","is":[4.09,4.09,36.71,36.71,8.81],"ho":[["L",14.01,13.27,14.68],["L",14.01,31.63,14.68],["L",30.89,22.45,14.68],["F",31.63,11.07,4.77],["D",31.63,33.83,4.77]]},"iphone14promax":{"wmm":77.6,"hmm":160.7,"r":11.25,"conf":"alta","is":[4.5,4.5,40.35,40.35,9.68],"ho":[["L",15.4,14.59,16.54],["L",15.4,34.76,16.54],["L",33.96,24.68,16.54],["F",34.76,12.17,5.25],["D",34.76,37.19,5.25]]},"iphone14pro":{"wmm":71.5,"hmm":147.5,"r":10.37,"conf":"alta","is":[4.15,4.15,37.18,37.18,8.92],"ho":[["L",14.19,13.44,15.24],["L",14.19,32.03,15.24],["L",31.29,22.74,15.24],["F",32.03,11.21,4.83],["D",32.03,34.26,4.83]]},"iphone15":{"wmm":71.6,"hmm":147.6,"r":10.38,"conf":"alta","is":[5.01,5.01,32.22,32.22,7.73],"ho":[["L",14.03,14.03,12.24],["L",28.21,28.21,12.24],["F",28.85,13.39,4.51],["M",13.39,29.5,1.61]]},"iphone15plus":{"wmm":77.8,"hmm":160.9,"r":11.28,"conf":"alta","is":[5.45,5.45,35.01,35.01,8.4],"ho":[["L",15.25,15.25,13.3],["L",30.65,30.65,13.3],["F",31.35,14.55,4.9],["M",14.55,32.05,1.75]]},"iphone14":{"wmm":71.5,"hmm":146.7,"r":10.37,"conf":"alta","is":[5.01,5.01,32.18,32.18,7.72],"ho":[["L",14.01,14.01,12.23],["L",28.17,28.17,12.23],["F",28.81,13.37,4.5],["M",13.37,29.46,1.61]]},"iphone14plus":{"wmm":78.1,"hmm":160.8,"r":11.32,"conf":"alta","is":[5.47,5.47,35.14,35.14,8.43],"ho":[["L",15.31,15.31,13.36],["L",30.77,30.77,13.36],["F",31.47,14.6,4.92],["M",14.6,32.18,1.76]]},"iphone13":{"wmm":71.5,"hmm":146.7,"r":10.37,"conf":"alta","is":[5.15,5.15,31.46,31.46,7.55],"ho":[["L",13.96,13.96,11.95],["L",27.8,27.8,11.95],["F",28.43,13.33,4.4],["M",13.33,29.06,1.57]]},"iphone13mini":{"wmm":64.2,"hmm":131.5,"r":9.31,"conf":"alta","is":[4.62,4.62,30.17,30.17,7.24],"ho":[["L",13.07,13.07,11.47],["L",26.35,26.35,11.47],["F",26.95,12.47,4.22],["M",12.47,27.55,1.51]]},"iphone12":{"wmm":71.5,"hmm":146.7,"r":10.37,"conf":"alta","is":[5.36,5.36,30.75,30.75,7.38],"ho":[["L",13.97,13.97,11.68],["L",13.97,27.5,11.68],["F",28.11,13.05,4.0],["M",28.11,21.35,1.54]]},"iphone12pro":{"wmm":71.5,"hmm":146.7,"r":10.37,"conf":"alta","is":[5.01,5.01,33.6,33.6,8.07],"ho":[["L",14.08,13.41,12.77],["L",14.08,30.21,12.77],["L",29.54,21.81,12.77],["F",30.21,11.39,4.37],["D",30.21,32.23,4.37]]},"iphone11":{"wmm":75.7,"hmm":150.9,"r":10.98,"conf":"alta","is":[5.45,5.45,35.58,35.58,8.54],"ho":[["L",15.41,15.41,13.52],["L",15.41,31.07,13.52],["F",31.78,14.35,4.63],["M",31.78,23.95,1.78]]},"iphone11pro":{"wmm":71.4,"hmm":144.0,"r":10.35,"conf":"alta","is":[4.64,4.64,35.7,35.7,8.57],"ho":[["L",14.28,13.57,13.57],["L",14.28,31.42,13.57],["L",30.7,22.49,13.57],["F",31.42,11.42,4.64],["M",31.42,33.91,1.79]]},"iphone11promax":{"wmm":77.8,"hmm":158.0,"r":11.28,"conf":"alta","is":[5.06,5.06,38.9,38.9,9.34],"ho":[["L",15.56,14.78,14.78],["L",15.56,34.23,14.78],["L",33.45,24.51,14.78],["F",34.23,12.45,5.06],["M",34.23,36.95,1.95]]},"s24ultra":{"wmm":79.0,"hmm":162.3,"r":3.55,"conf":"media","is":[5.13,4.74,28.04,42.27,7.11],"ho":[["L",12.24,11.85,12.64],["L",12.24,25.68,12.64],["L",12.24,39.5,12.64],["L",26.46,11.85,9.48],["S",26.46,21.33,3.55],["F",26.46,27.25,4.34]]},"s23ultra":{"wmm":78.1,"hmm":163.4,"r":5.47,"conf":"media","is":[5.08,4.69,27.73,41.78,7.03],"ho":[["L",12.11,11.71,12.5],["L",12.11,25.38,12.5],["L",12.11,39.05,12.5],["L",26.16,11.71,10.93],["S",26.16,21.09,3.51],["F",26.16,26.94,4.3]]},"s24plus":{"wmm":75.9,"hmm":158.5,"r":9.11,"conf":"media","is":[5.16,5.54,13.21,40.53,6.6],"ho":[["L",11.76,12.14,11.38],["L",11.76,25.81,11.38],["L",11.76,39.47,11.38],["F",23.53,12.14,4.55]]},"s24":{"wmm":70.6,"hmm":147.0,"r":8.47,"conf":"media","is":[4.8,5.15,12.28,37.7,6.14],"ho":[["L",10.94,11.3,10.59],["L",10.94,24.0,10.59],["L",10.94,36.71,10.59],["F",21.89,11.3,4.24]]},"s23":{"wmm":70.9,"hmm":146.3,"r":8.51,"conf":"media","is":[4.82,5.18,12.34,37.86,6.17],"ho":[["L",10.99,11.34,10.63],["L",10.99,24.11,10.63],["L",10.99,36.87,10.63],["F",21.98,11.34,4.25]]},"a55":{"wmm":77.4,"hmm":161.1,"r":9.29,"conf":"media","is":[5.46,5.84,14.63,43.27,7.31],"ho":[["L",12.77,13.16,12.77],["L",12.77,27.48,12.77],["L",12.77,41.8,12.77],["F",25.54,13.16,4.64]]},"a35":{"wmm":78.0,"hmm":161.7,"r":9.36,"conf":"media","is":[5.5,5.89,14.74,43.6,7.37],"ho":[["L",12.87,13.26,12.87],["L",12.87,27.69,12.87],["L",12.87,42.12,12.87],["F",25.74,13.26,4.68]]},"redminote13proplus":{"wmm":74.2,"hmm":161.4,"r":8.9,"conf":"baja","is":[5.19,5.19,29.68,34.87,7.42],"ho":[["L",14.1,14.1,14.84],["L",14.1,31.16,12.61],["L",27.45,14.1,5.94],["F",27.45,23.0,4.45]]},"redminote13pro":{"wmm":74.24,"hmm":161.15,"r":8.91,"conf":"baja","is":[5.2,5.2,29.7,34.89,7.42],"ho":[["L",14.11,14.11,14.85],["L",14.11,31.18,12.62],["L",27.47,14.11,5.94],["F",27.47,23.01,4.45]]},"pocox6pro":{"wmm":74.34,"hmm":160.45,"r":8.92,"conf":"baja","is":[5.2,5.2,63.93,22.3,7.43],"ho":[["L",16.35,16.35,14.87],["L",33.45,16.35,11.15],["L",46.83,16.35,5.95],["F",57.99,16.35,4.46]]},"pocom6pro":{"wmm":74.95,"hmm":161.1,"r":8.99,"conf":"baja","is":[5.25,5.25,22.48,43.47,7.5],"ho":[["L",16.49,14.24,14.24],["L",16.49,29.98,12.74],["L",16.49,41.97,5.25],["F",23.23,41.97,3.75]]},"motoedge50pro":{"wmm":72.4,"hmm":161.23,"r":8.69,"conf":"baja","is":[5.07,5.07,28.96,31.86,8.69],"ho":[["L",13.76,13.76,12.31],["L",13.76,28.24,10.86],["L",26.79,13.76,8.69],["F",26.79,27.51,4.34]]},"motoedge40neo":{"wmm":71.99,"hmm":159.63,"r":8.64,"conf":"baja","is":[5.04,5.04,24.48,28.8,8.64],"ho":[["L",13.68,12.96,11.52],["L",13.68,26.64,11.52],["F",24.48,12.96,4.32]]},"opporeno11f":{"wmm":74.7,"hmm":161.6,"r":8.96,"conf":"baja","is":[5.23,5.23,29.88,34.36,7.47],"ho":[["L",14.19,14.19,14.19],["L",14.19,30.63,11.95],["L",27.64,14.19,5.23],["F",27.64,22.41,4.48]]}};
+const CAM_TYPES = { L:'lens', D:'lidar', F:'flash', M:'mic', S:'sensor' };
+(function applyTemplatesV2(){
+  Object.values(BRANDS).forEach(b => b.models.forEach(m => {
+    const t = CASE_TEMPLATES_V2[m.id];
+    if(!t) return;
+    const k = m.w / t.wmm;                 // unidades del lienzo por mm
+    m.h = +(t.hmm * k).toFixed(1);
+    m.radius = +(t.r * k).toFixed(1);
+    const [x, y, w, h, r] = t.is.map(v => v * k);
+    m.tplIsland = { x, y, w, h, r };
+    m.tplHoles = t.ho.map(([ty, cx, cy, d]) => ({
+      type: CAM_TYPES[ty] || 'lens',
+      cx: cx * k, cy: cy * k, r: d * k / 2
+    }));
+    m.tplLip = 1.0 * k;                    // labio del estuche alrededor de la cámara (1 mm)
+    m.tplConfidence = t.conf;
+  }));
+})();
+
+/* ---------------------------------------------------------------------
    3) OVERLAY / MÁSCARA DINÁMICA POR MODELO
 --------------------------------------------------------------------- */
 function makeClipRect(model){
@@ -1682,6 +1709,9 @@ function buildOverlay(model){
   const stageBg = getComputedStyle(document.documentElement).getPropertyValue('--stage-bg').trim() || '#eef0f3';
   const parts = [];
 
+  if (model.tplIsland){
+    buildCameraV2(model, parts);
+  } else {
   if (model.islandBg){
     parts.push(new fabric.Rect({
       left:model.islandBg.x, top:model.islandBg.y,
@@ -1718,6 +1748,7 @@ function buildOverlay(model){
   if (model.lidar){
     parts.push(new fabric.Circle({left:model.lidar.cx-model.lidar.r, top:model.lidar.cy-model.lidar.r, radius:model.lidar.r, fill:'#111'}));
   }
+  } // fin cámara anterior (modelos sin plantilla v2)
   // Reflejo diagonal tipo vidrio: una banda semitransparente en
   // diagonal sobre todo el cuerpo del estuche, para sugerir una
   // superficie brillante/curva en vez de una foto plana pegada encima —
@@ -1757,6 +1788,36 @@ function buildOverlay(model){
     p.set({selectable:false, evented:false, excludeFromExport:true, hoverCursor:'default'});
     p.isOverlay = true;
     canvas.add(p);
+  });
+}
+
+/* Cámara con la plantilla v2: labio del estuche (#30343A) alrededor del
+   hueco, módulo #666666 con borde #4C4C4C, lentes #111111 con aro #2C2C2C,
+   flash, LiDAR y sensores en su posición real de cada modelo. */
+function buildCameraV2(model, parts){
+  const I = model.tplIsland, lip = model.tplLip;
+  const circ = (cx, cy, r, fill, extra) => new fabric.Circle(Object.assign({left:cx-r, top:cy-r, radius:r, fill}, extra||{}));
+  const inIsland = h => h.cx-h.r >= I.x-0.5 && h.cx+h.r <= I.x+I.w+0.5 && h.cy-h.r >= I.y-0.5 && h.cy+h.r <= I.y+I.h+0.5;
+  // labio del estuche
+  parts.push(new fabric.Rect({left:I.x-lip, top:I.y-lip, width:I.w+lip*2, height:I.h+lip*2, rx:I.r+lip, ry:I.r+lip,
+    fill:'#30343A', shadow:new fabric.Shadow({color:'rgba(0,0,0,0.25)', blur:8, offsetY:2})}));
+  model.tplHoles.filter(h => !inIsland(h)).forEach(h => parts.push(circ(h.cx, h.cy, h.r+lip, '#30343A')));
+  // módulo
+  parts.push(new fabric.Rect({left:I.x, top:I.y, width:I.w, height:I.h, rx:I.r, ry:I.r,
+    fill:new fabric.Gradient({type:'linear', coords:{x1:0, y1:0, x2:I.w, y2:I.h},
+      colorStops:[{offset:0, color:'#6e6e6e'}, {offset:0.5, color:'#666666'}, {offset:1, color:'#5e5e5e'}]}),
+    stroke:'#4C4C4C', strokeWidth:Math.max(1.2, I.w*0.012)}));
+  // lentes, flash y sensores
+  model.tplHoles.forEach(h => {
+    if(h.type === 'mic' || h.type === 'sensor'){ parts.push(circ(h.cx, h.cy, h.r, '#111111')); return; }
+    parts.push(circ(h.cx, h.cy, h.r, '#2C2C2C'));
+    parts.push(circ(h.cx, h.cy, h.r*0.82, h.type === 'flash' ? '#D9D4C7' : '#111111'));
+    if(h.type === 'lens'){
+      const g = h.r*0.34;
+      parts.push(new fabric.Circle({left:h.cx-h.r*0.5-g, top:h.cy-h.r*0.5-g, radius:g,
+        fill:new fabric.Gradient({type:'radial', coords:{x1:g, y1:g, x2:g, y2:g, r1:0, r2:g},
+          colorStops:[{offset:0, color:'rgba(255,255,255,0.28)'}, {offset:1, color:'rgba(255,255,255,0)'}]})}));
+    }
   });
 }
 
