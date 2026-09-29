@@ -312,6 +312,10 @@ body.preview-mode .stage-hint{opacity:0;}
 .line-opt .lo-name{display:block;font-size:13.5px;font-weight:700;color:var(--ink);margin-bottom:3px;}
 .line-opt .lo-price{display:block;font-size:15px;font-weight:800;color:var(--ink);}
 .line-opt .lo-price .old{font-size:11.5px;font-weight:600;color:var(--ink-faint);text-decoration:line-through;margin-right:5px;}
+.line-opt.l3d{grid-column:1/-1;display:flex;align-items:center;justify-content:space-between;gap:10px;}
+.line-opt.l3d .lo-name{margin-bottom:0;}
+.line-opt .lo-new{display:inline-block;font-size:9.5px;font-weight:800;letter-spacing:.05em;text-transform:uppercase;color:#fff;background:linear-gradient(135deg,#0071e3,#7c5cff);padding:2px 7px;border-radius:100px;margin-left:6px;vertical-align:2px;}
+.line-opt.l3d.active{border-color:#7c5cff;background:#f4f0ff;}
 .side-chooser{display:flex;gap:8px;}
 .side-opt{
   flex:1;text-align:center;border:1.5px solid var(--line);border-radius:100px;background:#fff;
@@ -858,12 +862,16 @@ body.preview-mode .progress-strip{display:none;}
           <div class="field-label">Tu línea</div>
           <div class="line-chooser" id="lineChooser">
             <button type="button" class="line-opt active" data-line="basica" onclick="selectLine('basica')">
-              <span class="lo-name">Línea Básica</span>
-              <span class="lo-price"><span class="old">$41.880</span>$34.900</span>
+              <span class="lo-name">Línea Clásica</span>
+              <span class="lo-price"><span class="old">$41.990</span>$34.990</span>
             </button>
             <button type="button" class="line-opt" data-line="pro" onclick="selectLine('pro')">
               <span class="lo-name">Línea Pro</span>
-              <span class="lo-price"><span class="old">$53.880</span>$44.900</span>
+              <span class="lo-price"><span class="old">$53.990</span>$44.990</span>
+            </button>
+            <button type="button" class="line-opt l3d" data-line="3d" onclick="selectLine('3d')">
+              <span class="lo-name">Línea 3D<span class="lo-new">Nuevo</span></span>
+              <span class="lo-price"><span class="old">$65.990</span>$54.990</span>
             </button>
           </div>
 
@@ -1064,7 +1072,7 @@ body.preview-mode .progress-strip{display:none;}
         </div>
 
         <div class="summary-row"><span class="sr-label">Equipo</span><span class="sr-value" id="summaryModel">—</span></div>
-        <div class="summary-row"><span class="sr-label" id="summaryLineLabel">Línea Básica</span><span class="sr-value" id="summaryLinePrice">$34.900</span></div>
+        <div class="summary-row"><span class="sr-label" id="summaryLineLabel">Línea Clásica</span><span class="sr-value" id="summaryLinePrice">$34.990</span></div>
         <div class="summary-row" id="summaryAddonsRow" style="display:none;"><span class="sr-label">Extras</span><span class="sr-value" id="summaryAddons">—</span></div>
         <div class="summary-total"><span class="st-label">Total</span><span class="st-value" id="summaryTotal">$39.990</span></div>
 
@@ -1453,8 +1461,9 @@ const BRANDS = {
 const CLIPARTS = ["❤️","⭐","✨","👑","🌸","⚡","🐾","🔥","🎧","🌙","☀️","🍀"];
 const WHATSAPP_NUMBER = "573122265799";
 const LINES = {
-  basica: { key:"basica", label:"Línea Básica", price:34900, oldPrice:41880, allowSides:true },
-  pro:    { key:"pro",    label:"Línea Pro",    price:44900, oldPrice:53880, allowSides:false }
+  basica: { key:"basica", label:"Línea Clásica", price:34990, oldPrice:41990, allowSides:true },
+  pro:    { key:"pro",    label:"Línea Pro",     price:44990, oldPrice:53990, allowSides:false },
+  "3d":   { key:"3d",     label:"Línea 3D",      price:54990, oldPrice:65990, allowSides:false }
 };
 let currentLine = LINES.basica;
 let currentSide = "exterior";
@@ -2144,6 +2153,7 @@ const FREE_SHIPPING_THRESHOLD = 200000;
 
 /* --- Adicionales del DISEÑO actual (Paso 3 · Extras) --- */
 function selectLine(key){
+  if(!LINES[key]) key = 'basica';
   currentLine = LINES[key];
   document.querySelectorAll('#lineChooser .line-opt').forEach(b=>b.classList.toggle('active', b.dataset.line === key));
   const sideChooser = document.getElementById('sideChooser');
@@ -2155,7 +2165,9 @@ function selectLine(key){
     currentSide = 'exterior';
     document.querySelectorAll('#sideChooser .side-opt').forEach(b=>b.classList.toggle('active', b.dataset.side === 'exterior'));
     sideChooser.style.display = 'none';
-    lineNote.textContent = 'Línea Pro se imprime en el exterior, con borde reforzado.';
+    lineNote.textContent = key === '3d'
+      ? 'Línea 3D: tu diseño va bajo una lámina lenticular y cambia al girar. Diseña aquí tu imagen principal y envíanos por WhatsApp la segunda imagen (la que aparece al girar).'
+      : 'Línea Pro se imprime en el exterior, con borde reforzado.';
   }
   updateAddonsTotal();
   if(currentModel && document.getElementById('summaryLinePrice')) refreshConfirmStep();
@@ -2381,7 +2393,7 @@ async function buyNow(){
   const sideTxt = (currentLine.allowSides && currentSide === 'interior') ? ' · impresión interior' : '';
   downloadOrderPackage();
   const addonsLine = notes.length ? `\nAdicionales:\n- ${notes.join('\n- ')}` : '';
-  const msg = `Hola, quiero pedir mi estuche ${currentLine.label} (${currentModel.name}${sideTxt}) — ${money(currentLine.price + extra)}.${addonsLine}\nYa descargué el archivo de mi diseño (ZIP), te lo envío por aquí.`;
+  const msg = `Hola, quiero pedir mi estuche ${currentLine.label} (${currentModel.name}${sideTxt}) — ${money(currentLine.price + extra)}.${addonsLine}\nYa descargué el archivo de mi diseño (ZIP), te lo envío por aquí.${currentLine.key === '3d' ? '\nTambién te envío la segunda imagen para el efecto 3D (la que aparece al girar).' : ''}`;
   window.open(`https://wa.me/${WHATSAPP_NUMBER}?text=${encodeURIComponent(msg)}`, '_blank');
 }
 async function checkoutCart(){
@@ -2398,6 +2410,7 @@ async function checkoutCart(){
   const nota = document.getElementById('cartNoteInput');
   if(nota && nota.value.trim()) msg += `\n\nNota para la entrega: ${nota.value.trim()}`;
   if(hayEstuche) msg += `\n\n(Ya descargué el archivo de mi diseño de estuche más reciente — te lo comparto por aquí).`;
+  if(cart.some(it => !it.isAccessory && /Línea 3D/.test(it.n))) msg += `\nPara el estuche 3D te envío también la segunda imagen (la que aparece al girar).`;
   msg += `\n\n¿Puedo pagar contraentrega o con tarjeta de crédito?`;
   window.open(`https://wa.me/${WHATSAPP_NUMBER}?text=${encodeURIComponent(msg)}`, '_blank');
 }
@@ -2974,6 +2987,12 @@ window.addEventListener('load', ()=>{
   setModel('apple', 'iphone16', {silent:true});
   updateFiltersVisibility();
   updateAddonsTotal();
+  // Abre el editor con la línea elegida desde la tarjeta (estuche-editor.html?linea=pro / 3d / basica / clasica)
+  try{
+    let lineaUrl = (new URLSearchParams(location.search).get('linea') || '').toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g,'');
+    if(lineaUrl === 'clasica') lineaUrl = 'basica';
+    if(LINES[lineaUrl]) selectLine(lineaUrl);
+  }catch(e){}
   goToStep('image');
   cargarAccesoriosSugeridos(); // en segundo plano — no bloquea el resto de la carga
 });

@@ -1249,9 +1249,9 @@ footer.site{
   .promo-featured-img{width:120px;}
 }
 
-/* product lines: Básica / Pro */
-.line-grid{display:grid;grid-template-columns:1fr 1fr;gap:20px;}
-@media (max-width:700px){.line-grid{grid-template-columns:1fr;}}
+/* product lines: Clásica / Pro / 3D */
+.line-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:20px;}
+@media (max-width:960px){.line-grid{grid-template-columns:1fr;max-width:520px;margin:0 auto;}}
 .line-card{
   position:relative;background:#fff;border:1px solid var(--line);
   border-radius:var(--radius-lg);padding:30px 26px 26px;
@@ -1291,6 +1291,28 @@ footer.site{
   box-shadow:0 10px 24px -6px rgba(0,0,0,.35);
 }
 .btn-primary.line-btn-pro:hover{background:#000;}
+
+/* Línea 3D (efecto flip / lenticular) */
+.line-card.l3d{background:linear-gradient(160deg,#f4f0ff,#fff 55%);border-color:#7c5cff;}
+.line-badge.grad{background:linear-gradient(135deg,#0071e3,#7c5cff 55%,#c8447a);}
+.line-card.l3d .line-eyebrow{color:#5b3fd9;}
+.line-card.l3d .line-price .badge{background:linear-gradient(135deg,#0071e3,#7c5cff);}
+.line-card.l3d .line-features li svg{color:#7c5cff;}
+.btn-primary.line-btn-3d{
+  background:linear-gradient(135deg,#0071e3,#7c5cff 60%,#c8447a);
+  box-shadow:0 10px 24px -6px rgba(124,92,255,.45);
+}
+.btn-primary.line-btn-3d:hover{filter:brightness(1.06);}
+.line-photo video{width:100%;height:100%;object-fit:cover;display:block;}
+/* Marcador animado mientras no hay foto o video real de la línea 3D */
+.l3d-demo{position:relative;width:62%;aspect-ratio:9/17;border-radius:26px;background:#111;padding:7px;box-shadow:0 18px 40px -14px rgba(0,0,0,.45);animation:l3dTilt 3.6s ease-in-out infinite;}
+.l3d-demo span{position:absolute;inset:7px;border-radius:20px;display:flex;align-items:center;justify-content:center;font-weight:800;font-size:15px;color:#fff;letter-spacing:.02em;text-align:center;padding:10px;}
+.l3d-demo .a{background:linear-gradient(160deg,#0071e3,#7c5cff);animation:l3dA 3.6s ease-in-out infinite;}
+.l3d-demo .b{background:linear-gradient(160deg,#c8447a,#ff9f43);animation:l3dB 3.6s ease-in-out infinite;}
+@keyframes l3dTilt{0%,100%{transform:perspective(700px) rotateY(-16deg);}50%{transform:perspective(700px) rotateY(16deg);}}
+@keyframes l3dA{0%,38%{opacity:1;}50%,88%{opacity:0;}100%{opacity:1;}}
+@keyframes l3dB{0%,38%{opacity:0;}50%,88%{opacity:1;}100%{opacity:0;}}
+@media (prefers-reduced-motion:reduce){.l3d-demo,.l3d-demo span{animation:none;}}
 
 /* bento grid: Acrygel technical specs */
 .bento-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:16px;}
@@ -2401,19 +2423,19 @@ body.loaded header.nav {
       <div class="wrap">
         <div class="section-head">
           <h2>Elige tu línea</h2>
-          <p>Dos líneas, mismo Acrygel resistente a caídas — la diferencia está en el borde y en dónde va tu foto.</p>
+          <p>Tres líneas para tu foto: la Clásica transparente, la Pro de borde reforzado y la nueva 3D, que cambia de imagen al girar.</p>
         </div>
         <div class="line-grid">
 
           <div class="line-card">
             <span class="line-badge pink">Más vendida</span>
-            <p class="line-eyebrow">Línea Básica</p>
+            <p class="line-eyebrow">Línea Clásica</p>
             <h3>Estuche Acrygel transparente</h3>
-            <div class="line-photo" id="lineFoto_basica"><img src="img/estuches-ejemplo/basica.png" alt="Ejemplo de estuche Línea Básica" loading="lazy" onerror="this.closest('.line-photo').style.display='none'"></div>
+            <div class="line-photo" id="lineFoto_basica"><img src="img/estuches-ejemplo/basica.png" alt="Ejemplo de estuche Línea Clásica" loading="lazy" onerror="this.closest('.line-photo').style.display='none'"></div>
             <p class="line-desc">Un estuche híbrido Acrygel resistente a caídas, con bordes compactos, protección de cámara y tecnología anti-amarilleo (exclusiva de esta línea). Tú eliges si tu foto o diseño se imprime por el exterior o por el interior del acrílico.</p>
             <div class="line-price">
-              <span class="old">$41.880</span>
-              <span class="new">$34.900</span>
+              <span class="old">$41.990</span>
+              <span class="new">$34.990</span>
               <span class="badge">-17%</span>
             </div>
             <ul class="line-features">
@@ -2423,9 +2445,9 @@ body.loaded header.nav {
               <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M4 12l5 5L20 6"/></svg>Tecnología anti-amarilleo exclusiva: se mantiene transparente con el tiempo</li>
               <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M4 12l5 5L20 6"/></svg>Garantía de 1 mes</li>
             </ul>
-            <a class="btn-primary cases-btn line-cta" href="estuche-editor.html" target="_blank" rel="noopener">
+            <a class="btn-primary cases-btn line-cta" href="estuche-editor.html?linea=basica" target="_blank" rel="noopener">
               <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><path d="M12 20h9"/><path d="M16.5 3.5a2.12 2.12 0 0 1 3 3L7 19l-4 1 1-4Z"/></svg>
-              Diseñar Básica →
+              Diseñar Clásica →
             </a>
           </div>
 
@@ -2436,8 +2458,8 @@ body.loaded header.nav {
             <div class="line-photo" id="lineFoto_pro"><img src="img/estuches-ejemplo/pro.png" alt="Ejemplo de estuche Línea Pro" loading="lazy" onerror="this.closest('.line-photo').style.display='none'"></div>
             <p class="line-desc">Para quienes quieren el máximo nivel de protección: bordes negros reforzados, de máxima calidad y protección, con impresión exterior UV de máxima definición.</p>
             <div class="line-price">
-              <span class="old">$53.880</span>
-              <span class="new">$44.900</span>
+              <span class="old">$53.990</span>
+              <span class="new">$44.990</span>
               <span class="badge">-17%</span>
             </div>
             <ul class="line-features">
@@ -2445,10 +2467,35 @@ body.loaded header.nav {
               <li><svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 2l2.9 6.6L22 9.3l-5 4.8L18.2 21 12 17.3 5.8 21 7 14.1 2 9.3l7.1-.7Z"/></svg>Impresión UV HD personalizada a tu gusto</li>
               <li><svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 2l2.9 6.6L22 9.3l-5 4.8L18.2 21 12 17.3 5.8 21 7 14.1 2 9.3l7.1-.7Z"/></svg>Garantía de 1 mes</li>
             </ul>
-            <div class="line-gift"><span class="emoji"><svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M20 6L9 17l-5-5"/></svg></span><span><b>Tip:</b> si llevas 2 estuches (Básica, Pro o mezclados) el 2º tiene 10% de descuento y tus 2 vidrios de protección van gratis</span></div>
-            <a class="btn-primary cases-btn line-cta line-btn-pro" href="estuche-editor.html" target="_blank" rel="noopener">
+            <div class="line-gift"><span class="emoji"><svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M20 6L9 17l-5-5"/></svg></span><span><b>Tip:</b> si llevas 2 estuches (de cualquier línea o mezclados) el 2º tiene 10% de descuento y tus 2 vidrios de protección van gratis</span></div>
+            <a class="btn-primary cases-btn line-cta line-btn-pro" href="estuche-editor.html?linea=pro" target="_blank" rel="noopener">
               <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><path d="M12 20h9"/><path d="M16.5 3.5a2.12 2.12 0 0 1 3 3L7 19l-4 1 1-4Z"/></svg>
               Diseñar Pro →
+            </a>
+          </div>
+
+          <div class="line-card l3d" id="lineCard3d">
+            <span class="line-badge grad">Nuevo · Efecto 3D</span>
+            <p class="line-eyebrow">Línea 3D</p>
+            <h3>Estuche 3D, cambia al girar</h3>
+            <div class="line-photo" id="lineFoto_3d">
+              <div class="l3d-demo" aria-hidden="true"><span class="a">Imagen 1</span><span class="b">Imagen 2</span></div>
+            </div>
+            <p class="line-desc">Tu diseño bajo una lámina lenticular: al girar el celular, la imagen cambia. Eliges dos imágenes (por ejemplo, tu personaje antes y después de transformarse) y el estuche pasa de una a otra según el ángulo.</p>
+            <div class="line-price">
+              <span class="old">$65.990</span>
+              <span class="new">$54.990</span>
+              <span class="badge">-17%</span>
+            </div>
+            <ul class="line-features">
+              <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M4 12l5 5L20 6"/></svg>Efecto flip: tu imagen cambia al girar el celular</li>
+              <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M4 12l5 5L20 6"/></svg>Dos imágenes a tu elección, sin lentes ni gafas</li>
+              <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M4 12l5 5L20 6"/></svg>Lámina lenticular resistente sobre tu diseño</li>
+              <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M4 12l5 5L20 6"/></svg>Garantía de 1 mes</li>
+            </ul>
+            <a class="btn-primary cases-btn line-cta line-btn-3d" href="estuche-editor.html?linea=3d" target="_blank" rel="noopener">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><path d="M12 20h9"/><path d="M16.5 3.5a2.12 2.12 0 0 1 3 3L7 19l-4 1 1-4Z"/></svg>
+              Diseñar 3D →
             </a>
           </div>
 
@@ -2457,15 +2504,16 @@ body.loaded header.nav {
         <div class="compare-wrap">
           <table class="compare-table">
             <thead>
-              <tr><th>Comparar</th><th>Línea Básica</th><th>Línea Pro</th></tr>
+              <tr><th>Comparar</th><th>Línea Clásica</th><th>Línea Pro</th><th>Línea 3D</th></tr>
             </thead>
             <tbody>
-              <tr><td>Precio</td><td>$34.900</td><td>$44.900</td></tr>
-              <tr><td>Impresión</td><td>Exterior o interior, tú eliges</td><td>Exterior</td></tr>
-              <tr><td>Borde</td><td>Compacto</td><td>Reforzado, negro, de máxima calidad</td></tr>
-              <tr><td>Material</td><td>Acrygel resistente a caídas + TPU anti-amarilleo</td><td>Acrygel resistente a caídas + borde reforzado premium</td></tr>
-              <tr><td>Garantía</td><td class="yes">1 mes</td><td class="yes">1 mes</td></tr>
-              <tr><td>2ª unidad</td><td>10% de descuento</td><td>10% de descuento</td></tr>
+              <tr><td>Precio</td><td>$34.990</td><td>$44.990</td><td>$54.990</td></tr>
+              <tr><td>Impresión</td><td>Exterior o interior, tú eliges</td><td>Exterior</td><td>Bajo lámina lenticular</td></tr>
+              <tr><td>Efecto</td><td>Foto fija</td><td>Foto fija</td><td>Cambia de imagen al girar</td></tr>
+              <tr><td>Borde</td><td>Compacto</td><td>Reforzado, negro, de máxima calidad</td><td>Reforzado, negro</td></tr>
+              <tr><td>Material</td><td>Acrygel resistente a caídas + TPU anti-amarilleo</td><td>Acrygel resistente a caídas + borde reforzado premium</td><td>Lámina lenticular PET + borde reforzado</td></tr>
+              <tr><td>Garantía</td><td class="yes">1 mes</td><td class="yes">1 mes</td><td class="yes">1 mes</td></tr>
+              <tr><td>2ª unidad</td><td>10% de descuento</td><td>10% de descuento</td><td>10% de descuento</td></tr>
             </tbody>
           </table>
         </div>
@@ -2476,7 +2524,7 @@ body.loaded header.nav {
       <div class="wrap">
         <div class="section-head">
           <h2>Protección pensada para cada línea</h2>
-          <p>Acrygel resistente a caídas en las dos líneas — el diferencial está en el borde y el acabado de cada una.</p>
+          <p>El diferencial de cada línea está en el borde, el acabado y el efecto de tu foto.</p>
         </div>
         <div class="bento-grid cols-4">
           <div class="bento-card">
@@ -2484,22 +2532,22 @@ body.loaded header.nav {
               <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M12 3l7 3v6c0 5-3.5 8-7 9-3.5-1-7-4-7-9V6l7-3z"/></svg>
             </div>
             <h5>Resistente a Caídas</h5>
-            <p>Absorbe impactos de hasta 2 metros de altura sin dañar tu celular. En ambas líneas.</p>
+            <p>Absorbe impactos de hasta 2 metros de altura sin dañar tu celular. En las líneas Clásica y Pro.</p>
           </div>
           <div class="bento-card">
             <div class="bento-icon">
               <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><rect x="3" y="7" width="18" height="13" rx="2"/><circle cx="12" cy="13.5" r="3.2"/><path d="M8 7l1.3-2h5.4L16 7"/></svg>
             </div>
             <h5>Bisel Elevado para Cámara</h5>
-            <p>1.5 mm de protección extra en los lentes — se apoya sobre superficies sin rayar la cámara. En ambas líneas.</p>
+            <p>1.5 mm de protección extra en los lentes — se apoya sobre superficies sin rayar la cámara. En las líneas Clásica y Pro.</p>
           </div>
           <div class="bento-card">
-            <span class="bento-tag">Línea Básica</span>
+            <span class="bento-tag">Línea Clásica</span>
             <div class="bento-icon">
               <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><circle cx="12" cy="12" r="4"/><path d="M12 2v3M12 19v3M4.2 4.2l2.1 2.1M17.7 17.7l2.1 2.1M2 12h3M19 12h3M4.2 19.8l2.1-2.1M17.7 6.3l2.1-2.1"/></svg>
             </div>
             <h5>TPU Anti-Amarilleo</h5>
-            <p>Filtro UV de alta resistencia que evita que el estuche se ponga amarillo con el tiempo. Exclusivo de la Línea Básica.</p>
+            <p>Filtro UV de alta resistencia que evita que el estuche se ponga amarillo con el tiempo. Exclusivo de la Línea Clásica.</p>
           </div>
           <div class="bento-card">
             <span class="bento-tag">Línea Pro</span>
@@ -2536,7 +2584,7 @@ body.loaded header.nav {
           <h2>Cómo funciona</h2>
         </div>
         <div class="steps">
-          <div class="step"><div class="n">01</div><h5>Elige tu línea y modelo</h5><p>Básica o Pro, y tu equipo — todo desde el mismo editor.</p></div>
+          <div class="step"><div class="n">01</div><h5>Elige tu línea y modelo</h5><p>Clásica, Pro o 3D, y tu equipo — todo desde el mismo editor.</p></div>
           <div class="step"><div class="n">02</div><h5>Sube tu foto y personaliza</h5><p>Ajusta, agrega texto o clipart y mira la vista previa en vivo, sin instalar nada.</p></div>
           <div class="step"><div class="n">03</div><h5>Suma protección</h5><p>Si quieres, agrega hidrogel o vidrio de pantalla al mismo pedido.</p></div>
           <div class="step"><div class="n">04</div><h5>Pide por WhatsApp</h5><p>Confirmamos precio final, forma de pago y tiempo de entrega.</p></div>
@@ -2554,7 +2602,7 @@ body.loaded header.nav {
           <div class="promo-card featured">
             <span class="promo-badge">Automática</span>
             <h5>10% en tu 2ª unidad + 2 vidrios gratis</h5>
-            <p>Al llevar 2 estuches (Básica, Pro o mezclados), el segundo tiene 10% de descuento y te regalamos 2 vidrios de protección de pantalla. Se aplica solo al pedir desde el editor.</p>
+            <p>Al llevar 2 estuches (de cualquier línea o mezclados), el segundo tiene 10% de descuento y te regalamos 2 vidrios de protección de pantalla. Se aplica solo al pedir desde el editor.</p>
             <a class="promo-link" href="estuche-editor.html" target="_blank" rel="noopener">Diseñar mis 2 estuches →</a>
           </div>
           <div class="promo-card">
@@ -2628,7 +2676,7 @@ body.loaded header.nav {
               <span class="faq-q-text">¿Qué garantía tiene mi estuche?</span>
               <svg class="faq-chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4"><path d="M6 9l6 6 6-6"/></svg>
             </button>
-            <div class="faq-a-wrap"><div class="faq-a"><ul><li>1 mes de garantía en ambas líneas, Básica y Pro, por defectos de fabricación.</li></ul></div></div>
+            <div class="faq-a-wrap"><div class="faq-a"><ul><li>1 mes de garantía en todas las líneas (Clásica, Pro y 3D) por defectos de fabricación.</li></ul></div></div>
           </div>
           <div class="faq-item">
             <button class="faq-q" onclick="toggleFaq(this)">
@@ -2636,7 +2684,7 @@ body.loaded header.nav {
               <span class="faq-q-text">¿Puedo elegir si mi foto va por dentro o por fuera?</span>
               <svg class="faq-chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4"><path d="M6 9l6 6 6-6"/></svg>
             </button>
-            <div class="faq-a-wrap"><div class="faq-a"><ul><li>Sí, en la Línea Básica eliges impresión exterior o interior desde el mismo editor. La Línea Pro se imprime en el exterior.</li></ul></div></div>
+            <div class="faq-a-wrap"><div class="faq-a"><ul><li>Sí, en la Línea Clásica eliges impresión exterior o interior desde el mismo editor. La Línea Pro se imprime en el exterior, y en la Línea 3D tu diseño va bajo la lámina lenticular.</li></ul></div></div>
           </div>
           <div class="faq-item">
             <button class="faq-q" onclick="toggleFaq(this)">
@@ -2644,7 +2692,7 @@ body.loaded header.nav {
               <span class="faq-q-text">¿Cómo funciona el 10% y los vidrios gratis?</span>
               <svg class="faq-chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4"><path d="M6 9l6 6 6-6"/></svg>
             </button>
-            <div class="faq-a-wrap"><div class="faq-a"><ul><li>Al agregar 2 estuches a tu pedido (cualquier combinación de Básica y Pro), el segundo tiene 10% de descuento automático y te regalamos 2 vidrios de protección de pantalla.</li></ul></div></div>
+            <div class="faq-a-wrap"><div class="faq-a"><ul><li>Al agregar 2 estuches a tu pedido (cualquier combinación de Clásica, Pro y 3D), el segundo tiene 10% de descuento automático y te regalamos 2 vidrios de protección de pantalla.</li></ul></div></div>
           </div>
           <div class="faq-item">
             <button class="faq-q" onclick="toggleFaq(this)">
@@ -5756,11 +5804,14 @@ async function cargarCategoriasDesdeSheet(){
 }
 
 /* ============================================================
-   FOTO DE EJEMPLO POR LÍNEA DE ESTUCHES (Básica / Pro) — DESDE
+   FOTO DE EJEMPLO POR LÍNEA DE ESTUCHES (Clásica / Pro / 3D) — DESDE
    GOOGLE SHEETS
    Crea una pestaña nueva en tu Hoja (ej. "FOTOS ESTUCHES") con dos
-   columnas: LINEA e IMAGEN. En LINEA escribe exactamente "Basica" o
-   "Pro" (sin tilde, mayúsculas no importan) y en IMAGEN pega el link
+   columnas: LINEA e IMAGEN. En LINEA escribe "Clasica" (o "Basica"),
+   "Pro" o "3D" (sin tilde, mayúsculas no importan). En IMAGEN puedes
+   pegar una foto o un VIDEO (.mp4 / .webm, o un link de video de
+   Cloudinary): el video se reproduce solo, en bucle y sin sonido —
+   ideal para mostrar el efecto de la Línea 3D y en IMAGEN pega el link
    directo de la foto (Cloudinary recomendado, igual que el resto del
    catálogo). Publica esa pestaña como CSV (Archivo → Compartir →
    Publicar en la web → esa pestaña → formato CSV) y pega el link aquí
@@ -5776,16 +5827,28 @@ const LINEA_FOTOS_CACHE_KEY = 'camand_linea_fotos_cache_v1';
 
 let LINEA_FOTOS = {
   basica: "img/estuches-ejemplo/basica.png",
-  pro: "img/estuches-ejemplo/pro.png"
+  pro: "img/estuches-ejemplo/pro.png",
+  "3d": ""   // vacío = se muestra la animación de ejemplo hasta que pongas tu foto o video
 };
+
+const LINEA_NOMBRES = { basica: 'Clásica', pro: 'Pro', '3d': '3D' };
+function esVideoUrl(url){
+  return /\.(mp4|webm|mov)(\?|#|$)/i.test(url) || /\/video\/upload\//i.test(url);
+}
 
 function applyLineaFotos(){
   Object.entries(LINEA_FOTOS).forEach(([key, url]) => {
     if(!url) return;
     const el = document.getElementById('lineFoto_' + key);
     if(!el) return;
-    const nombreLinea = key === 'pro' ? 'Pro' : 'Básica';
-    el.innerHTML = `<img src="${optimizeImageUrl(url, 700)}" alt="Ejemplo de estuche Línea ${nombreLinea}" loading="lazy" onerror="this.closest('.line-photo').style.display='none'">`;
+    const nombreLinea = LINEA_NOMBRES[key] || key;
+    if(esVideoUrl(url)){
+      el.innerHTML = `<video src="${url}" autoplay muted loop playsinline preload="metadata" aria-label="Video de ejemplo del estuche Línea ${nombreLinea}"></video>`;
+      const v = el.querySelector('video');
+      if(v){ v.muted = true; const pr = v.play(); if(pr && pr.catch) pr.catch(()=>{}); }
+    } else {
+      el.innerHTML = `<img src="${optimizeImageUrl(url, 700)}" alt="Ejemplo de estuche Línea ${nombreLinea}" loading="lazy" onerror="this.closest('.line-photo').style.display='none'">`;
+    }
   });
 }
 
@@ -5815,7 +5878,8 @@ async function cargarFotosLineasDesdeSheet(){
 
     const fotos = {};
     filas.forEach(f => {
-      const key = String(f.linea || "").trim().toLowerCase().normalize("NFD").replace(/[̀-ͯ]/g, "");
+      let key = String(f.linea || "").trim().toLowerCase().normalize("NFD").replace(/[̀-ͯ]/g, "").replace(/\s+/g, "");
+      if(key === 'clasica') key = 'basica';
       const img = String(f.imagen || "").trim();
       if(key && img) fotos[key] = img;
     });
