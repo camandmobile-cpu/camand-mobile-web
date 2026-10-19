@@ -1873,6 +1873,268 @@ body.loaded header.nav {
   .story-preview{position:static;order:-1;width:100%;}
   .story-preview canvas{max-width:280px;}
 }
+
+/* =====================================================================
+   PERSONALIZA — skins, estuches, fundas, hidrogel y accesorios Apple
+   (página #/personaliza + bloque destacado del inicio + botón del menú)
+   ===================================================================== */
+:root{
+  --pz-accent:#c8447a;
+  --pz-accent-tint:#fbe9f1;
+  --pz-dark:#0b0b0d;
+}
+/* Botón "Personaliza" del menú: pastilla negra fija, para que se vea
+   distinto al resto de categorías. */
+nav.links button.nav-pz{
+  background:#000;color:#fff;font-weight:600;padding:6px 13px;margin-right:4px;
+  display:inline-flex;align-items:center;gap:5px;
+}
+nav.links button.nav-pz svg{width:12px;height:12px;}
+nav.links button.nav-pz:hover:not(.is-active){background:var(--pz-accent);color:#fff;}
+nav.links button.nav-pz.is-active{color:#fff;background:var(--pz-accent);}
+nav.links button.nav-pz.is-active::after{display:none;}
+.mobile-menu button.mm-link.mm-pz{color:var(--pz-accent);}
+
+.pz-btn{
+  display:inline-flex;align-items:center;justify-content:center;gap:8px;border-radius:100px;
+  padding:13px 22px;font-size:14px;font-weight:700;cursor:pointer;border:1.5px solid transparent;
+  text-decoration:none;font-family:inherit;line-height:1.1;
+  transition:transform .2s var(--ease),background .2s,color .2s,box-shadow .2s,border-color .2s;
+}
+.pz-btn:hover{transform:translateY(-2px);}
+.pz-btn:active{transform:translateY(0) scale(.97);}
+.pz-btn.light{background:#fff;color:#000;}
+.pz-btn.light:hover{box-shadow:0 10px 24px -8px rgba(0,0,0,.55);}
+.pz-btn.ghost{background:transparent;color:#fff;border-color:rgba(255,255,255,.4);}
+.pz-btn.ghost:hover{border-color:#fff;}
+.pz-btn.dark{background:#000;color:#fff;}
+.pz-btn.dark:hover{background:var(--pz-accent);}
+.pz-btn.outline{background:#fff;color:#000;border-color:#000;}
+.pz-btn.outline:hover{background:#000;color:#fff;}
+.pz-btn[disabled]{opacity:.45;cursor:not-allowed;transform:none;}
+.pz-link-btn{background:none;border:none;padding:0;color:var(--ink);font-weight:600;font-size:13px;cursor:pointer;text-decoration:underline;text-underline-offset:3px;font-family:inherit;}
+.pz-link-btn:hover{color:var(--pz-accent);}
+.pz-kicker{margin:0 0 10px;font-size:12.5px;font-weight:700;letter-spacing:.07em;text-transform:uppercase;color:#f2a6c6;}
+.pz-eyebrow{margin:0 0 8px;font-size:12.5px;font-weight:700;letter-spacing:.07em;text-transform:uppercase;color:var(--pz-accent);}
+.pz-hero-ctas{display:flex;flex-wrap:wrap;gap:10px;}
+
+/* ---------- Reel de Instagram con "fachada": no carga Instagram hasta
+   que la persona toca play, para que la página siga siendo rápida. ---------- */
+.pz-reel{
+  position:relative;aspect-ratio:9/16;width:100%;border-radius:22px;overflow:hidden;background:#1d1d1f;
+  cursor:pointer;box-shadow:0 20px 50px -20px rgba(0,0,0,.5);isolation:isolate;
+}
+.pz-reel img.pz-reel-poster{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;transition:transform .5s var(--ease);}
+.pz-reel:hover img.pz-reel-poster{transform:scale(1.04);}
+.pz-reel::after{content:"";position:absolute;inset:0;background:linear-gradient(180deg,rgba(0,0,0,.05) 40%,rgba(0,0,0,.7));pointer-events:none;}
+.pz-reel-play{
+  position:absolute;left:50%;top:50%;transform:translate(-50%,-50%);z-index:2;width:66px;height:66px;border-radius:50%;
+  background:rgba(255,255,255,.92);display:flex;align-items:center;justify-content:center;
+  box-shadow:0 8px 30px rgba(0,0,0,.35);transition:transform .25s var(--ease);
+}
+.pz-reel:hover .pz-reel-play{transform:translate(-50%,-50%) scale(1.08);}
+.pz-reel-play svg{width:26px;height:26px;margin-left:4px;fill:#000;}
+.pz-reel-label{position:absolute;left:16px;right:16px;bottom:16px;z-index:2;color:#fff;font-weight:700;font-size:14px;display:flex;align-items:center;gap:8px;}
+.pz-reel-label svg{width:18px;height:18px;flex-shrink:0;}
+.pz-reel iframe{position:absolute;inset:0;width:100%;height:100%;border:0;background:#fff;z-index:3;}
+.pz-reel.is-playing{cursor:default;}
+.pz-reel.is-playing::after{display:none;}
+.pz-reel-open{position:absolute;z-index:4;right:10px;top:10px;background:rgba(0,0,0,.7);color:#fff;font-size:11.5px;font-weight:600;padding:6px 10px;border-radius:100px;text-decoration:none;}
+
+/* ---------- Bloque destacado en el INICIO ---------- */
+.pz-home{
+  margin-top:28px;background:radial-gradient(120% 140% at 0% 0%,#2a1520 0%,#0b0b0d 55%);border-radius:28px;
+  padding:44px;display:grid;grid-template-columns:1fr 280px;gap:40px;align-items:center;color:#fff;overflow:hidden;
+}
+.pz-home h2{margin:0 0 12px;font-size:clamp(28px,4vw,46px);letter-spacing:-0.03em;font-weight:800;line-height:1.02;}
+.pz-home-sub{margin:0 0 22px;color:#c9c9cf;font-size:15.5px;line-height:1.55;max-width:520px;}
+.pz-home-items{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin-bottom:24px;}
+.pz-home-items button{
+  background:rgba(255,255,255,.07);border:1px solid rgba(255,255,255,.12);border-radius:16px;padding:14px;
+  text-align:left;color:#fff;cursor:pointer;display:flex;flex-direction:column;gap:4px;font-family:inherit;
+  transition:background .2s,transform .2s var(--ease);
+}
+.pz-home-items button:hover{background:rgba(255,255,255,.14);transform:translateY(-2px);}
+.pz-home-items b{font-size:13.5px;font-weight:700;}
+.pz-home-items span{font-size:13px;color:#f2a6c6;font-weight:700;}
+.pz-home-video{max-width:280px;width:100%;justify-self:end;}
+@media (max-width:860px){
+  .pz-home{grid-template-columns:1fr;padding:32px 22px;gap:26px;}
+  .pz-home-video{justify-self:center;max-width:250px;}
+}
+@media (max-width:520px){ .pz-home-items{grid-template-columns:1fr;} .pz-home-items button{flex-direction:row;justify-content:space-between;align-items:center;} }
+
+/* ---------- HERO de la página ---------- */
+.pz-hero{background:radial-gradient(120% 130% at 0% 0%,#2a1520 0%,#0b0b0d 55%);color:#fff;padding:56px 0 64px;}
+.pz-hero-inner{display:grid;grid-template-columns:1fr 300px;gap:48px;align-items:center;}
+.pz-hero h1{margin:0 0 16px;font-size:clamp(40px,6vw,72px);letter-spacing:-0.035em;line-height:.98;font-weight:800;}
+.pz-hero h1 em{font-style:normal;color:#f2a6c6;}
+.pz-sub{margin:0 0 26px;color:#c9c9cf;font-size:17px;line-height:1.55;max-width:540px;}
+.pz-hero-trust{list-style:none;margin:24px 0 0;padding:0;display:flex;flex-wrap:wrap;gap:8px 18px;}
+.pz-hero-trust li{font-size:13px;color:#e3e3e8;font-weight:600;display:flex;align-items:center;gap:7px;}
+.pz-hero-trust li::before{content:"";width:6px;height:6px;border-radius:50%;background:#f2a6c6;}
+.pz-hero-video{max-width:300px;width:100%;justify-self:end;}
+@media (max-width:860px){
+  .pz-hero{padding:36px 0 44px;}
+  .pz-hero-inner{grid-template-columns:1fr;gap:30px;}
+  .pz-hero-video{justify-self:center;max-width:260px;}
+}
+
+/* ---------- 6 tarjetas (estilo foto grande + insignia + precio) ---------- */
+.pz-cards{display:grid;grid-template-columns:repeat(3,1fr);gap:20px;}
+@media (max-width:960px){ .pz-cards{grid-template-columns:repeat(2,1fr);} }
+@media (max-width:600px){ .pz-cards{grid-template-columns:1fr;} .pz-card-media{aspect-ratio:16/10;} }
+.pz-card{
+  background:#fff;border:1px solid rgba(0,0,0,.07);border-radius:24px;overflow:hidden;display:flex;flex-direction:column;
+  box-shadow:var(--shadow-1);transition:transform .3s var(--ease),box-shadow .3s var(--ease);
+}
+.pz-card:hover{transform:translateY(-5px);box-shadow:var(--shadow-2);}
+.pz-card-media{position:relative;aspect-ratio:4/3.4;overflow:hidden;background:var(--pz-bg,#f5f5f7);display:flex;align-items:center;justify-content:center;cursor:pointer;}
+.pz-card-media img{width:100%;height:100%;object-fit:cover;transition:transform .5s var(--ease);}
+.pz-card:hover .pz-card-media img{transform:scale(1.05);}
+.pz-card-media > svg{width:92px;height:92px;stroke:var(--pz-ink,#1d1d1f);opacity:.85;}
+.pz-card-badge{position:absolute;left:16px;top:16px;z-index:2;font-size:11.5px;font-weight:800;letter-spacing:.05em;text-transform:uppercase;color:#fff;padding:7px 13px;border-radius:100px;background:var(--pz-badge,#000);}
+.pz-card-body{padding:22px 22px 24px;display:flex;flex-direction:column;flex:1;}
+.pz-card-top{display:flex;justify-content:space-between;align-items:flex-start;gap:12px;margin-bottom:8px;}
+.pz-card h3{margin:0;font-size:22px;letter-spacing:-0.02em;font-weight:800;line-height:1.1;}
+.pz-card-chip{flex-shrink:0;font-size:12.5px;font-weight:700;padding:6px 10px;border-radius:10px;background:var(--pz-chip-bg,#f2f2f5);color:var(--pz-chip,#1d1d1f);text-align:center;white-space:nowrap;}
+.pz-card p{margin:0 0 14px;color:var(--ink-soft);font-size:14px;line-height:1.5;}
+.pz-checks{list-style:none;margin:0 0 18px;padding:0;display:flex;flex-direction:column;gap:8px;}
+.pz-checks li{display:flex;gap:9px;align-items:flex-start;font-size:14px;color:var(--ink);font-weight:500;line-height:1.35;}
+.pz-checks li::before{
+  content:"";flex-shrink:0;width:17px;height:17px;border-radius:50%;margin-top:1px;
+  background:var(--pz-badge,var(--pz-accent)) url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='white' stroke-width='3.4' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M6 12.5l4 4 8-9'/%3E%3C/svg%3E") center/11px no-repeat;
+}
+.pz-card .pz-btn{margin-top:auto;align-self:stretch;}
+
+/* ---------- Estudio de skins ---------- */
+.pz-studio-section{background:linear-gradient(180deg,#fff, #f7f3f6);}
+.pz-studio{display:grid;grid-template-columns:minmax(0,360px) minmax(0,1fr);gap:44px;align-items:start;max-width:960px;margin:0 auto;}
+@media (max-width:820px){ .pz-studio{grid-template-columns:1fr;gap:28px;} }
+.pz-preview-col{position:sticky;top:calc(var(--stack-h) + 20px);display:flex;flex-direction:column;align-items:center;}
+@media (max-width:820px){ .pz-preview-col{position:static;} }
+.pz-phone{
+  position:relative;width:min(280px,72vw);aspect-ratio:9/19.3;border-radius:46px;overflow:hidden;
+  background:linear-gradient(160deg,#e9e9ee,#d7d7de);box-shadow:0 0 0 9px #1d1d1f, 0 30px 60px -20px rgba(0,0,0,.45);
+  touch-action:none;user-select:none;-webkit-user-select:none;margin:10px 0 0;
+}
+.pz-phone.has-img{cursor:grab;}
+.pz-phone.dragging{cursor:grabbing;}
+.pz-phone img#pzPhoneImg{position:absolute;max-width:none;display:none;pointer-events:none;}
+.pz-phone.has-img img#pzPhoneImg{display:block;}
+.pz-phone-empty{position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:10px;color:#8a8a90;font-size:13px;font-weight:600;text-align:center;padding:20px;}
+.pz-phone-empty svg{width:42px;height:42px;}
+.pz-phone.has-img .pz-phone-empty{display:none;}
+.pz-cam{position:absolute;z-index:2;pointer-events:none;}
+.pz-cam i{position:absolute;border-radius:50%;background:radial-gradient(circle at 35% 35%,#3a3a44,#050507 60%);box-shadow:0 0 0 2px rgba(255,255,255,.18) inset, 0 2px 4px rgba(0,0,0,.4);}
+.pz-logo-cut{position:absolute;z-index:2;left:50%;top:50%;width:34px;height:34px;transform:translate(-50%,-50%);border-radius:50%;border:1.5px dashed rgba(255,255,255,.65);pointer-events:none;display:none;}
+.pz-phone[data-brand="apple"] .pz-logo-cut{display:block;}
+.pz-preview-note{margin:20px 0 0;font-size:12.5px;color:var(--ink-soft);text-align:center;max-width:280px;line-height:1.45;}
+.pz-steps{display:flex;flex-direction:column;gap:22px;}
+.pz-step h5{margin:0 0 10px;font-size:15px;font-weight:700;display:flex;align-items:center;gap:9px;}
+.pz-step h5 span{width:24px;height:24px;border-radius:50%;background:#000;color:#fff;font-size:12px;display:inline-flex;align-items:center;justify-content:center;}
+.pz-chips{display:flex;flex-wrap:wrap;gap:8px;}
+.pz-chip{border:1.5px solid rgba(0,0,0,.12);background:#fff;border-radius:100px;padding:9px 16px;font-size:13.5px;font-weight:600;cursor:pointer;font-family:inherit;color:var(--ink);transition:all .18s;}
+.pz-chip:hover{border-color:#000;}
+.pz-chip.is-active{background:#000;color:#fff;border-color:#000;}
+.pz-input{width:100%;box-sizing:border-box;border:1.5px solid rgba(0,0,0,.14);border-radius:14px;padding:13px 15px;font-size:15px;font-family:inherit;background:#fff;color:var(--ink);}
+.pz-input:focus{outline:none;border-color:#000;}
+.pz-mini-link{display:inline-block;margin-top:8px;font-size:12.5px;color:var(--ink-soft);font-weight:600;}
+.pz-mini-link:hover{color:var(--pz-accent);}
+.pz-upload{display:flex;align-items:center;gap:14px;border:1.5px dashed rgba(0,0,0,.25);border-radius:16px;padding:18px;cursor:pointer;background:#fff;transition:border-color .2s,background .2s;font-size:13.5px;color:var(--ink-soft);}
+.pz-upload:hover{border-color:#000;background:#fafafa;}
+.pz-upload svg{width:28px;height:28px;flex-shrink:0;color:var(--ink);}
+.pz-upload b{color:var(--ink);}
+.pz-zoom-row{display:flex;align-items:center;gap:10px;}
+.pz-zoom-row svg{width:18px;height:18px;flex-shrink:0;color:var(--ink-soft);}
+.pz-zoom-row input[type=range]{flex:1;accent-color:#000;}
+.pz-help{margin:8px 0 0;font-size:12.5px;color:var(--ink-soft);}
+.pz-buy{background:#fff;border:1px solid rgba(0,0,0,.08);border-radius:22px;padding:22px;box-shadow:var(--shadow-1);display:flex;flex-direction:column;gap:14px;}
+.pz-buy-price{display:flex;flex-direction:column;gap:2px;}
+.pz-price{font-size:34px;font-weight:800;letter-spacing:-0.03em;}
+.pz-price-note{font-size:13px;color:var(--ink-soft);}
+.pz-buy-actions{display:flex;flex-wrap:wrap;gap:10px;}
+.pz-buy-actions .pz-btn{flex:1 1 170px;}
+.pz-error{margin:0;color:#c0392b;font-size:13px;font-weight:600;min-height:0;}
+.pz-error:empty{display:none;}
+.pz-ship{list-style:none;margin:2px 0 0;padding:12px 0 0;border-top:1px solid rgba(0,0,0,.07);display:flex;flex-direction:column;gap:6px;font-size:13px;}
+.pz-ship li{display:flex;justify-content:space-between;color:var(--ink-soft);}
+.pz-ship b{color:var(--ink);font-weight:600;}
+.pz-skin-video{display:grid;grid-template-columns:260px 1fr;gap:40px;align-items:center;max-width:860px;margin:64px auto 0;}
+.pz-skin-video h3{margin:0 0 16px;font-size:26px;letter-spacing:-0.02em;font-weight:800;}
+@media (max-width:700px){ .pz-skin-video{grid-template-columns:1fr;gap:24px;} .pz-skin-video .pz-reel{max-width:250px;margin:0 auto;} }
+
+/* ---------- Hidrogel ---------- */
+.pz-soft{background:#f5f5f7;}
+.pz-hg{display:grid;grid-template-columns:1fr 360px;gap:28px;max-width:960px;margin:0 auto;align-items:start;}
+@media (max-width:820px){ .pz-hg{grid-template-columns:1fr;} }
+.pz-hg h5{margin:0 0 12px;font-size:15px;font-weight:700;}
+.pz-options{display:grid;grid-template-columns:repeat(auto-fit,minmax(170px,1fr));gap:10px;}
+.pz-option{
+  text-align:left;background:#fff;border:1.5px solid rgba(0,0,0,.08);border-radius:16px;padding:14px 16px;cursor:pointer;
+  font-family:inherit;color:var(--ink);display:flex;flex-direction:column;gap:3px;transition:border-color .18s,box-shadow .18s;
+}
+.pz-option:hover{border-color:rgba(0,0,0,.35);}
+.pz-option.is-active{border-color:#000;box-shadow:0 0 0 1px #000 inset;}
+.pz-option[disabled]{opacity:.4;cursor:not-allowed;}
+.pz-option b{font-size:14.5px;}
+.pz-option small{font-size:12.5px;color:var(--ink-soft);line-height:1.4;}
+.pz-option em{font-style:normal;font-size:12.5px;font-weight:700;color:var(--pz-accent);}
+.pz-hg-summary{background:#fff;border-radius:22px;padding:24px;box-shadow:var(--shadow-1);display:flex;flex-direction:column;gap:12px;position:sticky;top:calc(var(--stack-h) + 20px);}
+@media (max-width:820px){ .pz-hg-summary{position:static;} }
+.pz-hg-label{margin:0;font-size:12px;font-weight:700;text-transform:uppercase;letter-spacing:.06em;color:var(--ink-soft);}
+.pz-hg-summary h4{margin:0;font-size:19px;letter-spacing:-0.01em;}
+.pz-hg-price{font-size:32px;font-weight:800;letter-spacing:-0.03em;}
+.pz-hg-note{margin:0;font-size:13px;color:var(--ink-soft);line-height:1.45;}
+
+/* ---------- Fundas / accesorios Apple: tarjetas de consulta ---------- */
+.pz-tiles{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:16px;margin-top:20px;}
+.pz-tiles:empty{display:none;}
+.pz-tile{
+  background:#fff;border:1px solid rgba(0,0,0,.07);border-radius:20px;padding:22px;display:flex;flex-direction:column;gap:8px;
+  text-decoration:none;color:var(--ink);transition:transform .25s var(--ease),box-shadow .25s;
+}
+.pz-tile:hover{transform:translateY(-3px);box-shadow:var(--shadow-1);}
+.pz-tile-icon{width:46px;height:46px;border-radius:14px;background:var(--pz-accent-tint);color:var(--pz-accent);display:flex;align-items:center;justify-content:center;}
+.pz-tile-icon svg{width:24px;height:24px;}
+.pz-tile b{font-size:16px;}
+.pz-tile span{font-size:13.5px;color:var(--ink-soft);line-height:1.45;}
+.pz-tile em{font-style:normal;font-size:13px;font-weight:700;margin-top:auto;}
+#pzFundasGrid:empty,#pzAppleGrid:empty{display:none;}
+
+/* ---------- Videos + galería ---------- */
+.pz-reels-row{display:grid;grid-template-columns:repeat(3,1fr);gap:20px;max-width:880px;margin:0 auto;}
+@media (max-width:700px){
+  .pz-reels-row{display:flex;overflow-x:auto;scroll-snap-type:x mandatory;gap:14px;padding-bottom:8px;margin:0 -16px;padding-left:16px;padding-right:16px;}
+  .pz-reels-row .pz-reel{flex:0 0 68%;scroll-snap-align:center;}
+}
+.pz-gallery-head{display:flex;align-items:baseline;justify-content:space-between;gap:12px;margin:56px 0 16px;flex-wrap:wrap;}
+.pz-gallery-head h3{margin:0;font-size:24px;letter-spacing:-0.02em;font-weight:800;}
+.pz-gallery-head span{font-size:13.5px;color:var(--ink-soft);}
+.pz-gallery{display:grid;grid-template-columns:repeat(4,1fr);gap:12px;}
+@media (max-width:700px){ .pz-gallery{grid-template-columns:repeat(2,1fr);gap:8px;} }
+.pz-gallery button{padding:0;border:none;border-radius:16px;overflow:hidden;aspect-ratio:1;cursor:pointer;background:#eee;}
+.pz-gallery img{width:100%;height:100%;object-fit:cover;transition:transform .5s var(--ease);}
+.pz-gallery button:hover img{transform:scale(1.06);}
+
+/* ---------- Cómo funciona + promesa + cierre ---------- */
+.pz-how{display:grid;grid-template-columns:repeat(4,1fr);gap:16px;}
+@media (max-width:860px){ .pz-how{grid-template-columns:repeat(2,1fr);} }
+@media (max-width:480px){ .pz-how{grid-template-columns:1fr;} }
+.pz-how > div{background:#fff;border-radius:20px;padding:22px;}
+.pz-how span{font-size:13px;font-weight:800;color:var(--pz-accent);}
+.pz-how h5{margin:8px 0 6px;font-size:16px;}
+.pz-how p{margin:0;font-size:13.5px;color:var(--ink-soft);line-height:1.5;}
+.pz-promise{margin:28px auto 0;max-width:760px;text-align:center;padding:30px 26px;border-radius:24px;background:#fff;border:1px solid var(--pz-accent-tint);}
+.pz-promise h3{margin:0 0 10px;font-size:24px;letter-spacing:-0.02em;}
+.pz-promise p{margin:0;color:var(--ink-soft);font-size:15px;line-height:1.6;}
+.pz-final{background:#0b0b0d;color:#fff;border-radius:26px;padding:34px 36px;display:flex;flex-wrap:wrap;gap:20px;align-items:center;justify-content:space-between;}
+.pz-final h3{margin:0 0 6px;font-size:26px;letter-spacing:-0.02em;}
+.pz-final p{margin:0;color:#c9c9cf;font-size:14.5px;}
+.pz-final .pz-buy-actions{flex:0 1 420px;}
+@media (prefers-reduced-motion: reduce){
+  .pz-card,.pz-btn,.pz-reel img.pz-reel-poster,.pz-gallery img{transition:none;}
+}
 </style>
 </head>
 <body>
@@ -1927,6 +2189,7 @@ body.loaded header.nav {
     </button>
     <nav class="links">
       <button data-view="home" class="is-active" onclick="go('home')">Home</button>
+      <button data-view="personaliza" class="nav-pz" onclick="go('personaliza')"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 2l1.8 5.6L19.5 9l-5.7 1.4L12 16l-1.8-5.6L4.5 9l5.7-1.4Z"/></svg>Personaliza</button>
       <div class="nav-item">
         <button data-view="celulares" onclick="go('celulares')">Equipos</button>
         <div class="mega-menu" id="megaEquipos"></div>
@@ -1992,6 +2255,7 @@ body.loaded header.nav {
 <div class="mobile-menu" id="mobileMenu">
   <button class="mm-close" onclick="toggleMenu(false)">✕</button>
   <button class="mm-link" onclick="go('home')">Home</button>
+  <button class="mm-link mm-pz" onclick="go('personaliza')">Personaliza tu celular</button>
   <button class="mm-link" onclick="go('celulares')">Equipos</button>
   <button class="mm-link" onclick="go('tablets')">Tablets</button>
   <button class="mm-link" onclick="go('relojes')">Relojes</button>
@@ -2029,6 +2293,31 @@ body.loaded header.nav {
           <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><path d="M9 3H5a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h4M15 3h4a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2h-4M9 3v18M15 3v18"/></svg>
           Comparar dispositivos
         </button>
+        <button type="button" class="hero-compare-btn" onclick="go('personaliza')">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2l1.8 5.6L19.5 9l-5.7 1.4L12 16l-1.8-5.6L4.5 9l5.7-1.4Z"/></svg>
+          Personaliza tu celular
+        </button>
+      </div>
+
+      <!-- Bloque destacado de personalización (antes: banner de Estuches Acrygel). Lleva a #/personaliza -->
+      <div class="pz-home reveal">
+        <div class="pz-home-text">
+          <p class="pz-kicker">Nuevo · Personaliza tu equipo</p>
+          <h2>Tu celular, tu estilo.</h2>
+          <p class="pz-home-sub">Skins con tu foto, estuches Acrygel y protección hidrogel instalada. Diseñas desde tu celular y lo ves antes de producir.</p>
+          <div class="pz-home-items">
+            <button type="button" onclick="pzOpen('pzSkinStudio')"><b>Skins personalizadas</b><span>$25.000</span></button>
+            <button type="button" onclick="go('cases')"><b>Estuches Acrygel</b><span>Desde $34.990</span></button>
+            <button type="button" onclick="pzOpen('pzHidrogel')"><b>Hidrogel instalado</b><span>Desde $25.000</span></button>
+          </div>
+          <div class="pz-hero-ctas">
+            <button type="button" class="pz-btn light" onclick="pzOpen('pzSkinStudio')">Diseñar mi skin</button>
+            <button type="button" class="pz-btn ghost" onclick="pzOpen()">Ver todo lo personalizable</button>
+          </div>
+        </div>
+        <div class="pz-home-video">
+          <div class="pz-reel" data-reel="DcZyzOyiL1m" data-poster="img/galeria/estuche-01.jpg" data-label="Nuestro video más visto"></div>
+        </div>
       </div>
 
       <div class="cat-grid-home reveal" id="catGridHome">
@@ -2055,22 +2344,6 @@ body.loaded header.nav {
         <button type="button" class="cat-card-home" onclick="go('techoficina')">
           <div class="cch-media" id="cchm-techoficina"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><rect x="5" y="8" width="14" height="8" rx="1.5"/><path d="M7 8V4h10v4M8 16v4h8v-4"/></svg></div>
           <h4>Tech &amp; Oficina<span class="arrow">→</span></h4>
-        </button>
-      </div>
-
-      <div class="acrygel-feature reveal">
-        <div class="af-text">
-          <p class="af-kicker">Personalización premium</p>
-          <h2>Estuches Personalizados Acrygel</h2>
-          <ul class="af-benefits">
-            <li><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" style="flex-shrink:0;"><path d="M12 3l7 3v6c0 4.5-3 7.5-7 9-4-1.5-7-4.5-7-9V6z"/></svg> Resistente a caídas</li>
-            <li><svg width="15" height="15" viewBox="0 0 24 24" fill="currentColor" stroke="none" style="flex-shrink:0;"><path d="M12 2l1.8 5.6L19.5 9l-5.7 1.4L12 16l-1.8-5.6L4.5 9l5.7-1.4Z"/></svg> Anti-amarilleo</li>
-            <li><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" style="flex-shrink:0;"><circle cx="13.5" cy="6.5" r="2.5"/><path d="M11.5 8.5 4 16l1 3 3 1 7.5-7.5"/></svg> Impresión UV de alta definición</li>
-          </ul>
-        </div>
-        <button type="button" class="af-cta" onclick="go('cases')">
-          Diseñar mi estuche
-          <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4"><path d="M5 12h14M13 6l6 6-6 6"/></svg>
         </button>
       </div>
 
@@ -2398,6 +2671,259 @@ body.loaded header.nav {
   </section>
 
   <!-- ======================= CASES HUB ======================= -->
+  <!-- ======================= PERSONALIZA (Skins, estuches, fundas, hidrogel, accesorios Apple) =======================
+       Ruta: #/personaliza (también #/skins, que baja directo al estudio de skins).
+       Precios y opciones editables en el bloque "PERSONALIZA_CONFIG" (al final del archivo). -->
+  <section class="view" id="view-personaliza">
+    <div class="pz-hero">
+      <div class="wrap pz-hero-inner">
+        <div class="pz-hero-text">
+          <p class="pz-kicker">Personalización Camand · Hecho en Bogotá</p>
+          <h1>Tu celular,<br><em>tu estilo.</em></h1>
+          <p class="pz-sub">Skins, estuches y fundas con el diseño que imagines, y protección hidrogel instalada para cualquier dispositivo. Tú lo diseñas, nosotros lo hacemos realidad.</p>
+          <div class="pz-hero-ctas">
+            <button type="button" class="pz-btn light" onclick="pzScrollTo('pzSkinStudio')">Diseñar mi skin · $25.000</button>
+            <button type="button" class="pz-btn ghost" onclick="go('cases')">Diseñar mi estuche</button>
+          </div>
+          <ul class="pz-hero-trust">
+            <li>Vista previa antes de producir</li>
+            <li>Envíos a toda Colombia</li>
+            <li>Ajuste o reposición si hay un error</li>
+          </ul>
+        </div>
+        <div class="pz-hero-video">
+          <div class="pz-reel" data-reel="DcZyzOyiL1m" data-poster="img/galeria/estuche-01.jpg" data-label="Nuestro video más visto"></div>
+        </div>
+      </div>
+    </div>
+
+    <div class="wrap">
+      <div class="subnav" style="margin-top:18px;">
+        <button class="back-btn" onclick="go('home')">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4"><path d="M15 6l-6 6 6 6"/></svg>
+          Inicio
+        </button>
+        <span>/ Personaliza tu equipo</span>
+      </div>
+    </div>
+
+    <!-- 6 tarjetas: qué quieres personalizar -->
+    <div class="section" style="padding-top:28px;">
+      <div class="wrap">
+        <div class="section-head">
+          <h2>¿Qué quieres personalizar hoy?</h2>
+          <p>Elige tu producto. Cada uno se hace a la medida de tu modelo.</p>
+        </div>
+        <div class="pz-cards" id="pzCards"></div>
+      </div>
+    </div>
+
+    <!-- Estudio de skins -->
+    <div class="section pz-studio-section" id="pzSkinStudio">
+      <div class="wrap">
+        <div class="section-head">
+          <p class="pz-eyebrow">Skins personalizadas · $25.000</p>
+          <h2>Diseña tu skin en 1 minuto</h2>
+          <p>Sube tu foto, acomódala sobre tu celular y mira cómo queda. Cortamos el troquel exacto de tu modelo: bordes, cámaras y logo.</p>
+        </div>
+        <div class="pz-studio">
+          <div class="pz-preview-col">
+            <div class="pz-phone" id="pzPhone" data-brand="apple">
+              <div class="pz-phone-empty" id="pzPhoneEmpty">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><rect x="3" y="4.5" width="18" height="15" rx="2"/><circle cx="9" cy="10" r="1.8"/><path d="M21 16l-5.5-5-4 4-2.5-2L3 18"/></svg>
+                <span>Tu foto aparecerá aquí</span>
+              </div>
+              <img id="pzPhoneImg" alt="Vista previa de tu skin" draggable="false">
+              <div class="pz-cam" id="pzCam"></div>
+              <div class="pz-logo-cut" id="pzLogoCut"></div>
+            </div>
+            <p class="pz-preview-note" id="pzDragHint">Vista previa referencial: el corte final es el troquel exacto de tu modelo.</p>
+          </div>
+
+          <div class="pz-steps">
+            <div class="pz-step">
+              <h5><span>1</span> Marca de tu celular</h5>
+              <div class="pz-chips" id="pzBrandChips"></div>
+            </div>
+            <div class="pz-step">
+              <h5><span>2</span> Modelo</h5>
+              <input type="text" class="pz-input" id="pzModel" list="pzModelList" placeholder="Ej. iPhone 15 Pro Max" autocomplete="off">
+              <datalist id="pzModelList"></datalist>
+              <a class="pz-mini-link" id="pzNoModel" target="_blank" rel="noopener">¿No encuentras tu modelo? Escríbenos</a>
+            </div>
+            <div class="pz-step">
+              <h5><span>3</span> Sube tu foto o diseño</h5>
+              <label class="pz-upload" for="pzFile">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M12 16V4M7 9l5-5 5 5"/><path d="M4 16v3a1 1 0 0 0 1 1h14a1 1 0 0 0 1-1v-3"/></svg>
+                <span id="pzUploadText"><b>Toca para elegir una foto</b> · JPG o PNG, mejor en alta calidad</span>
+              </label>
+              <input type="file" id="pzFile" accept="image/*" hidden>
+            </div>
+            <div class="pz-step">
+              <h5><span>4</span> Ajusta posición y zoom</h5>
+              <div class="pz-zoom-row">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="7"/><path d="M8 11h6"/></svg>
+                <input type="range" id="pzZoom" min="1" max="3" step="0.01" value="1" aria-label="Zoom de la foto">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="7"/><path d="M8 11h6M11 8v6"/></svg>
+                <button type="button" class="pz-link-btn" onclick="pzCenter()">Centrar</button>
+              </div>
+              <p class="pz-help">Arrastra la foto sobre el celular con el dedo o el mouse.</p>
+            </div>
+
+            <div class="pz-buy">
+              <div class="pz-buy-price">
+                <span class="pz-price">$25.000</span>
+                <span class="pz-price-note">Skin personalizada · instalación fácil en casa</span>
+              </div>
+              <p class="pz-error" id="pzError" role="alert"></p>
+              <div class="pz-buy-actions">
+                <button type="button" class="pz-btn dark" onclick="pzAddSkinToCart(this)">Agregar al carrito</button>
+                <button type="button" class="pz-btn outline" onclick="pzSkinWhatsApp()">Pedir por WhatsApp</button>
+              </div>
+              <button type="button" class="pz-link-btn" onclick="pzDownloadDesign()">Descargar mi diseño (para enviarlo por WhatsApp)</button>
+              <ul class="pz-ship">
+                <li><b>Envío Bogotá</b><span id="pzShipBog">$10.000</span></li>
+                <li><b>Resto del país</b><span id="pzShipNac">$18.000</span></li>
+              </ul>
+            </div>
+          </div>
+        </div>
+
+        <div class="pz-skin-video">
+          <div class="pz-reel" data-reel="DY7HSDGOVu4" data-poster="img/galeria/estuche-05.jpg" data-label="Así quedan nuestras skins"></div>
+          <div class="pz-skin-video-text">
+            <h3>Así quedan nuestras skins</h3>
+            <ul class="pz-checks">
+              <li>Protegen la tapa contra rayones y casi no añaden grosor</li>
+              <li>Troquel exacto para bordes, cámaras y logo</li>
+              <li>Tu foto, tu arte, tu equipo de fútbol o lo que imagines</li>
+              <li>Se instalan en casa en pocos minutos</li>
+            </ul>
+            <button type="button" class="pz-btn dark" onclick="pzScrollTo('pzSkinStudio')">Diseñar la mía</button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Hidrogel -->
+    <div class="section pz-soft" id="pzHidrogel">
+      <div class="wrap">
+        <div class="section-head">
+          <p class="pz-eyebrow">Protección hidrogel instalada</p>
+          <h2>Protege tu equipo completo, desde $25.000</h2>
+          <p>Pantalla, tapa trasera o las dos. Lo instalamos por ti, sin burbujas, en celulares, tablets, relojes y casi cualquier dispositivo.</p>
+        </div>
+        <div class="pz-hg">
+          <div class="pz-hg-col">
+            <h5>¿Qué quieres proteger?</h5>
+            <div class="pz-options" id="pzHgZonas"></div>
+            <h5 style="margin-top:22px;">Elige la calidad</h5>
+            <div class="pz-options" id="pzHgCalidades"></div>
+          </div>
+          <div class="pz-hg-summary">
+            <p class="pz-hg-label">Tu protección</p>
+            <h4 id="pzHgTitle">Pantalla · Brillante HD</h4>
+            <div class="pz-hg-price" id="pzHgPrice">$25.000</div>
+            <p class="pz-hg-note" id="pzHgNote">Instalación incluida.</p>
+            <input type="text" class="pz-input" id="pzHgDevice" placeholder="Tu dispositivo (ej. Samsung A55)">
+            <div class="pz-buy-actions">
+              <button type="button" class="pz-btn dark" id="pzHgCart" onclick="pzHgAddToCart(this)">Agregar al carrito</button>
+              <button type="button" class="pz-btn outline" onclick="pzHgWhatsApp()">Agendar por WhatsApp</button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Fundas -->
+    <div class="section" id="pzFundas">
+      <div class="wrap">
+        <div class="section-head">
+          <p class="pz-eyebrow">Fundas</p>
+          <h2>Fundas para tu modelo</h2>
+          <p>Antigolpes, silicona y transparentes. Dinos tu celular y te mostramos lo disponible.</p>
+        </div>
+        <div class="product-grid" id="pzFundasGrid"></div>
+        <div class="pz-tiles" id="pzFundasTiles"></div>
+      </div>
+    </div>
+
+    <!-- Accesorios Apple -->
+    <div class="section pz-soft" id="pzApple">
+      <div class="wrap">
+        <div class="section-head">
+          <p class="pz-eyebrow">Accesorios Apple</p>
+          <h2>Cubos de 20W y estuches para AirPods</h2>
+          <p>Carga rápida para tu iPhone y estuches para AirPods Pro 2, Pro 3 y serie 4.</p>
+        </div>
+        <div class="product-grid" id="pzAppleGrid"></div>
+        <div class="pz-tiles" id="pzAppleTiles"></div>
+      </div>
+    </div>
+
+    <!-- Videos -->
+    <div class="section" id="pzVideos">
+      <div class="wrap">
+        <div class="section-head">
+          <h2>Míralo en acción</h2>
+          <p>Videos reales de nuestro taller. Toca para reproducir.</p>
+        </div>
+        <div class="pz-reels-row">
+          <div class="pz-reel" data-reel="DaJklmiCyqw" data-poster="img/galeria/estuche-03.jpg" data-label="Cómo personalizamos estuches"></div>
+          <div class="pz-reel" data-reel="DT34mMvgpvc" data-poster="img/galeria/estuche-07.jpg" data-label="Tu dispositivo, tu estilo"></div>
+          <div class="pz-reel" data-reel="DZVWLBBCv6O" data-poster="img/galeria/estuche-10.jpg" data-label="Protege y personaliza"></div>
+        </div>
+        <div class="pz-gallery-head">
+          <h3>Hecho por Camand</h3>
+          <span>Trabajos reales entregados a clientes</span>
+        </div>
+        <div class="pz-gallery" id="pzGallery"></div>
+      </div>
+    </div>
+
+    <!-- Cómo funciona + promesa -->
+    <div class="section pz-soft">
+      <div class="wrap">
+        <div class="section-head">
+          <h2>Así de fácil</h2>
+        </div>
+        <div class="pz-how">
+          <div><span>01</span><h5>Elige y diseña</h5><p>Escoge skin, estuche o funda y sube tu foto desde el celular.</p></div>
+          <div><span>02</span><h5>Confirmamos por WhatsApp</h5><p>Revisamos tu diseño, tu modelo y la forma de pago contigo.</p></div>
+          <div><span>03</span><h5>Lo ves antes de producir</h5><p>Te enviamos la vista previa para que apruebes antes de fabricar.</p></div>
+          <div><span>04</span><h5>Te llega a casa</h5><p>3 a 5 días hábiles. Envíos a Bogotá y a toda Colombia.</p></div>
+        </div>
+        <div class="pz-promise">
+          <h3>Tu diseño no es un pedido más</h3>
+          <p>Cada skin y cada estuche lleva una foto que significa algo para ti: tu familia, tu mascota, tu equipo, tu arte. Por eso lo revisamos contigo antes de producir y, si llega con un defecto, un error de impresión o no ajusta a tu modelo, lo corregimos o lo reponemos sin costo.</p>
+        </div>
+      </div>
+    </div>
+
+    <!-- FAQ personalización -->
+    <div class="section" style="padding-top:56px;">
+      <div class="wrap">
+        <div class="section-head"><h2>Preguntas frecuentes</h2></div>
+        <div class="faq-list" id="pzFaq"></div>
+      </div>
+    </div>
+
+    <div class="section" style="padding-top:0;">
+      <div class="wrap">
+        <div class="pz-final">
+          <div>
+            <h3>¿Listo para hacerlo tuyo?</h3>
+            <p>Diseña ahora o escríbenos y te ayudamos con tu idea.</p>
+          </div>
+          <div class="pz-buy-actions">
+            <button type="button" class="pz-btn light" onclick="pzScrollTo('pzSkinStudio')">Diseñar mi skin</button>
+            <a class="pz-btn ghost" id="pzFinalWa" target="_blank" rel="noopener">Escribir por WhatsApp</a>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
   <section class="view" id="view-cases">
     <div class="wrap">
       <div class="subnav">
@@ -2998,6 +3524,7 @@ function mostrarGraciasSuscripcion() {
         <a onclick="go('relojes')" style="cursor:pointer;">Relojes</a>
         <a onclick="go('audifonos')" style="cursor:pointer;">Audífonos</a>
         <a onclick="go('techoficina')" style="cursor:pointer;">Accesorios</a>
+        <a onclick="go('personaliza')" style="cursor:pointer;">Personaliza: skins, fundas e hidrogel</a>
         <a onclick="go('cases')" style="cursor:pointer;">Estuches personalizados</a>
       </div>
       <div>
@@ -4232,6 +4759,17 @@ function checkoutWhatsApp(){
   if(CART_NOTE && CART_NOTE.trim()){
     msg += `\n\nNota para la entrega: ${CART_NOTE.trim()}`;
   }
+  // Personalización: la foto de la skin no viaja en el link, así que se le
+  // recuerda al cliente enviarla en el chat, junto con la tarifa de envío.
+  if(CART.some(it => String(it.id).indexOf('skin_') === 0)){
+    msg += `\n\nMi diseño de skin te lo envío por aquí (lo descargué en la página).`;
+    if(typeof PERSONALIZA_CONFIG !== 'undefined' && subtotal - descuento < FREE_SHIPPING_THRESHOLD){
+      msg += `\nEnvío: Bogotá ${formatCOP(PERSONALIZA_CONFIG.envioBogota)} · resto del país ${formatCOP(PERSONALIZA_CONFIG.envioNacional)}`;
+    }
+  }
+  if(CART.some(it => String(it.id).indexOf('hidrogel_') === 0)){
+    msg += `\n\nIncluye instalación de hidrogel: coordinemos el día.`;
+  }
   msg += `\n\n¿Puedo pagar contraentrega o con tarjeta de crédito?`;
   window.open(waLink(msg), '_blank', 'noopener');
 }
@@ -4660,7 +5198,7 @@ function performCelularesSearch(query){
 // Vistas con URL propia (hash) para poder compartir o recargar el link
 // directamente en esa sección. "product" se maneja aparte en openProduct(),
 // porque su hash lleva el id del producto (#/producto/<id>).
-const HASH_VIEWS = ['home','tech','celulares','tablets','computadores','accesorios','relojes','audifonos','techoficina','cases','faq','privacidad','devoluciones','historias'];
+const HASH_VIEWS = ['home','personaliza','tech','celulares','tablets','computadores','accesorios','relojes','audifonos','techoficina','cases','faq','privacidad','devoluciones','historias'];
 
 // Contador que identifica la navegación más reciente. Antes, si go() se
 // llamaba dos veces seguidas muy rápido (doble clic, o un clic mientras la
@@ -4708,6 +5246,7 @@ function go(view, opts){
     promoBannerSyncWithView(view === 'home');
     // Generador de Historias (#/historias): se prepara al abrir la página.
     if(view === 'historias') storyOpen();
+    if(view === 'personaliza') document.title = 'Personaliza tu celular — Skins, estuches e hidrogel | Camand Mobile';
   };
 
   const onTransitionEnd = (e) => {
@@ -4818,6 +5357,7 @@ function renderTodo(){
   renderHomeFeatured();
   renderHomeRails();
   renderCinta();
+  if(typeof renderPersonaliza === 'function') renderPersonaliza();
   renderMegaMenus();
   renderPromoBanner();
   renderGallery();
@@ -5288,8 +5828,10 @@ function routeFromHash(){
   const hash = location.hash || '';
   const productMatch = hash.match(/^#\/producto\/(.+)$/);
   if(productMatch){ openProduct(decodeURIComponent(productMatch[1]), { fromHash: true }); return; }
-  const viewMatch = hash.match(/^#\/(tech|accesorios|cases|faq|privacidad|devoluciones|historias)$/);
+  const viewMatch = hash.match(/^#\/(tech|accesorios|cases|personaliza|faq|privacidad|devoluciones|historias)$/);
   if(viewMatch){ go(viewMatch[1], { fromHash: true }); return; }
+  // #/skins: link corto para Instagram — abre Personaliza y baja al estudio de skins.
+  if(hash === '#/skins'){ go('personaliza', { fromHash: true }); setTimeout(() => { if(typeof pzScrollTo === 'function') pzScrollTo('pzSkinStudio'); }, 700); return; }
   if((hash === '' || hash === '#' || hash === '#/home') && CURRENT_PRODUCT_ID){
     go('home', { fromHash: true });
   }
@@ -5755,6 +6297,9 @@ let CAT_HOME_PHOTOS = {};
 // configurada — si no hay foto para esa categoría, el ícono de siempre
 // se queda tal cual (nunca se rompe el diseño por una fila vacía).
 function applyCatHomePhotos(){
+  // Fotos de las tarjetas de Personaliza (skins, estuches, fundas,
+  // accesoriosapple, hidrogel, vidrios) salen de esta misma pestaña.
+  if(typeof pzRenderCards === 'function') pzRenderCards();
   Object.entries(CAT_HOME_PHOTOS).forEach(([key, url]) => {
     if(!url) return;
     const el = document.getElementById('cchm-' + key);
@@ -6198,7 +6743,9 @@ const CINTA_MENSAJES_BASE = [
   'Paga contraentrega al recibir',
   'Crédito con Sistecrédito',
   'Tarjeta de crédito a cuotas',
+  'Skins personalizadas con tu foto a $25.000',
   'Estuches personalizados Acrygel',
+  'Hidrogel instalado desde $25.000',
   'iPhone y Android nuevos y seminuevos',
   'Equipos revisados y con garantía',
   'Atención directa por WhatsApp'
@@ -6944,6 +7491,481 @@ if('serviceWorker' in navigator){
     navigator.serviceWorker.register('sw.js').catch(() => {});
   });
 }
+</script>
+
+<script>
+/* =====================================================================
+   PERSONALIZA — página #/personaliza (skins, estuches, fundas, hidrogel,
+   accesorios Apple) y bloque destacado del inicio.
+
+   ANDRÉS: todo lo que cambia seguido está en PERSONALIZA_CONFIG:
+   - Precio de la skin y costos de envío.
+   - Precios del hidrogel: "extra" es lo que se SUMA al precio base según
+     la calidad. Si lo dejas en null, el sitio muestra "Desde $X" y el
+     cliente cotiza por WhatsApp (no se puede agregar al carrito).
+   - Fotos de las 6 tarjetas: puedes ponerlas aquí (campo "foto") o desde
+     la pestaña "CATEGORIAS PAGINA" de tu Hoja, con estas palabras en la
+     columna CATEGORIA: skins, estuches, fundas, accesoriosapple,
+     hidrogel, vidrios. La Hoja tiene prioridad.
+   - Fundas, cubos 20W y estuches de AirPods con precio salen SOLOS de tu
+     catálogo (pestaña CATALOGO PAGINA, categoría Accesorios): basta con
+     que el nombre diga "funda", "forro", "case", "cubo apple 20w",
+     "AirPods"... Si no hay ninguno, se muestran tarjetas para consultar
+     por WhatsApp.
+   ===================================================================== */
+const PERSONALIZA_CONFIG = {
+  skinPrecio: 25000,
+  envioBogota: 10000,
+  envioNacional: 18000,
+  hidrogel: {
+    zonas: [
+      { id:'pantalla', nombre:'Pantalla', desc:'Frontal, borde a borde', base:25000, pantalla:true },
+      { id:'trasera',  nombre:'Trasera completa', desc:'Tapa trasera y laterales', base:25000, pantalla:false },
+      { id:'completa', nombre:'Pantalla + trasera', desc:'Protección total del equipo', base:50000, pantalla:true }
+    ],
+    calidades: [
+      { id:'brillante', nombre:'Brillante HD', desc:'Transparencia total, mantiene el color original', extra:0 },
+      { id:'mate', nombre:'Mate antihuellas', desc:'Tacto suave, reduce reflejos y huellas', extra:null },
+      { id:'antiespia', nombre:'Anti-espía', desc:'Oculta la pantalla desde los lados', extra:null, soloPantalla:true }
+    ]
+  },
+  cards: [
+    { key:'skins', badge:'Crea tu skin', color:'#7b4ee6', chipBg:'#f1ebfd', chip:'$25.000', titulo:'Skins personalizadas',
+      texto:'Tu foto o diseño impreso en una skin con troquel exacto para bordes, cámaras y logo.',
+      puntos:['Se adhieren a la tapa de tu celular','Protegen contra rayones','Para casi cualquier modelo'],
+      cta:'Diseñar mi skin', accion:"pzScrollTo('pzSkinStudio')", foto:'' ,
+      icono:'<rect x="7" y="2" width="10" height="20" rx="2.5"/><rect x="8.6" y="3.6" width="3.6" height="3.6" rx="1"/><path d="M8 13c2-2 4 1 6-1s2 2 3 1"/>' },
+    { key:'estuches', badge:'Acrygel', color:'#0071e3', chipBg:'#e6f1fd', chip:'Desde $34.990', titulo:'Estuches personalizados',
+      texto:'Estuche transparente resistente a caídas, con tu foto. Líneas Clásica, Pro y 3D.',
+      puntos:['Anti-amarilleo','Impresión UV de alta definición','Vista previa en el editor'],
+      cta:'Diseñar mi estuche', accion:"go('cases')", foto:'img/galeria/estuche-02.jpg' },
+    { key:'fundas', badge:'Fundas antigolpes', color:'#1d1d1f', chipBg:'#f0f0f2', chip:'Para tu modelo', titulo:'Cases & fundas',
+      texto:'Fundas resistentes para el día a día: antigolpes, silicona y transparentes.',
+      puntos:['Protección anticaídas','Borde elevado en cámara','Varios colores y estilos'],
+      cta:'Ver fundas', accion:"pzScrollTo('pzFundas')", foto:'',
+      icono:'<rect x="6" y="2" width="12" height="20" rx="3"/><rect x="8" y="4" width="4" height="4" rx="1.2"/><path d="M6 9h1M17 9h1"/>' },
+    { key:'accesoriosapple', badge:'Apple', color:'#e8710a', chipBg:'#fdf0e3', chip:'Cubos 20W · AirPods', titulo:'Accesorios Apple',
+      texto:'Cubos de carga rápida de 20W y estuches para AirPods Pro 2, Pro 3 y serie 4.',
+      puntos:['Cubo de 20W para iPhone','Estuches para AirPods','Envío a toda Colombia'],
+      cta:'Ver accesorios', accion:"pzScrollTo('pzApple')", foto:'',
+      icono:'<rect x="5" y="7" width="14" height="13" rx="4"/><path d="M9 7V4M15 7V4"/><circle cx="12" cy="13.5" r="1.4"/>' },
+    { key:'hidrogel', badge:'Instalación incluida', color:'#0f7a4d', chipBg:'#e7f6ee', chip:'Desde $25.000', titulo:'Hidrogel',
+      texto:'Protección para pantalla y tapa trasera, en el acabado que prefieras, para cualquier dispositivo.',
+      puntos:['Pantalla desde $25.000','Trasera completa desde $25.000','Brillante, mate o anti-espía'],
+      cta:'Cotizar mi protección', accion:"pzScrollTo('pzHidrogel')", foto:'',
+      icono:'<path d="M12 2.5l7.5 3v6c0 4.8-3.3 8.3-7.5 10-4.2-1.7-7.5-5.2-7.5-10v-6z"/><path d="M8.5 12l2.5 2.5 4.5-5"/>' },
+    { key:'vidrios', badge:'Vidrio templado', color:'#0a7ea4', chipBg:'#e5f4f9', chip:'Desde $15.000', titulo:'Vidrios de pantalla',
+      texto:'Vidrio blindado resistente a golpes o vidrio sin borde de pantalla a pantalla.',
+      puntos:['Blindado $15.000','Sin borde $25.000','Gratis al llevar 2 estuches'],
+      cta:'Pedir mi vidrio', accion:"pzVidrioWhatsApp()", foto:'',
+      icono:'<rect x="6" y="2" width="12" height="20" rx="2.5"/><path d="M9 6l6 6M9 10l4 4"/>' }
+  ],
+  marcas: [
+    { id:'apple', nombre:'Apple', modelos:['iPhone 11','iPhone 12','iPhone 12 Pro Max','iPhone 13','iPhone 13 Pro','iPhone 13 Pro Max','iPhone 14','iPhone 14 Pro','iPhone 14 Pro Max','iPhone 15','iPhone 15 Pro','iPhone 15 Pro Max','iPhone 16','iPhone 16 Pro','iPhone 16 Pro Max','iPhone 17','iPhone 17 Pro','iPhone 17 Pro Max'] },
+    { id:'samsung', nombre:'Samsung', modelos:['Galaxy A06','Galaxy A16','Galaxy A26','Galaxy A36','Galaxy A56','Galaxy S24','Galaxy S24 FE','Galaxy S25','Galaxy S25 Ultra'] },
+    { id:'xiaomi', nombre:'Xiaomi', modelos:['Redmi 14C','Redmi 15C','Redmi Note 14','Redmi Note 14 Pro','Redmi Note 15','Poco X7','Xiaomi 15'] },
+    { id:'motorola', nombre:'Motorola', modelos:['Moto G05','Moto G15','Moto G35','Moto G75','Edge 50 Fusion','Edge 60'] },
+    { id:'otra', nombre:'Otra marca', modelos:['Honor','Tecno','Oppo','Huawei','Realme','Infinix'] }
+  ]
+};
+
+/* Disposición aproximada de cámaras por marca (fracciones del ancho del
+   celular). Solo es una guía visual para la vista previa — el corte real
+   se hace con el troquel exacto de cada modelo. */
+const PZ_CAMARAS = {
+  apple:    { mod:{x:.06,y:.05,w:.44,h:.44,r:.12}, lentes:[{x:.18,y:.17,d:.17},{x:.18,y:.38,d:.17},{x:.38,y:.275,d:.17}] },
+  samsung:  { mod:null, lentes:[{x:.16,y:.13,d:.15},{x:.16,y:.32,d:.15},{x:.16,y:.51,d:.15}] },
+  xiaomi:   { mod:{x:.06,y:.05,w:.48,h:.40,r:.10}, lentes:[{x:.19,y:.16,d:.16},{x:.41,y:.16,d:.16},{x:.19,y:.35,d:.13}] },
+  motorola: { mod:{x:.06,y:.05,w:.42,h:.34,r:.15}, lentes:[{x:.18,y:.16,d:.15},{x:.18,y:.33,d:.12},{x:.37,y:.16,d:.12}] },
+  otra:     { mod:{x:.28,y:.06,w:.44,h:.44,r:.22}, lentes:[{x:.41,y:.21,d:.14},{x:.59,y:.21,d:.14},{x:.50,y:.37,d:.12}] }
+};
+
+const PZ = { marca:'apple', img:null, zoom:1, x:0, y:0, hgZona:'pantalla', hgCalidad:'brillante' };
+
+function pzEsc(s){ return String(s == null ? '' : s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;'); }
+
+/* --- Navegación --- */
+function pzScrollTo(id){
+  const el = document.getElementById(id);
+  if(!el) return;
+  const y = el.getBoundingClientRect().top + window.scrollY - 90;
+  window.scrollTo({ top: y, behavior: 'smooth' });
+}
+// Abre la página Personaliza (desde el inicio, el menú o un link) y, si se
+// indica, baja hasta una sección — espera a que termine la animación de
+// cambio de vista de go() (~450 ms).
+function pzOpen(anchor){
+  const yaEsta = document.getElementById('view-personaliza').classList.contains('active');
+  if(yaEsta){ if(anchor) pzScrollTo(anchor); return; }
+  go('personaliza');
+  if(anchor) setTimeout(() => pzScrollTo(anchor), 650);
+}
+
+/* --- Reels de Instagram con fachada (cargan solo al tocar) --- */
+function pzInitReels(){
+  document.querySelectorAll('.pz-reel:not(.pz-ready)').forEach(el => {
+    el.classList.add('pz-ready');
+    const id = el.dataset.reel, poster = el.dataset.poster || '', label = el.dataset.label || 'Ver video';
+    el.setAttribute('role','button');
+    el.setAttribute('tabindex','0');
+    el.setAttribute('aria-label','Reproducir video: ' + label);
+    el.innerHTML = `${poster ? `<img class="pz-reel-poster" src="${pzEsc(poster)}" alt="" loading="lazy" onerror="this.remove()">` : ''}
+      <span class="pz-reel-play"><svg viewBox="0 0 24 24"><path d="M7 4.5v15l13-7.5z"/></svg></span>
+      <span class="pz-reel-label"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9"><rect x="2.5" y="2.5" width="19" height="19" rx="5.5"/><circle cx="12" cy="12" r="4.3"/><circle cx="17.6" cy="6.4" r="1" fill="currentColor" stroke="none"/></svg>${pzEsc(label)}</span>`;
+    const play = () => {
+      if(el.classList.contains('is-playing')) return;
+      el.classList.add('is-playing');
+      el.insertAdjacentHTML('beforeend',
+        `<iframe src="https://www.instagram.com/reel/${encodeURIComponent(id)}/embed/" title="${pzEsc(label)}" loading="lazy" allow="autoplay; encrypted-media; picture-in-picture" allowfullscreen></iframe>
+         <a class="pz-reel-open" href="https://www.instagram.com/reel/${encodeURIComponent(id)}/" target="_blank" rel="noopener">Abrir en Instagram</a>`);
+    };
+    el.addEventListener('click', play);
+    el.addEventListener('keydown', e => { if(e.key === 'Enter' || e.key === ' '){ e.preventDefault(); play(); } });
+  });
+}
+
+/* --- 6 tarjetas --- */
+function pzCardFoto(c){
+  const hoja = (typeof CAT_HOME_PHOTOS !== 'undefined' && CAT_HOME_PHOTOS[c.key]) || '';
+  return hoja || c.foto || '';
+}
+function pzRenderCards(){
+  const cont = document.getElementById('pzCards');
+  if(!cont) return;
+  cont.innerHTML = PERSONALIZA_CONFIG.cards.map(c => {
+    const foto = pzCardFoto(c);
+    const media = foto
+      ? `<img src="${pzEsc(typeof optimizeImageUrl === 'function' ? optimizeImageUrl(foto, 700) : foto)}" alt="${pzEsc(c.titulo)}" loading="lazy">`
+      : `<svg viewBox="0 0 24 24" fill="none" stroke-width="1.2" stroke-linecap="round" stroke-linejoin="round">${c.icono || ''}</svg>`;
+    return `<article class="pz-card reveal" style="--pz-badge:${c.color};--pz-chip:${c.color};--pz-chip-bg:${c.chipBg};--pz-bg:${c.chipBg};--pz-ink:${c.color};">
+      <div class="pz-card-media" onclick="${c.accion}"><span class="pz-card-badge">${pzEsc(c.badge)}</span>${media}</div>
+      <div class="pz-card-body">
+        <div class="pz-card-top"><h3>${pzEsc(c.titulo)}</h3><span class="pz-card-chip">${pzEsc(c.chip)}</span></div>
+        <p>${pzEsc(c.texto)}</p>
+        <ul class="pz-checks">${c.puntos.map(p => `<li>${pzEsc(p)}</li>`).join('')}</ul>
+        <button type="button" class="pz-btn dark" onclick="${c.accion}">${pzEsc(c.cta)}</button>
+      </div>
+    </article>`;
+  }).join('');
+}
+
+/* --- Estudio de skins --- */
+function pzRenderBrands(){
+  const chips = document.getElementById('pzBrandChips');
+  if(!chips) return;
+  chips.innerHTML = PERSONALIZA_CONFIG.marcas.map(m =>
+    `<button type="button" class="pz-chip${m.id === PZ.marca ? ' is-active' : ''}" onclick="pzSetBrand('${m.id}')">${pzEsc(m.nombre)}</button>`).join('');
+  const marca = PERSONALIZA_CONFIG.marcas.find(m => m.id === PZ.marca);
+  document.getElementById('pzModelList').innerHTML = (marca ? marca.modelos : []).map(n => `<option value="${pzEsc(n)}">`).join('');
+  const input = document.getElementById('pzModel');
+  input.placeholder = PZ.marca === 'apple' ? 'Ej. iPhone 15 Pro Max' : PZ.marca === 'samsung' ? 'Ej. Galaxy A56' : PZ.marca === 'xiaomi' ? 'Ej. Redmi Note 14' : PZ.marca === 'motorola' ? 'Ej. Moto G75' : 'Escribe marca y modelo';
+}
+function pzSetBrand(id){
+  PZ.marca = id;
+  document.getElementById('pzPhone').dataset.brand = id;
+  pzRenderBrands();
+  pzDrawCamera();
+  pzSetError('');
+}
+function pzDrawCamera(){
+  const phone = document.getElementById('pzPhone');
+  const cam = document.getElementById('pzCam');
+  if(!phone || !cam) return;
+  const W = phone.clientWidth;
+  const L = PZ_CAMARAS[PZ.marca] || PZ_CAMARAS.otra;
+  let html = '';
+  if(L.mod){
+    html += `<div style="position:absolute;left:${L.mod.x*W}px;top:${L.mod.y*W}px;width:${L.mod.w*W}px;height:${L.mod.h*W}px;border-radius:${L.mod.r*W}px;background:rgba(29,29,31,.88);box-shadow:0 0 0 1.5px rgba(255,255,255,.35)"></div>`;
+  }
+  L.lentes.forEach(l => {
+    html += `<i style="left:${(l.x - l.d/2)*W}px;top:${(l.y - l.d/2)*W}px;width:${l.d*W}px;height:${l.d*W}px"></i>`;
+  });
+  cam.style.cssText = 'left:0;top:0;width:100%;height:100%';
+  cam.innerHTML = html;
+}
+function pzLayout(){
+  // Devuelve tamaño y posición de la foto dentro del celular (en px de la vista previa).
+  const phone = document.getElementById('pzPhone');
+  const W = phone.clientWidth, H = phone.clientHeight;
+  const iw = PZ.img.naturalWidth, ih = PZ.img.naturalHeight;
+  const s = Math.max(W/iw, H/ih) * PZ.zoom;
+  const w = iw*s, h = ih*s;
+  const maxX = Math.max(0, (w - W)/2), maxY = Math.max(0, (h - H)/2);
+  PZ.x = Math.min(maxX, Math.max(-maxX, PZ.x));
+  PZ.y = Math.min(maxY, Math.max(-maxY, PZ.y));
+  return { W, H, w, h, left:(W - w)/2 + PZ.x, top:(H - h)/2 + PZ.y };
+}
+function pzRenderPhoto(){
+  if(!PZ.img) return;
+  const L = pzLayout();
+  const el = document.getElementById('pzPhoneImg');
+  el.style.width = L.w + 'px'; el.style.height = L.h + 'px';
+  el.style.left = L.left + 'px'; el.style.top = L.top + 'px';
+}
+function pzCenter(){ PZ.x = 0; PZ.y = 0; PZ.zoom = 1; document.getElementById('pzZoom').value = 1; pzRenderPhoto(); }
+function pzLoadFile(file){
+  if(!file || !/^image\//.test(file.type)){ pzSetError('Elige un archivo de imagen (JPG o PNG).'); return; }
+  const reader = new FileReader();
+  reader.onload = () => {
+    const img = new Image();
+    img.onload = () => {
+      PZ.img = img; PZ.zoom = 1; PZ.x = 0; PZ.y = 0;
+      document.getElementById('pzZoom').value = 1;
+      const el = document.getElementById('pzPhoneImg');
+      el.src = img.src;
+      document.getElementById('pzPhone').classList.add('has-img');
+      document.getElementById('pzUploadText').innerHTML = `<b>Foto cargada</b> · toca para cambiarla`;
+      pzSetError('');
+      pzRenderPhoto();
+      if(img.naturalWidth < 900) pzSetError('Tu foto es de baja resolución: puede verse borrosa impresa. Si tienes la original, súbela.');
+    };
+    img.onerror = () => pzSetError('No pudimos abrir esa imagen. Prueba con otra foto.');
+    img.src = reader.result;
+  };
+  reader.readAsDataURL(file);
+}
+function pzInitDrag(){
+  const phone = document.getElementById('pzPhone');
+  if(!phone || phone.dataset.dragReady) return;
+  phone.dataset.dragReady = '1';
+  let start = null;
+  phone.addEventListener('pointerdown', e => {
+    if(!PZ.img) return;
+    start = { px:e.clientX, py:e.clientY, x:PZ.x, y:PZ.y };
+    phone.classList.add('dragging');
+    phone.setPointerCapture(e.pointerId);
+  });
+  phone.addEventListener('pointermove', e => {
+    if(!start) return;
+    PZ.x = start.x + (e.clientX - start.px);
+    PZ.y = start.y + (e.clientY - start.py);
+    pzRenderPhoto();
+  });
+  const end = () => { start = null; phone.classList.remove('dragging'); };
+  phone.addEventListener('pointerup', end);
+  phone.addEventListener('pointercancel', end);
+  phone.addEventListener('wheel', e => {
+    if(!PZ.img) return;
+    e.preventDefault();
+    PZ.zoom = Math.min(3, Math.max(1, PZ.zoom - e.deltaY * 0.0015));
+    document.getElementById('pzZoom').value = PZ.zoom;
+    pzRenderPhoto();
+  }, { passive:false });
+  document.getElementById('pzZoom').addEventListener('input', e => { PZ.zoom = Number(e.target.value) || 1; pzRenderPhoto(); });
+  document.getElementById('pzFile').addEventListener('change', e => pzLoadFile(e.target.files && e.target.files[0]));
+  window.addEventListener('resize', () => { pzDrawCamera(); pzRenderPhoto(); });
+}
+function pzSetError(msg){ const el = document.getElementById('pzError'); if(el) el.textContent = msg || ''; }
+function pzModelo(){ return (document.getElementById('pzModel').value || '').trim(); }
+function pzMarcaNombre(){ const m = PERSONALIZA_CONFIG.marcas.find(x => x.id === PZ.marca); return m && m.id !== 'otra' ? m.nombre : ''; }
+function pzValidarSkin(necesitaFoto){
+  if(!pzModelo()){ pzSetError('Escribe el modelo de tu celular para cortar el troquel exacto.'); document.getElementById('pzModel').focus(); return false; }
+  if(necesitaFoto && !PZ.img){ pzSetError('Sube la foto o el diseño que quieres en tu skin.'); return false; }
+  pzSetError('');
+  return true;
+}
+// Dibuja el diseño final (foto + guía de cámaras) en un canvas, para
+// descargarlo y enviarlo por WhatsApp, o como miniatura del carrito.
+function pzRenderCanvas(ancho){
+  const L = pzLayout();
+  const k = ancho / L.W;
+  const c = document.createElement('canvas');
+  c.width = Math.round(L.W*k); c.height = Math.round(L.H*k);
+  const ctx = c.getContext('2d');
+  const r = 46*k*(L.W/280);
+  ctx.beginPath();
+  ctx.moveTo(r,0); ctx.arcTo(c.width,0,c.width,c.height,r); ctx.arcTo(c.width,c.height,0,c.height,r);
+  ctx.arcTo(0,c.height,0,0,r); ctx.arcTo(0,0,c.width,0,r); ctx.closePath();
+  ctx.fillStyle = '#ffffff'; ctx.fill(); ctx.save(); ctx.clip();
+  ctx.drawImage(PZ.img, L.left*k, L.top*k, L.w*k, L.h*k);
+  const cam = PZ_CAMARAS[PZ.marca] || PZ_CAMARAS.otra;
+  const W = c.width;
+  if(cam.mod){
+    const m = cam.mod;
+    ctx.beginPath();
+    if(ctx.roundRect) ctx.roundRect(m.x*W, m.y*W, m.w*W, m.h*W, m.r*W); else ctx.rect(m.x*W, m.y*W, m.w*W, m.h*W);
+    ctx.fillStyle = 'rgba(29,29,31,.88)'; ctx.fill();
+  }
+  cam.lentes.forEach(l => { ctx.beginPath(); ctx.arc(l.x*W, l.y*W, l.d*W/2, 0, Math.PI*2); ctx.fillStyle = '#0b0b0f'; ctx.fill(); });
+  ctx.restore();
+  return c;
+}
+function pzDownloadDesign(){
+  if(!pzValidarSkin(true)) return;
+  const c = pzRenderCanvas(1000);
+  c.toBlob(blob => {
+    if(!blob) return;
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = ('skin-camand-' + (pzMarcaNombre() + ' ' + pzModelo()).trim()).toLowerCase().replace(/[^a-z0-9]+/g,'-') + '.jpg';
+    document.body.appendChild(a); a.click(); a.remove();
+    setTimeout(() => URL.revokeObjectURL(url), 4000);
+  }, 'image/jpeg', 0.92);
+}
+function pzSkinNombre(){ return `Skin personalizada — ${(pzMarcaNombre() + ' ' + pzModelo()).trim()}`; }
+function pzAddSkinToCart(btn){
+  if(!pzValidarSkin(true)) return;
+  let thumb = '';
+  try { thumb = pzRenderCanvas(110).toDataURL('image/jpeg', 0.7); } catch(e){ thumb = ''; }
+  const id = 'skin_' + (PZ.marca + '_' + pzModelo()).replace(/[^a-zA-Z0-9]+/g,'_') + '_' + Date.now().toString(36);
+  addToCart(id, pzSkinNombre(), PERSONALIZA_CONFIG.skinPrecio, thumb, 'Personalización', btn);
+}
+function pzSkinWhatsApp(){
+  if(!pzValidarSkin(false)) return;
+  const env = `Envío: Bogotá ${formatCOP(PERSONALIZA_CONFIG.envioBogota)} · resto del país ${formatCOP(PERSONALIZA_CONFIG.envioNacional)}`;
+  const msg = `Hola Camand Mobile, quiero una skin personalizada (${formatCOP(PERSONALIZA_CONFIG.skinPrecio)}) para mi ${(pzMarcaNombre() + ' ' + pzModelo()).trim()}.\n\n${PZ.img ? 'Ya armé mi diseño en la página y te lo envío por aquí.' : 'Te envío por aquí la foto que quiero.'}\n${env}\n\n¿Me confirmas para apartarla?`;
+  window.open(waLink(msg), '_blank', 'noopener');
+}
+function pzVidrioWhatsApp(){
+  window.open(waLink('Hola Camand Mobile, quiero un vidrio de protección (blindado $15.000 o sin borde $25.000). Mi celular es: '), '_blank', 'noopener');
+}
+
+/* --- Hidrogel --- */
+function pzHgSel(){
+  const H = PERSONALIZA_CONFIG.hidrogel;
+  const zona = H.zonas.find(z => z.id === PZ.hgZona) || H.zonas[0];
+  let cal = H.calidades.find(c => c.id === PZ.hgCalidad) || H.calidades[0];
+  if(cal.soloPantalla && !zona.pantalla){ cal = H.calidades[0]; PZ.hgCalidad = cal.id; }
+  const precio = cal.extra == null ? null : zona.base + cal.extra;
+  return { zona, cal, precio };
+}
+function pzRenderHg(){
+  const H = PERSONALIZA_CONFIG.hidrogel;
+  const zonasEl = document.getElementById('pzHgZonas');
+  if(!zonasEl) return;
+  const { zona, cal, precio } = pzHgSel();
+  zonasEl.innerHTML = H.zonas.map(z => `<button type="button" class="pz-option${z.id === zona.id ? ' is-active' : ''}" onclick="PZ.hgZona='${z.id}';pzRenderHg()"><b>${pzEsc(z.nombre)}</b><small>${pzEsc(z.desc)}</small><em>Desde ${formatCOP(z.base)}</em></button>`).join('');
+  document.getElementById('pzHgCalidades').innerHTML = H.calidades.map(c => {
+    const off = c.soloPantalla && !zona.pantalla;
+    const etiqueta = c.extra == null ? 'Precio según equipo' : (c.extra === 0 ? 'Incluido' : '+' + formatCOP(c.extra));
+    return `<button type="button" class="pz-option${c.id === cal.id ? ' is-active' : ''}" ${off ? 'disabled title="Solo para pantalla"' : ''} onclick="PZ.hgCalidad='${c.id}';pzRenderHg()"><b>${pzEsc(c.nombre)}</b><small>${pzEsc(c.desc)}</small><em>${off ? 'Solo pantalla' : etiqueta}</em></button>`;
+  }).join('');
+  document.getElementById('pzHgTitle').textContent = `${zona.nombre} · ${cal.nombre}`;
+  document.getElementById('pzHgPrice').textContent = precio == null ? 'Desde ' + formatCOP(zona.base) : formatCOP(precio);
+  document.getElementById('pzHgNote').textContent = precio == null
+    ? 'El precio exacto depende de tu equipo y el acabado. Te lo confirmamos por WhatsApp en minutos. Instalación incluida.'
+    : 'Instalación incluida, sin burbujas.';
+  document.getElementById('pzHgCart').disabled = precio == null;
+}
+function pzHgDevice(){ return (document.getElementById('pzHgDevice').value || '').trim(); }
+function pzHgAddToCart(btn){
+  const { zona, cal, precio } = pzHgSel();
+  if(precio == null) return;
+  if(!pzHgDevice()){ document.getElementById('pzHgDevice').focus(); document.getElementById('pzHgDevice').placeholder = 'Escribe tu dispositivo para continuar'; return; }
+  const nombre = `Hidrogel ${zona.nombre} (${cal.nombre}) — ${pzHgDevice()}`;
+  addToCart('hidrogel_' + (zona.id + '_' + cal.id + '_' + pzHgDevice()).replace(/[^a-zA-Z0-9]+/g,'_'), nombre, precio, '', 'Personalización', btn);
+}
+function pzHgWhatsApp(){
+  const { zona, cal, precio } = pzHgSel();
+  const disp = pzHgDevice() || '(mi dispositivo es: )';
+  const msg = `Hola Camand Mobile, quiero agendar instalación de hidrogel.\n\n• Zona: ${zona.nombre}\n• Calidad: ${cal.nombre}\n• Dispositivo: ${disp}\n• Precio en la página: ${precio == null ? 'desde ' + formatCOP(zona.base) : formatCOP(precio)}`;
+  window.open(waLink(msg), '_blank', 'noopener');
+}
+
+/* --- Fundas y accesorios Apple (desde tu catálogo) --- */
+function pzBuscarAccesorios(re, excluir){
+  if(typeof flattenAllProducts !== 'function') return [];
+  const accLabel = CATALOG.accesorios ? CATALOG.accesorios.label : '';
+  const otrosLabel = CATALOG.otros ? CATALOG.otros.label : '';
+  return flattenAllProducts().filter(({ catLabel, marca, m }) => {
+    if(catLabel !== accLabel && catLabel !== otrosLabel) return false;
+    const txt = m.n + ' ' + marca;
+    return re.test(txt) && !(excluir && excluir.test(txt));
+  });
+}
+function pzTile(icono, titulo, texto, msg){
+  return `<a class="pz-tile" href="${waLink(msg)}" target="_blank" rel="noopener">
+    <span class="pz-tile-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round">${icono}</svg></span>
+    <b>${pzEsc(titulo)}</b><span>${pzEsc(texto)}</span><em>Consultar por WhatsApp →</em></a>`;
+}
+function pzRenderProductos(){
+  const fundasGrid = document.getElementById('pzFundasGrid');
+  if(!fundasGrid) return;
+  const ICO_FUNDA = '<rect x="6" y="2" width="12" height="20" rx="3"/><rect x="8" y="4" width="4" height="4" rx="1.2"/>';
+  const ICO_CUBO = '<rect x="6" y="8" width="12" height="13" rx="2.5"/><path d="M10 8V3M14 8V3"/>';
+  const ICO_AIRPODS = '<rect x="5" y="7" width="14" height="13" rx="4"/><path d="M5 12h14"/><circle cx="12" cy="15.5" r="1"/>';
+
+  const fundas = pzBuscarAccesorios(/\b(fundas?|forros?|cases?|carcasas?|silicon[ae]?|antigolpes?|armor|magsafe)\b/i, /air ?pods?|personaliz|acrygel|skin|vidrio|hidrogel|cargador|cable/i).slice(0, 8);
+  fundasGrid.innerHTML = fundas.map(({ catLabel, marca, m }) => productCardHTML(catLabel, marca, m)).join('');
+  document.getElementById('pzFundasTiles').innerHTML = [
+    pzTile(ICO_FUNDA, 'Transparente antigolpes', 'Deja ver el color de tu equipo, con esquinas reforzadas.', 'Hola Camand Mobile, quiero una funda transparente antigolpes. Mi celular es: '),
+    pzTile(ICO_FUNDA, 'Silicona', 'Tacto suave, interior afelpado, varios colores.', 'Hola Camand Mobile, quiero una funda de silicona. Mi celular es: '),
+    pzTile(ICO_FUNDA, 'Antigolpes reforzada', 'Máxima protección para el día a día.', 'Hola Camand Mobile, quiero una funda antigolpes reforzada. Mi celular es: ')
+  ].join('');
+
+  const cubos = pzBuscarAccesorios(/(cubo|cargador|adaptador)[^|]{0,30}(apple|iphone|20\s?w)|apple[^|]{0,20}20\s?w/i);
+  const airpods = pzBuscarAccesorios(/air ?pods?/i);
+  const apple = [...cubos, ...airpods.filter(a => !cubos.includes(a))].slice(0, 8);
+  document.getElementById('pzAppleGrid').innerHTML = apple.map(({ catLabel, marca, m }) => productCardHTML(catLabel, marca, m)).join('');
+  const tiles = [];
+  if(!cubos.length) tiles.push(pzTile(ICO_CUBO, 'Cubo Apple 20W', 'Carga rápida USB-C para iPhone y iPad.', 'Hola Camand Mobile, quiero un cubo Apple de 20W.'));
+  tiles.push(
+    pzTile(ICO_AIRPODS, 'Estuche AirPods Pro 2', 'Protege tu estuche de carga de golpes y rayones.', 'Hola Camand Mobile, quiero un estuche para AirPods Pro 2. ¿Qué diseños tienen?'),
+    pzTile(ICO_AIRPODS, 'Estuche AirPods Pro 3', 'Diseños y colores para el modelo más reciente.', 'Hola Camand Mobile, quiero un estuche para AirPods Pro 3. ¿Qué diseños tienen?'),
+    pzTile(ICO_AIRPODS, 'Estuche AirPods 4', 'Ajuste exacto para AirPods serie 4.', 'Hola Camand Mobile, quiero un estuche para AirPods 4. ¿Qué diseños tienen?')
+  );
+  document.getElementById('pzAppleTiles').innerHTML = tiles.join('');
+}
+
+/* --- Galería, FAQ y enlaces --- */
+function pzRenderGallery(){
+  const g = document.getElementById('pzGallery');
+  if(!g || typeof GALLERY_PHOTOS === 'undefined') return;
+  g.innerHTML = GALLERY_PHOTOS.slice(0, 8).map((src, i) =>
+    `<button type="button" onclick="openLightbox(${i})" aria-label="Ampliar trabajo ${i+1}"><img src="${pzEsc(src)}" alt="Trabajo personalizado Camand Mobile ${i+1}" loading="lazy"></button>`).join('');
+}
+const PZ_FAQ = [
+  ['¿Cuánto cuesta una skin y cuánto vale el envío?', `La skin personalizada cuesta ${formatCOP(PERSONALIZA_CONFIG.skinPrecio)}. El envío vale ${formatCOP(PERSONALIZA_CONFIG.envioBogota)} en Bogotá y ${formatCOP(PERSONALIZA_CONFIG.envioNacional)} al resto del país, y es gratis en compras desde ${formatCOP(FREE_SHIPPING_THRESHOLD)}.`],
+  ['¿Para qué celulares hacen skins?', 'Para casi cualquier modelo de Apple, Samsung, Xiaomi, Motorola y otras marcas. Si no ves el tuyo en la lista, escríbelo igual o pregúntanos por WhatsApp.'],
+  ['¿Qué foto debo usar?', 'La foto original, en la mejor calidad posible. Evita capturas de pantalla o fotos reenviadas por WhatsApp, porque pierden calidad. Si nos la envías por WhatsApp, mándala como "Documento" para que no se comprima.'],
+  ['¿Cuánto tarda mi pedido?', 'De 3 a 5 días hábiles desde que confirmas tu diseño y el pago. Antes de producir te enviamos la vista previa para que la apruebes.'],
+  ['¿Por qué piden un anticipo?', 'Porque tu skin o estuche lleva tu foto y no se puede vender a otra persona. El anticipo cubre los materiales y pone tu diseño en producción.'],
+  ['¿Cuánto cuesta el hidrogel?', 'Desde $25.000 para pantalla y desde $25.000 para la trasera completa. El precio sube según la calidad que elijas (mate, anti-espía, etc.). La instalación está incluida.'],
+  ['¿Cómo puedo pagar?', 'Transferencia, Nequi, tarjeta de crédito (recargo del 6%) o Sistecrédito. Te confirmamos el método al finalizar por WhatsApp.']
+];
+function pzRenderFaq(){
+  const el = document.getElementById('pzFaq');
+  if(!el) return;
+  el.innerHTML = PZ_FAQ.map(([q, a]) => `<div class="faq-item">
+    <button class="faq-q" onclick="toggleFaq(this)">
+      <span class="faq-icon"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7"><circle cx="12" cy="12" r="9"/><path d="M9.5 9.3a2.5 2.5 0 1 1 3.4 2.3c-.6.3-.9.8-.9 1.4v.6M12 16.6h.01"/></svg></span>
+      <span class="faq-q-text">${pzEsc(q)}</span>
+      <svg class="faq-chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4"><path d="M6 9l6 6 6-6"/></svg>
+    </button>
+    <div class="faq-a-wrap"><div class="faq-a"><ul><li>${pzEsc(a)}</li></ul></div></div>
+  </div>`).join('');
+}
+
+function renderPersonaliza(){
+  if(!document.getElementById('view-personaliza')) return;
+  pzRenderCards();
+  pzRenderProductos();
+  pzRenderHg();
+  if(typeof initScrollReveal === 'function') initScrollReveal();
+}
+
+(function pzInit(){
+  if(!document.getElementById('view-personaliza')) return;
+  document.getElementById('pzShipBog').textContent = formatCOP(PERSONALIZA_CONFIG.envioBogota);
+  document.getElementById('pzShipNac').textContent = formatCOP(PERSONALIZA_CONFIG.envioNacional);
+  document.querySelector('#pzSkinStudio .pz-price').textContent = formatCOP(PERSONALIZA_CONFIG.skinPrecio);
+  document.getElementById('pzNoModel').href = waLink('Hola Camand Mobile, no encuentro mi modelo de celular en la página de skins. Mi celular es: ');
+  document.getElementById('pzFinalWa').href = waLink('Hola Camand Mobile, quiero personalizar mi celular. Tengo esta idea: ');
+  pzRenderBrands();
+  pzInitDrag();
+  pzInitReels();
+  pzRenderGallery();
+  pzRenderFaq();
+  renderPersonaliza();
+  // La vista previa necesita el tamaño real del celular, que solo existe
+  // cuando la página está visible: se recalcula al abrirla.
+  new MutationObserver(() => {
+    if(document.getElementById('view-personaliza').classList.contains('active')){ pzDrawCamera(); pzRenderPhoto(); }
+  }).observe(document.getElementById('view-personaliza'), { attributes:true, attributeFilter:['class'] });
+  // Si alguien entra directo a #/skins, baja al estudio.
+  if(location.hash === '#/skins') setTimeout(() => pzScrollTo('pzSkinStudio'), 700);
+})();
 </script>
 
 </body>
