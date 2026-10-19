@@ -4,6 +4,9 @@
    - googleResenasUrl: link a tus reseñas de Google (botón bajo los testimonios).
    - metaPixelId: el número de tu Pixel de Meta (Administrador de eventos).
      Solo se activa si el visitante acepta las cookies analíticas.
+   - resenasCsvUrl: link CSV publicado de la pestaña "RESEÑAS PAGINA"
+     (columnas NOMBRE | ESTRELLAS | TEXTO | PRODUCTO). Si está vacío se
+     muestran los testimonios fijos del index.html.
    - kitsCsvUrl: link CSV publicado de la pestaña "KITS PAGINA" (columnas
      KIT | PRODUCTOS | PRECIO KIT | IMAGEN | DESCRIPCION; en PRODUCTOS los
      nombres separados por | ). Vacío = la sección "Arma tu setup" no aparece.
@@ -13,7 +16,8 @@
 const CAMPANAS_CONFIG = {
   googleResenasUrl: 'https://share.google/naZINh4sRmNxgIL0U',
   metaPixelId: '',
-  kitsCsvUrl: ''
+  kitsCsvUrl: '',
+  resenasCsvUrl: 'https://docs.google.com/spreadsheets/d/e/2PACX-1vTVTMXRy1SKrWUR512KBjjWJ0__CcP5g19K2QK7YfVSr5FBeH8PZHMxBAeCKdxQuawOgi-IjsfF4Pvp/pub?gid=587353892&single=true&output=csv'
 };
 
 const tmNorm = s => String(s == null ? '' : s).trim().toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g, '').replace(/\s+/g, ' ');
@@ -241,6 +245,30 @@ function renderResenas(){
   el.innerHTML = `<a class="pz-btn outline-dark" href="${tmEsc(CAMPANAS_CONFIG.googleResenasUrl)}" target="_blank" rel="noopener" onclick="camandTrack('ver_resenas')">Ver nuestras reseñas en Google →</a>`;
 }
 
+async function cargarResenasHoja(){
+  const url = CAMPANAS_CONFIG.resenasCsvUrl;
+  const grid = document.querySelector('.testi-grid');
+  if(!grid || !/^https?:\/\//i.test(url) || !window.Papa) return;
+  try{
+    const res = await fetch(url, { cache: 'no-store' });
+    if(!res.ok) return;
+    const filas = Papa.parse(await res.text(), { header: true, skipEmptyLines: true }).data;
+    const norm = k => String(k).toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g, '').replace(/[^a-z]/g, '');
+    const lista = filas.map(f => {
+      const o = {}; Object.keys(f).forEach(k => o[norm(k)] = String(f[k] || '').trim());
+      o.nombre = o.nombre || o.cliente || o.autor || '';
+      o.texto = o.texto || o.resena || o.comentario || o.opinion || '';
+      o.estrellas = o.estrellas || o.calificacion || o.puntuacion || '';
+      return o;
+    }).filter(o => o.texto && o.nombre).slice(0, 6);
+    if(!lista.length) return;
+    grid.innerHTML = lista.map(o => {
+      const n = Math.max(1, Math.min(5, parseInt(o.estrellas, 10) || 5));
+      return `<div class="testi"><div class="stars">${'★'.repeat(n)}${'☆'.repeat(5 - n)}</div><p>${tmEsc(o.texto)}</p><div class="who">${tmEsc(o.nombre)}${o.producto ? ' · ' + tmEsc(o.producto) : ''} · Reseña de Google</div></div>`;
+    }).join('');
+  }catch(e){}
+}
+
 /* --- Generador de Historias: fondo de la campaña --- */
 function tmStoryTheme(){
   if(typeof STORY_THEMES === 'undefined') return;
@@ -345,6 +373,7 @@ function renderCampanas(){
   renderEstrella();
   renderKits();
   renderResenas();
+  cargarResenasHoja();
   tmStoryTheme();
 }
 window.addEventListener('camand:temporada', () => { renderCampanas(); if(typeof renderHomeFeatured === 'function') renderHomeFeatured(); });

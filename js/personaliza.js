@@ -49,8 +49,8 @@ const PERSONALIZA_CONFIG = {
     ],
     calidades: [
       { id:'brillante', nombre:'Brillante HD', desc:'Transparencia total, mantiene el color original', extra:0 },
-      { id:'mate', nombre:'Mate antihuellas', desc:'Tacto suave, reduce reflejos y huellas', extra:null },
-      { id:'antiespia', nombre:'Anti-espía', desc:'Oculta la pantalla desde los lados', extra:null, soloPantalla:true }
+      { id:'mate', nombre:'Mate antihuellas', desc:'Tacto suave, reduce reflejos y huellas', extra:0 },
+      { id:'antiespia', nombre:'Anti-espía', desc:'Oculta la pantalla desde los lados', extra:0, soloPantalla:true }
     ]
   },
   cards: [
