@@ -2405,6 +2405,9 @@ html:not([data-temporada="halloween"]) .tm-spider{display:none;}
    cada tema están en TEMAS, más abajo. Los colores están en el CSS,
    buscando "TEMPORADAS".
    ===================================================================== */
+// Link CSV de la pestaña "TEMPORADA PAGINA" de tu Hoja (Archivo → Compartir →
+// Publicar en la web → esa pestaña → CSV). Si está vacío, se usa porMes de abajo.
+window.TEMPORADA_CSV_URL = 'https://docs.google.com/spreadsheets/d/e/2PACX-1vTVTMXRy1SKrWUR512KBjjWJ0__CcP5g19K2QK7YfVSr5FBeH8PZHMxBAeCKdxQuawOgi-IjsfF4Pvp/pub?gid=366996091&single=true&output=csv';
 window.TEMPORADA_CONFIG = {
   forzar: '',
   porMes: { 5:'madres', 9:'amor', 10:'halloween', 11:'blackfriday', 12:'navidad' }
@@ -2464,32 +2467,71 @@ window.TEMPORADA_CONFIG = {
     }
   };
 
-  let id = '';
-  try { id = (new URLSearchParams(location.search).get('tema') || '').toLowerCase(); } catch(e){}
-  const cfg = window.TEMPORADA_CONFIG;
-  if(!id) id = cfg.forzar || cfg.porMes[new Date().getMonth() + 1] || '';
-  const tema = TEMAS[id];
-  window.TEMPORADA = tema ? Object.assign({ id }, tema) : null;
-  window.TEMPORADA_SVG = SVG;
-  if(!tema) return;
+  /* --- Tema desde la Hoja de Google (pestaña "TEMPORADA PAGINA") ---
+     Columnas: MES | TEMA | BARRA | PROMO TITULO | PROMO TEXTO | BOTON | LINK | CINTA
+     - MES: número (1-12) o nombre del mes ("octubre"). Escribe "ahora" para
+       forzar un tema sin importar el mes.
+     - TEMA: halloween, navidad, amor, blackfriday, madres o ninguna.
+     - Las demás columnas son opcionales: si las llenas, reemplazan el texto
+       de la barra superior, la franja promocional y la cinta (varios
+       mensajes de la cinta separados por | ).
+     La última versión leída de la Hoja se guarda en el navegador, así la
+     siguiente visita ya arranca con el tema correcto desde la pantalla de carga. */
+  const TEMPORADA_CSV_URL = window.TEMPORADA_CSV_URL || '';
+  const CACHE_KEY = 'camand_temporada_hoja_v1';
+  const MESES = ['enero','febrero','marzo','abril','mayo','junio','julio','agosto','septiembre','octubre','noviembre','diciembre'];
+  const norm = s => String(s == null ? '' : s).trim().toLowerCase().normalize('NFD').replace(/[̀-ͯ]/g, '');
 
-  document.documentElement.dataset.temporada = id;
-  const rider = document.getElementById('splashRider');
-  if(rider) rider.innerHTML = tema.jinete;
-  const lema = document.getElementById('splashTagline');
-  if(lema) lema.textContent = tema.lema;
+  function filaDeHoja(filas){
+    if(!Array.isArray(filas) || !filas.length) return null;
+    const mes = new Date().getMonth() + 1;
+    const ahora = filas.find(f => norm(f.mes) === 'ahora' && norm(f.tema));
+    if(ahora) return ahora;
+    return filas.find(f => {
+      const m = norm(f.mes);
+      return (m === String(mes) || m === MESES[mes - 1] || m === '0' + mes) && norm(f.tema);
+    }) || null;
+  }
+  function elegirTema(filas){
+    let id = '';
+    try { id = norm(new URLSearchParams(location.search).get('tema')); } catch(e){}
+    let fila = null;
+    if(!id){
+      fila = filaDeHoja(filas);
+      if(fila) id = norm(fila.tema);
+    }
+    const cfg = window.TEMPORADA_CONFIG;
+    if(!id) id = cfg.forzar || cfg.porMes[new Date().getMonth() + 1] || '';
+    const base = TEMAS[id];
+    if(!base) return null;
+    const t = Object.assign({ id }, base, { promo: Object.assign({}, base.promo) });
+    if(fila){
+      if(String(fila.barra || '').trim()) t.barra = String(fila.barra).trim();
+      if(String(fila.link || '').trim()){ t.barraLink = String(fila.link).trim(); t.promo.accion = `location.href='${String(fila.link).trim().replace(/'/g, '%27')}'`; }
+      if(String(fila.promotitulo || '').trim()) t.promo.titulo = String(fila.promotitulo).trim();
+      if(String(fila.promotexto || '').trim()) t.promo.texto = String(fila.promotexto).trim();
+      if(String(fila.boton || '').trim()) t.promo.cta = String(fila.boton).trim();
+      if(String(fila.cinta || '').trim()) t.cinta = String(fila.cinta).split('|').map(s => s.trim()).filter(Boolean);
+    }
+    return t;
+  }
 
+  let filasCache = null;
+  try { const c = JSON.parse(localStorage.getItem(CACHE_KEY) || 'null'); if(c && Array.isArray(c.filas)) filasCache = c.filas; } catch(e){}
+
+  const esc = s => String(s == null ? '' : s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
   const rnd = (a, b) => a + Math.random() * (b - a);
+  let particulasTimer = null;
   function lanzar(){
-    const P = tema.particulas;
+    const tema = window.TEMPORADA;
+    const P = tema && tema.particulas;
     if(!P || document.hidden) return;
     const capa = document.getElementById('tmLayer');
     if(!capa || capa.childElementCount >= (innerWidth < 700 ? Math.ceil(P.max / 2) : P.max)) return;
     const el = document.createElement('div');
     el.className = 'tm-p ' + P.tipo;
     el.innerHTML = P.svg;
-    const w = rnd(P.ancho[0], P.ancho[1]);
-    el.style.width = w + 'px';
+    el.style.width = rnd(P.ancho[0], P.ancho[1]) + 'px';
     let dur;
     if(P.tipo === 'fly'){
       dur = rnd(9, 14);
@@ -2511,31 +2553,77 @@ window.TEMPORADA_CONFIG = {
     el.addEventListener('animationend', () => el.remove());
   }
 
-  document.addEventListener('DOMContentLoaded', () => {
-    const reducir = window.matchMedia && matchMedia('(prefers-reduced-motion: reduce)').matches;
-    // Franja promocional del inicio
+  // Aplica (o quita) el tema en la página. Se puede llamar varias veces:
+  // al cargar, y otra vez si la Hoja trae un tema distinto al guardado.
+  function aplicarSplash(tema){
+    if(tema) document.documentElement.dataset.temporada = tema.id;
+    else delete document.documentElement.dataset.temporada;
+    const rider = document.getElementById('splashRider');
+    if(rider) rider.innerHTML = tema ? tema.jinete : '';
+    const lema = document.getElementById('splashTagline');
+    if(lema) lema.textContent = tema ? tema.lema : '';
+  }
+  function aplicarPagina(tema, primeraVez){
     const promo = document.getElementById('tmPromo');
-    if(promo && tema.promo){
-      promo.innerHTML = `<div class="tm-promo-text"><span class="tm-promo-icon">${tema.promo.icono}</span><div><b>${tema.promo.titulo}</b><span>${tema.promo.texto}</span></div></div><button type="button" class="pz-btn" onclick="${tema.promo.accion}">${tema.promo.cta}</button>`;
+    if(promo) promo.innerHTML = (tema && tema.promo)
+      ? `<div class="tm-promo-text"><span class="tm-promo-icon">${tema.promo.icono}</span><div><b>${esc(tema.promo.titulo)}</b><span>${esc(tema.promo.texto)}</span></div></div><button type="button" class="pz-btn" onclick="${esc(tema.promo.accion)}">${esc(tema.promo.cta)}</button>`
+      : '';
+    document.querySelectorAll('.tm-deco').forEach(d => {
+      d.innerHTML = (tema && tema.decoracion) ? `<span class="tm-web l">${SVG.telarana}</span><span class="tm-web r">${SVG.telarana}</span><span class="tm-spider">${SVG.arana}</span>` : '';
+    });
+    if(!primeraVez){
+      if(typeof applyTopBarMsg === 'function') applyTopBarMsg();
+      if(typeof renderCinta === 'function') renderCinta();
     }
-    // Telarañas y araña (solo temas con decoración)
-    if(tema.decoracion){
-      document.querySelectorAll('.tm-deco').forEach(d => {
-        d.innerHTML = `<span class="tm-web l">${SVG.telarana}</span><span class="tm-web r">${SVG.telarana}</span><span class="tm-spider">${SVG.arana}</span>`;
-      });
-    }
-    // Partículas: arrancan cuando se va la pantalla de carga
-    if(!reducir && tema.particulas){
-      const capa = document.createElement('div');
+    // Partículas
+    const reducir = window.matchMedia && matchMedia('(prefers-reduced-motion: reduce)').matches;
+    if(particulasTimer){ clearInterval(particulasTimer); particulasTimer = null; }
+    let capa = document.getElementById('tmLayer');
+    if(capa) capa.innerHTML = '';
+    if(reducir || !tema || !tema.particulas) return;
+    if(!capa){
+      capa = document.createElement('div');
       capa.className = 'tm-layer'; capa.id = 'tmLayer'; capa.setAttribute('aria-hidden', 'true');
       document.body.appendChild(capa);
-      setTimeout(() => {
-        const n = tema.particulas.tipo === 'fly' ? 2 : 4;
-        for(let i = 0; i < n; i++) setTimeout(lanzar, i * 500);
-        setInterval(lanzar, tema.particulas.cada);
-      }, 1800);
     }
-  });
+    setTimeout(() => {
+      const n = tema.particulas.tipo === 'fly' ? 2 : 4;
+      for(let i = 0; i < n; i++) setTimeout(lanzar, i * 500);
+      particulasTimer = setInterval(lanzar, tema.particulas.cada);
+    }, primeraVez ? 1800 : 300);
+  }
+
+  window.TEMPORADA_SVG = SVG;
+  window.TEMPORADA = elegirTema(filasCache);
+  aplicarSplash(window.TEMPORADA);
+
+  async function leerHoja(){
+    if(!/^https?:\/\//i.test(TEMPORADA_CSV_URL) || !window.Papa) return;
+    try{
+      const res = await fetch(TEMPORADA_CSV_URL, { cache: 'no-store' });
+      if(!res.ok) throw new Error('HTTP ' + res.status);
+      const crudas = window.Papa.parse(await res.text(), { header: true, skipEmptyLines: true }).data;
+      const filas = crudas.map(f => {
+        const o = {};
+        Object.keys(f).forEach(k => { o[norm(k).replace(/[\s_]+/g, '')] = f[k]; });
+        return o;
+      });
+      try { localStorage.setItem(CACHE_KEY, JSON.stringify({ filas, ts: Date.now() })); } catch(e){}
+      const nuevo = elegirTema(filas);
+      const antes = JSON.stringify(window.TEMPORADA || null), despues = JSON.stringify(nuevo || null);
+      if(antes !== despues){
+        window.TEMPORADA = nuevo;
+        aplicarSplash(nuevo);
+        aplicarPagina(nuevo, false);
+      }
+      console.log('[Camand] Temporada desde la Hoja:', nuevo ? nuevo.id : 'ninguna');
+    }catch(e){
+      console.warn('[Camand] No se pudo leer la pestaña TEMPORADA PAGINA; se usa el tema guardado o el del código.', e);
+    }
+  }
+
+  document.addEventListener('DOMContentLoaded', () => aplicarPagina(window.TEMPORADA, true));
+  window.addEventListener('load', leerHoja);
 })();
 </script>
 
