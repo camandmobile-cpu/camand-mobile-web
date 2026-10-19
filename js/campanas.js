@@ -15,7 +15,7 @@
    ===================================================================== */
 const CAMPANAS_CONFIG = {
   googleResenasUrl: 'https://share.google/naZINh4sRmNxgIL0U',
-  metaPixelId: '',
+  metaPixelId: '1601620134984140',
   kitsCsvUrl: '',
   resenasCsvUrl: 'https://docs.google.com/spreadsheets/d/e/2PACX-1vTVTMXRy1SKrWUR512KBjjWJ0__CcP5g19K2QK7YfVSr5FBeH8PZHMxBAeCKdxQuawOgi-IjsfF4Pvp/pub?gid=587353892&single=true&output=csv'
 };
