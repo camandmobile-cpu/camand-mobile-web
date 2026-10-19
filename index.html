@@ -94,7 +94,7 @@
      — la mayoría de tus visitantes de iPhone/Mac ni siquiera llegan a
      descargar Inter, porque usan la fuente nativa SF Pro Display primero. -->
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="css/tienda.css?v=20261019n">
+<link rel="stylesheet" href="css/tienda.css?v=20261019o">
 </head>
 <body>
 
@@ -791,6 +791,7 @@ window.TEMPORADA_CONFIG = {
               <button type="button" data-v="producto" onclick="storySet('tpl','producto')">Producto</button>
               <button type="button" data-v="comparar" onclick="storySet('tpl','comparar')">Elige tu modelo (2–4)</button>
               <button type="button" data-v="oferta" onclick="storySet('tpl','oferta')">Oferta</button>
+              <button type="button" data-v="reel" onclick="storySet('tpl','reel')">Reel animado (video)</button>
             </div>
           </div>
           <div class="story-field">
@@ -828,7 +829,15 @@ window.TEMPORADA_CONFIG = {
         <div class="story-preview">
           <canvas id="storyCanvas" width="1080" height="1920" aria-label="Vista previa de la historia"></canvas>
           <p class="story-warn" id="storyWarn"></p>
-          <div class="story-actions">
+          <div class="reel-progress" id="reelProgress" hidden><span></span></div>
+          <div class="story-actions reel-actions">
+            <button type="button" class="story-btn primary" onclick="reelCrear()">Crear video MP4</button>
+            <button type="button" class="story-btn" onclick="reelCrearUnoPorUno()">Un video por producto</button>
+            <button type="button" class="story-btn" onclick="reelCompartir()">Compartir</button>
+            <button type="button" class="story-btn" onclick="reelUsarDestacados()">Usar mis destacados</button>
+          </div>
+          <p class="story-tip reel-tip">El video se graba en tiempo real (8 s con 1 producto, ~4 s por producto si son varios): deja esta pestaña abierta mientras termina. No lleva música: agrégala al publicar en Instagram.</p>
+          <div class="story-actions img-actions">
             <button type="button" class="story-btn primary" onclick="storyDownload()">Descargar imagen</button>
             <button type="button" class="story-btn" onclick="storyShare()">Compartir</button>
             <button type="button" class="story-btn" onclick="storyCopyLink()">Copiar link</button>
@@ -2066,13 +2075,14 @@ function mostrarGraciasSuscripcion() {
 </div>
 
 <script src="https://cdnjs.cloudflare.com/ajax/libs/PapaParse/5.4.1/papaparse.min.js"></script>
-<script src="js/tienda.js?v=20261019n"></script>
+<script src="js/tienda.js?v=20261019o"></script>
 
-<script src="js/personaliza.js?v=20261019n"></script>
+<script src="js/personaliza.js?v=20261019o"></script>
 
-<script src="js/campanas.js?v=20261019n"></script>
+<script src="js/campanas.js?v=20261019o"></script>
 
-<script src="js/plantillas.js?v=20261019n"></script>
+<script src="js/plantillas.js?v=20261019o"></script>
+<script src="js/reels.js?v=20261019o"></script>
 
 </body>
 </html>

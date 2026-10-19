@@ -2489,3 +2489,12 @@ html[data-temporada="blackfriday"] .hero .eyebrow{color:#b38f00;}
 html.splash-rapido #splash-screen{display:none;}
 html.splash-rapido body.loaded #app,html.splash-rapido body.loaded header.nav{animation-duration:.35s;}
 .anim-pausada,.anim-pausada *{animation-play-state:paused !important;}
+
+/* 11. Generador: modo "Reel animado (video)". */
+.story-preview .reel-actions,.story-preview .reel-tip{display:none;}
+.story-preview.is-reel .reel-actions{display:flex;}
+.story-preview.is-reel .reel-tip{display:block;}
+.story-preview.is-reel .img-actions,.story-preview.is-reel .img-actions + .story-tip{display:none;}
+.reel-progress{height:6px;border-radius:6px;background:rgba(0,0,0,.08);overflow:hidden;margin:12px 0 4px;}
+.reel-progress span{display:block;height:100%;width:var(--p,0%);background:var(--buy,#1d1d1f);transition:width .2s linear;}
+.reel-actions button:disabled{opacity:.5;cursor:progress;}
