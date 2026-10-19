@@ -94,7 +94,7 @@
      — la mayoría de tus visitantes de iPhone/Mac ni siquiera llegan a
      descargar Inter, porque usan la fuente nativa SF Pro Display primero. -->
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="css/tienda.css?v=20261019k">
+<link rel="stylesheet" href="css/tienda.css?v=20261019m">
 </head>
 <body>
 
@@ -428,6 +428,11 @@ window.TEMPORADA_CONFIG = {
 
 
 <script>
+  // Pantalla de carga: completa (1,5 s) solo en la primera visita de la
+  // sesión; después la tienda aparece casi de inmediato, como apple.com.
+  var CAMAND_SPLASH_VISTO = false;
+  try { CAMAND_SPLASH_VISTO = sessionStorage.getItem('camand_splash_visto') === '1'; sessionStorage.setItem('camand_splash_visto', '1'); } catch(e){}
+  if(CAMAND_SPLASH_VISTO) document.documentElement.classList.add('splash-rapido');
   window.addEventListener('DOMContentLoaded', () => {
     setTimeout(() => {
       const splash = document.getElementById('splash-screen');
@@ -446,7 +451,7 @@ window.TEMPORADA_CONFIG = {
           el.style.animation = 'none';
         }, { once: true });
       });
-    }, 1500);
+    }, CAMAND_SPLASH_VISTO ? 0 : 1500);
   });
 </script>
 
@@ -2061,13 +2066,13 @@ function mostrarGraciasSuscripcion() {
 </div>
 
 <script src="https://cdnjs.cloudflare.com/ajax/libs/PapaParse/5.4.1/papaparse.min.js"></script>
-<script src="js/tienda.js?v=20261019k"></script>
+<script src="js/tienda.js?v=20261019m"></script>
 
-<script src="js/personaliza.js?v=20261019k"></script>
+<script src="js/personaliza.js?v=20261019m"></script>
 
-<script src="js/campanas.js?v=20261019k"></script>
+<script src="js/campanas.js?v=20261019m"></script>
 
-<script src="js/plantillas.js?v=20261019k"></script>
+<script src="js/plantillas.js?v=20261019m"></script>
 
 </body>
 </html>

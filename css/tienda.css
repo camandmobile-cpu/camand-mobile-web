@@ -2484,3 +2484,8 @@ html[data-temporada="blackfriday"] .hero .eyebrow{color:#b38f00;}
    no llegó el aviso de "cargada", se muestran igual a los 2,5 s. */
 .img-fade:not(.img-loaded){animation:imgFadeSafety 0s linear 2.5s forwards;}
 @keyframes imgFadeSafety{to{opacity:1;}}
+
+/* 10. Visitas siguientes: sin pantalla de carga visible y entrada más corta. */
+html.splash-rapido #splash-screen{display:none;}
+html.splash-rapido body.loaded #app,html.splash-rapido body.loaded header.nav{animation-duration:.35s;}
+.anim-pausada,.anim-pausada *{animation-play-state:paused !important;}

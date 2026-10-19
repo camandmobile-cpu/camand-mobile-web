@@ -156,7 +156,9 @@ function productMediaHTML(m){
   if(primera){
     const src = optimizeImageUrl(primera);
     const alt = String(m.n || '').replace(/&/g, '&amp;').replace(/"/g, '&quot;').replace(/</g, '&lt;');
-    return `<img class="img-fade" src="${src}" alt="${alt}" loading="lazy" decoding="async" onerror="this.parentElement.innerHTML='<span class=\\'pc-noimg\\'><svg width=\\'20\\' height=\\'20\\' viewBox=\\'0 0 24 24\\' fill=\\'none\\' stroke=\\'currentColor\\' stroke-width=\\'1.6\\'><rect x=\\'3\\' y=\\'4.5\\' width=\\'18\\' height=\\'15\\' rx=\\'2\\'/><circle cx=\\'9\\' cy=\\'10\\' r=\\'1.8\\'/><path d=\\'M21 16l-5.5-5-4 4-2.5-2L3 18\\'/></svg></span>'">`;
+    // Cloudinary: tamaño justo para cada pantalla (nítida en iPhone, liviana en gama baja).
+    const srcset = optimizeImageUrl(primera, 800) !== src ? ` srcset="${src} 400w, ${optimizeImageUrl(primera, 800)} 800w" sizes="(max-width:700px) 46vw, 260px"` : '';
+    return `<img class="img-fade" src="${src}"${srcset} alt="${alt}" loading="lazy" decoding="async" onerror="this.parentElement.innerHTML='<span class=\\'pc-noimg\\'><svg width=\\'20\\' height=\\'20\\' viewBox=\\'0 0 24 24\\' fill=\\'none\\' stroke=\\'currentColor\\' stroke-width=\\'1.6\\'><rect x=\\'3\\' y=\\'4.5\\' width=\\'18\\' height=\\'15\\' rx=\\'2\\'/><circle cx=\\'9\\' cy=\\'10\\' r=\\'1.8\\'/><path d=\\'M21 16l-5.5-5-4 4-2.5-2L3 18\\'/></svg></span>'">`;
   }
   return `<span class="pc-noimg">${ICON_PHOTO}</span>`;
 }
@@ -399,18 +401,122 @@ try { CART_NOTE = localStorage.getItem(CART_NOTE_KEY) || ''; } catch(e){ CART_NO
 let CART_DISCOUNT_CODE = null;
 try { CART_DISCOUNT_CODE = JSON.parse(localStorage.getItem(CART_DISCOUNT_KEY) || 'null'); } catch(e){ CART_DISCOUNT_CODE = null; }
 
-// Códigos de descuento activos — Andrés: para crear uno nuevo, agrega una
-// línea aquí con el código en mayúsculas y el % de descuento sobre el
-// subtotal del carrito. Ejemplo: "BIENVENIDA10": 10 (10% de descuento).
-// Bórralo de aquí el día que quieras darlo de baja.
-const DISCOUNT_CODES = {
-  // "BIENVENIDA10": 10,
+
+// Caché entre visitas (localStorage, máx. 24 h): la tienda pinta al instante lo
+// último que vio el visitante y en segundo plano confirma con la Hoja (precios,
+// banners, fotos). Si pasaron más de 24 h, se espera a la Hoja como antes.
+const CACHE_MAX_MS = 24 * 60 * 60 * 1000;
+function cacheLeer(key){
+  try{
+    const c = JSON.parse(localStorage.getItem(key) || sessionStorage.getItem(key) || 'null');
+    if(c && c.ts && Date.now() - c.ts > CACHE_MAX_MS) return null;
+    return c;
+  }catch(e){ return null; }
+}
+function cacheGuardar(key, obj){
+  try{ localStorage.setItem(key, JSON.stringify(obj)); }catch(e){
+    try{ sessionStorage.setItem(key, JSON.stringify(obj)); }catch(e2){}
+  }
+}
+
+// ===================== CÓDIGOS DE DESCUENTO =====================
+// Andrés: hay DOS formas de manejar los códigos.
+//
+// 1) Desde la Hoja (recomendado): crea una pestaña "CODIGOS PAGINA" con estas
+//    columnas y publícala como CSV (Archivo → Compartir → Publicar en la web →
+//    esa pestaña → CSV). Pega ese link en CODIGOS_CSV_URL, aquí abajo.
+//      CODIGO      ej. CAMAND10 (mayúsculas o minúsculas, da igual)
+//      PORCENTAJE  ej. 10
+//      ALCANCE     "accesorios" = solo Accesorios + Personalización
+//                  (estuches, skins, hidrogel); "todo" = todo el carrito
+//      TOPE        opcional: descuento máximo en pesos, ej. 50000
+//      MINIMO      opcional: compra mínima en pesos para que aplique
+//      VENCE       opcional: último día válido, AAAA-MM-DD (ej. 2026-12-31)
+//      ACTIVO      si / no
+//    Lo que pongas en la Hoja reemplaza a los códigos escritos aquí abajo.
+//
+// 2) Directo aquí, en DISCOUNT_CODES (mismo formato).
+const CODIGOS_CSV_URL = '';
+let DISCOUNT_CODES = {
+  CAMAND10: { pct: 10, alcance: 'accesorios', tope: 0, minimo: 0, vence: '' }
 };
+const DESCUENTO_CATS = ['Accesorios', 'Personalización'];
+
+function codigoInfo(code){
+  const c = DISCOUNT_CODES[String(code || '').toUpperCase()];
+  if(!c) return null;
+  return typeof c === 'number' ? { pct: c, alcance: 'todo', tope: 0, minimo: 0, vence: '' } : c;
+}
+function codigoVencido(c){
+  if(!c || !c.vence) return false;
+  const fin = new Date(c.vence + 'T23:59:59');
+  return !isNaN(fin) && Date.now() > fin.getTime();
+}
+// Base sobre la que se calcula el descuento del código (según su alcance).
+function codigoBase(c){
+  if(c.alcance === 'accesorios'){
+    let base = CART.filter(it => DESCUENTO_CATS.includes(it.cat) || String(it.id).indexOf('est_') === 0)
+      .reduce((s, it) => s + it.p * it.qty, 0);
+    return Math.max(0, base - cartPromoEstuches()); // no se descuenta dos veces lo mismo
+  }
+  return Math.max(0, cartTotal() - cartPromoEstuches());
+}
+// Estado del código escrito: { ok, monto, msg }
+function codigoEstado(code){
+  const c = codigoInfo(code);
+  if(!c) return { ok: false, monto: 0, msg: 'Ese código no existe.' };
+  if(codigoVencido(c)) return { ok: false, monto: 0, msg: 'Ese código ya venció.' };
+  if(c.minimo && cartTotal() < c.minimo) return { ok: false, monto: 0, msg: `Este código aplica en compras desde ${formatCOP(c.minimo)}.` };
+  const base = codigoBase(c);
+  if(!base) return { ok: false, monto: 0, msg: c.alcance === 'accesorios'
+    ? 'Este código aplica a accesorios, estuches, skins e hidrogel. Agrega uno a tu pedido.'
+    : 'Agrega productos para usar el código.' };
+  let monto = Math.round(base * (Number(c.pct) || 0) / 100);
+  if(c.tope && monto > c.tope) monto = c.tope;
+  const donde = c.alcance === 'accesorios' ? ' en accesorios y personalizados' : '';
+  const tope = c.tope ? ` (máx. ${formatCOP(c.tope)})` : '';
+  return { ok: true, monto, msg: `Código aplicado: -${c.pct}%${donde}${tope}.` };
+}
 
 function cartCodeDiscount(){
-  if(!CART_DISCOUNT_CODE || !DISCOUNT_CODES[CART_DISCOUNT_CODE.code]) return 0;
-  return Math.round(cartTotal() * (DISCOUNT_CODES[CART_DISCOUNT_CODE.code] / 100));
+  if(!CART_DISCOUNT_CODE) return 0;
+  const e = codigoEstado(CART_DISCOUNT_CODE.code);
+  return e.ok ? e.monto : 0;
 }
+
+// "$50.000", "50000" o "50,000" → 50000 (sin decimales).
+function pesosSimples(v){
+  let t = String(v || '').replace(/[^\d.,]/g, '');
+  const m = t.match(/[.,]\d{1,2}$/); if(m) t = t.slice(0, -m[0].length);
+  return Number(t.replace(/\D/g, '')) || 0;
+}
+
+async function cargarCodigosDesdeSheet(){
+  if(!/^https?:\/\//i.test(CODIGOS_CSV_URL) || !window.Papa) return;
+  try{
+    const res = await fetch(CODIGOS_CSV_URL, { cache: 'no-store' });
+    if(!res.ok) throw new Error('HTTP ' + res.status);
+    const filas = window.Papa.parse(await res.text(), { header: true, skipEmptyLines: true }).data;
+    const nuevos = {};
+    filas.forEach(f => {
+      const n = {};
+      Object.keys(f).forEach(k => { n[k.trim().toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g, '').replace(/\s+/g, '')] = String(f[k] || '').trim(); });
+      const code = (n.codigo || '').toUpperCase().replace(/\s+/g, '');
+      if(!code || /^no$/i.test(n.activo || 'si')) return;
+      nuevos[code] = {
+        pct: Number(String(n.porcentaje || n.pct || '0').replace(/[^\d.]/g, '')) || 0,
+        alcance: /acces|personal/i.test(n.alcance || '') ? 'accesorios' : 'todo',
+        tope: pesosSimples(n.tope),
+        minimo: pesosSimples(n.minimo),
+        vence: (n.vence || '').slice(0, 10)
+      };
+    });
+    DISCOUNT_CODES = nuevos;
+    if(typeof renderCartUI === 'function') renderCartUI();
+  }catch(e){ console.warn('[Camand] No se pudo leer CODIGOS PAGINA; se usan los códigos del código.', e.message); }
+}
+window.addEventListener('load', cargarCodigosDesdeSheet);
+
 // Promo de estuches personalizados (antes solo existía en el editor viejo):
 // al llevar 2 o más estuches, el 2º tiene 10% de descuento y van 2 vidrios
 // de regalo. Se aplica a la 2ª unidad más cara.
@@ -451,14 +557,15 @@ function applyDiscountCode(){
     CART_DISCOUNT_CODE = null;
     msgEl.textContent = '';
     msgEl.className = 'cart-discount-msg';
-  } else if(!DISCOUNT_CODES[code]){
+  } else if(!codigoInfo(code) || codigoVencido(codigoInfo(code))){
     CART_DISCOUNT_CODE = null;
-    msgEl.textContent = 'Ese código no existe o ya venció.';
+    msgEl.textContent = codigoInfo(code) ? 'Ese código ya venció.' : 'Ese código no existe.';
     msgEl.className = 'cart-discount-msg is-error';
   } else {
+    // El código queda guardado aunque todavía no aplique (ej. falta un
+    // accesorio); el mensaje explica qué falta y se recalcula con el carrito.
     CART_DISCOUNT_CODE = { code };
-    msgEl.textContent = `Código aplicado: -${DISCOUNT_CODES[code]}% sobre el subtotal.`;
-    msgEl.className = 'cart-discount-msg is-ok';
+    if(typeof camandTrack === 'function') camandTrack('usar_codigo', { codigo: code });
   }
   try { localStorage.setItem(CART_DISCOUNT_KEY, JSON.stringify(CART_DISCOUNT_CODE)); } catch(e){}
   renderCartUI();
@@ -467,15 +574,24 @@ function applyDiscountCode(){
 // Deja el campo de nota y el de código de descuento con lo que la persona
 // ya había escrito antes (si cerró y volvió a abrir el sitio), y muestra
 // el mensaje de "código aplicado" si ya tenía uno activo.
+// Mensaje bajo el campo del código, siempre al día con lo que hay en el carrito.
+function renderCodigoMsg(){
+  const msgEl = document.getElementById('cartDescuentoMsg');
+  if(!msgEl || !CART_DISCOUNT_CODE) return;
+  const e = codigoEstado(CART_DISCOUNT_CODE.code);
+  msgEl.textContent = e.msg;
+  msgEl.className = 'cart-discount-msg ' + (e.ok ? 'is-ok' : 'is-error');
+}
+
 function initCartExtras(){
   const notaInput = document.getElementById('cartNotaInput');
   if(notaInput && CART_NOTE) notaInput.value = CART_NOTE;
   const descInput = document.getElementById('cartDescuentoInput');
   const msgEl = document.getElementById('cartDescuentoMsg');
-  if(CART_DISCOUNT_CODE && DISCOUNT_CODES[CART_DISCOUNT_CODE.code]){
+  if(CART_DISCOUNT_CODE && codigoInfo(CART_DISCOUNT_CODE.code)){
     if(descInput) descInput.value = CART_DISCOUNT_CODE.code;
-    if(msgEl){ msgEl.textContent = `Código aplicado: -${DISCOUNT_CODES[CART_DISCOUNT_CODE.code]}% sobre el subtotal.`; msgEl.className = 'cart-discount-msg is-ok'; }
   }
+  renderCodigoMsg();
 }
 
 // Separa un nombre de producto compuesto (ej. "iPhone 17 Pro Max ▫️256 GB •
@@ -1032,6 +1148,7 @@ function renderCartUI(){
   const checkoutBtn = document.getElementById('cartCheckoutBtn');
   if(checkoutBtn) checkoutBtn.disabled = CART.length === 0;
   renderShippingBar();
+  renderCodigoMsg();
 }
 
 // Barra de meta de envío gratis, arriba del carrito. Si el carrito está
@@ -1861,7 +1978,7 @@ function pdpSetActiveImage(i){
   if(!PDP_IMAGES[i]) return;
   PDP_ACTIVE_IMG = i;
   const img = document.getElementById('pdpMainImg');
-  if(img){ img.classList.remove('img-loaded'); img.src = optimizeImageUrl(PDP_IMAGES[i], 1200); }
+  if(img){ img.classList.remove('img-loaded'); img.srcset = `${optimizeImageUrl(PDP_IMAGES[i], 700)} 700w, ${optimizeImageUrl(PDP_IMAGES[i], 1200)} 1200w`; img.src = optimizeImageUrl(PDP_IMAGES[i], 1200); }
   document.querySelectorAll('.pdp-thumb').forEach((t, idx) => t.classList.toggle('is-active', idx === i));
 }
 
@@ -1898,7 +2015,7 @@ function productDetailHTML(catKey, catLabel, marca, m){
   const hasImgs = PDP_IMAGES.length > 0;
 
   const mainImgHTML = hasImgs
-    ? `<img id="pdpMainImg" class="img-fade" src="${optimizeImageUrl(PDP_IMAGES[0], 1200)}" alt="${nJs}" onerror="this.parentElement.innerHTML='&lt;span class=\\'pc-noimg\\'&gt;&lt;svg width=\\'20\\' height=\\'20\\' viewBox=\\'0 0 24 24\\' fill=\\'none\\' stroke=\\'currentColor\\' stroke-width=\\'1.6\\'&gt;&lt;rect x=\\'3\\' y=\\'4.5\\' width=\\'18\\' height=\\'15\\' rx=\\'2\\'/&gt;&lt;circle cx=\\'9\\' cy=\\'10\\' r=\\'1.8\\'/&gt;&lt;path d=\\'M21 16l-5.5-5-4 4-2.5-2L3 18\\'/&gt;&lt;/svg&gt;&lt;/span&gt;'">`
+    ? `<img id="pdpMainImg" class="img-fade" src="${optimizeImageUrl(PDP_IMAGES[0], 1200)}" srcset="${optimizeImageUrl(PDP_IMAGES[0], 700)} 700w, ${optimizeImageUrl(PDP_IMAGES[0], 1200)} 1200w" sizes="(max-width:760px) 92vw, 520px" fetchpriority="high" alt="${nJs}" onerror="this.parentElement.innerHTML='&lt;span class=\\'pc-noimg\\'&gt;&lt;svg width=\\'20\\' height=\\'20\\' viewBox=\\'0 0 24 24\\' fill=\\'none\\' stroke=\\'currentColor\\' stroke-width=\\'1.6\\'&gt;&lt;rect x=\\'3\\' y=\\'4.5\\' width=\\'18\\' height=\\'15\\' rx=\\'2\\'/&gt;&lt;circle cx=\\'9\\' cy=\\'10\\' r=\\'1.8\\'/&gt;&lt;path d=\\'M21 16l-5.5-5-4 4-2.5-2L3 18\\'/&gt;&lt;/svg&gt;&lt;/span&gt;'">`
     : `<span class="pc-noimg">${ICON_PHOTO}</span>`;
 
   const thumbsHTML = PDP_IMAGES.length > 1
@@ -2525,10 +2642,31 @@ function promoBannerKeyNav(e){
   else if(e.key === 'End'){ e.preventDefault(); promoBannerGoTo(PROMO_BANNERS.length - 1); }
 }
 
+let PROMO_STRIP_VISIBLE = true;
+
+// Pausa las animaciones infinitas (cinta, fondos de Personaliza, demo 3D…)
+// mientras no están en pantalla: menos trabajo para el celular, más fluidez.
+(function pausarAnimacionesFueraDePantalla(){
+  if(!('IntersectionObserver' in window)) return;
+  const obs = new IntersectionObserver(entries => entries.forEach(e => {
+    e.target.classList.toggle('anim-pausada', !e.isIntersecting);
+    if(e.target.id === 'promoBannerStrip') PROMO_STRIP_VISIBLE = e.isIntersecting;
+  }), { rootMargin: '120px 0px' });
+  const vigilar = () => document.querySelectorAll('.cinta-track, .pz-fx, .l3d-demo, .tm-deco, #promoBannerStrip')
+    .forEach(el => { if(!el.dataset.animObs){ el.dataset.animObs = '1'; obs.observe(el); } });
+  vigilar();
+  window.addEventListener('load', vigilar);
+  setTimeout(vigilar, 4000);
+})();
+
 function promoBannerAutoplayStart(){
   if(PROMO_BANNER_TIMER){ clearInterval(PROMO_BANNER_TIMER); PROMO_BANNER_TIMER = null; }
   if(PROMO_BANNERS.length < 2) return;
-  PROMO_BANNER_TIMER = setInterval(() => promoBannerNext(), 3800);
+  PROMO_BANNER_TIMER = setInterval(() => {
+    // No avanza si la pestaña está en segundo plano o el banner no se ve.
+    if(document.hidden || !PROMO_STRIP_VISIBLE) return;
+    promoBannerNext();
+  }, 3800);
 }
 
 /* ---------- BUG: banners sin imágenes tras Inicio → categoría → Inicio,
@@ -2706,7 +2844,7 @@ async function cargarBannersDesdeSheet(){
   try{
     // Guardado entre visitas (localStorage): el banner aparece al instante
     // desde la segunda visita, mientras se confirma con la Hoja.
-    const cache = JSON.parse(localStorage.getItem(BANNERS_CACHE_KEY) || sessionStorage.getItem(BANNERS_CACHE_KEY) || 'null');
+    const cache = cacheLeer(BANNERS_CACHE_KEY);
     if(cache && Array.isArray(cache.banners) && cache.banners.length){
       PROMO_BANNERS = cache.banners;
       renderPromoBanner();
@@ -2795,7 +2933,7 @@ function applyCatHomePhotos(){
 async function cargarCategoriasDesdeSheet(){
   if(!/^https?:\/\//i.test(CATEGORIAS_CSV_URL)) return;
   try{
-    const cache = JSON.parse(sessionStorage.getItem(CATEGORIAS_CACHE_KEY) || 'null');
+    const cache = cacheLeer(CATEGORIAS_CACHE_KEY);
     if(cache && cache.fotos && Object.keys(cache.fotos).length){
       CAT_HOME_PHOTOS = cache.fotos;
       applyCatHomePhotos();
@@ -2825,7 +2963,7 @@ async function cargarCategoriasDesdeSheet(){
 
     CAT_HOME_PHOTOS = fotos;
     applyCatHomePhotos();
-    try{ sessionStorage.setItem(CATEGORIAS_CACHE_KEY, JSON.stringify({ fotos, ts: Date.now() })); }catch(e){}
+    try{ cacheGuardar(CATEGORIAS_CACHE_KEY, { fotos, ts: Date.now() }); }catch(e){}
     console.log("[Camand] Fotos de categorías cargadas desde Google Sheets:", Object.keys(fotos).length);
   }catch(err){
     console.warn("[Camand] No se pudo leer las fotos de categorías desde Google Sheets, se muestran los íconos de siempre:", err.message);
@@ -2884,7 +3022,7 @@ function applyLineaFotos(){
 async function cargarFotosLineasDesdeSheet(){
   if(!/^https?:\/\//i.test(LINEA_FOTOS_CSV_URL)) return;
   try{
-    const cache = JSON.parse(sessionStorage.getItem(LINEA_FOTOS_CACHE_KEY) || 'null');
+    const cache = cacheLeer(LINEA_FOTOS_CACHE_KEY);
     if(cache && cache.fotos && Object.keys(cache.fotos).length){
       LINEA_FOTOS = Object.assign({}, LINEA_FOTOS, cache.fotos);
       applyLineaFotos();
@@ -2915,7 +3053,7 @@ async function cargarFotosLineasDesdeSheet(){
 
     LINEA_FOTOS = Object.assign({}, LINEA_FOTOS, fotos);
     applyLineaFotos();
-    try{ sessionStorage.setItem(LINEA_FOTOS_CACHE_KEY, JSON.stringify({ fotos, ts: Date.now() })); }catch(e){}
+    try{ cacheGuardar(LINEA_FOTOS_CACHE_KEY, { fotos, ts: Date.now() }); }catch(e){}
     console.log("[Camand] Fotos de línea de estuches cargadas desde Google Sheets:", Object.keys(fotos).length);
   }catch(err){
     console.warn("[Camand] No se pudo leer las fotos de línea desde Google Sheets, se muestran las fotos de ejemplo guardadas en el código:", err.message);
@@ -3179,10 +3317,12 @@ async function cargarCatalogoDesdeSheet(){
   // 1) Si esta pestaña ya había leído la Hoja antes en esta misma visita,
   // se aplica esa copia de inmediato (más rápido que esperar la red) y
   // luego, si hay internet, se confirma/actualiza en segundo plano.
+  let filasYaPintadas = null;
   try{
-    const cache = JSON.parse(sessionStorage.getItem(SHEET_CACHE_KEY) || 'null');
+    const cache = cacheLeer(SHEET_CACHE_KEY);
     if(cache && Array.isArray(cache.filas) && cache.filas.length){
-      aplicarFilasCatalogo(cache.filas, 'la caché de esta pestaña');
+      aplicarFilasCatalogo(cache.filas, 'la caché guardada');
+      filasYaPintadas = JSON.stringify(cache.filas);
     }
   }catch(e){}
 
@@ -3205,8 +3345,10 @@ async function cargarCatalogoDesdeSheet(){
       return norm;
     });
 
-    aplicarFilasCatalogo(filas, 'Google Sheets');
-    try{ sessionStorage.setItem(SHEET_CACHE_KEY, JSON.stringify({ filas, ts: Date.now() })); }catch(e){}
+    // Si la Hoja no cambió desde lo que ya se pintó, no se vuelve a dibujar
+    // todo (evita el "parpadeo" de tarjetas y fotos).
+    if(JSON.stringify(filas) !== filasYaPintadas) aplicarFilasCatalogo(filas, 'Google Sheets');
+    try{ cacheGuardar(SHEET_CACHE_KEY, { filas, ts: Date.now() }); }catch(e){}
   }catch(err){
     console.warn("[Camand] No se pudo leer Google Sheets, se muestran los datos guardados en el código (o en caché de esta pestaña):", err.message);
   }
@@ -3282,7 +3424,7 @@ function renderCinta(){
 async function cargarCintaDesdeSheet(){
   if(!/^https?:\/\//i.test(CINTA_CSV_URL)) return;
   try{
-    const cache = JSON.parse(sessionStorage.getItem(CINTA_CACHE_KEY) || 'null');
+    const cache = cacheLeer(CINTA_CACHE_KEY);
     if(cache && Array.isArray(cache.msgs) && cache.msgs.length){
       CINTA_MENSAJES_SHEET = cache.msgs;
       renderCinta();
@@ -3306,7 +3448,7 @@ async function cargarCintaDesdeSheet(){
       .map(f => f.t);
     CINTA_MENSAJES_SHEET = msgs;
     renderCinta();
-    try{ sessionStorage.setItem(CINTA_CACHE_KEY, JSON.stringify({ msgs, ts: Date.now() })); }catch(e){}
+    try{ cacheGuardar(CINTA_CACHE_KEY, { msgs, ts: Date.now() }); }catch(e){}
     console.log("[Camand] Cinta de texto cargada desde Google Sheets:", msgs.length, "mensajes");
   }catch(err){
     console.warn("[Camand] No se pudo leer la cinta desde Google Sheets, se usan los mensajes base:", err.message);
@@ -3981,3 +4123,22 @@ if('serviceWorker' in navigator){
     navigator.serviceWorker.register('sw.js').catch(() => {});
   });
 }
+
+/* ===================== PRECARGA AL PASAR EL MOUSE / TOCAR ===================== */
+// Al acercar el mouse (o empezar a tocar) una tarjeta, se pide de una vez la
+// foto grande de la ficha; así la ficha abre ya con la foto lista.
+(function precargarFichas(){
+  const hechas = new Set();
+  const precargar = e => {
+    const card = e.target.closest && e.target.closest('.product-card');
+    if(!card) return;
+    const img = card.querySelector('.pc-media img');
+    const src = img && img.getAttribute('src');
+    if(!src || hechas.has(src) || !/res\.cloudinary\.com/.test(src)) return;
+    hechas.add(src);
+    const grande = src.replace(/\/upload\/w_\d+,/, innerWidth <= 760 ? '/upload/w_700,' : '/upload/w_1200,');
+    const pre = new Image(); pre.decoding = 'async'; pre.src = grande;
+  };
+  document.addEventListener('pointerover', precargar, { passive: true });
+  document.addEventListener('touchstart', precargar, { passive: true });
+})();
