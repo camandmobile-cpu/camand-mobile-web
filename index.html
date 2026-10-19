@@ -91,7 +91,7 @@
      — la mayoría de tus visitantes de iPhone/Mac ni siquiera llegan a
      descargar Inter, porque usan la fuente nativa SF Pro Display primero. -->
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="css/tienda.css?v=20261019e">
+<link rel="stylesheet" href="css/tienda.css?v=20261019h">
 </head>
 <body>
 
@@ -226,7 +226,8 @@ window.TEMPORADA_CONFIG = {
      Columnas: MES | TEMA | BARRA | PROMO TITULO | PROMO TEXTO | BOTON | LINK | CINTA
        + opcionales: FECHA INICIO | FECHA FIN (AAAA-MM-DD o DD/MM/AAAA; una fila
        con fechas manda sobre las filas por mes) | HERO TITULO | HERO SUBTITULO |
-       HERO IMAGEN | COLOR ACENTO (ej. #FF7A1A) | PRODUCTO ESTRELLA (nombre)
+       HERO IMAGEN | COLOR ACENTO (ej. #FF7A1A) | PRODUCTO ESTRELLA (nombre) |
+       TITULO SECCION (título de la fila de productos de la campaña)
      - MES: número (1-12) o nombre del mes ("octubre"). Escribe "ahora" para
        forzar un tema sin importar el mes.
      - TEMA: halloween, navidad, amor, blackfriday, madres o ninguna.
@@ -302,6 +303,7 @@ window.TEMPORADA_CONFIG = {
       if(String(fila.link || '').trim()) t.hero.accion = t.promo.accion;
       if(/^#[0-9a-f]{3,8}$/i.test(String(fila.coloracento || '').trim())) t.acento = String(fila.coloracento).trim();
       if(String(fila.productoestrella || '').trim()) t.estrella = String(fila.productoestrella).trim();
+      if(String(fila.tituloseccion || '').trim()) t.seccion = String(fila.tituloseccion).trim();
     }
     return t;
   }
@@ -580,8 +582,6 @@ window.TEMPORADA_CONFIG = {
         <div class="tm-hero-img" id="tmHeroImg"></div>
       </div>
     </div>
-    <!-- Durante una campaña, la sección de productos destacados se mueve aquí, justo debajo del hero (ver campanas). -->
-    <div id="tmOfertasSlot"></div>
     <div class="wrap">
 
       <!-- Bloque doble: Celulares y Personaliza con el mismo peso (lado a lado en computador; en celular, Celulares primero) -->
@@ -620,6 +620,10 @@ window.TEMPORADA_CONFIG = {
         </div>
       </div>
 
+    </div>
+    <!-- Durante una campaña, la sección de productos de la campaña se muestra aquí: después del bloque Celulares / Personaliza y antes de las categorías (ver js/campanas.js). -->
+    <div id="tmOfertasSlot"></div>
+    <div class="wrap">
       <div class="cat-grid-home reveal" id="catGridHome">
         <button type="button" class="cat-card-home" onclick="go('celulares')">
           <div class="cch-media" id="cchm-equipos"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><rect x="7" y="2" width="10" height="20" rx="2"/><path d="M11 18h2"/></svg></div>
@@ -2054,13 +2058,13 @@ function mostrarGraciasSuscripcion() {
 </div>
 
 <script src="https://cdnjs.cloudflare.com/ajax/libs/PapaParse/5.4.1/papaparse.min.js"></script>
-<script src="js/tienda.js?v=20261019e"></script>
+<script src="js/tienda.js?v=20261019h"></script>
 
-<script src="js/personaliza.js?v=20261019e"></script>
+<script src="js/personaliza.js?v=20261019h"></script>
 
-<script src="js/campanas.js?v=20261019e"></script>
+<script src="js/campanas.js?v=20261019h"></script>
 
-<script src="js/plantillas.js?v=20261019e"></script>
+<script src="js/plantillas.js?v=20261019h"></script>
 
 </body>
 </html>
