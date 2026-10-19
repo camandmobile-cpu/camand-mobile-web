@@ -1,0 +1,26 @@
+# Genera cada día las páginas de producto (carpeta /producto) y el
+# sitemap.xml desde la Hoja de Google, y las publica en GitHub Pages.
+# También se puede correr a mano: pestaña "Actions" → "Páginas de producto" → "Run workflow".
+name: Páginas de producto
+on:
+  schedule:
+    - cron: '7 10 * * *'   # todos los días, 5:07 a. m. hora Colombia
+  workflow_dispatch:
+permissions:
+  contents: write
+jobs:
+  generar:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+      - run: node scripts/generar-productos.mjs
+      - name: Publicar cambios
+        run: |
+          git config user.name "camand-bot"
+          git config user.email "actions@users.noreply.github.com"
+          git add producto sitemap.xml
+          git diff --cached --quiet || git commit -m "Actualizar páginas de producto desde la Hoja"
+          git push
