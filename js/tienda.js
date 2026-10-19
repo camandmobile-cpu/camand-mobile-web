@@ -2327,7 +2327,29 @@ function promoBannerMediaHTML(b, i){
   if(b.vid || isVideoUrl(mediaUrl)){
     return `<video src="${mediaUrl}" autoplay muted loop playsinline preload="${i === 0 ? 'auto' : 'metadata'}" aria-label="${altJs}"></video>`;
   }
-  return `<img class="img-fade" src="${optimizeImageUrl(mediaUrl, 1600)}" alt="${altJs}" loading="${i === 0 ? 'eager' : 'lazy'}">`;
+  // Los banners se cargan SIEMPRE de una vez (sin "lazy"): dentro de un carril
+  // que se mueve con transform, el modo lazy de Chrome/Safari a veces nunca
+  // pedía la imagen hasta recargar la página (banner en blanco).
+  const orig = String(mediaUrl).replace(/"/g, '&quot;');
+  return `<img class="promo-banner-img" src="${optimizeImageUrl(mediaUrl, 1600)}" data-orig="${orig}" alt="${altJs}" loading="eager" decoding="async"${i === 0 ? ' fetchpriority="high"' : ''}>`;
+}
+
+// Muestra cada imagen del banner cuando carga; si falla, reintenta una vez con
+// el archivo original (sin capas ni redimensionado) para no dejar el banner vacío.
+function promoBannerBindImages(track){
+  track.querySelectorAll('img.promo-banner-img').forEach(img => {
+    const listo = () => img.classList.add('is-ready');
+    if(img.complete && img.naturalWidth > 0){ listo(); return; }
+    img.addEventListener('load', listo, { once: true });
+    img.addEventListener('error', () => {
+      if(img.dataset.retry) { listo(); return; }
+      img.dataset.retry = '1';
+      const original = (img.dataset.orig || '').replace(/\/upload\/.*?(\/v\d+\/)/, '/upload$1');
+      img.src = original !== img.src ? original : img.src + (img.src.includes('?') ? '&' : '?') + 'r=1';
+    });
+    // Red de seguridad: nunca dejar la imagen invisible más de 3 s.
+    setTimeout(listo, 3000);
+  });
 }
 
 // Arma el HTML de una diapositiva completa (media + texto + CTA si aplica).
@@ -2411,6 +2433,7 @@ function renderPromoBanner(){
         .concat([promoBannerSlideHTML(PROMO_BANNERS[0], 0)])
     : [promoBannerSlideHTML(PROMO_BANNERS[0], 0)];
   track.innerHTML = slidesHTML.join('');
+  promoBannerBindImages(track);
 
   strip.querySelectorAll('.promo-banner-nav').forEach(btn => { btn.style.display = loop ? '' : 'none'; });
 
@@ -2681,7 +2704,9 @@ async function cargarBannersDesdeSheet(){
   // en esta misma visita, se muestran de inmediato mientras se confirma
   // en segundo plano si hay cambios.
   try{
-    const cache = JSON.parse(sessionStorage.getItem(BANNERS_CACHE_KEY) || 'null');
+    // Guardado entre visitas (localStorage): el banner aparece al instante
+    // desde la segunda visita, mientras se confirma con la Hoja.
+    const cache = JSON.parse(localStorage.getItem(BANNERS_CACHE_KEY) || sessionStorage.getItem(BANNERS_CACHE_KEY) || 'null');
     if(cache && Array.isArray(cache.banners) && cache.banners.length){
       PROMO_BANNERS = cache.banners;
       renderPromoBanner();
@@ -2719,10 +2744,12 @@ async function cargarBannersDesdeSheet(){
       }))
       .sort((a, b) => a.orden - b.orden);
 
+    // Si la Hoja trae exactamente lo mismo que ya se está mostrando, no se
+    // vuelve a dibujar (antes se redibujaba y las fotos se recargaban).
+    const igual = JSON.stringify(nuevos) === JSON.stringify(PROMO_BANNERS);
     PROMO_BANNERS = nuevos;
-    renderPromoBanner();
-    initScrollReveal();
-    try{ sessionStorage.setItem(BANNERS_CACHE_KEY, JSON.stringify({ banners: nuevos, ts: Date.now() })); }catch(e){}
+    if(!igual){ renderPromoBanner(); initScrollReveal(); }
+    try{ localStorage.setItem(BANNERS_CACHE_KEY, JSON.stringify({ banners: nuevos, ts: Date.now() })); }catch(e){}
     console.log("[Camand] Banners publicitarios cargados desde Google Sheets:", nuevos.length);
   }catch(err){
     console.warn("[Camand] No se pudo leer los banners publicitarios desde Google Sheets, el banner queda oculto:", err.message);

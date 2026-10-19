@@ -2475,3 +2475,12 @@ html[data-temporada="blackfriday"] .hero .eyebrow{color:#b38f00;}
 .hero-compare-btn{border-color:var(--buy) !important;color:var(--buy) !important;}
 .hero-compare-btn svg{color:currentColor;}
 .hero-compare-btn:hover{background:var(--buy) !important;color:#fff !important;}
+
+/* 9. Banner: la foto aparece con un fundido corto cuando termina de cargar.
+      Mientras tanto se ve un fondo gris suave, nunca un hueco "roto". */
+.promo-banner-img{opacity:0;transition:opacity .35s var(--ease);background:#ececf0;}
+.promo-banner-img.is-ready{opacity:1;}
+/* Red de seguridad para todas las fotos con fundido: si por cualquier razón
+   no llegó el aviso de "cargada", se muestran igual a los 2,5 s. */
+.img-fade:not(.img-loaded){animation:imgFadeSafety 0s linear 2.5s forwards;}
+@keyframes imgFadeSafety{to{opacity:1;}}
