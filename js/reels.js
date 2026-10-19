@@ -26,7 +26,11 @@
   const easeOut = p => 1 - Math.pow(1 - p, 3);
   const easeBack = p => { const c = 1.6; return 1 + (c + 1) * Math.pow(p - 1, 3) + c * Math.pow(p - 1, 2); };
   function limpiarNombre(n){
-    return String(n || '').split('•')[0]
+    let s = String(n || '').split('•')[0];
+    // "Cubo Apple 20w - Original — 20W" → sin la variante repetida
+    const pv = s.split(/\s+—\s+/);
+    if(pv.length === 2 && pv[0].toLowerCase().replace(/\s/g, '').includes(pv[1].toLowerCase().replace(/\s/g, ''))) s = pv[0];
+    return s
       .replace(/[\u{1F000}-\u{1FAFF}\u{2600}-\u{27BF}\u{2B00}-\u{2BFF}\u{FE0F}\u{25AA}-\u{25FE}]/gu, ' ')
       .replace(/\s+/g, ' ').trim();
   }
@@ -75,7 +79,16 @@
     const pe = easeOut(prog(tl, 0.1 * k, 0.95 * k));
     const s = 0.82 + 0.18 * pe;
     const flot = Math.sin(tl * 1.6) * 10 * pe;
-    const cw = 820, ch = 640, cx0 = (STORY_W - cw) / 2, cy0 = 412;
+    // Nombre: una línea achicando la letra; si no cabe, dos líneas. Si el nombre
+    // ocupa dos líneas o hay precio "Antes", la tarjeta se encoge para que el
+    // precio nunca tape los medios de pago.
+    const nombre = limpiarNombre(m.n);
+    let nSize = 70, nLines = 1;
+    for(; nSize >= 52; nSize -= 2){ ctx.font = sFont(nSize, 800); if(ctx.measureText(nombre).width <= 940) break; }
+    if(nSize < 52){ nSize = 58; nLines = 2; }
+    const extra = (nLines === 2 ? 68 : 0) + (m.pAntes && m.pAntes > m.p ? 64 : 0);
+    const cw = 820, ch = 640 - extra, cx0 = (STORY_W - cw) / 2, cy0 = 412;
+    const nY = 1092 - extra;
     alpha(ctx, pe, () => {
       ctx.save();
       ctx.translate(STORY_W / 2, cy0 + ch / 2 + flot); ctx.scale(s, s); ctx.translate(-STORY_W / 2, -(cy0 + ch / 2));
@@ -87,12 +100,12 @@
     });
     // Nombre
     const pn = easeOut(prog(tl, 0.7 * k, 1.2 * k));
-    let y = 1092;
+    const y = nY + nSize + (nLines - 1) * Math.round(nSize * 1.12);
     if(pn > 0) alpha(ctx, pn, () => {
       ctx.save(); ctx.translate(0, (1 - pn) * 40);
-      y = sText(ctx, limpiarNombre(m.n), STORY_W / 2, 1092, 940, 70, 800, th.ink, 2, 80);
+      sText(ctx, nombre, STORY_W / 2, nY, 940, nSize, 800, th.ink, nLines, Math.round(nSize * 1.12));
       ctx.restore();
-    }); else { ctx.font = sFont(70, 800); y = 1092 + 70 + (sWrap(ctx, limpiarNombre(m.n), 940, 2).length - 1) * 80; }
+    });
     // Especificaciones cortas
     const sp = specsCortas(m);
     if(sp) alpha(ctx, prog(tl, 1.05 * k, 1.45 * k), () => sText(ctx, sp, STORY_W / 2, y + 20, 960, 31, 600, th.soft, 1));
