@@ -132,6 +132,11 @@ function waLink(text){ return "https://wa.me/573122265799?text=" + encodeURIComp
 function optimizeImageUrl(url, width){
   const w = width || 400;
   if(/^https?:\/\/res\.cloudinary\.com\/.+\/upload\//i.test(url)){
+    // Si la URL ya trae capas (textos o parches encima, ej. el banner de estuches
+    // con "LÍNEA CLÁSICA"), el tamaño se pide AL FINAL para no mover las capas.
+    if(/fl_layer_apply/.test(url) && /\/v\d+\//.test(url)){
+      return url.replace(/\/(v\d+\/)/, `/w_${w},q_auto,f_auto,c_limit/$1`);
+    }
     return url.replace(/\/upload\//i, `/upload/w_${w},q_auto,f_auto,c_limit/`);
   }
   return url;
@@ -147,9 +152,11 @@ function productImageList(m){
 }
 
 function productMediaHTML(m){
-  if(m.img && /^https?:\/\//i.test(m.img)){
-    const src = optimizeImageUrl(m.img);
-    return `<img class="img-fade" src="${src}" alt="" loading="lazy" decoding="async" onerror="this.parentElement.innerHTML='<span class=\\'pc-noimg\\'><svg width=\\'20\\' height=\\'20\\' viewBox=\\'0 0 24 24\\' fill=\\'none\\' stroke=\\'currentColor\\' stroke-width=\\'1.6\\'><rect x=\\'3\\' y=\\'4.5\\' width=\\'18\\' height=\\'15\\' rx=\\'2\\'/><circle cx=\\'9\\' cy=\\'10\\' r=\\'1.8\\'/><path d=\\'M21 16l-5.5-5-4 4-2.5-2L3 18\\'/></svg></span>'">`;
+  const primera = productImageList(m)[0];
+  if(primera){
+    const src = optimizeImageUrl(primera);
+    const alt = String(m.n || '').replace(/&/g, '&amp;').replace(/"/g, '&quot;').replace(/</g, '&lt;');
+    return `<img class="img-fade" src="${src}" alt="${alt}" loading="lazy" decoding="async" onerror="this.parentElement.innerHTML='<span class=\\'pc-noimg\\'><svg width=\\'20\\' height=\\'20\\' viewBox=\\'0 0 24 24\\' fill=\\'none\\' stroke=\\'currentColor\\' stroke-width=\\'1.6\\'><rect x=\\'3\\' y=\\'4.5\\' width=\\'18\\' height=\\'15\\' rx=\\'2\\'/><circle cx=\\'9\\' cy=\\'10\\' r=\\'1.8\\'/><path d=\\'M21 16l-5.5-5-4 4-2.5-2L3 18\\'/></svg></span>'">`;
   }
   return `<span class="pc-noimg">${ICON_PHOTO}</span>`;
 }
@@ -614,7 +621,7 @@ function openFav(open){
 // etc.) cuando existe; en computador, la mayoría de navegadores no lo
 // tienen, así que copia el enlace directo al producto al portapapeles.
 function shareProduct(id, n, p){
-  const url = location.origin + location.pathname + '#/producto/' + encodeURIComponent(id);
+  const url = productShareUrl(id);
   const text = `Mira este producto en Camand Mobile: ${n} — ${formatCOP(Number(p))}`;
   if(navigator.share){
     navigator.share({ title: n, text, url }).catch(() => {});
@@ -1545,6 +1552,8 @@ const HASH_VIEWS = ['home','personaliza','tech','celulares','tablets','computado
 let _goToken = 0;
 
 function go(view, opts){
+  if(view !== 'product') document.body.classList.remove('pdp-sticky-on');
+  document.body.classList.toggle('on-product', view === 'product');
   opts = opts || {};
   if(view !== 'product') CURRENT_PRODUCT_ID = null;
   if(view !== 'product') document.title = DEFAULT_TITLE;
@@ -1766,7 +1775,40 @@ document.addEventListener('click', (e) => {
 
 /* ===================== PÁGINA DE PRODUCTO (PDP) ===================== */
 
+// Link estable de un producto: #/p/<slug> (nombre + almacenamiento + condición),
+// el mismo de las páginas /producto/<slug>/ que ve Google. No cambia cuando
+// cambia el precio, así que un link compartido sigue funcionando.
+function productSlugFromId(id){
+  const f = findProductById(id);
+  if(!f) return null;
+  return String(f.m.n + ' ' + (f.m.cond || '')).toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g, '')
+    .replace(/[^a-z0-9]+/g, '-').replace(/^-+|-+$/g, '').slice(0, 90) || null;
+}
+function productHash(id){
+  const sl = productSlugFromId(id);
+  return sl ? '#/p/' + sl : '#/producto/' + encodeURIComponent(id);
+}
+function productShareUrl(id){
+  return location.origin + location.pathname + productHash(id);
+}
+
 function findProductById(id){
+  const exacto = findProductByIdExact(id);
+  if(exacto) return exacto;
+  // Links viejos (#/producto/<marca_nombre_precio>): si el precio cambió en la
+  // Hoja, el id ya no coincide. Se busca el mismo producto sin mirar el precio.
+  const sinPrecio = String(id || '').replace(/_\d+$/, '');
+  if(!sinPrecio || sinPrecio === id) return null;
+  for(const catKey of Object.keys(CATALOG)){
+    for(const b of CATALOG[catKey].brands){
+      for(const m of b.models){
+        if(productId(b.name, m).replace(/_\d+$/, '') === sinPrecio) return { catKey, catLabel: CATALOG[catKey].label, marca: b.name, m };
+      }
+    }
+  }
+  return null;
+}
+function findProductByIdExact(id){
   for(const catKey of Object.keys(CATALOG)){
     const cat = CATALOG[catKey];
     for(const b of cat.brands){
@@ -1830,6 +1872,16 @@ function switchPdpTab(btn, name){
   container.querySelectorAll('.pdp-tab-panel').forEach(p => p.classList.toggle('is-active', p.dataset.panel === name));
 }
 
+// Corrige tildes frecuentes que vienen sin acento desde la Hoja (solo para mostrar).
+function fixSpecTildes(t){
+  return t.replace(/\banos\b/g,'años').replace(/\bano\b/g,'año')
+    .replace(/\bcamara(s?)\b/gi,(x,pl)=>(x[0]==='C'?'C':'c')+'ámara'+pl)
+    .replace(/\bbateria\b/gi,x=>(x[0]==='B'?'B':'b')+'atería')
+    .replace(/\bautonomia\b/gi,x=>(x[0]==='A'?'A':'a')+'utonomía')
+    .replace(/\bresolucion\b/gi,x=>(x[0]==='R'?'R':'r')+'esolución')
+    .replace(/\bactualizacion\b/gi,x=>(x[0]==='A'?'A':'a')+'ctualización');
+}
+
 function productDetailHTML(catKey, catLabel, marca, m){
   const id = productId(marca, m);
   const idJs = id.replace(/'/g, "\\'");
@@ -1869,7 +1921,12 @@ function productDetailHTML(catKey, catLabel, marca, m){
       </div>
     </div>` : '';
 
-  const specsListHTML = (m.notes || '').split(/[;.]\s*/).map(s => s.trim()).filter(Boolean);
+  // Especificaciones: se separan por ";" (o salto de línea / punto final seguido de mayúscula).
+  // Si la fila no usa ";", se separan por coma + espacio. Nunca se corta "6.9''" ni "6,7".
+  const notasTxt = (m.notes || '').trim();
+  const sepRe = /;|\n/.test(notasTxt) ? /\s*;\s*|\n+|\.\s+(?=[A-ZÁÉÍÓÚÑ])/ : /,\s+|\.\s+(?=[A-ZÁÉÍÓÚÑ])/;
+  const specsListHTML = notasTxt.split(sepRe).map(s => fixSpecTildes(s.trim().replace(/\.$/, ''))).filter(Boolean)
+    .map(s => s.charAt(0).toUpperCase() + s.slice(1));
 
   return `
     <div class="pdp-grid">
@@ -1897,6 +1954,14 @@ function productDetailHTML(catKey, catLabel, marca, m){
         </button>
 
         ${variantsHTML}
+
+        <div class="pdp-actions">
+          <button type="button" class="pdp-add-btn" onclick="addToCart('${idJs}','${nJs}',${m.p},'${imgJs}','${catJs}',this)">Agregar al carrito</button>
+          <a class="pdp-wa-btn" href="${waLink('Hola, quiero comprar: ' + m.n + ' (' + formatCOP(m.p) + '). ¿Sigue disponible?')}" target="_blank" rel="noopener">
+            <svg viewBox="0 0 32 32"><path d="M16.001 3C9.096 3 3.5 8.596 3.5 15.5c0 2.42.688 4.68 1.878 6.598L3 29l7.086-2.335A12.44 12.44 0 0 0 16 28c6.905 0 12.5-5.596 12.5-12.5S22.906 3 16.001 3Zm7.29 17.86c-.304.858-1.51 1.57-2.472 1.774-.657.14-1.514.252-4.4-.945-3.693-1.53-6.07-5.28-6.256-5.526-.18-.246-1.5-1.998-1.5-3.812 0-1.814.95-2.706 1.286-3.076.336-.37.732-.462.976-.462.244 0 .488.002.7.013.225.012.526-.086.822.627.304.732 1.033 2.53 1.123 2.714.09.185.15.4.03.646-.12.246-.18.4-.354.615-.174.216-.366.482-.522.647-.174.185-.356.386-.153.756.204.37.905 1.494 1.943 2.42 1.336 1.192 2.462 1.562 2.833 1.738.37.176.588.15.804-.09.216-.24.925-1.078 1.172-1.448.246-.37.492-.308.83-.185.34.123 2.153 1.016 2.523 1.2.37.185.616.277.706.432.09.156.09.902-.213 1.762Z"/></svg>
+            Comprar por WhatsApp
+          </a>
+        </div>
 
         <div class="pdp-section-block">
           <h5>${ICON_CARD}Métodos de pago aceptados</h5>
@@ -1929,7 +1994,7 @@ function productDetailHTML(catKey, catLabel, marca, m){
             ${specsListHTML.length ? `<ul>${specsListHTML.map(s => `<li>${s}</li>`).join('')}</ul>` : `<p>Ficha técnica detallada disponible por WhatsApp — pregúntanos por este modelo.</p>`}
           </div>
           <div class="pdp-tab-panel" data-panel="box">
-            <p><b>Contenido estándar:</b> el equipo${esNuevo ? ', en su empaque original' : ', revisado y verificado'}. Los accesorios incluidos (cargador, cable, manual, caja) dependen de la disponibilidad del proveedor para este modelo — <i>texto editable por categoría en el código</i>.</p>
+            <p><b>Contenido estándar:</b> el equipo${esNuevo ? ', en su empaque original' : ', revisado y verificado'}. Los accesorios incluidos (cargador, cable, manual, caja) dependen de la disponibilidad del proveedor para este modelo.</p>
             <p>Te confirmamos el contenido exacto de la caja de <b>este</b> producto antes de tu compra — <a href="${waLink('Hola, quiero saber qué incluye la caja de: ' + m.n)}" target="_blank" rel="noopener">pregúntanos por WhatsApp</a>.</p>
           </div>
           <div class="pdp-tab-panel" data-panel="warranty">
@@ -1941,14 +2006,11 @@ function productDetailHTML(catKey, catLabel, marca, m){
           </div>
         </div>
 
-        <div class="pdp-actions">
-          <button type="button" class="pdp-add-btn" onclick="addToCart('${idJs}','${nJs}',${m.p},'${imgJs}','${catJs}',this)">Agregar al carrito</button>
-          <a class="pdp-wa-btn" href="${waLink('Hola, quiero comprar: ' + m.n + ' (' + formatCOP(m.p) + '). ¿Sigue disponible?')}" target="_blank" rel="noopener">
-            <svg viewBox="0 0 32 32"><path d="M16.001 3C9.096 3 3.5 8.596 3.5 15.5c0 2.42.688 4.68 1.878 6.598L3 29l7.086-2.335A12.44 12.44 0 0 0 16 28c6.905 0 12.5-5.596 12.5-12.5S22.906 3 16.001 3Zm7.29 17.86c-.304.858-1.51 1.57-2.472 1.774-.657.14-1.514.252-4.4-.945-3.693-1.53-6.07-5.28-6.256-5.526-.18-.246-1.5-1.998-1.5-3.812 0-1.814.95-2.706 1.286-3.076.336-.37.732-.462.976-.462.244 0 .488.002.7.013.225.012.526-.086.822.627.304.732 1.033 2.53 1.123 2.714.09.185.15.4.03.646-.12.246-.18.4-.354.615-.174.216-.366.482-.522.647-.174.185-.356.386-.153.756.204.37.905 1.494 1.943 2.42 1.336 1.192 2.462 1.562 2.833 1.738.37.176.588.15.804-.09.216-.24.925-1.078 1.172-1.448.246-.37.492-.308.83-.185.34.123 2.153 1.016 2.523 1.2.37.185.616.277.706.432.09.156.09.902-.213 1.762Z"/></svg>
-            Comprar por WhatsApp
-          </a>
-        </div>
       </div>
+    </div>
+    <div class="pdp-sticky-buy" id="pdpStickyBuy" aria-hidden="true">
+      <div class="pdp-sticky-info"><span class="pdp-sticky-name">${m.n}</span><b>${formatCOP(m.p)}</b></div>
+      <button type="button" class="pdp-sticky-btn" onclick="addToCart('${idJs}','${nJs}',${m.p},'${imgJs}','${catJs}',this)">Agregar</button>
     </div>`;
 }
 
@@ -2013,7 +2075,8 @@ function updateProductSchema(catLabel, marca, m, hubView, id){
   const esNuevo = (m.cond || '').trim().toLowerCase() === 'nuevo';
   const primeraImagen = productImageList(m)[0] || (m.img || '');
   const baseUrl = location.origin + location.pathname;
-  const url = baseUrl + '#/producto/' + encodeURIComponent(id);
+  const slugSchema = productSlugFromId(id);
+  const url = slugSchema ? 'https://camandmobile.com/producto/' + slugSchema + '/' : baseUrl + productHash(id);
   const descripcion = String(m.notes || '').replace(/<[^>]*>/g, '').trim();
 
   const productSchema = {
@@ -2049,6 +2112,26 @@ function updateProductSchema(catLabel, marca, m, hubView, id){
   document.head.appendChild(script);
 }
 
+// Barra fija de compra (solo celular): aparece cuando los botones de compra
+// de la ficha ya no se ven en pantalla, y se esconde al salir de la ficha.
+let PDP_STICKY_OBS = null;
+function pdpStickyInit(){
+  if(PDP_STICKY_OBS){ PDP_STICKY_OBS.disconnect(); PDP_STICKY_OBS = null; }
+  document.body.classList.remove('pdp-sticky-on');
+  const bar = document.getElementById('pdpStickyBuy');
+  const acciones = document.querySelector('#pdpContent .pdp-actions');
+  if(!bar || !acciones || !('IntersectionObserver' in window)) return;
+  PDP_STICKY_OBS = new IntersectionObserver(([e]) => {
+    const enFicha = document.getElementById('view-product')?.classList.contains('active');
+    // Solo cuando los botones quedaron ARRIBA (ya los pasó); no antes de llegar a ellos.
+    const mostrar = !!enFicha && !e.isIntersecting && e.boundingClientRect.top < 0;
+    bar.classList.toggle('is-visible', mostrar);
+    bar.setAttribute('aria-hidden', mostrar ? 'false' : 'true');
+    document.body.classList.toggle('pdp-sticky-on', mostrar && innerWidth <= 760);
+  });
+  PDP_STICKY_OBS.observe(acciones);
+}
+
 // Abre la ficha de producto y le da su propia URL compartible
 // (#/producto/<id>) sin recargar la página — funciona con el botón
 // atrás/adelante del navegador y se puede compartir o abrir directo.
@@ -2057,9 +2140,13 @@ function openProduct(id, opts){
   CURRENT_PRODUCT_ID = id;
   go('product', opts);
   renderProductInto(id);
+  pdpStickyInit();
+  const newHash = productHash(id);
   if(!opts.fromHash){
-    const newHash = '#/producto/' + encodeURIComponent(id);
     if(location.hash !== newHash) history.pushState(null, '', newHash);
+  } else if(location.hash !== newHash && /^#\/producto\//.test(location.hash) && newHash.startsWith('#/p/')){
+    // Link viejo: se cambia por el estable sin crear otra entrada en el historial.
+    history.replaceState(null, '', newHash);
   }
 }
 
@@ -2176,6 +2263,8 @@ function routeFromHash(){
   const hash = location.hash || '';
   const productMatch = hash.match(/^#\/producto\/(.+)$/);
   if(productMatch){ openProduct(decodeURIComponent(productMatch[1]), { fromHash: true }); return; }
+  // #/p/<slug> lo atiende camandRutaSlug() (js/campanas.js) en su propio 'hashchange'.
+  if(/^#\/p\/[a-z0-9-]+$/.test(hash)) return;
   const viewMatch = hash.match(/^#\/(tech|accesorios|cases|personaliza|faq|privacidad|devoluciones|historias)$/);
   if(viewMatch){ go(viewMatch[1], { fromHash: true }); return; }
   // #/skins: link corto para Instagram — abre Personaliza y baja al estudio de skins.
@@ -2522,6 +2611,12 @@ function promoBannerActivate(i){
   const link = (b.link || '').trim();
   if(!link) return;
   if(HASH_VIEWS.includes(link)){ go(link); return; }
+  // El editor viejo (estuche-editor.html) ya no existe: todo se diseña en Personaliza.
+  if(/estuche-editor\.html/i.test(link)){ go('personaliza'); return; }
+  // Links a la misma tienda (camandmobile.com/#/..., o solo "#/...") se abren
+  // aquí mismo, sin pestaña nueva.
+  const mismo = link.match(/^(?:https?:\/\/(?:www\.)?camandmobile\.com\/?)?(#\/.+)$/i);
+  if(mismo){ location.hash = mismo[1]; return; }
   window.open(link, '_blank', 'noopener');
 }
 
@@ -2566,6 +2661,20 @@ const BANNERS_CSV_URL = "https://docs.google.com/spreadsheets/d/e/2PACX-1vTVTMXR
 
 const BANNERS_CACHE_KEY = 'camand_banners_cache_v1';
 
+// (19 oct 2026) El banner de estuches decía "LÍNEA BÁSICA". La línea se llama
+// Clásica, así que ese banner se muestra con "LÍNEA CLÁSICA" escrito encima
+// (lo hace Cloudinary al vuelo; la foto original no se toca). Si subes un
+// banner nuevo con otro nombre de archivo, esto deja de aplicar solo.
+const BANNER_ESTUCHES_CLASICA = 'https://res.cloudinary.com/c5sxh1yw/image/upload/'
+  + 'l_banner_personalizados/c_crop,w_70,h_80,x_1700,y_168/c_scale,w_700,h_80/fl_layer_apply,g_north_west,x_1760,y_168/'
+  + 'l_banner_personalizados/c_crop,w_70,h_80,x_1700,y_515/c_scale,w_700,h_80/fl_layer_apply,g_north_west,x_1760,y_515/'
+  + 'co_rgb:111111,l_text:Montserrat_78_bold_letter_spacing_9:L%C3%8DNEA%20CL%C3%81SICA/fl_layer_apply,g_north_west,x_1782,y_166/'
+  + 'co_rgb:111111,l_text:Montserrat_78_bold_letter_spacing_9:L%C3%8DNEA%20PRO/fl_layer_apply,g_north_west,x_1782,y_513/'
+  + 'v1789401648/banner_personalizados.jpg';
+function bannerConLineaClasica(url){
+  return /res\.cloudinary\.com\/c5sxh1yw\/image\/upload\/v1789401648\/banner_personalizados\.jpg$/i.test(url) ? BANNER_ESTUCHES_CLASICA : url;
+}
+
 async function cargarBannersDesdeSheet(){
   if(!/^https?:\/\//i.test(BANNERS_CSV_URL)) return;
   // Igual que con el catálogo: si esta pestaña ya cargó los banners antes
@@ -2598,7 +2707,7 @@ async function cargarBannersDesdeSheet(){
       .filter(f => String(f.activo || "si").trim().toLowerCase() !== "no")
       .filter(f => (f.imagen || "").trim() || (f.video || "").trim())
       .map(f => ({
-        img: (f.imagen || "").trim(),
+        img: bannerConLineaClasica((f.imagen || "").trim()),
         vid: (f.video || "").trim(),
         link: (f.link || "").trim(),
         alt: (f.alt || f.nombre || "").trim(),
@@ -3202,13 +3311,11 @@ function railOrdenNuevoPrecio(a, b){
 }
 
 const HOME_RAILS = [
-  {
-    id: 'iphone',
-    titulo: 'iPhone disponibles',
-    sub: 'Nuevos y seminuevos · revisados y con garantía',
-    items: () => railItems('apple').sort(railOrdenNuevoPrecio),
-    verTodos: "megaMenuGoFiltered('celulares','iPhone','')"
-  },
+  // (19 oct 2026) Se quitó la fila "iPhone disponibles": los iPhone ya salen en
+  // la selección de la campaña y en "¿Qué estás buscando? → Quiero iPhone".
+  // Para volver a mostrarla, reactiva este bloque.
+  // { id: 'iphone', titulo: 'iPhone disponibles', sub: 'Nuevos y seminuevos · revisados y con garantía',
+  //   items: () => railItems('apple').sort(railOrdenNuevoPrecio), verTodos: "megaMenuGoFiltered('celulares','iPhone','')" },
   {
     id: 'android',
     titulo: 'Lo mejor en Android',
@@ -3820,7 +3927,7 @@ async function storyShare(){
 async function storyCopyLink(){
   const x = storySelected()[0];
   const url = x
-    ? location.origin + location.pathname + '#/producto/' + encodeURIComponent(x.id)
+    ? productShareUrl(x.id)
     : location.origin + location.pathname;
   try{
     await navigator.clipboard.writeText(url);

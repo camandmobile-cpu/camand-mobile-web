@@ -116,9 +116,11 @@ function renderQeb(){
   if(!grupos.some(g => g.d.id === QEB.sel)) QEB.sel = grupos[0].d.id;
   chips.innerHTML = grupos.map(g => `<button type="button" role="tab" aria-selected="${g.d.id === QEB.sel}" class="qeb-chip${g.d.id === QEB.sel ? ' is-active' : ''}" onclick="qebElegir('${g.d.id}')">${tmEsc(g.d.label)}<span>${g.items.length}</span></button>`).join('');
   const g = grupos.find(x => x.d.id === QEB.sel);
-  const lim = QEB.todos ? 24 : 8;
+  // Con "Ver más" se muestran TODOS los del grupo, así el número del botón
+  // y el de la pastilla siempre cuadran.
+  const lim = QEB.todos ? g.items.length : 8;
   grid.innerHTML = g.items.slice(0, lim).map(({ catLabel, marca, m }) => productCardHTML(catLabel, marca, m)).join('')
-    + (g.items.length > lim ? `<button type="button" class="qeb-more" onclick="QEB.todos=true;renderQeb()">Ver ${Math.min(g.items.length, 24) - lim} más</button>` : '');
+    + (g.items.length > lim ? `<button type="button" class="qeb-more" onclick="QEB.todos=true;renderQeb()">Ver ${g.items.length - lim} más</button>` : '');
   const auto = ['fotos', 'jugar', 'trabajar', 'primer'].includes(g.d.id) && !g.items.some(x => x.m.uso);
   document.getElementById('qebNote').textContent = auto ? 'Selección automática según cámara, memoria y precio. ¿Dudas? Escríbenos y te asesoramos.' : '';
   initScrollReveal();
