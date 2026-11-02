@@ -29,6 +29,8 @@
     <circle cx="-2.4" cy="-8.6" r="1.5" fill="#ff7a1a"/><circle cx="2.4" cy="-8.6" r="1.5" fill="#ff7a1a"/>
   </svg>`;
 
+  // Los estilos se agregan solo cuando hay arañas (ver encender): agregar un <style>
+  // al cargar obligaba a recalcular toda la página (~240 ms en celular) todo el año.
   const css = document.createElement('style');
   css.textContent = `
   .ar-capa{position:fixed;inset:0;pointer-events:none;z-index:150;overflow:hidden;}
@@ -41,7 +43,6 @@
   @keyframes arPaso{from{transform:rotate(-9deg);}to{transform:rotate(9deg);}}
   html:not([data-temporada="halloween"]) .ar-capa{display:none;}
   @media print{.ar-capa{display:none;}}`;
-  document.head.appendChild(css);
 
   const rnd = (a, b) => a + Math.random() * (b - a);
   let capa = null, aranas = [], raf = null, timer = null, ultimo = 0;
@@ -130,6 +131,7 @@
   }
   function encender(){
     if(timer) return;
+    if(!css.isConnected) document.head.appendChild(css);
     // La primera siempre sale; las siguientes, al azar.
     setTimeout(() => { if(activa() && !aranas.length){ crear(); arrancar(); } }, 2500);
     timer = setInterval(intentarSoltar, 7000);
