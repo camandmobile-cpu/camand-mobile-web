@@ -11,8 +11,12 @@
   --mov-distancia:12px;
 }
 
-.reveal.reveal-bound{
+/* La transición va solo en la entrada: esconder lo que está fuera de pantalla es instantáneo.
+   Si también se animara la salida, una tarjeta que se esconde y aparece casi a la vez deja una
+   transición invertida que el navegador no puede acelerar. */
+.reveal.reveal-bound.in-view{
   transition:opacity var(--mov-duracion) var(--mov-curva),transform var(--mov-duracion) var(--mov-curva);
+  transition-delay:var(--mov-retraso,0s);
 }
 .reveal.reveal-bound:not(.in-view){
   opacity:0;
@@ -21,4 +25,64 @@
 
 @media (prefers-reduced-motion:reduce){
   .reveal,.reveal.reveal-bound,.reveal.reveal-bound:not(.in-view){opacity:1;transform:none;transition:none;}
+}
+
+/* ============================================================
+   ESCENAS AL DESPLAZARSE — solo computador (≥1024px), solo si el
+   navegador las soporta (Chrome, Edge, Safari reciente) y solo si no se
+   pidió reducir movimiento. En cualquier otro caso la tienda queda igual.
+   Las mueve el navegador según el scroll, sin JavaScript. Nada se oculta:
+   solo se desplaza, se escala o se resalta.
+   ============================================================ */
+@media (min-width:1024px) and (prefers-reduced-motion:no-preference){
+  @supports (animation-timeline:view()){
+
+    /* 1. El banner se aleja suavemente al bajar (solo mientras sale por arriba). */
+    .promo-banner-viewport{
+      animation:mov-alejar linear both;
+      animation-timeline:view();
+      animation-range:exit 0% exit 100%;
+    }
+    @keyframes mov-alejar{to{transform:scale(.94);opacity:.6;}}
+
+    /* 2. Profundidad en el bloque Celulares / Personaliza: las imágenes
+          decorativas se mueven a otra velocidad que el texto. Se usa la
+          propiedad translate para no pisar sus rotaciones y flotación. */
+    /* La línea de tiempo es del bloque entero: las tarjetas recortan su
+       contenido (overflow:hidden) y view() dentro de ellas no avanzaría. */
+    .pz-dual{view-timeline:--mov-dual block;}
+    .pz-dual-cel-img{
+      animation:mov-profundidad linear both;
+      animation-timeline:--mov-dual;
+      animation-range:cover 0% cover 100%;
+    }
+    /* El collage ya flota (pzFloat): se suman las dos animaciones y se
+       conserva el desfase de cada foto (ver .pz-fx .collage en tienda.css). */
+    .pz-dual .pz-fx .collage img{animation:pzFloat 7s ease-in-out infinite alternate,mov-profundidad linear both;
+      animation-timeline:auto,--mov-dual;animation-range:normal,cover 0% cover 100%;}
+    .pz-dual .pz-fx .collage img:nth-child(1){animation-delay:-1s,0s;}
+    .pz-dual .pz-fx .collage img:nth-child(2){animation-delay:-3s,0s;}
+    .pz-dual .pz-fx .collage img:nth-child(3){animation-delay:-2s,0s;}
+    .pz-dual .pz-fx .collage img:nth-child(4){animation-delay:-4s,0s;}
+    @keyframes mov-profundidad{from{translate:0 24px;}to{translate:0 -24px;}}
+
+    /* 3. Escena fija "Cómo compras con nosotros": la sección queda quieta
+          mientras se baja y los 4 pasos se resaltan uno tras otro. Al terminar
+          siguen resaltados; el texto siempre se ve completo. */
+    .comocompras-section{min-height:150vh;view-timeline:--mov-pasos block;}
+    .comocompras-section > .wrap{position:sticky;top:calc(50vh - 150px);}
+    .comocompras li{position:relative;isolation:isolate;
+      animation:mov-paso linear both;animation-timeline:--mov-pasos;}
+    .comocompras li::after{content:"";position:absolute;inset:0;z-index:-1;border-radius:inherit;
+      box-shadow:0 22px 40px -18px rgba(0,0,0,.32),0 0 0 2px #000;opacity:0;
+      animation:mov-paso-luz linear both;animation-timeline:--mov-pasos;}
+    .comocompras li span{animation:mov-paso-num linear both;animation-timeline:--mov-pasos;}
+    .comocompras li:nth-child(1),.comocompras li:nth-child(1)::after,.comocompras li:nth-child(1) span{animation-range:contain 0% contain 18%;}
+    .comocompras li:nth-child(2),.comocompras li:nth-child(2)::after,.comocompras li:nth-child(2) span{animation-range:contain 18% contain 36%;}
+    .comocompras li:nth-child(3),.comocompras li:nth-child(3)::after,.comocompras li:nth-child(3) span{animation-range:contain 36% contain 54%;}
+    .comocompras li:nth-child(4),.comocompras li:nth-child(4)::after,.comocompras li:nth-child(4) span{animation-range:contain 54% contain 72%;}
+    @keyframes mov-paso{from{transform:none;}to{transform:translateY(-10px);}}
+    @keyframes mov-paso-luz{from{opacity:0;}to{opacity:1;}}
+    @keyframes mov-paso-num{from{transform:none;}to{transform:scale(1.22);}}
+  }
 }

@@ -271,7 +271,7 @@
   }
   function reelProgreso(p){
     const b = document.getElementById('reelProgress');
-    if(b){ b.hidden = p <= 0 || p >= 1; b.style.setProperty('--p', (p * 100).toFixed(1) + '%'); }
+    if(b){ b.hidden = p <= 0 || p >= 1; b.style.setProperty('--p', p.toFixed(3)); }
   }
   function descargar(r){
     const a = document.createElement('a');
