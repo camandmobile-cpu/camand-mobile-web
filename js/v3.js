@@ -100,8 +100,10 @@
     splash.insertBefore(capa, splash.firstChild);
     var halo = capa.querySelector('.v3-halo');
 
-    // El logo se aparta mientras pasan los equipos y vuelve al final.
-    logo.animate([{ opacity: 1 }, { opacity: 0, transform: 'scale(.92)' }], { duration: 160, fill: 'forwards' });
+    // El logo se aparta mientras pasan los equipos y vuelve al final. Queda casi
+    // transparente y no en 0: si llegara a 0 antes del primer dibujo, PageSpeed lo
+    // contaría recién al reaparecer (~1,4 s después) y la velocidad medida caía a ~65.
+    logo.animate([{ opacity: 1 }, { opacity: .04, transform: 'scale(.92)' }], { duration: 160, fill: 'forwards' });
     capa.querySelectorAll('canvas').forEach(function(img, i){
       img.animate([
         { opacity: 0, transform: 'translateX(60%) rotate(12deg) scale(.8)' },
@@ -113,7 +115,7 @@
     });
     var vuelta = 120 + fotos.length * paso + 120;
     despues(vuelta, function(){
-      logo.animate([{ opacity: 0, transform: 'scale(.9)' }, { opacity: 1, transform: 'none' }], { duration: 380, fill: 'forwards', easing: 'cubic-bezier(.34,1.56,.64,1)' });
+      logo.animate([{ opacity: .04, transform: 'scale(.9)' }, { opacity: 1, transform: 'none' }], { duration: 380, fill: 'forwards', easing: 'cubic-bezier(.34,1.56,.64,1)' });
     });
     despues(vuelta + 650, function(){ terminar(false); });
   }

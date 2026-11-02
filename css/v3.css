@@ -136,6 +136,8 @@ html.v3 body.loaded #app,html.v3 body.loaded header.nav{animation:none;}
    Solo se quita si al final no hay banners (data-vacio lo pone tienda.js). */
 html.v3 #promoBannerStrip{display:block !important;}
 html.v3 #promoBannerStrip[data-vacio]{display:none !important;}
+/* los puntos del carrusel llegan después: su alto queda reservado para que no empujen la página */
+html.v3 .promo-banner-dots{min-height:26px;}
 html.v3 #promoBannerTrack:empty{position:relative;overflow:hidden;background:var(--surface);}
 html.v3 #promoBannerTrack:empty::before{content:"";position:absolute;top:0;bottom:0;left:0;width:300%;
   background:linear-gradient(100deg,transparent 40%,rgba(255,255,255,.75) 50%,transparent 60%);animation:v3-brillo 1.2s linear infinite;}
