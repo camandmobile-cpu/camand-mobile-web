@@ -11,6 +11,8 @@ const GA_ID = 'G-DDZ8LL1MTK';      // Google Analytics 4 (mismo de index.html)
 const META_PIXEL = '1601620134984140'; // Pixel de Meta (mismo de js/campanas.js)
 // Mismo link CSV que usa index.html (SHEET_CSV_URL). Si lo cambias allá, cámbialo aquí.
 const CSV_URL = 'https://docs.google.com/spreadsheets/d/e/2PACX-1vTVTMXRy1SKrWUR512KBjjWJ0__CcP5g19K2QK7YfVSr5FBeH8PZHMxBAeCKdxQuawOgi-IjsfF4Pvp/pub?gid=1802395348&single=true&output=csv';
+// Mismo link que TEMPORADA_CSV_URL de index.html (pestaña TEMPORADA PAGINA).
+const TEMPORADA_CSV_URL = 'https://docs.google.com/spreadsheets/d/e/2PACX-1vTVTMXRy1SKrWUR512KBjjWJ0__CcP5g19K2QK7YfVSr5FBeH8PZHMxBAeCKdxQuawOgi-IjsfF4Pvp/pub?gid=366996091&single=true&output=csv';
 // Mismo link que BANNERS_CSV_URL de js/tienda.js.
 const BANNERS_CSV_URL = 'https://docs.google.com/spreadsheets/d/e/2PACX-1vTVTMXRy1SKrWUR512KBjjWJ0__CcP5g19K2QK7YfVSr5FBeH8PZHMxBAeCKdxQuawOgi-IjsfF4Pvp/pub?gid=639175825&single=true&output=csv';
 
@@ -143,6 +145,29 @@ async function main(){
   await writeFile('sitemap.xml', `<?xml version="1.0" encoding="UTF-8"?>\n<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">\n${urls.map(u => `  <url><loc>${u}</loc><lastmod>${hoy}</lastmod></url>`).join('\n')}\n</urlset>\n`);
   console.log(`Listo: ${productos.length} páginas de producto + sitemap.xml`);
   await guardarBanners();
+  await escribirTemporada();
+}
+
+// Copia de la pestaña TEMPORADA PAGINA dentro de index.html (entre /*tm*/ y
+// /*/tm*/). En la primera visita la página no tiene copia guardada y arrancaba
+// sin campaña; al llegar la Hoja cambiaba el título y la página "saltaba"
+// (PageSpeed: CLS). Con esta copia arranca ya con la campaña correcta; la
+// tienda igual confirma con la Hoja después. Si la Hoja falla, no se toca nada.
+async function escribirTemporada(){
+  try{
+    const texto = process.env.TEMPORADA_CSV_FILE ? await readFile(process.env.TEMPORADA_CSV_FILE, 'utf8') : await (await fetch(TEMPORADA_CSV_URL)).text();
+    // Mismas claves que leerHoja() de index.html: sin tildes, espacios ni guiones bajos.
+    const filas = parseCSV(texto).map(f => Object.fromEntries(Object.entries(f).map(([k, v]) => [k.replace(/_/g, ''), v])));
+    if(!filas.length || !('tema' in filas[0])) throw new Error('la pestaña TEMPORADA PAGINA no trajo la columna TEMA');
+    const json = JSON.stringify(filas).replace(/</g, '\\u003c').replace(/\*\//g, '*\\/');
+    const pagina = await readFile('index.html', 'utf8');
+    if(!/\/\*tm\*\/[\s\S]*?\/\*\/tm\*\//.test(pagina)){ console.warn('index.html no tiene las marcas de temporada; no se tocó.'); return; }
+    const nueva = pagina.replace(/\/\*tm\*\/[\s\S]*?\/\*\/tm\*\//, () => `/*tm*/${json}/*/tm*/`);
+    if(nueva !== pagina){ await writeFile('index.html', nueva); console.log(`Temporada actualizada en index.html (${filas.length} filas)`); }
+    else console.log('Temporada sin cambios');
+  }catch(e){
+    console.warn('No se actualizó la temporada en index.html:', e.message);
+  }
 }
 
 // Copia de la pestaña BANNERS dentro de la tienda (data/banners.json): en la
