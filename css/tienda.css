@@ -1481,10 +1481,14 @@ footer.site{
 .cookie-btn.reject{background:#fff;color:var(--ink);}
 .cookie-btn.reject:hover{border-color:var(--ink-faint);}
 .cookie-btn.config{background:none;color:var(--ink-soft);border-color:transparent;text-decoration:underline;padding:11px 4px;}
+/* Celular: aviso compacto (antes los 3 botones iban apilados a lo ancho y
+   el aviso tapaba media pantalla). Mismo texto y mismas opciones. */
 @media (max-width:560px){
-  .cookie-banner{left:10px;right:10px;bottom:10px;padding:18px;flex-direction:column;align-items:stretch;}
-  .cookie-banner-actions{flex-direction:column;}
-  .cookie-btn{width:100%;text-align:center;}
+  .cookie-banner{left:10px;right:10px;bottom:10px;padding:14px 14px 12px;gap:10px;flex-direction:column;align-items:stretch;}
+  .cookie-banner-text{min-width:0;font-size:12px;line-height:1.45;}
+  .cookie-banner-actions{flex-direction:row;align-items:center;gap:6px;}
+  .cookie-btn{flex:1;padding:10px 12px;text-align:center;}
+  .cookie-btn.config{flex:0 0 auto;padding:10px 4px;}
 }
 
 .cookie-modal-overlay{

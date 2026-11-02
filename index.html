@@ -93,8 +93,15 @@
      Se quita para no descargar 5 archivos de fuente de más en cada visita
      — la mayoría de tus visitantes de iPhone/Mac ni siquiera llegan a
      descargar Inter, porque usan la fuente nativa SF Pro Display primero. -->
-<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="css/tienda.css?v=20261102c">
+<!-- Inter se carga sin frenar el primer dibujo de la página (antes bloqueaba
+     ~0,9 s en celular, según PageSpeed): mientras llega, se ve la fuente del
+     sistema, que es casi idéntica; en iPhone/Mac se usa SF Pro de todas formas. -->
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet" media="print" onload="this.media='all'">
+<noscript><link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet"></noscript>
+<!-- Copia de los banners (la genera el robot diario): se pide desde ya para
+     mostrar el banner sin esperar a Google Sheets. -->
+<link rel="preload" href="data/banners.json" as="fetch" crossorigin="anonymous">
+<link rel="stylesheet" href="css/tienda.css?v=20261102d">
 <link rel="stylesheet" href="css/movimiento.css?v=20261102a">
 </head>
 <body>
@@ -2077,16 +2084,18 @@ function mostrarGraciasSuscripcion() {
   </div>
 </div>
 
-<script src="https://cdnjs.cloudflare.com/ajax/libs/PapaParse/5.4.1/papaparse.min.js"></script>
-<script src="js/movimiento.js?v=20261102a"></script>
-<script src="js/tienda.js?v=20261102a"></script>
+<!-- defer: se descargan en paralelo mientras se dibuja la página y se
+     ejecutan en este mismo orden, antes de DOMContentLoaded. -->
+<script defer src="https://cdnjs.cloudflare.com/ajax/libs/PapaParse/5.4.1/papaparse.min.js"></script>
+<script defer src="js/movimiento.js?v=20261102a"></script>
+<script defer src="js/tienda.js?v=20261102d"></script>
 
-<script src="js/personaliza.js?v=20261019o"></script>
+<script defer src="js/personaliza.js?v=20261019o"></script>
 
-<script src="js/campanas.js?v=20261019o"></script>
+<script defer src="js/campanas.js?v=20261019o"></script>
 
-<script src="js/plantillas.js?v=20261019o"></script>
-<script src="js/reels.js?v=20261019o"></script>
+<script defer src="js/plantillas.js?v=20261019o"></script>
+<script defer src="js/reels.js?v=20261019o"></script>
 <script src="js/aranas.js?v=20261019o" defer></script>
 
 </body>
