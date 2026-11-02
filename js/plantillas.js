@@ -119,5 +119,19 @@ function pzUsarPlantilla(id){
   };
   img.src = pzPlantillaCanvas(p, 900, 1930).toDataURL('image/jpeg', 0.92);
 }
-pzRenderPlantillas();
-window.addEventListener('camand:temporada', pzRenderPlantillas);
+// Las miniaturas se dibujan cuando el estudio de Personaliza se acerca a la pantalla,
+// no al abrir la tienda: dibujarlas todas (lienzo + imagen) frenaba ~0,6 s la carga
+// en celular, aunque el cliente nunca entrara a Personaliza.
+let pzPlantillasListas = false;
+function pzPlantillasCuandoSeVean(){
+  const cont = document.getElementById('pzPlantillas');
+  if(!cont) return;
+  const dibujar = () => { if(!pzPlantillasListas){ pzPlantillasListas = true; pzRenderPlantillas(); } };
+  if(!('IntersectionObserver' in window)){ dibujar(); return; }
+  new IntersectionObserver((es, obs) => {
+    if(es.some(e => e.isIntersecting)){ obs.disconnect(); dibujar(); }
+  }, { rootMargin: '600px 0px' }).observe(cont);
+}
+pzPlantillasCuandoSeVean();
+// Si cambia la campaña, se redibujan (solo si ya se habían dibujado).
+window.addEventListener('camand:temporada', () => { if(pzPlantillasListas) pzRenderPlantillas(); });
