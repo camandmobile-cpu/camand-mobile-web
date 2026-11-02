@@ -2514,9 +2514,14 @@ html[data-temporada="blackfriday"] .hero .eyebrow{color:#b38f00;}
 /* 9. Banner: la foto aparece con un fundido corto cuando termina de cargar.
       Mientras tanto se ve un fondo gris suave, nunca un hueco "roto". */
 .promo-banner-img{opacity:0;transition:opacity .35s var(--ease);background:#ececf0;}
-/* Banner inicial que escribe el robot en index.html: en la tienda actual va oculto
-   (solo adelanta la descarga de la foto); la V3 lo muestra (css/v3.css). */
-.banner-inicial{display:none;}
+/* Banner inicial que escribe el robot en index.html: el primer banner se ve con el
+   primer dibujo de la página, sin esperar a tienda.js (antes aparecía ~1 s después
+   y era lo que PageSpeed medía como contenido principal). Se quita solo cuando
+   tienda.js dibuja el carrusel (script junto al banner en index.html). Mientras
+   tanto el banner y sus puntos tienen su espacio reservado: la página no salta. */
+#promoBannerStrip:has(.banner-inicial){display:block !important;}
+#promoBannerStrip:has(.banner-inicial) .promo-banner-dots{min-height:27px;}
+.banner-inicial{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;z-index:1;pointer-events:none;}
 .promo-banner-img.is-ready{opacity:1;}
 /* Red de seguridad para todas las fotos con fundido: si por cualquier razón
    no llegó el aviso de "cargada", se muestran igual a los 2,5 s. */

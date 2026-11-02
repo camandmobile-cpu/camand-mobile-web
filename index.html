@@ -101,7 +101,7 @@
 <!-- Copia de los banners (la genera el robot diario): se pide desde ya para
      mostrar el banner sin esperar a Google Sheets. -->
 <link rel="preload" href="data/banners.json" as="fetch" crossorigin="anonymous">
-<link rel="stylesheet" href="css/tienda.css?v=20261102g">
+<link rel="stylesheet" href="css/tienda.css?v=20261102h">
 <link rel="stylesheet" href="css/movimiento.css?v=20261102c">
 <!-- V3 en vista previa: camandmobile.com/?v3=1 la activa en ESTE navegador y
      ?v3=0 la apaga. Sin el interruptor no se descarga nada de la V3, así que
@@ -123,7 +123,7 @@
     // del primer dibujo, y PageSpeed bajaba de ~80 a ~53. Sin precarga, la primera
     // visita usa Inter y desde la segunda (ya en caché) se ve Manrope.
     document.write('<link rel="stylesheet" href="css/v3.css?v=20261102i">' +
-      '<script defer src="js/v3.js?v=20261102c"><\/script>');
+      '<script defer src="js/v3.js?v=20261102d"><\/script>');
   }catch(e){}
 })();
 </script>
@@ -613,17 +613,20 @@ window.TEMPORADA_CONFIG = {
       <div class="promo-banner-dots" id="promoBannerDots"></div>
     </div>
     <script>
-      // V3: el banner inicial (escrito por el robot) se quita solo cuando tienda.js
-      // dibuja el carrusel. Si el robot aún no lo escribió, se arma con
-      // data/banners.json. Misma URL y srcset que usa la tienda: la foto no se baja dos veces.
+      // El banner inicial (escrito por el robot) se quita solo cuando tienda.js
+      // dibuja el carrusel, o si al final la Hoja no trae banners (data-vacio).
+      // En la V3, si el robot aún no lo escribió, se arma con data/banners.json.
+      // Misma URL y srcset que usa la tienda: la foto no se baja dos veces.
       (function(){
-        if(!document.documentElement.classList.contains('v3')) return;
+        var strip = document.getElementById('promoBannerStrip');
         var vp = document.getElementById('promoBannerViewport'), track = document.getElementById('promoBannerTrack');
         var fijo = vp.querySelector('.banner-inicial');
         function quitarAlDibujar(img){
           new MutationObserver(function(_, obs){ if(track.children.length){ obs.disconnect(); setTimeout(function(){ img.remove(); }, 600); } }).observe(track, { childList: true });
+          new MutationObserver(function(_, obs){ if(strip.dataset.vacio){ obs.disconnect(); img.remove(); } }).observe(strip, { attributes: true, attributeFilter: ['data-vacio'] });
         }
         if(fijo){ quitarAlDibujar(fijo); return; }
+        if(!document.documentElement.classList.contains('v3')) return;
         function tam(u, w){
           if(!/^https?:\/\/res\.cloudinary\.com\/.+\/upload\//i.test(u)) return u;
           if(/fl_layer_apply/.test(u) && /\/v\d+\//.test(u)) return u.replace(/\/(v\d+\/)/, '/w_' + w + ',q_auto,f_auto,c_limit/$1');
@@ -681,6 +684,11 @@ window.TEMPORADA_CONFIG = {
           var tm = window.TEMPORADA;
           var eb = document.getElementById('heroEyebrow'), t = document.getElementById('heroTitle'), sub = document.getElementById('heroSub');
           window.TM_HERO_ORIGINAL = { eb: eb.innerHTML, t: t.innerHTML, sub: sub.innerHTML };
+          // La franja de temporada se oculta cuando repite lo mismo que el hero (misma
+          // regla que js/campanas.js), pero desde ya: si no, se dibujaba vacía y al
+          // ocultarse después la página saltaba hacia arriba.
+          var promo = document.getElementById('tmPromo');
+          if(promo && tm && tm.hero && tm.promo && tm.promo.accion === tm.hero.accion) promo.style.display = 'none';
           if(!tm || !tm.hero) return;
           eb.textContent = 'Campaña del mes · ' + (tm.nombre || '');
           t.textContent = tm.hero.titulo || '';
