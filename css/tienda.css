@@ -391,12 +391,12 @@ nav.links button.is-active::after{
 .cch-media svg{width:64px;height:64px;stroke:var(--ink);transition:transform .3s var(--ease);}
 .cat-card-home:hover .cch-media img,.cat-card-home:hover .cch-media svg{transform:scale(1.03);}
 @media (max-width:480px){ .cch-media svg{width:46px;height:46px;} }
-.cat-card-home h4{
+.cat-card-home h3{
   margin:0;font-size:16px;font-weight:600;color:var(--ink);letter-spacing:-0.01em;
   display:flex;align-items:center;justify-content:center;gap:5px;
 }
-.cat-card-home h4 .arrow{display:inline-block;transition:transform .25s var(--ease);}
-.cat-card-home:hover h4 .arrow{transform:translateX(3px);}
+.cat-card-home h3 .arrow{display:inline-block;transition:transform .25s var(--ease);}
+.cat-card-home:hover h3 .arrow{transform:translateX(3px);}
 
 /* ---------- BANNER DESTACADO: ESTUCHES PERSONALIZADOS ACRYGEL ---------- */
 .acrygel-feature{

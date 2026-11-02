@@ -56,7 +56,8 @@ function tmAplicarInicio(){
   const eb = document.getElementById('heroEyebrow'), t = document.getElementById('heroTitle'), sub = document.getElementById('heroSub');
   const cta = document.getElementById('tmHeroCta'), img = document.getElementById('tmHeroImg');
   if(!eb || !t || !sub) return;
-  if(!_tmHeroOriginal) _tmHeroOriginal = { eb: eb.innerHTML, t: t.innerHTML, sub: sub.innerHTML };
+  // El texto original lo guarda index.html antes de poner el de la campaña.
+  if(!_tmHeroOriginal) _tmHeroOriginal = window.TM_HERO_ORIGINAL || { eb: eb.innerHTML, t: t.innerHTML, sub: sub.innerHTML };
   const sec = document.getElementById('homeFeaturedSection'), slot = document.getElementById('tmOfertasSlot');
   if(sec && !_tmFeaturedHome) _tmFeaturedHome = { parent: sec.parentNode, next: sec.nextSibling };
   const titulo = document.getElementById('homeFeaturedTitle');

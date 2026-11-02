@@ -1,0 +1,4 @@
+manrope-latin.woff2 — fuente Manrope.
+Licencia SIL Open Font License 1.1 (uso libre, también comercial):
+https://openfontlicense.org/open-font-license-official-text/
+Descargada de Google Fonts (subconjunto latino, pesos 500 a 800) el 2026-11-02.
