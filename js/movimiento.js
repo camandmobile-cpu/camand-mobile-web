@@ -7,12 +7,31 @@
      "lavada" en celulares lentos hasta que terminaba de cargar el catálogo).
    - Solo se anima lo que entra al bajar: fundido + desplazamiento leve.
    - Si el sistema del cliente pide "reducir movimiento", no se anima nada.
-   La etapa "Movimiento" agregará aquí el scroll suave, el escalonado de
-   tarjetas y las escenas fijas/parallax. Estilos: css/movimiento.css.
+   - Lo que entra junto (una fila de tarjetas) aparece escalonado.
+   Las escenas al desplazarse (parallax, paso a paso) son solo CSS: css/movimiento.css.
    ============================================================ */
 (function(){
   var reducir = !!(window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches);
   var observador = null;
+  // Escalonado: lo que entra junto aparece uno tras otro, 40 ms entre cada uno y tope de 6 pasos.
+  var PASO_MS = 40, MAX_PASOS = 6;
+
+  function mostrar(entradas){
+    var visibles = entradas.filter(function(e){ return e.isIntersecting; }).map(function(e){ return e.target; });
+    // En orden de lectura: de arriba hacia abajo y de izquierda a derecha.
+    visibles.sort(function(a, b){
+      var ra = a.getBoundingClientRect(), rb = b.getBoundingClientRect();
+      return (Math.round(ra.top) - Math.round(rb.top)) || (ra.left - rb.left);
+    });
+    visibles.forEach(function(el, i){
+      var paso = Math.min(i, MAX_PASOS - 1);
+      if(paso) el.style.setProperty('--mov-retraso', (paso * PASO_MS) + 'ms');
+      el.classList.add('in-view');
+      observador.unobserve(el);
+      // El retraso solo aplica a la entrada; después el hover responde sin espera.
+      if(paso) setTimeout(function(){ el.style.removeProperty('--mov-retraso'); }, 700 + paso * PASO_MS);
+    });
+  }
 
   function enPantalla(el){
     var r = el.getBoundingClientRect();
@@ -29,11 +48,7 @@
       return;
     }
     if(!observador){
-      observador = new IntersectionObserver(function(entradas){
-        entradas.forEach(function(e){
-          if(e.isIntersecting){ e.target.classList.add('in-view'); observador.unobserve(e.target); }
-        });
-      }, { threshold: 0.08, rootMargin: '0px 0px -6% 0px' });
+      observador = new IntersectionObserver(mostrar, { threshold: 0.08, rootMargin: '0px 0px -6% 0px' });
     }
     elementos.forEach(function(el){
       // Ambas clases en el mismo instante: lo visible nunca alcanza a ocultarse.
