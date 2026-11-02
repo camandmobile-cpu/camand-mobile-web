@@ -8,8 +8,8 @@
    ============================================================ */
 
 @font-face{
-  /* optional y no swap: con la precarga casi siempre llega a tiempo; si no, esa visita
-     usa la fuente del sistema completa en vez de cambiarla a mitad (el título "saltaba"). */
+  /* optional y no swap: si no llega a tiempo, esa visita usa Inter completa en vez de
+     cambiarla a mitad (el título "saltaba"). Sin precarga a propósito: ver index.html. */
   font-family:"Manrope";font-style:normal;font-weight:500 800;font-display:optional;
   src:url("../fonts/manrope-latin.woff2") format("woff2");
 }

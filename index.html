@@ -119,8 +119,10 @@
     h.classList.add('v3');
     // ?entrada=0 se salta el desfile (para medir la V3 sin la entrada).
     if(sessionStorage.getItem('camand_splash_visto') !== '1' && new URLSearchParams(location.search).get('entrada') !== '0') h.classList.add('v3-entrada');
-    document.write('<link rel="preload" href="fonts/manrope-latin.woff2" as="font" type="font/woff2" crossorigin>' +
-      '<link rel="stylesheet" href="css/v3.css?v=20261102g">' +
+    // Sin precarga de Manrope: Chrome espera las fuentes "optional" precargadas antes
+    // del primer dibujo, y PageSpeed bajaba de ~80 a ~53. Sin precarga, la primera
+    // visita usa Inter y desde la segunda (ya en caché) se ve Manrope.
+    document.write('<link rel="stylesheet" href="css/v3.css?v=20261102h">' +
       '<script defer src="js/v3.js?v=20261102b"><\/script>');
   }catch(e){}
 })();
@@ -2174,7 +2176,7 @@ function mostrarGraciasSuscripcion() {
      ejecutan en este mismo orden, antes de DOMContentLoaded. -->
 <script defer src="https://cdnjs.cloudflare.com/ajax/libs/PapaParse/5.4.1/papaparse.min.js"></script>
 <script defer src="js/movimiento.js?v=20261102b"></script>
-<script defer src="js/tienda.js?v=20261102f"></script>
+<script defer src="js/tienda.js?v=20261102g"></script>
 
 <script defer src="js/personaliza.js?v=20261019o"></script>
 

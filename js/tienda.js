@@ -1241,6 +1241,7 @@ function checkoutWhatsApp(){
 const CATGRID_OCULTAS = ['accesorios', 'apple', 'android', 'tablets', 'computadores'];
 
 function renderCatGrid(){
+  ARMADO_PENDIENTE.delete('tech');
   const grid = document.getElementById('catGrid');
   grid.innerHTML = '';
   Object.entries(CATALOG)
@@ -1398,6 +1399,7 @@ function toggleCategory(key){
 }
 
 function renderAccesoriosGrid(){
+  ARMADO_PENDIENTE.delete('accesorios');
   const grid = document.getElementById('accesoriosGrid');
   if (!grid) return;
   const cat = CATALOG.accesorios;
@@ -1475,6 +1477,7 @@ function getExtraHub(key){
 // de arriba — reutiliza toda la infraestructura de filtros/carrito existente
 // (FILTER_STATE, PANEL_SOURCE, flattenItems, filteredItems, renderFilterBar).
 function renderExtraHubGrid(key, gridId){
+  ARMADO_PENDIENTE.delete(key);   // ya armada: no volver a armarla en segundo plano
   const grid = document.getElementById(gridId);
   if(!grid) return;
   const hub = getExtraHub(key);
@@ -1605,6 +1608,7 @@ function renderMegaAccesorios(){
 }
 
 function renderMegaMenus(){
+  ARMADO_PENDIENTE.delete('mega');
   renderMegaEquipos();
   renderMegaTablets();
   renderMegaRelojes();
@@ -1672,6 +1676,9 @@ const HASH_VIEWS = ['home','personaliza','tech','celulares','tablets','computado
 let _goToken = 0;
 
 function go(view, opts){
+  // Si esta vista aún no se había armado (ver ARMADO_DIFERIDO), se arma ya,
+  // mientras corre la animación de cambio de vista.
+  armarVista(view);
   if(view !== 'product') document.body.classList.remove('pdp-sticky-on');
   document.body.classList.toggle('on-product', view === 'product');
   opts = opts || {};
@@ -1816,22 +1823,59 @@ function applyCamandLogo(){
   });
 }
 
+/* ===================== ARMADO POR VISTA (velocidad) =====================
+   Antes, al abrir la página se armaban de una vez las tarjetas de TODAS las
+   categorías (391 productos, ~10.000 elementos) aunque el cliente solo viera
+   el inicio, y el primer dibujo esperaba a que eso terminara. Ahora se arma ya
+   solo la vista que se está viendo; las demás se arman cuando el celular está
+   desocupado, o al momento si el cliente entra a ellas antes (ver go()). */
+const ARMADO_DIFERIDO = {
+  tech: () => renderCatGrid(),
+  celulares: () => renderCelularesGrid(),
+  accesorios: () => renderAccesoriosGrid(),
+  tablets: () => renderTabletsGrid(),
+  computadores: () => renderComputadoresGrid(),
+  relojes: () => renderRelojesGrid(),
+  audifonos: () => renderAudifonosGrid(),
+  techoficina: () => renderTechOficinaGrid(),
+  mega: () => renderMegaMenus()
+};
+const ARMADO_PENDIENTE = new Set();
+let _armadoProgramado = false;
+function armarVista(clave){
+  if(!ARMADO_PENDIENTE.has(clave)) return;
+  ARMADO_PENDIENTE.delete(clave);
+  ARMADO_DIFERIDO[clave]();
+}
+function armarPendientes(){
+  const enCola = (fn) => window.requestIdleCallback ? requestIdleCallback(fn, { timeout: 3000 }) : setTimeout(() => fn(null), 250);
+  if(_armadoProgramado) return;
+  _armadoProgramado = true;
+  const paso = (plazo) => {
+    // Una vista por vez mientras el celular tenga tiempo libre (o una si ya venció el plazo).
+    do { const k = ARMADO_PENDIENTE.values().next().value; if(k === undefined) break; armarVista(k); }
+    while(plazo && !plazo.didTimeout && plazo.timeRemaining() > 12 && ARMADO_PENDIENTE.size);
+    if(ARMADO_PENDIENTE.size) enCola(paso); else _armadoProgramado = false;
+  };
+  enCola(paso);
+}
+// El mega-menú se arma apenas el cliente se acerca al menú, si aún no estaba listo.
+['pointerenter', 'focusin'].forEach(ev => {
+  const nav = document.querySelector('nav.links');
+  if(nav) nav.addEventListener(ev, () => armarVista('mega'));
+});
+
 function renderTodo(){
-  renderCatGrid();
-  renderAccesoriosGrid();
-  renderCelularesGrid();
-  renderTabletsGrid();
-  renderComputadoresGrid();
-  renderRelojesGrid();
-  renderAudifonosGrid();
-  renderTechOficinaGrid();
+  Object.keys(ARMADO_DIFERIDO).forEach(k => ARMADO_PENDIENTE.add(k));
+  const activa = document.querySelector('.view.active');
+  if(activa) armarVista(activa.id.replace('view-', ''));
+  armarPendientes();
   renderHomeFeatured();
   renderHomeRails();
   renderCinta();
   if(typeof renderPersonaliza === 'function') renderPersonaliza();
   if(typeof renderCampanas === 'function') renderCampanas();
   if(typeof storyRefresh === 'function' && typeof tmStoryTheme === 'function') tmStoryTheme();
-  renderMegaMenus();
   renderPromoBanner();
   renderGallery();
   renderHeroShowcase();
@@ -2367,11 +2411,17 @@ function routeFromHash(){
   if(productMatch){ openProduct(decodeURIComponent(productMatch[1]), { fromHash: true }); return; }
   // #/p/<slug> lo atiende camandRutaSlug() (js/campanas.js) en su propio 'hashchange'.
   if(/^#\/p\/[a-z0-9-]+$/.test(hash)) return;
-  const viewMatch = hash.match(/^#\/(tech|accesorios|cases|personaliza|faq|privacidad|devoluciones|historias)$/);
-  if(viewMatch){ go(viewMatch[1], { fromHash: true }); return; }
+  // Cualquier vista con URL propia (HASH_VIEWS). Antes la lista estaba escrita
+  // aparte y le faltaban celulares, tablets, computadores, relojes, audífonos y
+  // tech & oficina: esos links abrían el inicio.
+  const viewMatch = hash.match(/^#\/([a-z]+)$/);
+  if(viewMatch && viewMatch[1] !== 'home' && HASH_VIEWS.includes(viewMatch[1])){ go(viewMatch[1], { fromHash: true }); return; }
   // #/skins: link corto para Instagram — abre Personaliza y baja al estudio de skins.
   if(hash === '#/skins'){ go('personaliza', { fromHash: true }); setTimeout(() => { if(typeof pzScrollTo === 'function') pzScrollTo('pzSkinStudio'); }, 700); return; }
-  if((hash === '' || hash === '#' || hash === '#/home') && CURRENT_PRODUCT_ID){
+  // Sin hash = inicio. Antes solo volvía al inicio desde una ficha de producto;
+  // desde una categoría, el botón "atrás" no hacía nada.
+  const enInicio = (document.querySelector('.view.active') || {}).id === 'view-home';
+  if((hash === '' || hash === '#' || hash === '#/home') && (CURRENT_PRODUCT_ID || !enInicio)){
     go('home', { fromHash: true });
   }
 }
