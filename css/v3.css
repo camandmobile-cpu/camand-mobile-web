@@ -1,0 +1,168 @@
+/* ============================================================
+   CAMAND MOBILE — V3 (vista previa)
+   Solo se carga con el interruptor ?v3=1 (ver <head> de index.html):
+   los clientes no descargan este archivo hasta que se active para todos.
+   Dirección aprobada: base blanca minimal, un solo color para comprar
+   (azul Camand), colores vivos por categoría y Personaliza en oscuro tech.
+   Todo cuelga de html.v3 para ganarle a tienda.css sin !important.
+   ============================================================ */
+
+@font-face{
+  /* optional y no swap: con la precarga casi siempre llega a tiempo; si no, esa visita
+     usa la fuente del sistema completa en vez de cambiarla a mitad (el título "saltaba"). */
+  font-family:"Manrope";font-style:normal;font-weight:500 800;font-display:optional;
+  src:url("../fonts/manrope-latin.woff2") format("woff2");
+}
+
+/* ---------- 1. Tokens ---------- */
+html.v3{
+  /* base */
+  --bg:#ffffff;
+  --surface:#f4f4f6;
+  --surface-2:#ececf0;
+  --ink:#0d0d10;
+  --ink-soft:#5f6068;
+  --ink-faint:#71727a;           /* antes #a1a1a6: no llegaba al contraste mínimo sobre blanco */
+  --line:#ececf0;
+
+  /* comprar: un solo color */
+  --tech:#1f4dff;
+  --tech-dark:#1438d6;
+  --tech-tint:#eef2ff;
+  --cases:#1f4dff;
+  --cases-dark:#1438d6;
+  --cases-tint:#eef2ff;
+  --buy:#1f4dff;
+  --buy-hover:#1438d6;
+  --trust:#0f7a4d;
+
+  /* colores vivos (categorías y acentos, nunca para comprar) */
+  --v3-magenta:#ff2e88;
+  --v3-naranja:#ff7a1a;
+  --v3-lima:#5fae12;             /* lima oscurecida: el blanco encima sigue siendo legible */
+  --v3-violeta:#7b4ee6;
+  --v3-cian:#00a9c7;
+  --v3-oscuro:#0b0b0e;
+
+  /* letras */
+  --v3-titulo:"Manrope","Inter",system-ui,sans-serif;
+  --v3-texto:"Inter",system-ui,-apple-system,"Segoe UI",sans-serif;
+
+  /* forma */
+  --radius-lg:24px;
+  --radius-md:20px;
+  --radius-sm:14px;
+  --shadow-1:0 1px 2px rgba(13,13,16,.04),0 14px 30px -18px rgba(13,13,16,.22);
+  --shadow-2:0 2px 8px rgba(13,13,16,.06),0 30px 50px -24px rgba(13,13,16,.3);
+
+  /* movimiento (lo usan movimiento.css/js y este archivo) */
+  --ease:cubic-bezier(.22,.61,.36,1);
+  --v3-rebote:cubic-bezier(.34,1.56,.64,1);
+  --v3-salida:cubic-bezier(.7,0,.2,1);
+  --mov-duracion:.55s;
+  --mov-distancia:18px;
+}
+
+/* ---------- 2. Letras ---------- */
+html.v3 body{font-family:var(--v3-texto);background:var(--bg);color:var(--ink);}
+html.v3 h1,html.v3 h2,html.v3 h3,html.v3 h4,
+html.v3 .pdp-title,html.v3 .pc-price,html.v3 .pdp-price,html.v3 .pdp-sticky-info b,
+html.v3 .home-featured-head h2,html.v3 .section-head h2{font-family:var(--v3-titulo);letter-spacing:-.025em;}
+html.v3 .hero h1{font-weight:800;letter-spacing:-.035em;}
+html.v3 .hero h1 em{color:var(--tech);font-weight:800;}
+html.v3 .eyebrow{color:var(--ink-soft);}
+
+/* ---------- 3. Barra superior y encabezado ---------- */
+html.v3 .top-bar{background:var(--ink);}
+html.v3 header.nav{background:rgba(255,255,255,.86);-webkit-backdrop-filter:saturate(1.6) blur(16px);backdrop-filter:saturate(1.6) blur(16px);border-bottom-color:var(--line);}
+html.v3 nav.links button{color:var(--ink);font-weight:600;}
+html.v3 nav.links button:hover:not(.is-active){background:var(--surface);color:var(--ink);}
+html.v3 nav.links button.is-active::after{background:var(--tech);height:3px;}
+html.v3 nav.links button.nav-pz,html.v3 nav.links button.nav-pz.is-active{background:var(--v3-oscuro);color:#fff;}
+html.v3 nav.links button.nav-pz:hover{background:#26262e;color:#fff;}
+
+/* ---------- 4. Botones ---------- */
+html.v3 .product-card .pc-add,html.v3 .pdp-add-btn,html.v3 .pdp-sticky-btn,html.v3 .tm-hero-btn,html.v3 .pz-btn.blue{
+  border-radius:100px;box-shadow:0 10px 22px -14px rgba(31,77,255,.8);
+  transition:background .25s var(--ease),transform .2s var(--ease),box-shadow .25s var(--ease);
+}
+html.v3 .product-card .pc-add:hover,html.v3 .pdp-add-btn:hover,html.v3 .tm-hero-btn:hover{transform:translateY(-2px);box-shadow:0 16px 28px -14px rgba(31,77,255,.85);}
+html.v3 .product-card .pc-add:active,html.v3 .pdp-add-btn:active{transform:scale(.96);}
+html.v3 .btn-primary{border-radius:100px;}
+html.v3 .hero-compare-btn{border-radius:100px;}
+
+/* ---------- 5. Tarjetas de producto ---------- */
+html.v3 .product-card{border:1px solid var(--line);border-radius:22px;background:#fff;}
+html.v3 .product-card:hover{border-color:transparent;transform:translateY(-5px);box-shadow:var(--shadow-2);}
+html.v3 .product-card .pc-media{background:var(--surface);}
+html.v3 .product-card:hover .pc-media img{transform:scale(1.06) rotate(-1.5deg);}
+html.v3 .product-card .pc-name{font-size:14.5px;}
+html.v3 .product-card .pc-price{color:var(--ink);font-size:18px;}
+html.v3 .product-card .pc-badge.nuevo{background:var(--ink);}
+
+/* ---------- 6. Categorías del inicio: un color vivo cada una ---------- */
+html.v3 .cat-card-home{--c:var(--tech);position:relative;overflow:hidden;border:1px solid var(--line);background:#fff;}
+html.v3 .cat-card-home:nth-child(2){--c:var(--v3-violeta);}
+html.v3 .cat-card-home:nth-child(3){--c:var(--v3-lima);}
+html.v3 .cat-card-home:nth-child(4){--c:var(--v3-naranja);}
+html.v3 .cat-card-home:nth-child(5){--c:var(--v3-cian);}
+html.v3 .cat-card-home:nth-child(6){--c:var(--v3-magenta);}
+html.v3 .cat-card-home::before{content:"";position:absolute;width:130px;height:130px;right:-46px;top:-46px;border-radius:50%;background:var(--c);opacity:.13;transition:transform .55s var(--ease),opacity .3s;pointer-events:none;}
+html.v3 .cat-card-home:hover{border-color:var(--c);}
+html.v3 .cat-card-home:hover::before{transform:scale(2.4);opacity:.09;}
+html.v3 .cat-card-home .cch-media svg{stroke:var(--c);}
+html.v3 .cat-card-home h3 .arrow{color:var(--c);}
+
+/* ---------- 7. Personaliza: oscuro tech ---------- */
+html.v3 .pz-dual-pz,html.v3 .pz-hero{background:var(--v3-oscuro);}
+
+/* ---------- 8. Accesibilidad: foco visible, contraste y tamaño para el dedo ---------- */
+html.v3 :focus-visible{outline:3px solid var(--tech);outline-offset:3px;}
+/* el antetítulo de campaña usaba el color de la campaña (amarillo oscuro en Black): no se leía */
+html.v3[data-temporada] .hero .eyebrow,html.v3 .hero .eyebrow{color:var(--ink-soft);}
+html.v3 #suscripcion a{color:var(--tech-dark) !important;}   /* !important: el color viene escrito en el HTML */
+/* puntos del banner: área de toque de 26px sin cambiar el punto */
+html.v3 .promo-banner-dot{min-width:26px;min-height:26px;padding:10px 6px;}
+/* "Comparar": la casilla de 12px se reemplaza por toda la pastilla (28px de alto) */
+html.v3 .product-card .pc-compare{min-height:28px;padding:6px 11px 6px 9px;}
+html.v3 .product-card .pc-compare input{position:absolute;inset:0;width:100%;height:100%;opacity:0;cursor:pointer;margin:0;}
+html.v3 .product-card .pc-compare::before{content:"";width:12px;height:12px;border-radius:4px;box-shadow:inset 0 0 0 1.6px currentColor;flex-shrink:0;}
+html.v3 .product-card .pc-compare.is-active::before{background:#fff url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%231f4dff' stroke-width='4' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M5 12.5l4.5 4.5L19 7.5'/%3E%3C/svg%3E") center/10px no-repeat;box-shadow:none;}
+
+/* ---------- 9. Sin el "zoom" de entrada de la página (la entrada nueva lo reemplaza) ---------- */
+html.v3 body.loaded #app,html.v3 body.loaded header.nav{animation:none;}
+/* El banner tiene su espacio desde el primer dibujo, con un brillo de "cargando":
+   antes aparecía de golpe y empujaba la página hacia abajo (PageSpeed: CLS).
+   Solo se quita si al final no hay banners (data-vacio lo pone tienda.js). */
+html.v3 #promoBannerStrip{display:block !important;}
+html.v3 #promoBannerStrip[data-vacio]{display:none !important;}
+html.v3 #promoBannerTrack:empty{position:relative;overflow:hidden;background:var(--surface);}
+html.v3 #promoBannerTrack:empty::before{content:"";position:absolute;top:0;bottom:0;left:0;width:300%;
+  background:linear-gradient(100deg,transparent 40%,rgba(255,255,255,.75) 50%,transparent 60%);animation:v3-brillo 1.2s linear infinite;}
+/* copia temprana del primer banner (ver script junto al banner en index.html) */
+html.v3 .v3-previo,html.v3 .banner-inicial{display:block;position:absolute;inset:0;width:100%;height:100%;object-fit:cover;z-index:1;pointer-events:none;}
+@keyframes v3-brillo{from{transform:translateX(-66%);}to{transform:translateX(0);}}
+
+/* ---------- 10. Entrada: desfile de equipos y el logo vuela al encabezado ----------
+   html.v3-entrada solo en la primera visita del día (ver <head>). La anima js/v3.js. */
+html.v3 #splash-screen,html.v3[data-temporada] #splash-screen{background:#fff;}
+html.v3 .splash-loader,html.v3 .splash-tagline{display:none;}
+html.v3 .splash-logo-img,html.v3[data-temporada] .splash-logo-img,html.v3[data-temporada="blackfriday"] .splash-logo-img{
+  width:230px;max-width:60vw;margin:0;filter:drop-shadow(0 0 18px rgba(255,255,255,.95));animation:none;
+}
+/* Sin el fundido de entrada del logo: así aparece con lo primero que se dibuja. */
+html.v3 .splash-content{animation:none;position:relative;z-index:2;}
+html.v3 .v3-desfile{position:absolute;inset:0;display:grid;place-items:center;overflow:hidden;pointer-events:none;}
+/* Los equipos se dibujan en <canvas> (ver js/v3.js): son decorativos y así PageSpeed
+   no los toma como "contenido principal" de la página (sí lo es el banner, debajo). */
+html.v3 .v3-desfile canvas{position:absolute;width:min(300px,52vw);height:auto;opacity:0;filter:drop-shadow(0 30px 40px rgba(13,13,16,.2));}
+html.v3 .v3-halo{position:absolute;width:min(520px,120vw);aspect-ratio:1;border-radius:50%;filter:blur(70px);opacity:.35;background:var(--tech);transition:background .25s;}
+html.v3 .v3-saltar{position:absolute;right:16px;top:calc(16px + env(safe-area-inset-top));z-index:3;border:none;background:var(--surface);color:var(--ink-soft);border-radius:100px;padding:9px 15px;font:600 13px var(--v3-texto);cursor:pointer;}
+
+/* ---------- 11. Etiqueta de vista previa ---------- */
+.v3-etiqueta{position:fixed;left:12px;top:calc(var(--stack-h,84px) + 10px);z-index:400;display:flex;align-items:center;gap:8px;background:var(--ink);color:#fff;border-radius:100px;padding:7px 8px 7px 13px;font:600 12px var(--v3-texto);box-shadow:0 10px 24px -10px rgba(0,0,0,.5);}
+.v3-etiqueta a{color:#0d0d10;background:#fff;border-radius:100px;padding:4px 10px;text-decoration:none;font-weight:700;}
+
+@media (prefers-reduced-motion:reduce){
+  html.v3 .product-card:hover,html.v3 .product-card:hover .pc-media img,html.v3 .cat-card-home:hover::before{transform:none;}
+}

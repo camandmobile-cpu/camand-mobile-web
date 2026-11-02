@@ -101,14 +101,36 @@
 <!-- Copia de los banners (la genera el robot diario): se pide desde ya para
      mostrar el banner sin esperar a Google Sheets. -->
 <link rel="preload" href="data/banners.json" as="fetch" crossorigin="anonymous">
-<link rel="stylesheet" href="css/tienda.css?v=20261102e">
+<link rel="stylesheet" href="css/tienda.css?v=20261102g">
 <link rel="stylesheet" href="css/movimiento.css?v=20261102c">
+<!-- V3 en vista previa: camandmobile.com/?v3=1 la activa en ESTE navegador y
+     ?v3=0 la apaga. Sin el interruptor no se descarga nada de la V3, así que
+     los clientes ven la tienda de siempre. Se escribe con document.write para
+     que los estilos frenen el primer dibujo y no se vea un instante la versión
+     vieja. v3-entrada = primera visita del día (desfile de entrada). -->
+<script>
+(function(){
+  try{
+    var p = new URLSearchParams(location.search).get('v3');
+    if(p === '1') localStorage.setItem('camand_v3', '1');
+    if(p === '0') localStorage.removeItem('camand_v3');
+    if(localStorage.getItem('camand_v3') !== '1') return;
+    var h = document.documentElement;
+    h.classList.add('v3');
+    // ?entrada=0 se salta el desfile (para medir la V3 sin la entrada).
+    if(sessionStorage.getItem('camand_splash_visto') !== '1' && new URLSearchParams(location.search).get('entrada') !== '0') h.classList.add('v3-entrada');
+    document.write('<link rel="preload" href="fonts/manrope-latin.woff2" as="font" type="font/woff2" crossorigin>' +
+      '<link rel="stylesheet" href="css/v3.css?v=20261102g">' +
+      '<script defer src="js/v3.js?v=20261102b"><\/script>');
+  }catch(e){}
+})();
+</script>
 </head>
 <body>
 
 <div id="splash-screen">
   <div class="splash-content">
-    <img class="splash-logo-img camand-logo-img" alt="Camand Mobile">
+    <img class="splash-logo-img camand-logo-img" src="img/camand-logo.svg" alt="Camand Mobile" fetchpriority="high">
     <div class="splash-loader"><div class="splash-rider" id="splashRider"></div></div>
     <p class="splash-tagline" id="splashTagline"></p>
   </div>
@@ -444,6 +466,8 @@ window.TEMPORADA_CONFIG = {
   try { CAMAND_SPLASH_VISTO = sessionStorage.getItem('camand_splash_visto') === '1'; sessionStorage.setItem('camand_splash_visto', '1'); } catch(e){}
   if(CAMAND_SPLASH_VISTO) document.documentElement.classList.add('splash-rapido');
   window.addEventListener('DOMContentLoaded', () => {
+    // En la vista previa V3 la entrada la cierra js/v3.js al terminar el desfile.
+    if(document.documentElement.classList.contains('v3-entrada')) return;
     setTimeout(() => {
       const splash = document.getElementById('splash-screen');
       if (splash) {
@@ -481,7 +505,7 @@ window.TEMPORADA_CONFIG = {
 <header class="nav">
   <div class="nav-inner">
     <button class="brand" onclick="go('home')">
-      <img class="brand-logo camand-logo-img" alt="Camand Mobile">
+      <img class="brand-logo camand-logo-img" src="img/camand-logo.svg" alt="Camand Mobile">
     </button>
     <nav class="links">
       <button data-view="home" class="is-active" onclick="go('home')">Home</button>
@@ -571,11 +595,52 @@ window.TEMPORADA_CONFIG = {
     <div class="promo-banner-strip reveal" id="promoBannerStrip" style="display:none;" role="region" aria-roledescription="carrusel" aria-label="Banner promocional" tabindex="0" onkeydown="promoBannerKeyNav(event)">
       <div class="promo-banner-viewport" id="promoBannerViewport">
         <div class="promo-banner-track" id="promoBannerTrack" aria-live="polite"></div>
+        <!-- BANNER INICIAL: lo escribe el robot diario (scripts/generar-productos.mjs)
+             entre estas marcas; no editar a mano. Es el primer banner de la Hoja, en
+             la página misma, para que se vea con lo primero que se dibuja. En la
+             tienda actual queda oculto (solo adelanta la descarga de la foto). --><!--bi--><img class="promo-banner-img is-ready banner-inicial" src="https://res.cloudinary.com/c5sxh1yw/image/upload/w_1600,q_auto,f_auto,c_limit/v1792379191/18_PRO_MAX.png" srcset="https://res.cloudinary.com/c5sxh1yw/image/upload/w_640,q_auto,f_auto,c_limit/v1792379191/18_PRO_MAX.png 640w, https://res.cloudinary.com/c5sxh1yw/image/upload/w_960,q_auto,f_auto,c_limit/v1792379191/18_PRO_MAX.png 960w, https://res.cloudinary.com/c5sxh1yw/image/upload/w_1280,q_auto,f_auto,c_limit/v1792379191/18_PRO_MAX.png 1280w, https://res.cloudinary.com/c5sxh1yw/image/upload/w_1600,q_auto,f_auto,c_limit/v1792379191/18_PRO_MAX.png 1600w" sizes="(max-width:1200px) 100vw, 1200px" alt="ver abajo" fetchpriority="high" decoding="async"><!--/bi-->
       </div>
       <button type="button" class="promo-banner-nav prev" onclick="promoBannerPrev()" aria-label="Banner anterior">‹</button>
       <button type="button" class="promo-banner-nav next" onclick="promoBannerNext()" aria-label="Banner siguiente">›</button>
       <div class="promo-banner-dots" id="promoBannerDots"></div>
     </div>
+    <script>
+      // V3: el banner inicial (escrito por el robot) se quita solo cuando tienda.js
+      // dibuja el carrusel. Si el robot aún no lo escribió, se arma con
+      // data/banners.json. Misma URL y srcset que usa la tienda: la foto no se baja dos veces.
+      (function(){
+        if(!document.documentElement.classList.contains('v3')) return;
+        var vp = document.getElementById('promoBannerViewport'), track = document.getElementById('promoBannerTrack');
+        var fijo = vp.querySelector('.banner-inicial');
+        function quitarAlDibujar(img){
+          new MutationObserver(function(_, obs){ if(track.children.length){ obs.disconnect(); setTimeout(function(){ img.remove(); }, 600); } }).observe(track, { childList: true });
+        }
+        if(fijo){ quitarAlDibujar(fijo); return; }
+        function tam(u, w){
+          if(!/^https?:\/\/res\.cloudinary\.com\/.+\/upload\//i.test(u)) return u;
+          if(/fl_layer_apply/.test(u) && /\/v\d+\//.test(u)) return u.replace(/\/(v\d+\/)/, '/w_' + w + ',q_auto,f_auto,c_limit/$1');
+          return u.replace(/\/upload\//i, '/upload/w_' + w + ',q_auto,f_auto,c_limit/');
+        }
+        fetch('data/banners.json').then(function(r){ return r.json(); }).then(function(d){
+          var filas = (d.filas || []).filter(function(f){ return String(f.activo || 'si').trim().toLowerCase() !== 'no' && ((f.imagen || '').trim() || (f.video || '').trim()); })
+            .sort(function(a, b){ return (Number(a.orden) || 0) - (Number(b.orden) || 0); });
+          var f = filas[0];
+          // Casos que la tienda dibuja distinto (video, foto vertical, banner con capas): se espera a tienda.js.
+          if(!f || track.children.length || (f.video || '').trim() || filas.every(function(x){ return (x.imagenmovil || '').trim(); }) || /banner_personalizados/.test(f.imagen)) return;
+          var u = f.imagen.trim(), img = document.createElement('img');
+          img.className = 'promo-banner-img is-ready v3-previo';
+          img.alt = f.alt || 'Publicidad Camand Mobile';
+          img.fetchPriority = 'high';
+          if(/res\.cloudinary\.com\/.+\/upload\//i.test(u)){
+            img.srcset = [640, 960, 1280, 1600].map(function(w){ return tam(u, w) + ' ' + w + 'w'; }).join(', ');
+            img.sizes = '(max-width:1200px) 100vw, 1200px';
+          }
+          img.src = tam(u, 1600);
+          vp.appendChild(img);
+          quitarAlDibujar(img);
+        }).catch(function(){});
+      })();
+    </script>
     <!-- Cinta de texto en movimiento — mensajes en CINTA_MENSAJES_BASE (o pestaña "CINTA PAGINA" de la Hoja) -->
     <div class="cinta" id="cinta" role="marquee">
       <div class="cinta-track" id="cintaTrack"></div>
@@ -599,6 +664,27 @@ window.TEMPORADA_CONFIG = {
         </button>
         <div class="tm-hero-img" id="tmHeroImg"></div>
       </div>
+      <script>
+        // Si hay campaña, su título se pone YA (antes del primer dibujo). Antes
+        // lo cambiaba js/campanas.js al terminar de cargar y el bloque cambiaba
+        // de alto, empujando la página (PageSpeed lo medía como "salto", CLS).
+        // El botón se dibuja igual y campanas.js luego le conecta la acción.
+        (function(){
+          var tm = window.TEMPORADA;
+          var eb = document.getElementById('heroEyebrow'), t = document.getElementById('heroTitle'), sub = document.getElementById('heroSub');
+          window.TM_HERO_ORIGINAL = { eb: eb.innerHTML, t: t.innerHTML, sub: sub.innerHTML };
+          if(!tm || !tm.hero) return;
+          eb.textContent = 'Campaña del mes · ' + (tm.nombre || '');
+          t.textContent = tm.hero.titulo || '';
+          sub.textContent = tm.hero.sub || '';
+          if(tm.hero.cta){
+            var b = document.createElement('button');
+            b.type = 'button'; b.className = 'tm-hero-btn'; b.textContent = tm.hero.cta;
+            b.insertAdjacentHTML('beforeend', '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4"><path d="M5 12h14M13 6l6 6-6 6"/></svg>');
+            document.getElementById('tmHeroCta').appendChild(b);
+          }
+        })();
+      </script>
     </div>
     <div class="wrap">
 
@@ -645,27 +731,27 @@ window.TEMPORADA_CONFIG = {
       <div class="cat-grid-home reveal" id="catGridHome">
         <button type="button" class="cat-card-home" onclick="go('celulares')">
           <div class="cch-media" id="cchm-equipos"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><rect x="7" y="2" width="10" height="20" rx="2"/><path d="M11 18h2"/></svg></div>
-          <h4>Equipos<span class="arrow">→</span></h4>
+          <h3>Equipos<span class="arrow">→</span></h3>
         </button>
         <button type="button" class="cat-card-home" onclick="go('tablets')">
           <div class="cch-media" id="cchm-tablets"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><rect x="4" y="3" width="16" height="18" rx="2"/><path d="M10 19h4"/></svg></div>
-          <h4>Tablets<span class="arrow">→</span></h4>
+          <h3>Tablets<span class="arrow">→</span></h3>
         </button>
         <button type="button" class="cat-card-home" onclick="go('relojes')">
           <div class="cch-media" id="cchm-relojes"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><rect x="7" y="6" width="10" height="12" rx="3"/><path d="M9 6V3.5h6V6M9 18v2.5h6V18M12 10v2.5l1.6 1"/></svg></div>
-          <h4>Relojes<span class="arrow">→</span></h4>
+          <h3>Relojes<span class="arrow">→</span></h3>
         </button>
         <button type="button" class="cat-card-home" onclick="go('audifonos')">
           <div class="cch-media" id="cchm-audifonos"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M4 14v-2a8 8 0 0 1 16 0v2"/><rect x="2.5" y="14" width="5" height="7" rx="2"/><rect x="16.5" y="14" width="5" height="7" rx="2"/></svg></div>
-          <h4>Audífonos<span class="arrow">→</span></h4>
+          <h3>Audífonos<span class="arrow">→</span></h3>
         </button>
         <button type="button" class="cat-card-home" onclick="go('computadores')">
           <div class="cch-media" id="cchm-computadores"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><rect x="3" y="4" width="18" height="12" rx="1.5"/><path d="M2 20h20"/></svg></div>
-          <h4>Computadores<span class="arrow">→</span></h4>
+          <h3>Computadores<span class="arrow">→</span></h3>
         </button>
         <button type="button" class="cat-card-home" onclick="go('techoficina')">
           <div class="cch-media" id="cchm-techoficina"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><rect x="5" y="8" width="14" height="8" rx="1.5"/><path d="M7 8V4h10v4M8 16v4h8v-4"/></svg></div>
-          <h4>Tech &amp; Oficina<span class="arrow">→</span></h4>
+          <h3>Tech &amp; Oficina<span class="arrow">→</span></h3>
         </button>
       </div>
 
@@ -1854,7 +1940,7 @@ window.TEMPORADA_CONFIG = {
   <p style="margin:0 0 18px;color:#6E6E73;font-size:13.5px;">Celulares, audífonos y relojes con precio especial, directo a tu correo.</p>
 
   <form id="form-suscripcion" action="https://script.google.com/macros/s/AKfycbwEdtFcKkD-FkHsaZWCfc72_yltZV3bbp4Z2ZtarDwXyZsmR18W55kTZpalETJhBWFD/exec" method="POST" target="frame-suscripcion" onsubmit="mostrarGraciasSuscripcion()">
-    <input type="text" name="empresa" style="position:absolute;left:-9999px;" tabindex="-1" autocomplete="off">
+    <input type="text" name="empresa" style="position:absolute;left:-9999px;" tabindex="-1" autocomplete="off" aria-label="No llenar este campo">
 
     <input type="text" name="nombre" placeholder="Tu nombre" required
       style="width:100%;box-sizing:border-box;padding:12px 14px;margin-bottom:10px;border-radius:10px;border:1px solid rgba(0,0,0,0.12);font-size:14px;">
@@ -1891,7 +1977,7 @@ function mostrarGraciasSuscripcion() {
   <div class="wrap">
     <div class="foot-top reveal">
       <div class="foot-brand-row">
-        <img class="camand-logo-img camand-logo-blanco" alt="Camand Mobile">
+        <img class="camand-logo-img camand-logo-blanco" src="img/camand-logo-blanco.svg" alt="Camand Mobile" loading="lazy">
         <span class="foot-brand-name">Camand Mobile</span>
       </div>
       <p class="foot-desc">Compra y venta de celulares y tecnología, nuevos y usados (Android y Apple), en Bogotá. Equipos revisados, con garantía. Paga contraentrega o con tarjeta de crédito a cuotas.</p>
@@ -2071,11 +2157,11 @@ function mostrarGraciasSuscripcion() {
     <p>Elige qué tipo de cookies permites en camandmobile.com. Puedes cambiar esta elección cuando quieras desde el enlace "Configurar cookies" en el pie de página.</p>
     <div class="cookie-modal-row">
       <div class="lbl"><b>Necesarias</b><span>Indispensables para que el carrito de compras y el sitio funcionen. Siempre están activas.</span></div>
-      <label class="cookie-toggle"><input type="checkbox" checked disabled><span class="track"></span><span class="knob"></span></label>
+      <label class="cookie-toggle"><input type="checkbox" checked disabled aria-label="Cookies necesarias (siempre activas)"><span class="track"></span><span class="knob"></span></label>
     </div>
     <div class="cookie-modal-row">
       <div class="lbl"><b>Analíticas (Google Analytics)</b><span>Nos ayudan a entender qué páginas y productos visitas para mejorar el catálogo.</span></div>
-      <label class="cookie-toggle"><input type="checkbox" id="cookieAnalyticsToggle" checked><span class="track"></span><span class="knob"></span></label>
+      <label class="cookie-toggle"><input type="checkbox" id="cookieAnalyticsToggle" checked aria-label="Cookies analíticas (Google Analytics)"><span class="track"></span><span class="knob"></span></label>
     </div>
     <div class="cookie-modal-actions">
       <button type="button" class="cookie-btn reject" onclick="setCookieConsent(false)">Rechazar todas</button>
@@ -2088,11 +2174,11 @@ function mostrarGraciasSuscripcion() {
      ejecutan en este mismo orden, antes de DOMContentLoaded. -->
 <script defer src="https://cdnjs.cloudflare.com/ajax/libs/PapaParse/5.4.1/papaparse.min.js"></script>
 <script defer src="js/movimiento.js?v=20261102b"></script>
-<script defer src="js/tienda.js?v=20261102d"></script>
+<script defer src="js/tienda.js?v=20261102f"></script>
 
 <script defer src="js/personaliza.js?v=20261019o"></script>
 
-<script defer src="js/campanas.js?v=20261019o"></script>
+<script defer src="js/campanas.js?v=20261102a"></script>
 
 <script defer src="js/plantillas.js?v=20261019o"></script>
 <script defer src="js/reels.js?v=20261102a"></script>
