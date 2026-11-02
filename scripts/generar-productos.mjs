@@ -11,6 +11,8 @@ const GA_ID = 'G-DDZ8LL1MTK';      // Google Analytics 4 (mismo de index.html)
 const META_PIXEL = '1601620134984140'; // Pixel de Meta (mismo de js/campanas.js)
 // Mismo link CSV que usa index.html (SHEET_CSV_URL). Si lo cambias allá, cámbialo aquí.
 const CSV_URL = 'https://docs.google.com/spreadsheets/d/e/2PACX-1vTVTMXRy1SKrWUR512KBjjWJ0__CcP5g19K2QK7YfVSr5FBeH8PZHMxBAeCKdxQuawOgi-IjsfF4Pvp/pub?gid=1802395348&single=true&output=csv';
+// Mismo link que BANNERS_CSV_URL de js/tienda.js.
+const BANNERS_CSV_URL = 'https://docs.google.com/spreadsheets/d/e/2PACX-1vTVTMXRy1SKrWUR512KBjjWJ0__CcP5g19K2QK7YfVSr5FBeH8PZHMxBAeCKdxQuawOgi-IjsfF4Pvp/pub?gid=639175825&single=true&output=csv';
 
 function parseCSV(texto){
   const filas = []; let fila = [], campo = '', comillas = false;
@@ -140,5 +142,23 @@ async function main(){
   const urls = [`${SITIO}/`, ...productos.map(p => `${SITIO}/producto/${p.slug}/`)];
   await writeFile('sitemap.xml', `<?xml version="1.0" encoding="UTF-8"?>\n<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">\n${urls.map(u => `  <url><loc>${u}</loc><lastmod>${hoy}</lastmod></url>`).join('\n')}\n</urlset>\n`);
   console.log(`Listo: ${productos.length} páginas de producto + sitemap.xml`);
+  await guardarBanners();
+}
+
+// Copia de la pestaña BANNERS dentro de la tienda (data/banners.json): en la
+// primera visita el banner se muestra sin esperar a Google Sheets (ver
+// cargarBannersDesdeSheet en js/tienda.js). Si la Hoja falla, queda la copia
+// anterior y la tienda sigue consultando la Hoja como siempre.
+async function guardarBanners(){
+  try{
+    const texto = process.env.BANNERS_CSV_FILE ? await readFile(process.env.BANNERS_CSV_FILE, 'utf8') : await (await fetch(BANNERS_CSV_URL)).text();
+    const filas = parseCSV(texto);
+    if(!filas.length || !('imagen' in filas[0])) throw new Error('la pestaña BANNERS no trajo la columna IMAGEN');
+    await mkdir('data', { recursive: true });
+    await writeFile('data/banners.json', JSON.stringify({ generado: new Date().toISOString(), filas }) + '\n');
+    console.log(`Copia de banners: ${filas.length} filas en data/banners.json`);
+  }catch(e){
+    console.warn('No se actualizó data/banners.json:', e.message);
+  }
 }
 main().catch(e => { console.error(e.message); process.exit(1); });

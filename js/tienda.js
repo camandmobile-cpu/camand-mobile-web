@@ -2430,7 +2430,14 @@ function promoBannerMediaHTML(b, i){
   // que se mueve con transform, el modo lazy de Chrome/Safari a veces nunca
   // pedía la imagen hasta recargar la página (banner en blanco).
   const orig = String(mediaUrl).replace(/"/g, '&quot;');
-  const img = `<img class="promo-banner-img" src="${optimizeImageUrl(mediaUrl, 1600)}" data-orig="${orig}" alt="${altJs}" loading="eager" decoding="async"${i === 0 ? ' fetchpriority="high"' : ''}>`;
+  // Cloudinary: cada pantalla descarga el tamaño que necesita (antes el
+  // celular bajaba siempre la versión de 1600 px).
+  const srcset = /res\.cloudinary\.com\/.+\/upload\//i.test(mediaUrl)
+    ? ` srcset="${[640, 960, 1280, 1600].map(w => `${optimizeImageUrl(mediaUrl, w)} ${w}w`).join(', ')}" sizes="(max-width:1200px) 100vw, 1200px"`
+    : '';
+  // El primer banner se muestra sin fundido: es el contenido principal de la
+  // página y el fundido retrasaba casi 1 s el momento en que se ve.
+  const img = `<img class="promo-banner-img${i === 0 ? ' is-ready' : ''}" src="${optimizeImageUrl(mediaUrl, 1600)}"${srcset} data-orig="${orig}" alt="${altJs}" loading="eager" decoding="async"${i === 0 ? ' fetchpriority="high"' : ''}>`;
   // Columna IMAGEN MOVIL (opcional): versión vertical para celular. Las fotos
   // del banner traen el texto incrustado y en formato horizontal; en un
   // celular quedaban de ~125 px de alto con la letra ilegible.
@@ -2829,8 +2836,35 @@ function bannerConLineaClasica(url){
   return /res\.cloudinary\.com\/c5sxh1yw\/image\/upload\/v1789401648\/banner_personalizados\.jpg$/i.test(url) ? BANNER_ESTUCHES_CLASICA : url;
 }
 
+// Filas de la pestaña BANNERS (encabezados ya normalizados) → banners a mostrar.
+function bannersDesdeFilas(filas){
+  return filas
+    .filter(f => String(f.activo || "si").trim().toLowerCase() !== "no")
+    .filter(f => (f.imagen || "").trim() || (f.video || "").trim())
+    .map(f => ({
+      img: bannerConLineaClasica((f.imagen || "").trim()),
+      imgMovil: (f.imagenmovil || f.imagen_movil || "").trim(),
+      vid: (f.video || "").trim(),
+      link: (f.link || "").trim(),
+      alt: (f.alt || f.nombre || "").trim(),
+      kicker: (f.kicker || "").trim(),
+      titulo: (f.titulo || "").trim(),
+      subtitulo: (f.subtitulo || "").trim(),
+      cta: (f.cta || "").trim(),
+      orden: Number(f.orden) || 0
+    }))
+    .sort((a, b) => a.orden - b.orden);
+}
+
 async function cargarBannersDesdeSheet(){
   if(!/^https?:\/\//i.test(BANNERS_CSV_URL)) return;
+  // Primera visita (sin copia guardada): data/banners.json es una copia de la
+  // pestaña BANNERS que el robot diario guarda en la propia tienda. Llega
+  // mucho antes que la Hoja de Google, así que el banner (el contenido
+  // principal de la página) se empieza a cargar de inmediato. Después se
+  // confirma con la Hoja, así que los cambios en BANNERS se siguen viendo al
+  // instante.
+  let yaPintado = false;
   // Igual que con el catálogo: si esta pestaña ya cargó los banners antes
   // en esta misma visita, se muestran de inmediato mientras se confirma
   // en segundo plano si hay cambios.
@@ -2842,8 +2876,19 @@ async function cargarBannersDesdeSheet(){
       PROMO_BANNERS = cache.banners;
       renderPromoBanner();
       initScrollReveal();
+      yaPintado = true;
     }
   }catch(e){}
+  if(!yaPintado){
+    try{
+      const copia = await (await fetch('data/banners.json')).json();
+      if(!PROMO_BANNERS.length && Array.isArray(copia.filas)){
+        PROMO_BANNERS = bannersDesdeFilas(copia.filas);
+        renderPromoBanner();
+        initScrollReveal();
+      }
+    }catch(e){ /* sin copia: se espera a la Hoja, como antes */ }
+  }
   try{
     const res = await fetch(BANNERS_CSV_URL, { cache: "no-store" });
     if(!res.ok) throw new Error("HTTP " + res.status);
@@ -2859,22 +2904,7 @@ async function cargarBannersDesdeSheet(){
       return norm;
     });
 
-    const nuevos = filas
-      .filter(f => String(f.activo || "si").trim().toLowerCase() !== "no")
-      .filter(f => (f.imagen || "").trim() || (f.video || "").trim())
-      .map(f => ({
-        img: bannerConLineaClasica((f.imagen || "").trim()),
-        imgMovil: (f.imagenmovil || f.imagen_movil || "").trim(),
-        vid: (f.video || "").trim(),
-        link: (f.link || "").trim(),
-        alt: (f.alt || f.nombre || "").trim(),
-        kicker: (f.kicker || "").trim(),
-        titulo: (f.titulo || "").trim(),
-        subtitulo: (f.subtitulo || "").trim(),
-        cta: (f.cta || "").trim(),
-        orden: Number(f.orden) || 0
-      }))
-      .sort((a, b) => a.orden - b.orden);
+    const nuevos = bannersDesdeFilas(filas);
 
     // Si la Hoja trae exactamente lo mismo que ya se está mostrando, no se
     // vuelve a dibujar (antes se redibujaba y las fotos se recargaban).
