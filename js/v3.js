@@ -88,13 +88,21 @@
 
     var capa = document.createElement('div');
     capa.className = 'v3-desfile'; capa.setAttribute('aria-hidden', 'true');
-    capa.innerHTML = '<span class="v3-halo"></span>' + fotos.map(function(f){ return '<img src="' + CLD + f + '" alt="" decoding="async">'; }).join('');
+    capa.innerHTML = '<span class="v3-halo"></span>';
+    // Cada equipo se pinta en un <canvas> y no en un <img>: es decoración, y así
+    // PageSpeed no lo confunde con el contenido principal de la página.
+    fotos.forEach(function(f){
+      var cv = document.createElement('canvas'), im = new Image();
+      im.onload = function(){ cv.width = im.naturalWidth; cv.height = im.naturalHeight; cv.getContext('2d').drawImage(im, 0, 0); };
+      im.src = CLD + f;
+      capa.appendChild(cv);
+    });
     splash.insertBefore(capa, splash.firstChild);
     var halo = capa.querySelector('.v3-halo');
 
     // El logo se aparta mientras pasan los equipos y vuelve al final.
     logo.animate([{ opacity: 1 }, { opacity: 0, transform: 'scale(.92)' }], { duration: 160, fill: 'forwards' });
-    capa.querySelectorAll('img').forEach(function(img, i){
+    capa.querySelectorAll('canvas').forEach(function(img, i){
       img.animate([
         { opacity: 0, transform: 'translateX(60%) rotate(12deg) scale(.8)' },
         { opacity: 1, transform: 'none', offset: .4 },

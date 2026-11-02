@@ -2514,6 +2514,9 @@ html[data-temporada="blackfriday"] .hero .eyebrow{color:#b38f00;}
 /* 9. Banner: la foto aparece con un fundido corto cuando termina de cargar.
       Mientras tanto se ve un fondo gris suave, nunca un hueco "roto". */
 .promo-banner-img{opacity:0;transition:opacity .35s var(--ease);background:#ececf0;}
+/* Banner inicial que escribe el robot en index.html: en la tienda actual va oculto
+   (solo adelanta la descarga de la foto); la V3 lo muestra (css/v3.css). */
+.banner-inicial{display:none;}
 .promo-banner-img.is-ready{opacity:1;}
 /* Red de seguridad para todas las fotos con fundido: si por cualquier razón
    no llegó el aviso de "cargada", se muestran igual a los 2,5 s. */

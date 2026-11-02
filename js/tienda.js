@@ -1806,6 +1806,9 @@ function applySistecreditoLogos(){
 // Logo en vector (SVG): se ve nítido a cualquier tamaño y en pantallas de
 // alta densidad. Sobre fondo oscuro (pie de página) se usa la versión blanca.
 // El PNG (CAMAND_LOGO) se sigue usando para el generador de Historias.
+// index.html ya trae el src escrito (antes el logo aparecía solo cuando cargaba
+// el catálogo, y PageSpeed lo medía como contenido principal tardío); esto
+// queda para logos que se agreguen después por JavaScript.
 const CAMAND_LOGO_SVG = "img/camand-logo.svg", CAMAND_LOGO_BLANCO_SVG = "img/camand-logo-blanco.svg";
 function applyCamandLogo(){
   document.querySelectorAll('.camand-logo-img').forEach(img => {

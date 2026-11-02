@@ -140,7 +140,7 @@ html.v3 #promoBannerTrack:empty{position:relative;overflow:hidden;background:var
 html.v3 #promoBannerTrack:empty::before{content:"";position:absolute;top:0;bottom:0;left:0;width:300%;
   background:linear-gradient(100deg,transparent 40%,rgba(255,255,255,.75) 50%,transparent 60%);animation:v3-brillo 1.2s linear infinite;}
 /* copia temprana del primer banner (ver script junto al banner en index.html) */
-html.v3 .v3-previo{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;z-index:1;pointer-events:none;}
+html.v3 .v3-previo,html.v3 .banner-inicial{display:block;position:absolute;inset:0;width:100%;height:100%;object-fit:cover;z-index:1;pointer-events:none;}
 @keyframes v3-brillo{from{transform:translateX(-66%);}to{transform:translateX(0);}}
 
 /* ---------- 10. Entrada: desfile de equipos y el logo vuela al encabezado ----------
@@ -150,11 +150,12 @@ html.v3 .splash-loader,html.v3 .splash-tagline{display:none;}
 html.v3 .splash-logo-img,html.v3[data-temporada] .splash-logo-img,html.v3[data-temporada="blackfriday"] .splash-logo-img{
   width:230px;max-width:60vw;margin:0;filter:drop-shadow(0 0 18px rgba(255,255,255,.95));animation:none;
 }
-html.v3 .splash-content{position:relative;z-index:2;}
+/* Sin el fundido de entrada del logo: así aparece con lo primero que se dibuja. */
+html.v3 .splash-content{animation:none;position:relative;z-index:2;}
 html.v3 .v3-desfile{position:absolute;inset:0;display:grid;place-items:center;overflow:hidden;pointer-events:none;}
-/* En celular los equipos van más pequeños que el banner: si no, PageSpeed toma la
-   foto del desfile como "contenido principal" y la velocidad medida empeora. */
-html.v3 .v3-desfile img{position:absolute;width:min(300px,40vw);max-height:min(360px,30vh);object-fit:contain;opacity:0;filter:drop-shadow(0 30px 40px rgba(13,13,16,.2));}
+/* Los equipos se dibujan en <canvas> (ver js/v3.js): son decorativos y así PageSpeed
+   no los toma como "contenido principal" de la página (sí lo es el banner, debajo). */
+html.v3 .v3-desfile canvas{position:absolute;width:min(300px,52vw);height:auto;opacity:0;filter:drop-shadow(0 30px 40px rgba(13,13,16,.2));}
 html.v3 .v3-halo{position:absolute;width:min(520px,120vw);aspect-ratio:1;border-radius:50%;filter:blur(70px);opacity:.35;background:var(--tech);transition:background .25s;}
 html.v3 .v3-saltar{position:absolute;right:16px;top:calc(16px + env(safe-area-inset-top));z-index:3;border:none;background:var(--surface);color:var(--ink-soft);border-radius:100px;padding:9px 15px;font:600 13px var(--v3-texto);cursor:pointer;}
 

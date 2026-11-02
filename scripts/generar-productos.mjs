@@ -157,8 +157,44 @@ async function guardarBanners(){
     await mkdir('data', { recursive: true });
     await writeFile('data/banners.json', JSON.stringify({ generado: new Date().toISOString(), filas }) + '\n');
     console.log(`Copia de banners: ${filas.length} filas en data/banners.json`);
+    await escribirBannerInicial(filas);
   }catch(e){
     console.warn('No se actualizó data/banners.json:', e.message);
   }
+}
+
+// Igual que optimizeImageUrl() de js/tienda.js (si cambia allá, cambia aquí:
+// la URL debe ser idéntica para que la foto no se descargue dos veces).
+function tamCloudinary(url, w){
+  if(!/^https?:\/\/res\.cloudinary\.com\/.+\/upload\//i.test(url)) return url;
+  if(/fl_layer_apply/.test(url) && /\/v\d+\//.test(url)) return url.replace(/\/(v\d+\/)/, `/w_${w},q_auto,f_auto,c_limit/$1`);
+  return url.replace(/\/upload\//i, `/upload/w_${w},q_auto,f_auto,c_limit/`);
+}
+const escAttr = s => String(s).replace(/&/g, '&amp;').replace(/"/g, '&quot;').replace(/</g, '&lt;');
+
+// Escribe el primer banner de la Hoja dentro de index.html (entre <!--bi--> y
+// <!--/bi-->), para que se vea con lo primero que dibuja la página, sin esperar
+// a ningún JavaScript. Mismo orden y filtros que bannersDesdeFilas() de tienda.js.
+// Los casos que la tienda dibuja distinto (video, foto vertical para celular,
+// banner con capas) se dejan vacíos: ahí manda tienda.js como siempre.
+async function escribirBannerInicial(filas){
+  const activas = filas
+    .filter(f => String(f.activo || 'si').trim().toLowerCase() !== 'no')
+    .filter(f => (f.imagen || '').trim() || (f.video || '').trim())
+    .sort((a, b) => (Number(a.orden) || 0) - (Number(b.orden) || 0));
+  const f = activas[0];
+  let html = '';
+  const especial = !f || (f.video || '').trim() || activas.every(x => (x.imagenmovil || x.imagen_movil || '').trim()) || /banner_personalizados/.test(f.imagen);
+  if(!especial){
+    const u = f.imagen.trim();
+    const srcset = /res\.cloudinary\.com\/.+\/upload\//i.test(u)
+      ? ` srcset="${[640, 960, 1280, 1600].map(w => `${escAttr(tamCloudinary(u, w))} ${w}w`).join(', ')}" sizes="(max-width:1200px) 100vw, 1200px"` : '';
+    html = `<img class="promo-banner-img is-ready banner-inicial" src="${escAttr(tamCloudinary(u, 1600))}"${srcset} alt="${escAttr(f.alt || 'Publicidad Camand Mobile')}" fetchpriority="high" decoding="async">`;
+  }
+  const pagina = await readFile('index.html', 'utf8');
+  if(!/<!--bi-->[\s\S]*?<!--\/bi-->/.test(pagina)){ console.warn('index.html no tiene las marcas del banner inicial; no se tocó.'); return; }
+  const nueva = pagina.replace(/<!--bi-->[\s\S]*?<!--\/bi-->/, () => `<!--bi-->${html}<!--/bi-->`);
+  if(nueva !== pagina){ await writeFile('index.html', nueva); console.log('Banner inicial actualizado en index.html' + (html ? '' : ' (vacío: lo dibuja la tienda)')); }
+  else console.log('Banner inicial sin cambios');
 }
 main().catch(e => { console.error(e.message); process.exit(1); });

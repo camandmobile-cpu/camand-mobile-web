@@ -101,7 +101,7 @@
 <!-- Copia de los banners (la genera el robot diario): se pide desde ya para
      mostrar el banner sin esperar a Google Sheets. -->
 <link rel="preload" href="data/banners.json" as="fetch" crossorigin="anonymous">
-<link rel="stylesheet" href="css/tienda.css?v=20261102f">
+<link rel="stylesheet" href="css/tienda.css?v=20261102g">
 <link rel="stylesheet" href="css/movimiento.css?v=20261102c">
 <!-- V3 en vista previa: camandmobile.com/?v3=1 la activa en ESTE navegador y
      ?v3=0 la apaga. Sin el interruptor no se descarga nada de la V3, así que
@@ -120,8 +120,8 @@
     // ?entrada=0 se salta el desfile (para medir la V3 sin la entrada).
     if(sessionStorage.getItem('camand_splash_visto') !== '1' && new URLSearchParams(location.search).get('entrada') !== '0') h.classList.add('v3-entrada');
     document.write('<link rel="preload" href="fonts/manrope-latin.woff2" as="font" type="font/woff2" crossorigin>' +
-      '<link rel="stylesheet" href="css/v3.css?v=20261102e">' +
-      '<script defer src="js/v3.js?v=20261102a"><\/script>');
+      '<link rel="stylesheet" href="css/v3.css?v=20261102g">' +
+      '<script defer src="js/v3.js?v=20261102b"><\/script>');
   }catch(e){}
 })();
 </script>
@@ -130,7 +130,7 @@
 
 <div id="splash-screen">
   <div class="splash-content">
-    <img class="splash-logo-img camand-logo-img" alt="Camand Mobile">
+    <img class="splash-logo-img camand-logo-img" src="img/camand-logo.svg" alt="Camand Mobile" fetchpriority="high">
     <div class="splash-loader"><div class="splash-rider" id="splashRider"></div></div>
     <p class="splash-tagline" id="splashTagline"></p>
   </div>
@@ -505,7 +505,7 @@ window.TEMPORADA_CONFIG = {
 <header class="nav">
   <div class="nav-inner">
     <button class="brand" onclick="go('home')">
-      <img class="brand-logo camand-logo-img" alt="Camand Mobile">
+      <img class="brand-logo camand-logo-img" src="img/camand-logo.svg" alt="Camand Mobile">
     </button>
     <nav class="links">
       <button data-view="home" class="is-active" onclick="go('home')">Home</button>
@@ -595,19 +595,27 @@ window.TEMPORADA_CONFIG = {
     <div class="promo-banner-strip reveal" id="promoBannerStrip" style="display:none;" role="region" aria-roledescription="carrusel" aria-label="Banner promocional" tabindex="0" onkeydown="promoBannerKeyNav(event)">
       <div class="promo-banner-viewport" id="promoBannerViewport">
         <div class="promo-banner-track" id="promoBannerTrack" aria-live="polite"></div>
+        <!-- BANNER INICIAL: lo escribe el robot diario (scripts/generar-productos.mjs)
+             entre estas marcas; no editar a mano. Es el primer banner de la Hoja, en
+             la página misma, para que se vea con lo primero que se dibuja. En la
+             tienda actual queda oculto (solo adelanta la descarga de la foto). --><!--bi--><img class="promo-banner-img is-ready banner-inicial" src="https://res.cloudinary.com/c5sxh1yw/image/upload/w_1600,q_auto,f_auto,c_limit/v1792379191/18_PRO_MAX.png" srcset="https://res.cloudinary.com/c5sxh1yw/image/upload/w_640,q_auto,f_auto,c_limit/v1792379191/18_PRO_MAX.png 640w, https://res.cloudinary.com/c5sxh1yw/image/upload/w_960,q_auto,f_auto,c_limit/v1792379191/18_PRO_MAX.png 960w, https://res.cloudinary.com/c5sxh1yw/image/upload/w_1280,q_auto,f_auto,c_limit/v1792379191/18_PRO_MAX.png 1280w, https://res.cloudinary.com/c5sxh1yw/image/upload/w_1600,q_auto,f_auto,c_limit/v1792379191/18_PRO_MAX.png 1600w" sizes="(max-width:1200px) 100vw, 1200px" alt="ver abajo" fetchpriority="high" decoding="async"><!--/bi-->
       </div>
       <button type="button" class="promo-banner-nav prev" onclick="promoBannerPrev()" aria-label="Banner anterior">‹</button>
       <button type="button" class="promo-banner-nav next" onclick="promoBannerNext()" aria-label="Banner siguiente">›</button>
       <div class="promo-banner-dots" id="promoBannerDots"></div>
     </div>
     <script>
-      // V3: el primer banner se dibuja apenas llega data/banners.json, sin esperar
-      // a que cargue todo tienda.js (es el contenido principal: antes tardaba ~1,6 s
-      // más). Misma URL y srcset que usa la tienda, así la foto no se baja dos veces.
-      // Cuando tienda.js dibuja el carrusel, esta copia se quita sola.
+      // V3: el banner inicial (escrito por el robot) se quita solo cuando tienda.js
+      // dibuja el carrusel. Si el robot aún no lo escribió, se arma con
+      // data/banners.json. Misma URL y srcset que usa la tienda: la foto no se baja dos veces.
       (function(){
         if(!document.documentElement.classList.contains('v3')) return;
         var vp = document.getElementById('promoBannerViewport'), track = document.getElementById('promoBannerTrack');
+        var fijo = vp.querySelector('.banner-inicial');
+        function quitarAlDibujar(img){
+          new MutationObserver(function(_, obs){ if(track.children.length){ obs.disconnect(); setTimeout(function(){ img.remove(); }, 600); } }).observe(track, { childList: true });
+        }
+        if(fijo){ quitarAlDibujar(fijo); return; }
         function tam(u, w){
           if(!/^https?:\/\/res\.cloudinary\.com\/.+\/upload\//i.test(u)) return u;
           if(/fl_layer_apply/.test(u) && /\/v\d+\//.test(u)) return u.replace(/\/(v\d+\/)/, '/w_' + w + ',q_auto,f_auto,c_limit/$1');
@@ -629,7 +637,7 @@ window.TEMPORADA_CONFIG = {
           }
           img.src = tam(u, 1600);
           vp.appendChild(img);
-          new MutationObserver(function(_, obs){ if(track.children.length){ obs.disconnect(); setTimeout(function(){ img.remove(); }, 600); } }).observe(track, { childList: true });
+          quitarAlDibujar(img);
         }).catch(function(){});
       })();
     </script>
@@ -1969,7 +1977,7 @@ function mostrarGraciasSuscripcion() {
   <div class="wrap">
     <div class="foot-top reveal">
       <div class="foot-brand-row">
-        <img class="camand-logo-img camand-logo-blanco" alt="Camand Mobile">
+        <img class="camand-logo-img camand-logo-blanco" src="img/camand-logo-blanco.svg" alt="Camand Mobile" loading="lazy">
         <span class="foot-brand-name">Camand Mobile</span>
       </div>
       <p class="foot-desc">Compra y venta de celulares y tecnología, nuevos y usados (Android y Apple), en Bogotá. Equipos revisados, con garantía. Paga contraentrega o con tarjeta de crédito a cuotas.</p>
@@ -2166,7 +2174,7 @@ function mostrarGraciasSuscripcion() {
      ejecutan en este mismo orden, antes de DOMContentLoaded. -->
 <script defer src="https://cdnjs.cloudflare.com/ajax/libs/PapaParse/5.4.1/papaparse.min.js"></script>
 <script defer src="js/movimiento.js?v=20261102b"></script>
-<script defer src="js/tienda.js?v=20261102e"></script>
+<script defer src="js/tienda.js?v=20261102f"></script>
 
 <script defer src="js/personaliza.js?v=20261019o"></script>
 
