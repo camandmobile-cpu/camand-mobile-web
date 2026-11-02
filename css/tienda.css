@@ -249,6 +249,16 @@ nav.links button.is-active::after{
 .nsi-name{font-size:13.5px;font-weight:600;color:var(--ink);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
 .nsi-price{font-size:13px;color:var(--tech);font-weight:700;}
 .nav-search-empty{font-size:13px;color:var(--ink-soft);padding:12px 6px;margin:0;}
+/* Buscador: palabras resaltadas, selección con teclado, sugerencias y "ver todos". */
+.nsi-name mark{background:none;color:var(--tech);}
+.nav-search-item.is-sel{background:var(--surface);}
+.nsr-grupo{font-size:11px;font-weight:700;letter-spacing:.06em;text-transform:uppercase;color:var(--ink-faint);margin:6px 8px;}
+.nsr-chips{display:flex;flex-wrap:wrap;gap:6px;padding:2px 4px 6px;}
+.nsr-chips:empty{display:none;}
+.nsr-chip{border:1px solid var(--line);background:#fff;border-radius:100px;padding:7px 12px;font-size:13px;font-weight:600;color:var(--ink);cursor:pointer;font-family:inherit;}
+.nsr-chip:hover{border-color:var(--tech);color:var(--tech);}
+.nsr-hub{border-color:var(--tech-tint);background:var(--tech-tint);color:var(--tech-dark);}
+.nsr-todos{display:block;width:100%;margin-top:6px;border:none;border-radius:12px;padding:11px;background:var(--ink);color:#fff;font-weight:700;font-size:13.5px;cursor:pointer;font-family:inherit;}
 .nav-search-overlay{display:none;}
 @media (max-width:734px){
   .nav-search-panel{position:fixed;top:var(--stack-h);left:0;right:0;width:auto;max-width:none;border-radius:0 0 16px 16px;}

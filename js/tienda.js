@@ -1314,34 +1314,140 @@ function toggleNavSearch(force){
 function flattenAllProducts(){
   const out = [];
   Object.entries(CATALOG).forEach(([key, cat]) => {
-    cat.brands.forEach(b => b.models.forEach(m => out.push({ catLabel: cat.label, marca: b.name, m })));
+    cat.brands.forEach(b => b.models.forEach(m => out.push({ catLabel: cat.label, catKey: key, marca: b.name, m })));
   });
   return out;
 }
 
-function performNavSearch(query){
-  const q = query.trim().toLowerCase();
+/* ===================== BUSCADOR GLOBAL =====================
+   - No importan tildes ni mayúsculas ("audifonos" = "Audífonos").
+   - Las palabras pueden ir en cualquier orden y en cualquier parte: nombre,
+     marca, categoría, condición o almacenamiento ("iphone 17 256",
+     "cargador samsung"). Antes solo encontraba el texto exacto y seguido.
+   - Primero lo más parecido (palabras al inicio del nombre).
+   - Sugiere la categoría (y la marca, si se escribió) para ver todo junto.
+   - Recuerda las últimas búsquedas solo en este navegador. */
+const normBusca = s => String(s == null ? '' : s).toLowerCase().normalize('NFD').replace(/[̀-ͯ]/g, '');
+const BUSQUEDAS_KEY = 'camand_busquedas_v1';
+const HUB_NOMBRE = { celulares: 'celulares', tablets: 'tablets', computadores: 'computadores', relojes: 'relojes', audifonos: 'audífonos', techoficina: 'accesorios' };
+// Sección (hub) donde vive un producto, con la misma regla que getExtraHub().
+function hubDeProducto(catKey, marca){
+  if(catKey === 'apple' || catKey === 'android') return 'celulares';
+  if(catKey === 'tablets' || catKey === 'computadores') return catKey;
+  if(catKey === 'impresoras') return 'techoficina';
+  if(catKey === 'accesorios'){
+    const n = normBusca(marca);
+    if(WEARABLE_BRAND_NAMES.some(w => n.includes(w))) return 'relojes';
+    if(AUDIO_BRAND_NAMES.some(w => n.includes(w))) return 'audifonos';
+    return 'techoficina';
+  }
+  return null;
+}
+function buscarProductos(query){
+  const palabras = normBusca(query).split(/[\s—\-\/,]+/).filter(Boolean);
+  if(!palabras.length) return [];
+  const escRe = w => w.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+  return flattenAllProducts().map(x => {
+    const nombre = normBusca(x.m.n);
+    const texto = normBusca([x.m.n, x.marca, x.catLabel, x.m.cond, x.m.alm].join(' '));
+    let puntos = 0;
+    for(const w of palabras){
+      if(!texto.includes(w)) return null;                         // todas las palabras deben estar
+      if(new RegExp('(^|[\\s(])' + escRe(w)).test(nombre)) puntos += 2;  // al inicio de una palabra del nombre
+      else if(nombre.includes(w)) puntos += 1;
+    }
+    if(nombre.startsWith(palabras.join(' '))) puntos += 3;
+    return Object.assign({ puntos }, x);
+  }).filter(Boolean).sort((a, b) => b.puntos - a.puntos || a.m.n.length - b.m.n.length);
+}
+function busquedasRecientes(){ try { return JSON.parse(localStorage.getItem(BUSQUEDAS_KEY) || '[]').slice(0, 5); } catch(e){ return []; } }
+function guardarBusqueda(q){
+  q = String(q || '').trim();
+  if(q.length < 2) return;
+  const lista = [q].concat(busquedasRecientes().filter(x => normBusca(x) !== normBusca(q))).slice(0, 5);
+  try { localStorage.setItem(BUSQUEDAS_KEY, JSON.stringify(lista)); } catch(e){}
+}
+function resaltarBusqueda(nombre, query){
+  const palabras = normBusca(query).split(/\s+/).filter(w => w.length > 1);
+  return escHtml(nombre).replace(/[^\s—]+/g, t => palabras.some(w => normBusca(t).startsWith(w)) ? `<mark>${t}</mark>` : t);
+}
+
+function performNavSearch(query, verTodos){
   const resultsEl = document.getElementById('navSearchResults');
   if(!resultsEl) return;
-  if(q.length < 2){ resultsEl.innerHTML = ''; return; }
-  const matches = flattenAllProducts().filter(({ m }) => m.n.toLowerCase().includes(q)).slice(0, 8);
-  if(!matches.length){
-    resultsEl.innerHTML = `<p class="nav-search-empty">No encontramos "${escHtml(query)}" — pregúntanos por <a href="${waLink('Hola, busco: ' + query)}" target="_blank" rel="noopener" style="color:var(--tech);">WhatsApp</a>, puede que lo tengamos y aún no esté publicado.</p>`;
+  const q = String(query || '').trim();
+  if(q.length < 2){
+    const recientes = busquedasRecientes();
+    resultsEl.innerHTML = recientes.length
+      ? `<p class="nsr-grupo">Búsquedas recientes</p><div class="nsr-chips">${recientes.map(r => `<button type="button" class="nsr-chip" data-q="${escHtml(r)}">↺ ${escHtml(r)}</button>`).join('')}</div>`
+      : '';
     return;
   }
-  resultsEl.innerHTML = matches.map(({ marca, m }) => {
-    const id = productId(marca, m);
-    const idJs = id.replace(/'/g, "\\'");
-    return `
-    <button type="button" class="nav-search-item" onclick="toggleNavSearch(false);openProduct('${idJs}')">
+  const resultados = buscarProductos(q);
+  if(!resultados.length){
+    resultsEl.innerHTML = `<p class="nav-search-empty">No encontramos "${escHtml(q)}" — pregúntanos por <a href="${waLink('Hola, busco: ' + q)}" target="_blank" rel="noopener" style="color:var(--tech);">WhatsApp</a>, puede que lo tengamos y aún no esté publicado.</p>`;
+    return;
+  }
+  // Sugerencias: las 2 secciones con más coincidencias; si se escribió una marca, filtra por ella.
+  const porHub = {};
+  resultados.forEach(x => {
+    const hub = hubDeProducto(x.catKey, x.marca);
+    if(!hub) return;
+    porHub[hub] = porHub[hub] || { n: 0, marcas: {} };
+    porHub[hub].n++;
+    porHub[hub].marcas[x.marca] = (porHub[hub].marcas[x.marca] || 0) + 1;
+  });
+  const qn = normBusca(q);
+  const sugerencias = Object.keys(porHub).sort((a, b) => porHub[b].n - porHub[a].n).slice(0, 2).map(hub => {
+    // Sin número: la sección muestra TODO lo de esa marca/categoría, no solo lo que coincide.
+    const marca = Object.keys(porHub[hub].marcas).find(m => qn.includes(normBusca(m)));
+    return `<button type="button" class="nsr-chip nsr-hub" data-hub="${hub}" data-marca="${escHtml(marca || '')}">Ver todos los ${HUB_NOMBRE[hub]}${marca ? ' ' + escHtml(marca) : ''}</button>`;
+  });
+  const visibles = verTodos ? resultados : resultados.slice(0, 6);
+  resultsEl.innerHTML = `<div class="nsr-chips">${sugerencias.join('')}</div>` +
+    visibles.map(({ marca, m }, i) => `
+    <button type="button" class="nav-search-item${i === 0 ? ' is-sel' : ''}" data-id="${escHtml(productId(marca, m))}" role="option">
       <span class="nsi-media">${productMediaHTML(m)}</span>
       <span class="nsi-info">
-        <span class="nsi-name">${m.n}</span>
+        <span class="nsi-name">${resaltarBusqueda(m.n, q)}</span>
         <span class="nsi-price">${formatCOP(m.p)}</span>
       </span>
-    </button>`;
-  }).join('');
+    </button>`).join('') +
+    (!verTodos && resultados.length > visibles.length ? `<button type="button" class="nsr-todos">Ver los ${resultados.length} resultados</button>` : '');
 }
+
+// Clics y teclado del buscador (un solo manejador para todos los resultados).
+(function(){
+  const res = document.getElementById('navSearchResults'), input = document.getElementById('navSearchInput');
+  if(!res || !input) return;
+  res.addEventListener('click', e => {
+    const chip = e.target.closest('[data-q]');
+    if(chip){ input.value = chip.dataset.q; performNavSearch(input.value); input.focus(); return; }
+    const hub = e.target.closest('[data-hub]');
+    if(hub){ guardarBusqueda(input.value); toggleNavSearch(false); megaMenuGoFiltered(hub.dataset.hub, hub.dataset.marca || '', ''); return; }
+    if(e.target.closest('.nsr-todos')){ performNavSearch(input.value, true); input.focus(); return; }
+    const item = e.target.closest('.nav-search-item');
+    if(item){ guardarBusqueda(input.value); camandTrackSeguro('buscar', { search_term: input.value.trim() }); toggleNavSearch(false); openProduct(item.dataset.id); }
+  });
+  input.addEventListener('focus', () => { if(!input.value) performNavSearch(''); });
+  input.addEventListener('keydown', e => {
+    const items = [...res.querySelectorAll('.nav-search-item')];
+    let i = items.findIndex(x => x.classList.contains('is-sel'));
+    if(e.key === 'ArrowDown' || e.key === 'ArrowUp'){
+      e.preventDefault();
+      if(!items.length) return;
+      if(i > -1) items[i].classList.remove('is-sel');
+      i = (i + (e.key === 'ArrowDown' ? 1 : -1) + items.length) % items.length;
+      items[i].classList.add('is-sel');
+      items[i].scrollIntoView({ block: 'nearest' });
+    } else if(e.key === 'Enter' && items[i]){
+      e.preventDefault();
+      items[i].click();
+    }
+  });
+})();
+// camandTrack vive en campanas.js (se carga después): se usa solo si ya existe.
+function camandTrackSeguro(evento, datos){ if(typeof camandTrack === 'function') camandTrack(evento, datos); }
 
 function performTechSearch(query){
   const q = query.trim().toLowerCase();
@@ -1916,7 +2022,9 @@ document.addEventListener('click', (e) => {
   const wrap = document.querySelector('.nav-search');
   const panel = document.getElementById('navSearchPanel');
   if(!wrap || !panel || !panel.classList.contains('is-open')) return;
-  if(!wrap.contains(e.target)) toggleNavSearch(false);
+  // e.target.isConnected: un clic en una sugerencia redibuja los resultados y el
+  // botón tocado ya no está en la página; eso no es "clic afuera".
+  if(e.target.isConnected && !wrap.contains(e.target)) toggleNavSearch(false);
 });
 
 /* ===================== PÁGINA DE PRODUCTO (PDP) ===================== */
