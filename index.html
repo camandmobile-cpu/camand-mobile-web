@@ -117,9 +117,10 @@
     if(localStorage.getItem('camand_v3') !== '1') return;
     var h = document.documentElement;
     h.classList.add('v3');
-    if(sessionStorage.getItem('camand_splash_visto') !== '1') h.classList.add('v3-entrada');
+    // ?entrada=0 se salta el desfile (para medir la V3 sin la entrada).
+    if(sessionStorage.getItem('camand_splash_visto') !== '1' && new URLSearchParams(location.search).get('entrada') !== '0') h.classList.add('v3-entrada');
     document.write('<link rel="preload" href="fonts/manrope-latin.woff2" as="font" type="font/woff2" crossorigin>' +
-      '<link rel="stylesheet" href="css/v3.css?v=20261102a">' +
+      '<link rel="stylesheet" href="css/v3.css?v=20261102e">' +
       '<script defer src="js/v3.js?v=20261102a"><\/script>');
   }catch(e){}
 })();
@@ -599,6 +600,39 @@ window.TEMPORADA_CONFIG = {
       <button type="button" class="promo-banner-nav next" onclick="promoBannerNext()" aria-label="Banner siguiente">›</button>
       <div class="promo-banner-dots" id="promoBannerDots"></div>
     </div>
+    <script>
+      // V3: el primer banner se dibuja apenas llega data/banners.json, sin esperar
+      // a que cargue todo tienda.js (es el contenido principal: antes tardaba ~1,6 s
+      // más). Misma URL y srcset que usa la tienda, así la foto no se baja dos veces.
+      // Cuando tienda.js dibuja el carrusel, esta copia se quita sola.
+      (function(){
+        if(!document.documentElement.classList.contains('v3')) return;
+        var vp = document.getElementById('promoBannerViewport'), track = document.getElementById('promoBannerTrack');
+        function tam(u, w){
+          if(!/^https?:\/\/res\.cloudinary\.com\/.+\/upload\//i.test(u)) return u;
+          if(/fl_layer_apply/.test(u) && /\/v\d+\//.test(u)) return u.replace(/\/(v\d+\/)/, '/w_' + w + ',q_auto,f_auto,c_limit/$1');
+          return u.replace(/\/upload\//i, '/upload/w_' + w + ',q_auto,f_auto,c_limit/');
+        }
+        fetch('data/banners.json').then(function(r){ return r.json(); }).then(function(d){
+          var filas = (d.filas || []).filter(function(f){ return String(f.activo || 'si').trim().toLowerCase() !== 'no' && ((f.imagen || '').trim() || (f.video || '').trim()); })
+            .sort(function(a, b){ return (Number(a.orden) || 0) - (Number(b.orden) || 0); });
+          var f = filas[0];
+          // Casos que la tienda dibuja distinto (video, foto vertical, banner con capas): se espera a tienda.js.
+          if(!f || track.children.length || (f.video || '').trim() || filas.every(function(x){ return (x.imagenmovil || '').trim(); }) || /banner_personalizados/.test(f.imagen)) return;
+          var u = f.imagen.trim(), img = document.createElement('img');
+          img.className = 'promo-banner-img is-ready v3-previo';
+          img.alt = f.alt || 'Publicidad Camand Mobile';
+          img.fetchPriority = 'high';
+          if(/res\.cloudinary\.com\/.+\/upload\//i.test(u)){
+            img.srcset = [640, 960, 1280, 1600].map(function(w){ return tam(u, w) + ' ' + w + 'w'; }).join(', ');
+            img.sizes = '(max-width:1200px) 100vw, 1200px';
+          }
+          img.src = tam(u, 1600);
+          vp.appendChild(img);
+          new MutationObserver(function(_, obs){ if(track.children.length){ obs.disconnect(); setTimeout(function(){ img.remove(); }, 600); } }).observe(track, { childList: true });
+        }).catch(function(){});
+      })();
+    </script>
     <!-- Cinta de texto en movimiento — mensajes en CINTA_MENSAJES_BASE (o pestaña "CINTA PAGINA" de la Hoja) -->
     <div class="cinta" id="cinta" role="marquee">
       <div class="cinta-track" id="cintaTrack"></div>
@@ -2132,7 +2166,7 @@ function mostrarGraciasSuscripcion() {
      ejecutan en este mismo orden, antes de DOMContentLoaded. -->
 <script defer src="https://cdnjs.cloudflare.com/ajax/libs/PapaParse/5.4.1/papaparse.min.js"></script>
 <script defer src="js/movimiento.js?v=20261102b"></script>
-<script defer src="js/tienda.js?v=20261102d"></script>
+<script defer src="js/tienda.js?v=20261102e"></script>
 
 <script defer src="js/personaliza.js?v=20261019o"></script>
 

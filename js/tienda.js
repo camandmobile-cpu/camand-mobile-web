@@ -2916,6 +2916,9 @@ async function cargarBannersDesdeSheet(){
   }catch(err){
     console.warn("[Camand] No se pudo leer los banners publicitarios desde Google Sheets, el banner queda oculto:", err.message);
   }
+  // Ya se sabe si hay banners: la V3 reserva su espacio desde el inicio
+  // (para que la página no salte al llegar) y solo lo quita con esta marca.
+  if(!PROMO_BANNERS.length) document.getElementById('promoBannerStrip').dataset.vacio = '1';
 }
 
 /* ============================================================
