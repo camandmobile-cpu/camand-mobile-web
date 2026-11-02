@@ -1,0 +1,24 @@
+/* ============================================================
+   CAMAND MOBILE — SISTEMA DE MOVIMIENTO (base). Ver js/movimiento.js.
+   Solo se animan transform y opacity (aceleradas por hardware).
+   Un elemento .reveal se oculta únicamente cuando el JavaScript ya lo
+   registró (.reveal-bound) y está fuera de pantalla: sin JavaScript, o
+   mientras carga, todo se ve normal.
+   ============================================================ */
+:root{
+  --mov-duracion:.45s;
+  --mov-curva:cubic-bezier(.22,.61,.36,1);
+  --mov-distancia:12px;
+}
+
+.reveal.reveal-bound{
+  transition:opacity var(--mov-duracion) var(--mov-curva),transform var(--mov-duracion) var(--mov-curva);
+}
+.reveal.reveal-bound:not(.in-view){
+  opacity:0;
+  transform:translateY(var(--mov-distancia));
+}
+
+@media (prefers-reduced-motion:reduce){
+  .reveal,.reveal.reveal-bound,.reveal.reveal-bound:not(.in-view){opacity:1;transform:none;transition:none;}
+}

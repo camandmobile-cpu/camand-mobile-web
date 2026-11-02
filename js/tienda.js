@@ -119,6 +119,9 @@ const GALLERY_PHOTOS = [
 
 /* ===================== RENDER ===================== */
 function waLink(text){ return "https://wa.me/573122265799?text=" + encodeURIComponent(text); }
+// Texto escrito por el cliente (p. ej. lo que busca) antes de insertarlo con
+// innerHTML: así un texto como <img onerror=…> se muestra, no se ejecuta.
+function escHtml(s){ return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;').replace(/'/g,'&#39;'); }
 
 /* ===================== TARJETAS DE PRODUCTO + FILTROS ===================== */
 // La imagen del producto ocupa toda la tarjeta (object-fit:contain, sin recorte).
@@ -1322,7 +1325,7 @@ function performNavSearch(query){
   if(q.length < 2){ resultsEl.innerHTML = ''; return; }
   const matches = flattenAllProducts().filter(({ m }) => m.n.toLowerCase().includes(q)).slice(0, 8);
   if(!matches.length){
-    resultsEl.innerHTML = `<p class="nav-search-empty">No encontramos "${query.replace(/</g,'&lt;')}" — pregúntanos por <a href="${waLink('Hola, busco: ' + query)}" target="_blank" rel="noopener" style="color:var(--tech);">WhatsApp</a>, puede que lo tengamos y aún no esté publicado.</p>`;
+    resultsEl.innerHTML = `<p class="nav-search-empty">No encontramos "${escHtml(query)}" — pregúntanos por <a href="${waLink('Hola, busco: ' + query)}" target="_blank" rel="noopener" style="color:var(--tech);">WhatsApp</a>, puede que lo tengamos y aún no esté publicado.</p>`;
     return;
   }
   resultsEl.innerHTML = matches.map(({ marca, m }) => {
@@ -1365,10 +1368,10 @@ function performTechSearch(query){
   });
 
   if (!matches.length){
-    resultsEl.innerHTML = `<p class="note">No encontramos modelos con "${query}" — prueba con otra palabra o pregúntanos por WhatsApp.</p>`;
+    resultsEl.innerHTML = `<p class="note">No encontramos modelos con "${escHtml(query)}" — prueba con otra palabra o pregúntanos por WhatsApp.</p>`;
     return;
   }
-  resultsEl.innerHTML = `<p class="note">${matches.length} resultado${matches.length===1?'':'s'} para "${query}"</p>
+  resultsEl.innerHTML = `<p class="note">${matches.length} resultado${matches.length===1?'':'s'} para "${escHtml(query)}"</p>
     <div class="product-grid">
       ${matches.map(({cat,brand,m}) => productCardHTML(cat.label, brand, m)).join('')}
     </div>`;
@@ -1641,10 +1644,10 @@ function performCelularesSearch(query){
   }));
 
   if(!matches.length){
-    resultsEl.innerHTML = `<p class="note">No encontramos modelos con "${query}" — prueba con otra palabra o pregúntanos por WhatsApp.</p>`;
+    resultsEl.innerHTML = `<p class="note">No encontramos modelos con "${escHtml(query)}" — prueba con otra palabra o pregúntanos por WhatsApp.</p>`;
     return;
   }
-  resultsEl.innerHTML = `<p class="note">${matches.length} resultado${matches.length===1?'':'s'} para "${query}"</p>
+  resultsEl.innerHTML = `<p class="note">${matches.length} resultado${matches.length===1?'':'s'} para "${escHtml(query)}"</p>
     <div class="product-grid">
       ${matches.map(({marca,m}) => productCardHTML(hub.label, marca, m)).join('')}
     </div>`;
@@ -1847,29 +1850,8 @@ function renderTodo(){
 }
 
 /* ===================== ANIMACIÓN AL HACER SCROLL ===================== */
-// Da un efecto de aparición suave (fade + leve desplazamiento) a banners y
-// secciones marcadas con class="reveal" cuando entran en la pantalla al
-// bajar. Si el navegador no soporta IntersectionObserver, los elementos
-// se quedan visibles con normalidad (el CSS solo los oculta si esta
-// función alcanza a correr).
-let _revealObserver = null;
-function initScrollReveal(){
-  if(!('IntersectionObserver' in window)) return;
-  if(!_revealObserver){
-    _revealObserver = new IntersectionObserver((entries) => {
-      entries.forEach(entry => {
-        if(entry.isIntersecting){
-          entry.target.classList.add('in-view');
-          _revealObserver.unobserve(entry.target);
-        }
-      });
-    }, { threshold: 0.12, rootMargin: '0px 0px -30px 0px' });
-  }
-  document.querySelectorAll('.reveal:not(.reveal-bound)').forEach(el => {
-    el.classList.add('reveal-bound');
-    _revealObserver.observe(el);
-  });
-}
+// initScrollReveal() vive en js/movimiento.js (sistema de movimiento), que
+// se carga antes que este archivo.
 
 // Fade-in de fotos de producto (evento "load" no hace bubbling, por eso se
 // escucha en fase de captura sobre todo el documento — funciona sin
@@ -2448,7 +2430,12 @@ function promoBannerMediaHTML(b, i){
   // que se mueve con transform, el modo lazy de Chrome/Safari a veces nunca
   // pedía la imagen hasta recargar la página (banner en blanco).
   const orig = String(mediaUrl).replace(/"/g, '&quot;');
-  return `<img class="promo-banner-img" src="${optimizeImageUrl(mediaUrl, 1600)}" data-orig="${orig}" alt="${altJs}" loading="eager" decoding="async"${i === 0 ? ' fetchpriority="high"' : ''}>`;
+  const img = `<img class="promo-banner-img" src="${optimizeImageUrl(mediaUrl, 1600)}" data-orig="${orig}" alt="${altJs}" loading="eager" decoding="async"${i === 0 ? ' fetchpriority="high"' : ''}>`;
+  // Columna IMAGEN MOVIL (opcional): versión vertical para celular. Las fotos
+  // del banner traen el texto incrustado y en formato horizontal; en un
+  // celular quedaban de ~125 px de alto con la letra ilegible.
+  if(!b.imgMovil) return img;
+  return `<picture><source media="(max-width:700px)" srcset="${optimizeImageUrl(b.imgMovil, 900)}">${img}</picture>`;
 }
 
 // Muestra cada imagen del banner cuando carga; si falla, reintenta una vez con
@@ -2461,6 +2448,9 @@ function promoBannerBindImages(track){
     img.addEventListener('error', () => {
       if(img.dataset.retry) { listo(); return; }
       img.dataset.retry = '1';
+      // Si falló la versión de celular, se usa la imagen normal.
+      const fuente = img.parentElement && img.parentElement.tagName === 'PICTURE' && img.parentElement.querySelector('source');
+      if(fuente){ fuente.remove(); return; }
       const original = (img.dataset.orig || '').replace(/\/upload\/.*?(\/v\d+\/)/, '/upload$1');
       img.src = original !== img.src ? original : img.src + (img.src.includes('?') ? '&' : '?') + 'r=1';
     });
@@ -2538,6 +2528,9 @@ function renderPromoBanner(){
   }
 
   strip.style.display = '';
+  // Formato vertical en celular solo si TODOS los banners activos tienen
+  // IMAGEN MOVIL (con uno solo horizontal, el recorte le cortaría el texto).
+  viewport.classList.toggle('con-movil', PROMO_BANNERS.every(b => b.imgMovil && !b.vid));
   const n = PROMO_BANNERS.length;
   const loop = n > 1;
 
@@ -2871,6 +2864,7 @@ async function cargarBannersDesdeSheet(){
       .filter(f => (f.imagen || "").trim() || (f.video || "").trim())
       .map(f => ({
         img: bannerConLineaClasica((f.imagen || "").trim()),
+        imgMovil: (f.imagenmovil || f.imagen_movil || "").trim(),
         vid: (f.video || "").trim(),
         link: (f.link || "").trim(),
         alt: (f.alt || f.nombre || "").trim(),
