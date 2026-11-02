@@ -72,14 +72,164 @@ html.v3 .hero h1{font-weight:800;letter-spacing:-.035em;}
 html.v3 .hero h1 em{color:var(--tech);font-weight:800;}
 html.v3 .eyebrow{color:var(--ink-soft);}
 
-/* ---------- 3. Barra superior y encabezado ---------- */
+/* ---------- 3. Barra superior y encabezado (V3.2) ----------
+   Dos filas sin cambiar el HTML: fila 1 = logo, buscador siempre visible,
+   favoritos, carrito y WhatsApp; fila 2 = categorías con su color. .nav-actions
+   pasa a display:contents para que cada botón se ubique en la cuadrícula.
+   Al bajar, la fila 2 se esconde (js/v3.js pone .compacto) y vuelve al subir. */
+html.v3{--v3-fila1:70px;--v3-fila2:48px;--header-h:calc(var(--v3-fila1) + var(--v3-fila2));}
 html.v3 .top-bar{background:var(--ink);}
-html.v3 header.nav{background:rgba(255,255,255,.86);-webkit-backdrop-filter:saturate(1.6) blur(16px);backdrop-filter:saturate(1.6) blur(16px);border-bottom-color:var(--line);}
-html.v3 nav.links button{color:var(--ink);font-weight:600;}
-html.v3 nav.links button:hover:not(.is-active){background:var(--surface);color:var(--ink);}
-html.v3 nav.links button.is-active::after{background:var(--tech);height:3px;}
+html.v3 header.nav{background:rgba(255,255,255,.88);-webkit-backdrop-filter:saturate(1.6) blur(16px);backdrop-filter:saturate(1.6) blur(16px);border-bottom-color:var(--line);}
+html.v3 .nav-inner{max-width:1240px;height:auto;padding:0 24px;display:grid;column-gap:12px;row-gap:0;align-items:center;
+  grid-template-columns:auto minmax(0,1fr) auto auto auto;
+  grid-template-areas:"marca busca fav carro wa" "cats cats cats cats cats";}
+html.v3 .brand{grid-area:marca;height:var(--v3-fila1);}
+html.v3 .brand .brand-logo{height:36px;}
+html.v3 .nav-actions{display:contents;}
+html.v3 a.nav-fav-btn{display:none;}                 /* "Mi cuenta" abría WhatsApp: quedaba repetido con el botón */
+html.v3 button.nav-fav-btn:not(.nav-cart){grid-area:fav;}
+html.v3 .nav-cart{grid-area:carro;}
+html.v3 .nav-fav-btn{width:44px;height:44px;color:var(--ink);}
+html.v3 .nav-fav-btn:hover{color:var(--ink);}
+html.v3 .nav-fav-btn svg{width:21px;height:21px;}
+html.v3 .nav-fav-btn .cart-badge{top:3px;right:3px;background:var(--tech);}
+html.v3 .nav-cta{grid-area:wa;background:#25d366;color:#04361b;height:44px;padding:0 18px;font-size:14px;font-weight:700;}
+html.v3 .nav-cta:hover{background:#1fbf5b;box-shadow:none;}
+html.v3 .nav-cta .short{display:none;}
+html.v3 .nav-cta .long{display:inline !important;}
+html.v3 .nav-cta::before{content:"";width:18px;height:18px;background:currentColor;-webkit-mask:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'%3E%3Cpath d='M12 2a10 10 0 0 0-8.6 15.1L2 22l5-1.3A10 10 0 1 0 12 2Z'/%3E%3C/svg%3E") center/contain no-repeat;mask:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'%3E%3Cpath d='M12 2a10 10 0 0 0-8.6 15.1L2 22l5-1.3A10 10 0 1 0 12 2Z'/%3E%3C/svg%3E") center/contain no-repeat;}
+html.v3 .hamburger{grid-area:menu;display:none;}
+html.v3 .cart-fab{display:none;}                    /* el carrito ya está en el encabezado */
+
+/* buscador siempre visible (computador) */
+html.v3 .nav-search{grid-area:busca;width:100%;max-width:560px;justify-self:center;}
+html.v3 .nav-search-btn{display:none;}
+html.v3 .nav-search-panel{position:relative;top:auto;right:auto;width:100%;max-width:none;opacity:1;visibility:visible;transform:none;background:none;box-shadow:none;padding:0;border-radius:0;}
+html.v3 .nav-search-input-wrap{height:46px;padding:0 16px;border:1.5px solid transparent;transition:border-color .2s,background .2s,box-shadow .2s;}
+html.v3 .nav-search-input-wrap:focus-within{background:#fff;border-color:var(--tech);box-shadow:0 0 0 4px rgba(31,77,255,.12);}
+html.v3 .nav-search-input-wrap svg{width:18px;height:18px;color:var(--ink-soft);}
+html.v3 .nav-search-input-wrap input{font-size:15px;}
+html.v3 .nav-search-input-wrap input:focus-visible{outline:none;}   /* el foco lo marca el borde azul de la barra */
+html.v3 .nav-search-panel:not(.is-open) .nav-search-close{display:none;}
+html.v3 .nav-search-results{position:absolute;left:0;right:0;top:54px;margin:0;background:#fff;border:1px solid var(--line);border-radius:22px;box-shadow:var(--shadow-2);padding:10px;max-height:min(70vh,560px);}
+html.v3 .nav-search-panel:not(.is-open) .nav-search-results,html.v3 .nav-search-results:empty{display:none;}
+
+/* fila de categorías */
+html.v3 nav.links{grid-area:cats;justify-self:stretch;display:flex;gap:4px;height:var(--v3-fila2);font-size:14px;transition:height .35s var(--ease),opacity .25s;}
+html.v3 nav.links button{--c:var(--ink);display:inline-flex;align-items:center;gap:8px;height:36px;padding:0 14px;font-size:14px;font-weight:600;color:var(--ink);transition:background .2s,color .2s;}
+html.v3 nav.links button[data-view]:not([data-view="home"]):not([data-view="faq"]):not(.nav-pz)::before{content:"";width:9px;height:9px;border-radius:50%;background:var(--c);transition:transform .25s var(--ease);}
+html.v3 nav.links button[data-view="celulares"]{--c:var(--tech);}
+html.v3 nav.links button[data-view="tablets"]{--c:var(--v3-violeta);}
+html.v3 nav.links button[data-view="relojes"]{--c:var(--v3-lima);}
+html.v3 nav.links button[data-view="audifonos"]{--c:var(--v3-naranja);}
+html.v3 nav.links button[data-view="computadores"]{--c:var(--v3-cian);}
+html.v3 nav.links button[data-view="techoficina"]{--c:var(--v3-magenta);}
+html.v3 nav.links button:hover:not(.is-active){background:color-mix(in srgb,var(--c) 10%,#fff);color:var(--ink);}
+html.v3 nav.links button:hover::before{transform:scale(1.4);}
+html.v3 nav.links button.is-active{background:var(--ink);color:#fff;}
+html.v3 nav.links button.is-active::before{background:#fff;}
+html.v3 nav.links button.is-active::after{display:none;}
+html.v3 nav.links button[data-view="faq"]{margin-left:auto;color:var(--ink-soft);}
 html.v3 nav.links button.nav-pz,html.v3 nav.links button.nav-pz.is-active{background:var(--v3-oscuro);color:#fff;}
 html.v3 nav.links button.nav-pz:hover{background:#26262e;color:#fff;}
+html.v3 nav.links .mega-menu{top:calc(100% - 4px);}
+/* compacto al bajar: se esconde la fila de categorías (y lo que se pega arriba sube con ella) */
+html.v3 header.nav.compacto nav.links{height:0;opacity:0;overflow:hidden;pointer-events:none;}
+html.v3.cab-compacta .filters-bar{top:calc(var(--stack-h) - var(--v3-fila2) + 10px);}
+html.v3.cab-compacta .story-preview,html.v3.cab-compacta .pz-preview-col,html.v3.cab-compacta .pz-hg-summary{top:calc(var(--stack-h) - var(--v3-fila2) + 20px);}
+html.v3 .filters-bar,html.v3 .story-preview,html.v3 .pz-preview-col,html.v3 .pz-hg-summary{transition:top .35s var(--ease);}
+
+/* celular y tablet: menú | logo | lupa | carrito, y la cinta de categorías debajo */
+@media (max-width:900px){
+  html.v3{--v3-fila1:60px;--v3-fila2:52px;}
+  html.v3 .nav-inner{padding:0 12px;column-gap:4px;grid-template-columns:auto auto minmax(0,1fr) auto auto;grid-template-areas:"menu marca . busca carro" "cats cats cats cats cats";}
+  html.v3 .brand .brand-logo{height:30px;}
+  html.v3 .hamburger{display:block;padding:10px;}
+  html.v3 button.nav-fav-btn:not(.nav-cart),html.v3 .nav-cta{display:none;}
+  html.v3 .nav-fav-btn.nav-cart{display:flex;}
+  html.v3 .cart-fab{display:none;}               /* el carrito ya está en el encabezado */
+  html.v3 .nav-search{max-width:none;width:auto;justify-self:end;}
+  html.v3 .nav-search-btn{display:flex;width:44px;height:44px;color:var(--ink);}
+  html.v3 .nav-search-btn svg{width:21px;height:21px;}
+  /* el buscador se abre a pantalla completa */
+  html.v3 .nav-search-panel{position:fixed;inset:0;z-index:320;background:#fff;padding:12px 12px 40px;border-radius:0;display:none;overflow-y:auto;}
+  html.v3 .nav-search-panel.is-open{display:block;}
+  html.v3 .nav-search-panel .nav-search-close{display:block;font-size:15px;font-weight:700;color:var(--tech);}
+  html.v3 .nav-search-results{position:static;border:none;box-shadow:none;max-height:none;padding:8px 0;}
+  html.v3 .nav-search-overlay{display:none !important;}
+  html.v3 nav.links{display:flex;overflow-x:auto;scrollbar-width:none;margin:0 -12px;padding:0 12px;height:var(--v3-fila2);}
+  html.v3 nav.links::-webkit-scrollbar{display:none;}
+  html.v3 nav.links button{flex-shrink:0;background:var(--surface);}
+  html.v3 nav.links button[data-view="faq"]{margin-left:0;}
+  html.v3 nav.links .mega-menu{display:none;}
+  /* El vidrio esmerilado (backdrop-filter) encierra lo "fixed" dentro del encabezado:
+     mientras el buscador está abierto se quita, para que ocupe toda la pantalla. */
+  html.v3 header.nav:has(.nav-search-panel.is-open){-webkit-backdrop-filter:none;backdrop-filter:none;background:#fff;z-index:340;}
+  /* En celular la barra de filtros fija tapaba media pantalla: se queda en su lugar
+     (el rediseño de filtros va en la V3.4). */
+  html.v3 .filters-bar{position:static;}
+}
+
+/* ---------- 3b. Menú del celular (V3.2): panel lateral con tarjetas de color ---------- */
+html.v3 .mobile-menu{inset:0 auto 0 0;width:min(400px,90vw);display:block;padding:16px 16px 28px;background:#fff;-webkit-backdrop-filter:none;backdrop-filter:none;
+  opacity:1;transform:translateX(-104%);transition:transform .45s var(--ease),box-shadow .45s;z-index:330;}
+html.v3 .mobile-menu.open{transform:none;box-shadow:0 0 0 100vmax rgba(13,13,16,.45);}
+html.v3 .mobile-menu > .mm-link{display:none;}
+html.v3 .mobile-menu .mm-close{top:14px;right:14px;width:44px;height:44px;border-radius:50%;font-size:20px;color:var(--ink);}
+html.v3 .mobile-menu .mm3{display:block;}
+html.v3 .mm3-logo{height:28px;width:auto;margin:6px 0 16px 4px;}
+html.v3 .mm3-busca{display:flex;align-items:center;gap:10px;width:100%;height:46px;padding:0 16px;border:none;border-radius:100px;background:var(--surface);color:var(--ink-soft);font:500 15px var(--v3-texto);cursor:pointer;margin-bottom:14px;}
+html.v3 .mm3-busca svg{width:18px;height:18px;}
+html.v3 .mm3-tiles{display:grid;grid-template-columns:1fr 1fr;gap:10px;}
+html.v3 .mm3-tile{--c:var(--tech);position:relative;overflow:hidden;min-height:98px;padding:14px;border:1px solid var(--line);border-radius:20px;background:#fff;text-align:left;display:flex;flex-direction:column;justify-content:space-between;gap:10px;cursor:pointer;font-family:var(--v3-texto);color:var(--ink);
+  opacity:0;transform:translateY(10px);}
+html.v3 .mobile-menu.open .mm3-tile{opacity:1;transform:none;transition:opacity .4s var(--ease),transform .4s var(--ease);transition-delay:calc(var(--i) * 40ms + 120ms);}
+html.v3 .mm3-tile::before{content:"";position:absolute;width:90px;height:90px;right:-30px;top:-30px;border-radius:50%;background:var(--c);opacity:.14;}
+html.v3 .mm3-tile i{width:34px;height:34px;border-radius:11px;background:var(--c);color:#fff;display:grid;place-items:center;}
+html.v3 .mm3-tile i svg{width:18px;height:18px;}
+html.v3 .mm3-tile b{font-family:var(--v3-titulo);font-size:15px;}
+html.v3 .mm3-tile small{display:block;font:500 12px var(--v3-texto);color:var(--ink-soft);min-height:15px;}
+html.v3 .mm3-pz{grid-column:1 / -1;min-height:0;background:var(--v3-oscuro);color:#fff;border:none;padding:16px 18px;}
+html.v3 .mm3-pz::before{background:radial-gradient(circle,#ff2e88,#7b4ee6);opacity:.55;width:170px;height:170px;right:-50px;top:-70px;filter:blur(10px);}
+html.v3 .mm3-pz b{position:relative;}
+html.v3 .mm3-pz small{color:#cfc8de;}
+html.v3 .mm3-rapidos{list-style:none;margin:16px 0 0;padding:0;border-top:1px solid var(--line);}
+html.v3 .mm3-rapidos button,html.v3 .mm3-rapidos a{display:flex;justify-content:space-between;align-items:center;width:100%;padding:15px 4px;border:none;border-bottom:1px solid var(--line);background:none;font:600 15px var(--v3-texto);color:var(--ink);cursor:pointer;text-align:left;}
+html.v3 .mobile-menu .mm-wa{display:flex;justify-content:center;margin:18px 0 0;height:50px;align-items:center;background:#25d366;color:#04361b;font-size:15px;font-weight:700;}
+@media (prefers-reduced-motion:reduce){ html.v3 .mm3-tile{opacity:1;transform:none;} }
+
+/* ---------- 3c. Pie de página (V3.2) ---------- */
+html.v3 footer.site{display:none;}
+html.v3 .pie-v3{display:block;background:var(--ink);color:#c9c9d1;padding:56px 0 28px;margin-top:24px;}
+html.v3 .pv3-cols{display:grid;grid-template-columns:1.3fr repeat(4,1fr);gap:28px;}
+html.v3 .pv3-marca img{height:32px;width:auto;margin-bottom:14px;}
+html.v3 .pv3-marca p{margin:0 0 16px;font-size:14px;line-height:1.6;}
+html.v3 .pie-v3 h4{color:#fff;font-family:var(--v3-titulo);font-size:14px;margin:0 0 14px;letter-spacing:.02em;}
+html.v3 .pie-v3 summary{list-style:none;}
+html.v3 .pie-v3 summary::-webkit-details-marker{display:none;}
+html.v3 .pie-v3 ul{list-style:none;margin:0;padding:0;}
+html.v3 .pie-v3 li{margin-bottom:10px;font-size:14px;}
+html.v3 .pie-v3 a:hover{color:#fff;}
+html.v3 .pv3-redes{display:flex;gap:8px;}
+html.v3 .pv3-redes a{width:38px;height:38px;border-radius:50%;display:grid;place-items:center;background:rgba(255,255,255,.08);color:#fff;}
+html.v3 .pv3-redes svg{width:18px;height:18px;}
+html.v3 .pv3-pagos{display:flex;flex-wrap:wrap;gap:8px;align-items:center;margin:36px 0 22px;padding-top:26px;border-top:1px solid rgba(255,255,255,.1);}
+html.v3 .pv3-pagos span{font-size:12.5px;font-weight:700;color:#fff;margin-right:6px;}
+html.v3 .pv3-pagos b{font-size:12.5px;font-weight:700;padding:7px 12px;border-radius:10px;background:rgba(255,255,255,.07);color:#fff;}
+html.v3 .pv3-sellos{display:flex;flex-wrap:wrap;gap:18px;font-size:13px;color:#b4b4be;}
+html.v3 .pv3-sellos span::before{content:"✓ ";color:#5ee3a1;font-weight:800;}
+html.v3 .pv3-fin{display:flex;justify-content:space-between;flex-wrap:wrap;gap:10px;font-size:12.5px;color:#9a9aa5;margin-top:26px;padding-top:20px;border-top:1px solid rgba(255,255,255,.1);}
+@media (min-width:901px){ html.v3 .pie-v3 summary{pointer-events:none;} }
+@media (max-width:900px){
+  html.v3 .pv3-cols{grid-template-columns:1fr;gap:0;}
+  html.v3 .pv3-marca{margin-bottom:18px;}
+  html.v3 .pie-v3 details{border-top:1px solid rgba(255,255,255,.1);}
+  html.v3 .pie-v3 summary{cursor:pointer;display:flex;justify-content:space-between;align-items:center;padding:16px 0;}
+  html.v3 .pie-v3 summary h4{margin:0;}
+  html.v3 .pie-v3 summary::after{content:"+";color:#fff;font-size:22px;line-height:1;transition:transform .3s var(--ease);}
+  html.v3 .pie-v3 details[open] summary::after{transform:rotate(45deg);}
+  html.v3 .pie-v3 details ul{padding-bottom:12px;}
+}
 
 /* ---------- 4. Botones ---------- */
 html.v3 .product-card .pc-add,html.v3 .pdp-add-btn,html.v3 .pdp-sticky-btn,html.v3 .tm-hero-btn,html.v3 .pz-btn.blue{
@@ -162,7 +312,7 @@ html.v3 .v3-halo{position:absolute;width:min(520px,120vw);aspect-ratio:1;border-
 html.v3 .v3-saltar{position:absolute;right:16px;top:calc(16px + env(safe-area-inset-top));z-index:3;border:none;background:var(--surface);color:var(--ink-soft);border-radius:100px;padding:9px 15px;font:600 13px var(--v3-texto);cursor:pointer;}
 
 /* ---------- 11. Etiqueta de vista previa ---------- */
-.v3-etiqueta{position:fixed;left:12px;top:calc(var(--stack-h,84px) + 10px);z-index:400;display:flex;align-items:center;gap:8px;background:var(--ink);color:#fff;border-radius:100px;padding:7px 8px 7px 13px;font:600 12px var(--v3-texto);box-shadow:0 10px 24px -10px rgba(0,0,0,.5);}
+.v3-etiqueta{position:fixed;left:12px;top:calc(var(--stack-h,84px) + 10px);z-index:150;display:flex;align-items:center;gap:8px;background:var(--ink);color:#fff;border-radius:100px;padding:7px 8px 7px 13px;font:600 12px var(--v3-texto);box-shadow:0 10px 24px -10px rgba(0,0,0,.5);}
 .v3-etiqueta a{color:#0d0d10;background:#fff;border-radius:100px;padding:4px 10px;text-decoration:none;font-weight:700;}
 
 @media (prefers-reduced-motion:reduce){

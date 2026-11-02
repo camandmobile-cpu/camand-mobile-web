@@ -236,6 +236,8 @@ nav.links button.is-active::after{
 .nav-search-input-wrap{display:flex;align-items:center;gap:8px;background:var(--surface);border-radius:100px;padding:9px 14px;}
 .nav-search-input-wrap svg{width:16px;height:16px;color:var(--ink-faint);flex-shrink:0;}
 .nav-search-input-wrap input{flex:1;border:none;background:none;outline:none;font-size:14px;color:var(--ink);font-family:inherit;}
+/* Sin la ✕ propia del navegador: el buscador ya trae su botón de cerrar. */
+.nav-search-input-wrap input::-webkit-search-cancel-button{-webkit-appearance:none;appearance:none;}
 .nav-search-close{background:none;border:none;color:var(--ink-faint);cursor:pointer;font-size:13px;padding:2px;flex-shrink:0;}
 .nav-search-results{max-height:60vh;overflow-y:auto;margin-top:8px;}
 .nav-search-item{
@@ -249,6 +251,16 @@ nav.links button.is-active::after{
 .nsi-name{font-size:13.5px;font-weight:600;color:var(--ink);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
 .nsi-price{font-size:13px;color:var(--tech);font-weight:700;}
 .nav-search-empty{font-size:13px;color:var(--ink-soft);padding:12px 6px;margin:0;}
+/* Buscador: palabras resaltadas, selección con teclado, sugerencias y "ver todos". */
+.nsi-name mark{background:none;color:var(--tech);}
+.nav-search-item.is-sel{background:var(--surface);}
+.nsr-grupo{font-size:11px;font-weight:700;letter-spacing:.06em;text-transform:uppercase;color:var(--ink-faint);margin:6px 8px;}
+.nsr-chips{display:flex;flex-wrap:wrap;gap:6px;padding:2px 4px 6px;}
+.nsr-chips:empty{display:none;}
+.nsr-chip{border:1px solid var(--line);background:#fff;border-radius:100px;padding:7px 12px;font-size:13px;font-weight:600;color:var(--ink);cursor:pointer;font-family:inherit;}
+.nsr-chip:hover{border-color:var(--tech);color:var(--tech);}
+.nsr-hub{border-color:var(--tech-tint);background:var(--tech-tint);color:var(--tech-dark);}
+.nsr-todos{display:block;width:100%;margin-top:6px;border:none;border-radius:12px;padding:11px;background:var(--ink);color:#fff;font-weight:700;font-size:13.5px;cursor:pointer;font-family:inherit;}
 .nav-search-overlay{display:none;}
 @media (max-width:734px){
   .nav-search-panel{position:fixed;top:var(--stack-h);left:0;right:0;width:auto;max-width:none;border-radius:0 0 16px 16px;}
@@ -286,6 +298,7 @@ nav.links button.is-active::after{
 .mobile-menu button.mm-link{background:none;border:none;font-size:22px;font-weight:700;color:var(--ink);letter-spacing:-0.02em;cursor:pointer;display:flex;align-items:center;}
 .mobile-menu .mm-close{position:absolute;top:18px;right:20px;font-size:26px;background:none;border:none;color:var(--ink-soft);cursor:pointer;}
 .mobile-menu .mm-wa{margin-top:10px;background:var(--ink);color:#fff;padding:12px 24px;border-radius:100px;font-size:14px;font-weight:600;}
+.mobile-menu .mm3,.pie-v3{display:none;}   /* menú y pie de la V3: solo se muestran con ?v3=1 (css/v3.css) */
 
 /* ---------- VIEW TRANSITION ---------- */
 #app{

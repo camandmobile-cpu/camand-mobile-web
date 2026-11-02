@@ -101,7 +101,7 @@
 <!-- Copia de los banners (la genera el robot diario): se pide desde ya para
      mostrar el banner sin esperar a Google Sheets. -->
 <link rel="preload" href="data/banners.json" as="fetch" crossorigin="anonymous">
-<link rel="stylesheet" href="css/tienda.css?v=20261102h">
+<link rel="stylesheet" href="css/tienda.css?v=20261103c">
 <link rel="stylesheet" href="css/movimiento.css?v=20261102c">
 <!-- V3 en vista previa: camandmobile.com/?v3=1 la activa en ESTE navegador y
      ?v3=0 la apaga. Sin el interruptor no se descarga nada de la V3, así que
@@ -122,8 +122,8 @@
     // Sin precarga de Manrope: Chrome espera las fuentes "optional" precargadas antes
     // del primer dibujo, y PageSpeed bajaba de ~80 a ~53. Sin precarga, la primera
     // visita usa Inter y desde la segunda (ya en caché) se ve Manrope.
-    document.write('<link rel="stylesheet" href="css/v3.css?v=20261102i">' +
-      '<script defer src="js/v3.js?v=20261102d"><\/script>');
+    document.write('<link rel="stylesheet" href="css/v3.css?v=20261103d">' +
+      '<script defer src="js/v3.js?v=20261103c"><\/script>');
   }catch(e){}
 })();
 </script>
@@ -516,7 +516,7 @@ window.TEMPORADA_CONFIG = {
       <img class="brand-logo camand-logo-img" src="img/camand-logo.svg" alt="Camand Mobile">
     </button>
     <nav class="links">
-      <button data-view="home" class="is-active" onclick="go('home')">Home</button>
+      <button data-view="home" class="is-active" onclick="go('home')">Inicio</button>
       <button data-view="personaliza" class="nav-pz" onclick="go('personaliza')"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 2l1.8 5.6L19.5 9l-5.7 1.4L12 16l-1.8-5.6L4.5 9l5.7-1.4Z"/></svg>Personaliza</button>
       <div class="nav-item">
         <button data-view="celulares" onclick="go('celulares')">Equipos</button>
@@ -552,7 +552,7 @@ window.TEMPORADA_CONFIG = {
         <div class="nav-search-panel" id="navSearchPanel">
           <div class="nav-search-input-wrap">
             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><circle cx="11" cy="11" r="7"/><path d="m21 21-4.3-4.3"/></svg>
-            <input type="text" id="navSearchInput" placeholder="Busca cualquier producto — ej. iPhone 13, cargador, A57..." oninput="performNavSearch(this.value)" onkeydown="if(event.key==='Escape')toggleNavSearch(false)">
+            <input type="search" id="navSearchInput" placeholder="Busca iPhone, Samsung, AirPods, cargadores…" aria-label="Buscar productos" autocomplete="off" oninput="performNavSearch(this.value)" onkeydown="if(event.key==='Escape')toggleNavSearch(false)">
             <button type="button" class="nav-search-close" onclick="toggleNavSearch(false)" aria-label="Cerrar búsqueda">✕</button>
           </div>
           <div class="nav-search-results" id="navSearchResults"></div>
@@ -582,7 +582,7 @@ window.TEMPORADA_CONFIG = {
 
 <div class="mobile-menu" id="mobileMenu">
   <button class="mm-close" onclick="toggleMenu(false)">✕</button>
-  <button class="mm-link" onclick="go('home')">Home</button>
+  <button class="mm-link" onclick="go('home')">Inicio</button>
   <button class="mm-link mm-pz" onclick="go('personaliza')">Personaliza tu celular</button>
   <button class="mm-link" onclick="go('celulares')">Equipos</button>
   <button class="mm-link" onclick="go('tablets')">Tablets</button>
@@ -593,6 +593,29 @@ window.TEMPORADA_CONFIG = {
   <button class="mm-link" onclick="go('cases')">Estuches</button>
   <button class="mm-link" onclick="go('faq')">Soporte</button>
   <button class="mm-link" onclick="toggleMenu(false);openFav(true)"><svg class="icon-inline" style="width:20px;height:20px;" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M12 20s-6.5-4-8.5-7.7C1.7 9 3 5.8 6 5.2c1.8-.35 3.4.5 4.4 1.9C11.4 5.7 13 4.85 14.8 5.2c3 .6 4.3 3.8 2.5 7.1C15.3 16 12 20 12 20Z"/></svg> Favoritos</button>
+  <!-- Menú V3 (solo con ?v3=1; en la tienda actual va oculto): buscador, categorías
+       como tarjetas de color, Personaliza y accesos rápidos. Las cantidades las
+       pone js/v3.js al abrir el menú. -->
+  <div class="mm3">
+    <img class="mm3-logo camand-logo-img" src="img/camand-logo.svg" alt="Camand Mobile" loading="lazy">
+    <button type="button" class="mm3-busca" onclick="toggleMenu(false);toggleNavSearch(true)"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><circle cx="11" cy="11" r="7"/><path d="m20 20-3.5-3.5"/></svg>Busca un producto…</button>
+    <div class="mm3-tiles">
+      <button type="button" class="mm3-tile" style="--c:var(--tech);--i:0" onclick="go('celulares')"><i><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="7" y="2" width="10" height="20" rx="2.5"/><path d="M11 18h2"/></svg></i><b>Equipos<small data-cuenta="celulares"></small></b></button>
+      <button type="button" class="mm3-tile" style="--c:var(--v3-violeta);--i:1" onclick="go('tablets')"><i><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="4" y="3" width="16" height="18" rx="2"/><path d="M10 19h4"/></svg></i><b>Tablets<small data-cuenta="tablets"></small></b></button>
+      <button type="button" class="mm3-tile" style="--c:var(--v3-lima);--i:2" onclick="go('relojes')"><i><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="7" y="6" width="10" height="12" rx="3"/><path d="M9 6V3.5h6V6M9 18v2.5h6V18"/></svg></i><b>Relojes<small data-cuenta="relojes"></small></b></button>
+      <button type="button" class="mm3-tile" style="--c:var(--v3-naranja);--i:3" onclick="go('audifonos')"><i><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 14v-2a8 8 0 0 1 16 0v2"/><rect x="2.5" y="14" width="5" height="7" rx="2"/><rect x="16.5" y="14" width="5" height="7" rx="2"/></svg></i><b>Audífonos<small data-cuenta="audifonos"></small></b></button>
+      <button type="button" class="mm3-tile" style="--c:var(--v3-cian);--i:4" onclick="go('computadores')"><i><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="4" width="18" height="12" rx="1.5"/><path d="M2 20h20"/></svg></i><b>Computadores<small data-cuenta="computadores"></small></b></button>
+      <button type="button" class="mm3-tile" style="--c:var(--v3-magenta);--i:5" onclick="go('techoficina')"><i><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M13 2 4 14h7l-1 8 9-12h-7Z"/></svg></i><b>Accesorios<small data-cuenta="techoficina"></small></b></button>
+      <button type="button" class="mm3-tile mm3-pz" style="--i:6" onclick="go('personaliza')"><b>✦ Personaliza tu celular<small>Skins con tu foto, estuches e hidrogel</small></b></button>
+    </div>
+    <ul class="mm3-rapidos">
+      <li><button type="button" onclick="go('home')">Inicio <span>→</span></button></li>
+      <li><button type="button" onclick="toggleMenu(false);openFav(true)">Favoritos <span>→</span></button></li>
+      <li><button type="button" onclick="go('cases')">Estuches personalizados <span>→</span></button></li>
+      <li><a href="https://wa.me/573122265799?text=Hola%2C%20quiero%20consultar%20el%20estado%20de%20mi%20pedido" target="_blank" rel="noopener">Consultar mi pedido <span>→</span></a></li>
+      <li><button type="button" onclick="go('faq')">Soporte y envíos <span>→</span></button></li>
+    </ul>
+  </div>
   <a class="mm-wa" href="https://wa.me/573122265799?text=Hola%2C%20quiero%20hacer%20un%20pedido" target="_blank" rel="noopener">Escríbenos por WhatsApp</a>
 </div>
 
@@ -2061,6 +2084,50 @@ function mostrarGraciasSuscripcion() {
     </div>
   </div>
 </footer>
+<!-- Pie de la V3 (solo con ?v3=1; en la tienda actual va oculto). En celular las
+     columnas se abren y cierran al tocarlas (details/summary, sin JavaScript). -->
+<footer class="pie-v3">
+  <div class="wrap">
+    <div class="pv3-cols">
+      <div class="pv3-marca">
+        <img class="camand-logo-img camand-logo-blanco" src="img/camand-logo-blanco.svg" alt="Camand Mobile" loading="lazy">
+        <p>Celulares y tecnología, nuevos y seminuevos, en Bogotá y todo Colombia. Equipos revisados, con garantía.</p>
+        <div class="pv3-redes">
+          <a href="https://www.instagram.com/camand.mobile/" target="_blank" rel="noopener" aria-label="Instagram"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><rect x="3" y="3" width="18" height="18" rx="5"/><circle cx="12" cy="12" r="4"/><circle cx="17.5" cy="6.5" r="1" fill="currentColor"/></svg></a>
+          <a href="https://wa.me/573122265799" target="_blank" rel="noopener" aria-label="WhatsApp"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 2a10 10 0 0 0-8.6 15.1L2 22l5-1.3A10 10 0 1 0 12 2Z"/></svg></a>
+        </div>
+      </div>
+      <details open><summary><h4>Comprar</h4></summary><ul>
+        <li><a href="#/celulares" onclick="go('celulares');return false;">Equipos</a></li>
+        <li><a href="#/tablets" onclick="go('tablets');return false;">Tablets</a></li>
+        <li><a href="#/relojes" onclick="go('relojes');return false;">Relojes</a></li>
+        <li><a href="#/audifonos" onclick="go('audifonos');return false;">Audífonos</a></li>
+        <li><a href="#/computadores" onclick="go('computadores');return false;">Computadores</a></li>
+        <li><a href="#/techoficina" onclick="go('techoficina');return false;">Accesorios</a></li>
+      </ul></details>
+      <details open><summary><h4>Personaliza</h4></summary><ul>
+        <li><a href="#/personaliza" onclick="go('personaliza');return false;">Skins con tu foto</a></li>
+        <li><a href="#/cases" onclick="go('cases');return false;">Estuches personalizados</a></li>
+        <li><a href="#/personaliza" onclick="go('personaliza');return false;">Hidrogel instalado</a></li>
+      </ul></details>
+      <details open><summary><h4>Ayuda</h4></summary><ul>
+        <li><a href="#/faq" onclick="go('faq');return false;">Envíos, garantía y preguntas</a></li>
+        <li><a href="#/devoluciones" onclick="go('devoluciones');return false;">Devoluciones</a></li>
+        <li><a href="#/privacidad" onclick="go('privacidad');return false;">Privacidad</a></li>
+        <li><a href="#" onclick="openCookieSettings();return false;">Configurar cookies</a></li>
+      </ul></details>
+      <details open><summary><h4>Contacto</h4></summary><ul>
+        <li>Tienda virtual · Bogotá</li>
+        <li>Lun – Sáb, 9 a. m. – 7 p. m.</li>
+        <li><a href="https://wa.me/573122265799" target="_blank" rel="noopener">+57 312 226 5799</a></li>
+        <li><a href="https://wa.me/573122265799?text=Hola%2C%20quiero%20consultar%20el%20estado%20de%20mi%20pedido" target="_blank" rel="noopener">Consultar mi pedido</a></li>
+      </ul></details>
+    </div>
+    <div class="pv3-pagos"><span>Paga como prefieras</span><b>Contraentrega</b><b>Tarjeta de crédito a cuotas</b><b>Débito</b><b>Transferencia / PSE</b><b>Nequi</b><b>Sistecrédito</b></div>
+    <div class="pv3-sellos"><span>Compra 100% segura</span><span>Entrega en 1 a 2 días</span><span>Envíos a toda Colombia</span><span>Garantía en todos los equipos</span></div>
+    <div class="pv3-fin"><span>© 2026 Camand Mobile · Bogotá</span><span>Hecho con cariño en Bogotá</span></div>
+  </div>
+</footer>
 
 <a class="sc-fab" href="https://wa.me/573122265799?text=Hola%2C%20quiero%20comprar%20usando%20mi%20cupo%20Sistecr%C3%A9dito" target="_blank" rel="noopener" aria-label="Comprar con Sistecrédito">
   <img class="sc-logo-img" alt="Sistecrédito">
@@ -2190,7 +2257,7 @@ function mostrarGraciasSuscripcion() {
      ejecutan en este mismo orden, antes de DOMContentLoaded. -->
 <script defer src="https://cdnjs.cloudflare.com/ajax/libs/PapaParse/5.4.1/papaparse.min.js"></script>
 <script defer src="js/movimiento.js?v=20261102b"></script>
-<script defer src="js/tienda.js?v=20261102g"></script>
+<script defer src="js/tienda.js?v=20261102h"></script>
 
 <script defer src="js/personaliza.js?v=20261019o"></script>
 

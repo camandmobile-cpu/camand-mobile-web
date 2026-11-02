@@ -120,6 +120,49 @@
     despues(vuelta + 650, function(){ terminar(false); });
   }
 
+  /* ---------- Encabezado V3.2 ---------- */
+  function encabezado(){
+    var cab = document.querySelector('header.nav');
+    if(!cab) return;
+    // Al bajar se esconde la fila de categorías; al subir vuelve.
+    var ultimoY = scrollY;
+    addEventListener('scroll', function(){
+      var y = scrollY;
+      if(Math.abs(y - ultimoY) < 8) return;
+      var compacto = y > ultimoY && y > 160 && !document.querySelector('.nav-item:hover, .nav-item:focus-within');
+      cab.classList.toggle('compacto', compacto);
+      html.classList.toggle('cab-compacta', compacto);
+      ultimoY = y;
+    }, { passive: true });
+    // En computador el buscador está siempre a la vista: al tocarlo se abren los resultados.
+    var panel = document.getElementById('navSearchPanel'), input = document.getElementById('navSearchInput');
+    if(panel && input){
+      input.addEventListener('focus', function(){
+        if(innerWidth > 900 && !panel.classList.contains('is-open')){ panel.classList.add('is-open'); performNavSearch(input.value); }
+      });
+    }
+    // Menú del celular: cantidades por categoría al abrir, y se cierra tocando afuera.
+    var menu = document.getElementById('mobileMenu');
+    if(menu){
+      new MutationObserver(function(){
+        if(!menu.classList.contains('open') || typeof getExtraHub !== 'function') return;
+        menu.querySelectorAll('[data-cuenta]').forEach(function(el){
+          try { var n = flattenItems(getExtraHub(el.dataset.cuenta)).length; el.textContent = n ? n + ' productos' : ''; } catch(e){}
+        });
+      }).observe(menu, { attributes: true, attributeFilter: ['class'] });
+      document.addEventListener('click', function(e){
+        if(menu.classList.contains('open') && !menu.contains(e.target) && !e.target.closest('.hamburger')) toggleMenu(false);
+      });
+    }
+    // Pie: en celular las columnas empiezan cerradas (se abren al tocarlas).
+    if(innerWidth <= 900) document.querySelectorAll('.pie-v3 details').forEach(function(d){ d.open = false; });
+    // Tecla "/" para buscar (como en las tiendas grandes).
+    document.addEventListener('keydown', function(e){
+      var t = document.activeElement && document.activeElement.tagName;
+      if(e.key === '/' && t !== 'INPUT' && t !== 'TEXTAREA' && input && innerWidth > 900){ e.preventDefault(); input.focus(); }
+    });
+  }
+
   if(html.classList.contains('v3-entrada')) entrada();
-  if(document.body) etiqueta(); else document.addEventListener('DOMContentLoaded', etiqueta);
+  if(document.body){ etiqueta(); encabezado(); } else document.addEventListener('DOMContentLoaded', function(){ etiqueta(); encabezado(); });
 })();
