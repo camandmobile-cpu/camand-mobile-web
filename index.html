@@ -94,7 +94,8 @@
      — la mayoría de tus visitantes de iPhone/Mac ni siquiera llegan a
      descargar Inter, porque usan la fuente nativa SF Pro Display primero. -->
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="css/tienda.css?v=20261019o">
+<link rel="stylesheet" href="css/tienda.css?v=20261102c">
+<link rel="stylesheet" href="css/movimiento.css?v=20261102a">
 </head>
 <body>
 
@@ -428,8 +429,10 @@ window.TEMPORADA_CONFIG = {
 
 
 <script>
-  // Pantalla de carga: completa (1,5 s) solo en la primera visita de la
-  // sesión; después la tienda aparece casi de inmediato, como apple.com.
+  // Pantalla de carga: solo en la primera visita de la sesión y solo mientras
+  // la página termina de cargar (antes además esperaba 1,5 s fijos; sumado al
+  // fundido, el cliente veía la tienda ~3 s más tarde). En las visitas
+  // siguientes la tienda aparece de inmediato, como apple.com.
   var CAMAND_SPLASH_VISTO = false;
   try { CAMAND_SPLASH_VISTO = sessionStorage.getItem('camand_splash_visto') === '1'; sessionStorage.setItem('camand_splash_visto', '1'); } catch(e){}
   if(CAMAND_SPLASH_VISTO) document.documentElement.classList.add('splash-rapido');
@@ -451,7 +454,7 @@ window.TEMPORADA_CONFIG = {
           el.style.animation = 'none';
         }, { once: true });
       });
-    }, CAMAND_SPLASH_VISTO ? 0 : 1500);
+    }, 0);
   });
 </script>
 
@@ -523,7 +526,7 @@ window.TEMPORADA_CONFIG = {
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 21s-7-4.35-9.5-8.5C.5 8 2 4.5 5.5 4c2-.3 3.7.7 4.7 2.2C11.2 4.7 12.9 3.7 14.9 4c3.5.5 5 4 3 8.5C19 16.65 12 21 12 21Z"/></svg>
         <span class="cart-badge" id="favBadge">0</span>
       </button>
-      <button type="button" class="nav-fav-btn" onclick="openCart(true)" aria-label="Ver carrito de compras">
+      <button type="button" class="nav-fav-btn nav-cart" onclick="openCart(true)" aria-label="Ver carrito de compras">
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 4h2l2.4 12.2a2 2 0 0 0 2 1.6h8.6a2 2 0 0 0 2-1.6L22 8H6"/><circle cx="9" cy="21" r="1"/><circle cx="18" cy="21" r="1"/></svg>
         <span class="cart-badge" id="cartBadgeNav">0</span>
       </button>
@@ -2075,7 +2078,8 @@ function mostrarGraciasSuscripcion() {
 </div>
 
 <script src="https://cdnjs.cloudflare.com/ajax/libs/PapaParse/5.4.1/papaparse.min.js"></script>
-<script src="js/tienda.js?v=20261019o"></script>
+<script src="js/movimiento.js?v=20261102a"></script>
+<script src="js/tienda.js?v=20261102a"></script>
 
 <script src="js/personaliza.js?v=20261019o"></script>
 
