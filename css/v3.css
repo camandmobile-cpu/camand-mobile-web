@@ -250,6 +250,7 @@ html.v3 #view-home > .section:has(.about-block){order:9;}
 html.v3 #view-home > .section:has(.instagram-cta){order:10;}
 html.v3 #view-home > .section:has(.testi-grid){order:11;}
 
+html.v3 .v3-solo-lector{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0);white-space:nowrap;margin:0;}
 /* campaña compacta: un solo botón (Comparar y Personaliza ya tienen su lugar) */
 html.v3 .hero{padding:40px 0 30px;}
 html.v3 .hero .hero-compare-btn{display:none;}

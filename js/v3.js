@@ -243,6 +243,14 @@
       if(btn.textContent !== texto) btn.textContent = texto;   // solo si cambia: si no, el observador se dispararía en bucle
     }
 
+    // Título (solo para lectores de pantalla) antes de las categorías: ahora van justo
+    // después del título principal y sin él los títulos saltaban de nivel.
+    var gridCats = document.getElementById('catGridHome');
+    if(gridCats && !document.getElementById('v3TituloCats')){
+      var h2 = document.createElement('h2');
+      h2.id = 'v3TituloCats'; h2.className = 'v3-solo-lector'; h2.textContent = 'Compra por categoría';
+      gridCats.before(h2);
+    }
     // 4) Quiénes somos: corto, con "Leer más".
     var about = $('.about-block');
     if(about && !about.querySelector('.about-mas')){
