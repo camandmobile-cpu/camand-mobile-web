@@ -103,27 +103,34 @@
 <link rel="preload" href="data/banners.json" as="fetch" crossorigin="anonymous">
 <link rel="stylesheet" href="css/tienda.css?v=20261103d">
 <link rel="stylesheet" href="css/movimiento.css?v=20261102c">
-<!-- V3 en vista previa: camandmobile.com/?v3=1 la activa en ESTE navegador y
-     ?v3=0 la apaga. Sin el interruptor no se descarga nada de la V3, así que
-     los clientes ven la tienda de siempre. Se escribe con document.write para
-     que los estilos frenen el primer dibujo y no se vea un instante la versión
-     vieja. v3-entrada = primera visita del día (desfile de entrada). -->
+<!-- V3 ACTIVA PARA TODOS (desde 2026-11-03). Para volver a ver la tienda anterior
+     en ESTE navegador: camandmobile.com/?v3=0 (y ?v3=1 la vuelve a activar).
+     Para apagar la V3 para todos los clientes: cambia V3_PARA_TODOS a false.
+     Se escribe con document.write para que los estilos frenen el primer dibujo y
+     no se vea un instante la versión vieja. v3-entrada = primera visita del día
+     (desfile de entrada). -->
 <script>
 (function(){
+  var V3_PARA_TODOS = true;
   try{
     var p = new URLSearchParams(location.search).get('v3');
-    if(p === '1') localStorage.setItem('camand_v3', '1');
-    if(p === '0') localStorage.removeItem('camand_v3');
-    if(localStorage.getItem('camand_v3') !== '1') return;
+    try{
+      if(p === '0') localStorage.setItem('camand_v3_off', '1');
+      if(p === '1') localStorage.removeItem('camand_v3_off');
+      if(localStorage.getItem('camand_v3_off') === '1') return;
+    }catch(e){ if(p === '0') return; }   // sin almacenamiento (navegación privada): igual se activa
+    if(!V3_PARA_TODOS && p !== '1') return;
     var h = document.documentElement;
     h.classList.add('v3');
     // ?entrada=0 se salta el desfile (para medir la V3 sin la entrada).
-    if(sessionStorage.getItem('camand_splash_visto') !== '1' && new URLSearchParams(location.search).get('entrada') !== '0') h.classList.add('v3-entrada');
+    var visto = false;
+    try { visto = sessionStorage.getItem('camand_splash_visto') === '1'; } catch(e){}
+    if(!visto && new URLSearchParams(location.search).get('entrada') !== '0') h.classList.add('v3-entrada');
     // Sin precarga de Manrope: Chrome espera las fuentes "optional" precargadas antes
     // del primer dibujo, y PageSpeed bajaba de ~80 a ~53. Sin precarga, la primera
     // visita usa Inter y desde la segunda (ya en caché) se ve Manrope.
     document.write('<link rel="stylesheet" href="css/v3.css?v=20261103f">' +
-      '<script defer src="js/v3.js?v=20261103f"><\/script>');
+      '<script defer src="js/v3.js?v=20261103g"><\/script>');
   }catch(e){}
 })();
 </script>
