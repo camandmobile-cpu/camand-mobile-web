@@ -318,6 +318,94 @@ html.v3 #view-home > .section:has(.testi-grid) .section-head{margin-bottom:22px;
   html.v3 .testi{flex:0 0 82%;scroll-snap-align:start;}
 }
 
+/* ---------- 3e. V3.4: tarjetas y listados ---------- */
+html.v3 .product-grid{gap:14px;}
+html.v3 .product-card .pc-body{padding:14px 14px 16px;gap:5px;}
+html.v3 .product-card .pc-name{font-family:var(--v3-titulo);font-size:15px;font-weight:700;line-height:1.3;letter-spacing:-.01em;
+  display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden;}
+html.v3 .product-card .pc-specs span{border-radius:100px;padding:3px 8px;font-size:11px;}
+html.v3 .product-card .pc-price-row{padding-top:8px;}
+html.v3 .product-card .pc-price{font-size:19px;color:var(--ink);}
+/* Todo producto publicado se entrega en 1 a 2 días (regla de la tienda). */
+html.v3 .product-card .pc-price-row::after{content:"Entrega en 1 a 2 días";flex-basis:100%;font-size:12px;font-weight:600;color:var(--trust);}
+html.v3 .product-card .pc-actions{margin-top:10px;gap:8px;}
+html.v3 .product-card .pc-add{height:42px;padding:0 10px;font-size:13.5px;white-space:nowrap;}
+html.v3 .product-card .pc-ask{width:42px;height:42px;border-radius:50%;}
+html.v3 .product-card .pc-badge{top:12px;left:12px;padding:5px 10px;}
+html.v3 .product-card .pc-badge.nuevo{background:var(--ink);}
+html.v3 .product-card .pc-fav{width:34px;height:34px;}
+@media (max-width:560px){
+  html.v3 .product-grid{gap:10px;}
+  html.v3 .product-card{border-radius:18px;}
+  html.v3 .product-card .pc-body{padding:12px 12px 14px;}
+  html.v3 .product-card .pc-name{font-size:14px;}
+  html.v3 .product-card .pc-price{font-size:17px;}
+  html.v3 .product-card .pc-ask{display:none;}          /* en celular el botón de comprar ocupa todo el ancho; WhatsApp sigue en la ficha y en el botón verde */
+  html.v3 .product-card .pc-add{height:40px;font-size:13px;}
+}
+/* filtros: en celular una sola fila deslizable (antes ocupaban media pantalla) */
+html.v3 .filters-bar{border-radius:20px;background:rgba(244,244,246,.92);border-color:transparent;}
+@media (max-width:900px){
+  html.v3 .filters-bar{flex-wrap:nowrap;overflow-x:auto;gap:8px;padding:10px 12px;margin:0 -2px 14px;scrollbar-width:none;align-items:flex-end;}
+  html.v3 .filters-bar::-webkit-scrollbar{display:none;}
+  html.v3 .filters-bar > *{flex:0 0 auto;min-width:132px;}
+  html.v3 .filters-bar .filter-field:has(.filter-price){min-width:210px;}
+  html.v3 .filters-bar .filters-clear{min-width:0;align-self:flex-end;height:38px;white-space:nowrap;}
+  html.v3 .filters-bar label{font-size:10.5px;}
+  html.v3 .filters-bar select,html.v3 .filters-bar input{height:38px;font-size:13px;}
+}
+
+/* ---------- 3f. V3.5: ficha de producto ---------- */
+html.v3 .pdp-main-img{border:none;border-radius:28px;background:var(--surface);}
+html.v3 .pdp-thumb{border-radius:14px;}
+html.v3 .pdp-thumb.is-active,html.v3 .pdp-thumb[aria-current="true"]{border-color:var(--ink);}
+html.v3 .pdp-title{font-family:var(--v3-titulo);font-size:clamp(24px,3vw,34px);letter-spacing:-.03em;line-height:1.15;}
+html.v3 .pdp-price{font-family:var(--v3-titulo);color:var(--ink);font-size:clamp(30px,3.6vw,38px);}
+html.v3 .pdp-price-row::after{content:"Entrega en 1 a 2 días · Bogotá y todo Colombia";flex-basis:100%;font-size:13.5px;font-weight:600;color:var(--trust);}
+html.v3 .pdp-variant-chip{border-radius:14px;padding:11px 16px;}
+html.v3 .pdp-variant-chip.is-active{border-color:var(--ink);box-shadow:inset 0 0 0 1px var(--ink);background:#fff;color:var(--ink);}
+html.v3 .pdp-add-btn,html.v3 .pdp-wa-btn{border-radius:100px;height:54px;padding:0 20px;font-size:15.5px;}
+html.v3 .pdp-wa-btn{background:#25d366;color:#04361b;}
+html.v3 .pdp-wa-btn svg{fill:#04361b;}
+html.v3 .pdp-section-block{border:none;background:var(--surface);border-radius:22px;}
+html.v3 .pdp-pay-item{background:#fff;border-radius:14px;}
+html.v3 .pdp-pay-item .pdp-pay-icon svg{color:var(--tech);}
+html.v3 .pdp-tabs-nav{border-bottom:none;gap:6px;}
+html.v3 .pdp-tab-btn{margin:0;padding:9px 14px;border-radius:100px;background:var(--surface);color:var(--ink);}
+html.v3 .pdp-tab-btn.is-active,html.v3 .pdp-tab-btn[aria-selected="true"]{background:var(--ink);color:#fff;}
+html.v3 .pdp-tab-btn::after{display:none;}
+@media (max-width:760px){
+  html.v3 .pdp-sticky-buy{left:10px;right:10px;bottom:10px;border-radius:100px;border:none;padding:8px 8px 8px 20px;
+    background:rgba(13,13,16,.94);color:#fff;box-shadow:0 18px 40px -16px rgba(0,0,0,.6);}
+  html.v3 .pdp-sticky-name{color:#b9b9c4;}
+  html.v3 .pdp-sticky-info b{color:#fff;}
+  html.v3 .pdp-sticky-btn{background:var(--tech);height:44px;padding:0 20px;}
+  html.v3 body.pdp-sticky-on .wa-fab{bottom:90px;}
+}
+
+/* ---------- 3g. V3.6: carrito ---------- */
+html.v3 .cart-drawer{border-radius:28px 0 0 28px;width:min(420px,94vw);}
+html.v3 .cart-head{padding:22px 24px;border-bottom:none;}
+html.v3 .cart-head h3{font-family:var(--v3-titulo);font-size:22px;letter-spacing:-.02em;}
+html.v3 .cart-close{width:40px;height:40px;border-radius:50%;background:var(--surface);color:var(--ink);font-size:16px;}
+html.v3 .cart-body{padding:8px 24px 16px;}
+html.v3 .cart-item{grid-template-columns:72px 1fr auto;}
+html.v3 .cart-item > img,html.v3 .cart-item > .cart-item-noimg{width:72px;height:72px;min-height:72px;border-radius:16px;object-fit:contain;object-position:center;padding:6px;align-self:start;}
+html.v3 .cart-item-name{font-size:14px;font-weight:700;}
+html.v3 .cart-item-price{font-family:var(--v3-titulo);font-weight:800;font-size:14.5px;}
+html.v3 .cart-item-stepper{border-radius:100px;padding:6px 12px;}
+html.v3 .cart-shipping-bar{padding:0 24px;}
+html.v3 .cart-foot{padding:16px 24px 24px;border-top:1px solid var(--line);}
+html.v3 .cart-total-row span:last-child{font-family:var(--v3-titulo);font-size:24px;}
+html.v3 .cart-pay-note{border-radius:16px;}
+html.v3 .cart-checkout{background:var(--tech);height:54px;padding:0 16px;font-size:15px;box-shadow:0 12px 24px -14px rgba(31,77,255,.8);}
+html.v3 .cart-checkout:hover{background:var(--tech-dark);}
+html.v3 .cart-checkout:disabled{background:#c9cbd6;box-shadow:none;}
+html.v3 .cart-continue-btn{height:54px;}
+html.v3 .cart-crosssell-item img,html.v3 .cart-crosssell-item .cart-item-noimg{border-radius:12px;}
+html.v3 .cart-crosssell-item button{border-radius:100px;}
+@media (max-width:560px){ html.v3 .cart-drawer{border-radius:24px 0 0 24px;} }
+
 /* ---------- 4. Botones ---------- */
 html.v3 .product-card .pc-add,html.v3 .pdp-add-btn,html.v3 .pdp-sticky-btn,html.v3 .tm-hero-btn,html.v3 .pz-btn.blue{
   border-radius:100px;box-shadow:0 10px 22px -14px rgba(31,77,255,.8);
