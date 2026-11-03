@@ -1,6 +1,5 @@
 /* ============================================================
-   CAMAND MOBILE — V3 (vista previa). Solo se carga con ?v3=1.
-   - Etiqueta "Vista previa V3 · salir".
+   CAMAND MOBILE — V3 (activa para todos; ?v3=0 la apaga en un navegador).
    - Entrada (primera visita del día): pasan unos equipos con un halo de
      color y el logo vuela a su lugar en el encabezado. Botón "Saltar".
      Con "reducir movimiento" solo se ve el logo un instante.
@@ -19,15 +18,6 @@
   ];
   var CLD = 'https://res.cloudinary.com/c5sxh1yw/image/upload/w_360,q_auto,f_auto,c_limit/';
   var COLORES = ['#1f4dff', '#7b4ee6', '#00a9c7', '#ff2e88'];
-
-  function etiqueta(){
-    var url = new URL(location.href);
-    url.searchParams.set('v3', '0');
-    var e = document.createElement('div');
-    e.className = 'v3-etiqueta';
-    e.innerHTML = 'Vista previa V3 <a href="' + url.pathname + url.search + url.hash + '">salir</a>';
-    document.body.appendChild(e);
-  }
 
   function entrada(){
     var splash = document.getElementById('splash-screen');
@@ -264,5 +254,5 @@
 
   if(html.classList.contains('v3-entrada')) entrada();
   inicio();
-  if(document.body){ etiqueta(); encabezado(); } else document.addEventListener('DOMContentLoaded', function(){ etiqueta(); encabezado(); });
+  if(document.body) encabezado(); else document.addEventListener('DOMContentLoaded', encabezado);
 })();
