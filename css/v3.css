@@ -406,6 +406,32 @@ html.v3 .cart-crosssell-item img,html.v3 .cart-crosssell-item .cart-item-noimg{b
 html.v3 .cart-crosssell-item button{border-radius:100px;}
 @media (max-width:560px){ html.v3 .cart-drawer{border-radius:24px 0 0 24px;} }
 
+/* ---------- 3h. V3.7: Personaliza, preguntas frecuentes y páginas legales ---------- */
+html.v3 .pz-hero{background:var(--v3-oscuro);}
+html.v3 .pz-card{border-radius:24px;border:1px solid var(--line);}
+html.v3 .pz-card:hover{box-shadow:var(--shadow-2);}
+html.v3 .pz-btn{border-radius:100px;}
+/* comprar siempre en azul (skin e hidrogel) */
+html.v3 .pz-btn.dark[onclick^="pzAddSkinToCart"],html.v3 #pzHgCart{background:var(--tech);color:#fff;box-shadow:0 10px 22px -14px rgba(31,77,255,.8);}
+html.v3 .pz-btn.dark[onclick^="pzAddSkinToCart"]:hover,html.v3 #pzHgCart:hover{background:var(--tech-dark);}
+/* En celular las 6 tarjetas de Personaliza pasan a un carrusel (antes ~3.900 px en columna) */
+@media (max-width:600px){
+  html.v3 .pz-cards{display:flex;overflow-x:auto;scroll-snap-type:x mandatory;gap:12px;margin:0 -16px;padding:4px 16px 14px;scrollbar-width:none;}
+  html.v3 .pz-cards::-webkit-scrollbar{display:none;}
+  html.v3 .pz-cards > *{flex:0 0 84%;scroll-snap-align:start;}
+  html.v3 .pz-card-media{aspect-ratio:4/3;}
+  /* accesorios Apple: también en carrusel */
+  html.v3 #pzApple .product-grid{display:flex;overflow-x:auto;scroll-snap-type:x mandatory;gap:10px;margin:0 -16px;padding:4px 16px 14px;scrollbar-width:none;}
+  html.v3 #pzApple .product-grid::-webkit-scrollbar{display:none;}
+  html.v3 #pzApple .product-grid > .product-card{flex:0 0 46%;scroll-snap-align:start;}
+}
+/* preguntas frecuentes y páginas legales: tarjetas suaves y lectura cómoda */
+html.v3 .faq-item{border-radius:20px;border-color:var(--line);}
+html.v3 .faq-item.open{border-color:var(--ink);}
+html.v3 #view-privacidad .wrap,html.v3 #view-devoluciones .wrap{max-width:760px;}
+html.v3 #view-privacidad p,html.v3 #view-devoluciones p,html.v3 #view-privacidad li,html.v3 #view-devoluciones li{line-height:1.7;}
+html.v3 #view-privacidad h2,html.v3 #view-devoluciones h2,html.v3 #view-privacidad h3,html.v3 #view-devoluciones h3{font-family:var(--v3-titulo);letter-spacing:-.02em;}
+
 /* ---------- 4. Botones ---------- */
 html.v3 .product-card .pc-add,html.v3 .pdp-add-btn,html.v3 .pdp-sticky-btn,html.v3 .tm-hero-btn,html.v3 .pz-btn.blue{
   border-radius:100px;box-shadow:0 10px 22px -14px rgba(31,77,255,.8);
