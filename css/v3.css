@@ -231,6 +231,93 @@ html.v3 .pv3-fin{display:flex;justify-content:space-between;flex-wrap:wrap;gap:1
   html.v3 .pie-v3 details ul{padding-bottom:12px;}
 }
 
+/* ---------- 3d. Inicio (V3.3) ----------
+   Nuevo orden sin rehacer el HTML: el inicio pasa a columna flexible y cada bloque
+   toma su lugar con "order" (así el primer dibujo ya sale ordenado, sin saltos).
+   Luego js/v3.js mueve los bloques al mismo orden en el HTML (para el teclado y los
+   lectores de pantalla) y arma las pestañas del bloque único de productos. */
+html.v3 #view-home.active{display:flex;flex-direction:column;}
+html.v3 #view-home > *{order:20;width:100%;}
+html.v3 #view-home > #promoBannerStrip{order:1;}
+html.v3 #view-home > .cinta{order:2;}
+html.v3 #view-home > .wrap:has(.hero){order:3;}
+html.v3 #view-home > .wrap:has(#catGridHome){order:4;}
+html.v3 #view-home > #v3Pestanas,html.v3 #view-home > .v3-productos{order:5;}
+html.v3 #view-home > :is(#tmOfertasSlot,#homeFeaturedSection,#qebSection,#regalosSection,#estrellaSection,#kitsSection,#homeRailsSection){order:6;}
+html.v3 #view-home > .wrap:has(.pz-dual){order:7;}
+html.v3 #view-home > .comocompras-section{order:8;}
+html.v3 #view-home > .section:has(.about-block){order:9;}
+html.v3 #view-home > .section:has(.instagram-cta){order:10;}
+html.v3 #view-home > .section:has(.testi-grid){order:11;}
+
+html.v3 .v3-solo-lector{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0);white-space:nowrap;margin:0;}
+/* campaña compacta: un solo botón (Comparar y Personaliza ya tienen su lugar) */
+html.v3 .hero{padding:40px 0 30px;}
+html.v3 .hero .hero-compare-btn{display:none;}
+html.v3 .hero p.sub{margin-bottom:20px;}
+html.v3 .tm-hero-cta{margin-bottom:0;}
+@media (max-width:700px){ html.v3 .hero{padding:28px 0 18px;} html.v3 .hero h1{font-size:clamp(30px,8.6vw,40px);margin-bottom:12px;} }
+
+/* categorías: tarjetas de color más compactas (3×2) y sellos en una fila */
+html.v3 .cat-grid-home{margin-top:8px;gap:12px;}
+html.v3 .cat-card-home{padding:22px 14px 18px;border-radius:22px;}
+html.v3 .cch-media{height:130px;margin-bottom:12px;}
+html.v3 .trust{margin-top:18px;padding:14px 0;flex-wrap:nowrap;overflow-x:auto;justify-content:flex-start;scrollbar-width:none;border-bottom:none;}
+html.v3 .trust::-webkit-scrollbar{display:none;}
+html.v3 .trust .pill{flex-shrink:0;}
+@media (max-width:700px){
+  html.v3 .cat-grid-home{grid-template-columns:repeat(3,1fr);gap:8px;}
+  html.v3 .cat-card-home{padding:14px 6px 12px;border-radius:18px;}
+  html.v3 .cch-media{height:64px;margin-bottom:8px;}
+  html.v3 .cch-media svg{width:34px;height:34px;}
+  html.v3 .cat-card-home h3{font-size:13px;}
+  html.v3 .cat-card-home h3 .arrow{display:none;}
+}
+
+/* bloque único de productos con pestañas */
+html.v3 .v3-pestanas{display:flex;gap:8px;overflow-x:auto;scrollbar-width:none;max-width:1180px;margin:0 auto;padding:30px 24px 4px;min-height:76px;}
+html.v3 .v3-pestanas::-webkit-scrollbar{display:none;}
+html.v3 .v3-pestanas button{flex-shrink:0;height:42px;padding:0 18px;border-radius:100px;border:1px solid var(--line);background:#fff;font:600 14.5px var(--v3-texto);color:var(--ink);cursor:pointer;transition:background .2s,color .2s,border-color .2s;}
+html.v3 .v3-pestanas button:hover{border-color:var(--ink);}
+html.v3 .v3-pestanas button[aria-selected="true"]{background:var(--ink);color:#fff;border-color:var(--ink);}
+html.v3 .v3-pestanas button.camp[aria-selected="true"]{background:var(--tech);border-color:var(--tech);}
+/* antes de que js/v3.js elija pestaña se ve solo la primera (más vendidos o campaña) */
+html.v3 #view-home:not([data-pestana]) :is(#qebSection,#regalosSection,#estrellaSection,#kitsSection,#homeRailsSection){display:none;}
+html.v3 #view-home[data-pestana] :is(#homeFeaturedSection,#qebSection,#regalosSection,#estrellaSection,#kitsSection,#homeRailsSection):not(.v3-activa){display:none;}
+html.v3 :is(#homeFeaturedSection,#qebSection,#regalosSection,#estrellaSection,#kitsSection,#homeRailsSection){padding-top:14px !important;padding-bottom:30px !important;}
+/* el título de cada bloque lo hace la pestaña (queda para lectores de pantalla) */
+html.v3 :is(#homeFeaturedSection,#qebSection,#regalosSection,#kitsSection) .home-featured-head h2{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0);white-space:nowrap;}
+html.v3 :is(#homeFeaturedSection,#qebSection,#regalosSection,#kitsSection) .home-featured-head{justify-content:flex-end;margin-bottom:12px;min-height:0;}
+/* "Ver más": 8 productos y el resto al tocar */
+html.v3 #homeFeaturedGrid:not(.v3-todo) > .product-card:nth-child(n+9){display:none;}
+html.v3 .v3-vermas{display:block;margin:18px auto 0;height:46px;padding:0 26px;border-radius:100px;border:1.5px solid var(--ink);background:#fff;font:700 14.5px var(--v3-texto);color:var(--ink);cursor:pointer;}
+html.v3 .v3-vermas:hover{background:var(--ink);color:#fff;}
+
+/* Personaliza a todo el ancho (la tarjeta de Celulares ya está en las categorías) */
+html.v3 .pz-dual{grid-template-columns:1fr;margin-top:8px;}
+html.v3 .pz-dual-cel{display:none;}
+html.v3 .pz-dual-pz{min-height:380px;}
+
+/* cómo compras: 2×2 en celular */
+html.v3 .comocompras-section{padding-top:28px;padding-bottom:28px;}
+@media (max-width:860px){ html.v3 .comocompras{grid-template-columns:1fr 1fr;gap:10px;} html.v3 .comocompras li{padding:14px;} html.v3 .comocompras p{font-size:12.5px;} }
+
+/* quiénes somos: corto, con "Leer más" (el texto completo sigue en la página) */
+html.v3 #view-home > .section:has(.about-block){padding:20px 0;}
+html.v3 .about-block p{display:-webkit-box;-webkit-line-clamp:3;-webkit-box-orient:vertical;overflow:hidden;}
+html.v3 .about-block.abierto p{display:block;}
+html.v3 .about-mas{margin-top:10px;border:none;background:none;padding:0;font:700 14px var(--v3-texto);color:var(--tech);cursor:pointer;}
+html.v3 #view-home > .section:has(.instagram-cta){padding:12px 0;}
+
+/* opiniones: carrusel que se desliza con el dedo */
+html.v3 #view-home > .section:has(.testi-grid){padding-top:40px;}
+html.v3 #view-home > .section:has(.testi-grid) .section-head{margin-bottom:22px;}
+@media (max-width:900px){
+  html.v3 .testi-grid{display:flex;overflow-x:auto;scroll-snap-type:x mandatory;gap:12px;margin:0 -16px;padding:4px 16px 12px;scrollbar-width:none;}
+  html.v3 .testi-grid::-webkit-scrollbar{display:none;}
+  html.v3 .testi{flex:0 0 82%;scroll-snap-align:start;}
+}
+
 /* ---------- 4. Botones ---------- */
 html.v3 .product-card .pc-add,html.v3 .pdp-add-btn,html.v3 .pdp-sticky-btn,html.v3 .tm-hero-btn,html.v3 .pz-btn.blue{
   border-radius:100px;box-shadow:0 10px 22px -14px rgba(31,77,255,.8);

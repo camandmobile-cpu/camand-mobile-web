@@ -101,7 +101,7 @@
 <!-- Copia de los banners (la genera el robot diario): se pide desde ya para
      mostrar el banner sin esperar a Google Sheets. -->
 <link rel="preload" href="data/banners.json" as="fetch" crossorigin="anonymous">
-<link rel="stylesheet" href="css/tienda.css?v=20261103c">
+<link rel="stylesheet" href="css/tienda.css?v=20261103d">
 <link rel="stylesheet" href="css/movimiento.css?v=20261102c">
 <!-- V3 en vista previa: camandmobile.com/?v3=1 la activa en ESTE navegador y
      ?v3=0 la apaga. Sin el interruptor no se descarga nada de la V3, así que
@@ -122,8 +122,8 @@
     // Sin precarga de Manrope: Chrome espera las fuentes "optional" precargadas antes
     // del primer dibujo, y PageSpeed bajaba de ~80 a ~53. Sin precarga, la primera
     // visita usa Inter y desde la segunda (ya en caché) se ve Manrope.
-    document.write('<link rel="stylesheet" href="css/v3.css?v=20261103d">' +
-      '<script defer src="js/v3.js?v=20261103c"><\/script>');
+    document.write('<link rel="stylesheet" href="css/v3.css?v=20261103f">' +
+      '<script defer src="js/v3.js?v=20261103f"><\/script>');
   }catch(e){}
 })();
 </script>
@@ -766,6 +766,9 @@ window.TEMPORADA_CONFIG = {
     </div>
     <!-- Durante una campaña, la sección de productos de la campaña se muestra aquí: después del bloque Celulares / Personaliza y antes de las categorías (ver js/campanas.js). -->
     <div id="tmOfertasSlot"></div>
+    <!-- V3 (solo con ?v3=1): pestañas del bloque único de productos (Más vendidos /
+         campaña, ¿Qué buscas?, Por categoría...). Los botones los arma js/v3.js. -->
+    <nav class="v3-pestanas" id="v3Pestanas" aria-label="Productos destacados"></nav>
     <div class="wrap">
       <div class="cat-grid-home reveal" id="catGridHome">
         <button type="button" class="cat-card-home" onclick="go('celulares')">
