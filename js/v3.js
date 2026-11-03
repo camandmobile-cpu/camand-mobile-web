@@ -163,6 +163,98 @@
     });
   }
 
+  /* ---------- Inicio V3.3: orden nuevo y bloque único de productos con pestañas ---------- */
+  function inicio(){
+    var home = document.getElementById('view-home'), nav = document.getElementById('v3Pestanas');
+    if(!home || !nav) return;
+    var $ = function(s){ return home.querySelector(s); };
+    var envolvente = function(sel){ var el = $(sel); return el && el.closest('#view-home > *'); };
+    // 1) El HTML toma el mismo orden que ya muestra el CSS (teclado y lectores de pantalla).
+    var bloque = document.createElement('div');
+    bloque.className = 'v3-productos';
+    var hero = envolvente('.hero'), cats = envolvente('#catGridHome'), pz = envolvente('.pz-dual');
+    if(hero && cats) hero.after(cats);
+    (cats || hero || nav).after(bloque);
+    bloque.appendChild(nav);
+    ['#tmOfertasSlot', '#homeFeaturedSection', '#qebSection', '#regalosSection', '#estrellaSection', '#kitsSection', '#homeRailsSection'].forEach(function(s){ var el = document.querySelector(s); if(el) bloque.appendChild(el); });
+    if(pz) bloque.after(pz);
+    var orden = ['.comocompras-section', '.about-block', '.instagram-cta', '.testi-grid'];
+    var ultimo = pz || bloque;
+    orden.forEach(function(s){ var el = envolvente(s); if(el){ ultimo.after(el); ultimo = el; } });
+
+    // 2) Pestañas: una por bloque que tenga contenido (las de campaña aparecen solas).
+    var BLOQUES = [
+      { id: 'homeFeaturedSection', nombre: function(){ var tm = window.TEMPORADA; return tm && tm.hero ? (tm.nombre || 'Ofertas') : 'Más vendidos'; }, camp: true },
+      { id: 'qebSection', nombre: function(){ return '¿Qué buscas?'; } },
+      { id: 'regalosSection', nombre: function(){ var t = document.getElementById('regalosTitle'); return t ? t.textContent : 'Regalos'; } },
+      { id: 'estrellaSection', nombre: function(){ return 'Producto estrella'; } },
+      { id: 'kitsSection', nombre: function(){ return 'Arma tu setup'; } },
+      { id: 'homeRailsSection', nombre: function(){ return 'Por categoría'; } }
+    ];
+    var actual = null, elegidaPorCliente = false;
+    function tieneContenido(b){
+      var el = document.getElementById(b.id);
+      return el && !el.hidden && el.querySelector('.product-card, .estrella *, .kits-grid *');
+    }
+    function elegir(id){
+      actual = id;
+      home.setAttribute('data-pestana', id);
+      BLOQUES.forEach(function(b){ var el = document.getElementById(b.id); if(el) el.classList.toggle('v3-activa', b.id === id); });
+      nav.querySelectorAll('button').forEach(function(btn){ btn.setAttribute('aria-selected', String(btn.dataset.id === id)); });
+    }
+    function pintar(){
+      var visibles = BLOQUES.filter(tieneContenido);
+      if(!visibles.length) return;
+      nav.innerHTML = visibles.map(function(b){
+        return '<button type="button" role="tab" data-id="' + b.id + '"' + (b.camp ? ' class="camp"' : '') + '>' + b.nombre().replace(/</g, '&lt;') + '</button>';
+      }).join('');
+      nav.setAttribute('role', 'tablist');
+      // Se respeta la pestaña que eligió el cliente; si no eligió, va la primera
+      // (campaña o Más vendidos), aunque otro bloque se haya llenado antes.
+      elegir(elegidaPorCliente && visibles.some(function(b){ return b.id === actual; }) ? actual : visibles[0].id);
+    }
+    nav.addEventListener('click', function(e){
+      var b = e.target.closest('button[data-id]');
+      if(!b) return;
+      elegidaPorCliente = true;
+      elegir(b.dataset.id);
+      if(typeof camandTrack === 'function') camandTrack('pestana_inicio', { pestana: b.textContent });
+    });
+    // Se rearma cuando llega el catálogo o cambia la campaña (los bloques se llenan después).
+    var pendiente = null;
+    var repintar = function(){ clearTimeout(pendiente); pendiente = setTimeout(function(){ pintar(); verMas(); }, 60); };
+    BLOQUES.forEach(function(b){ var el = document.getElementById(b.id); if(el) new MutationObserver(repintar).observe(el, { childList: true, subtree: true, attributes: true, attributeFilter: ['hidden'] }); });
+    addEventListener('camand:temporada', repintar);
+
+    // 3) "Ver más" en Más vendidos / campaña (8 productos y el resto al tocar).
+    function verMas(){
+      var grid = document.getElementById('homeFeaturedGrid');
+      if(!grid) return;
+      var btn = grid.parentNode.querySelector('.v3-vermas');
+      var n = grid.querySelectorAll('.product-card').length;
+      if(n <= 8 || grid.classList.contains('v3-todo')){ if(btn) btn.remove(); return; }
+      if(!btn){
+        btn = document.createElement('button');
+        btn.type = 'button'; btn.className = 'v3-vermas';
+        btn.addEventListener('click', function(){ grid.classList.add('v3-todo'); btn.remove(); });
+        grid.after(btn);
+      }
+      var texto = 'Ver ' + (n - 8) + ' más';
+      if(btn.textContent !== texto) btn.textContent = texto;   // solo si cambia: si no, el observador se dispararía en bucle
+    }
+
+    // 4) Quiénes somos: corto, con "Leer más".
+    var about = $('.about-block');
+    if(about && !about.querySelector('.about-mas')){
+      var mas = document.createElement('button');
+      mas.type = 'button'; mas.className = 'about-mas'; mas.textContent = 'Leer más';
+      mas.addEventListener('click', function(){ var abierto = about.classList.toggle('abierto'); mas.textContent = abierto ? 'Leer menos' : 'Leer más'; });
+      about.appendChild(mas);
+    }
+    pintar(); verMas();
+  }
+
   if(html.classList.contains('v3-entrada')) entrada();
+  inicio();
   if(document.body){ etiqueta(); encabezado(); } else document.addEventListener('DOMContentLoaded', function(){ etiqueta(); encabezado(); });
 })();
