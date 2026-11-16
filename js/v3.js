@@ -20,6 +20,7 @@
   var COLORES = ['#1f4dff', '#7b4ee6', '#00a9c7', '#ff2e88'];
 
   function entrada(){
+    window.CAMAND_ENTRADA_INICIO = true;
     var splash = document.getElementById('splash-screen');
     var logo = splash && splash.querySelector('.splash-logo-img');
     var logoNav = document.querySelector('header.nav .brand-logo');

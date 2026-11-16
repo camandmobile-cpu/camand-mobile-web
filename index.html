@@ -130,7 +130,7 @@
     // del primer dibujo, y PageSpeed bajaba de ~80 a ~53. Sin precarga, la primera
     // visita usa Inter y desde la segunda (ya en caché) se ve Manrope.
     document.write('<link rel="stylesheet" href="css/v3.css?v=20261103j">' +
-      '<script defer src="js/v3.js?v=20261116a"><\/script>');
+      '<script defer src="js/v3.js?v=20261116b"><\/script>');
   }catch(e){}
 })();
 </script>
@@ -480,6 +480,17 @@ window.TEMPORADA_CONFIG = {
   var CAMAND_SPLASH_VISTO = false;
   try { CAMAND_SPLASH_VISTO = sessionStorage.getItem('camand_splash_visto') === '1'; sessionStorage.setItem('camand_splash_visto', '1'); } catch(e){}
   if(CAMAND_SPLASH_VISTO) document.documentElement.classList.add('splash-rapido');
+  // Tope de la pantalla de entrada: si en 1,2 s la animación (js/v3.js) aún no
+  // arrancó porque la conexión es lenta, se muestra la tienda de una vez en
+  // lugar de dejar al cliente frente a una pantalla en blanco.
+  setTimeout(function(){
+    var h = document.documentElement;
+    if(!h.classList.contains('v3-entrada') || window.CAMAND_ENTRADA_INICIO) return;
+    h.classList.remove('v3-entrada');
+    var sp = document.getElementById('splash-screen');
+    if(sp) sp.classList.add('hidden');
+    if(document.body) document.body.classList.add('loaded');
+  }, 1200);
   window.addEventListener('DOMContentLoaded', () => {
     // En la vista previa V3 la entrada la cierra js/v3.js al terminar el desfile.
     if(document.documentElement.classList.contains('v3-entrada')) return;
