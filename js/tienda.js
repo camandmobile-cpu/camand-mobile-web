@@ -2686,7 +2686,10 @@ function renderPromoBanner(){
   if(PROMO_BANNER_TIMER){ clearInterval(PROMO_BANNER_TIMER); PROMO_BANNER_TIMER = null; }
 
   if(!PROMO_BANNERS.length){
-    strip.style.display = 'none';
+    // Mientras llegan los banners el espacio queda reservado (si se ocultara,
+    // la página "saltaría" al aparecer el banner). Solo se oculta cuando la
+    // Hoja confirma que no hay banners activos (data-vacio).
+    if(strip.dataset.vacio) strip.style.display = 'none';
     track.innerHTML = '';
     dotsEl.innerHTML = '';
     return;
@@ -3076,7 +3079,7 @@ async function cargarBannersDesdeSheet(){
   }
   // Ya se sabe si hay banners: la V3 reserva su espacio desde el inicio
   // (para que la página no salte al llegar) y solo lo quita con esta marca.
-  if(!PROMO_BANNERS.length) document.getElementById('promoBannerStrip').dataset.vacio = '1';
+  if(!PROMO_BANNERS.length){ const st = document.getElementById('promoBannerStrip'); st.dataset.vacio = '1'; st.style.display = 'none'; }
 }
 
 /* ============================================================
