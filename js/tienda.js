@@ -2536,10 +2536,7 @@ function routeFromHash(){
 window.addEventListener('hashchange', routeFromHash);
 window.addEventListener('popstate', routeFromHash);
 
-const legalDateEl = document.getElementById('legalUpdatedDate');
-if(legalDateEl){
-  legalDateEl.textContent = new Date().toLocaleDateString('es-CO', { day: 'numeric', month: 'long', year: 'numeric' });
-}
+/* Fecha de última actualización de las políticas: va fija en el HTML (.legal-updated-date). */
 
 /* ===================== BANNER PUBLICITARIO ROTATIVO ===================== */
 

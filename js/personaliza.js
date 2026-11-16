@@ -663,9 +663,9 @@ const PZ_FAQ = [
   ['¿Para qué celulares hacen skins?', 'Para casi cualquier modelo de Apple, Samsung, Xiaomi, Motorola y otras marcas. Si no ves el tuyo en la lista, escríbelo igual o pregúntanos por WhatsApp.'],
   ['¿Qué foto debo usar?', 'La foto original, en la mejor calidad posible. Evita capturas de pantalla o fotos reenviadas por WhatsApp, porque pierden calidad. Si nos la envías por WhatsApp, mándala como "Documento" para que no se comprima.'],
   ['¿Cuánto tarda mi pedido?', 'De 1 a 2 días hábiles desde que confirmas tu diseño y el pago. Antes de producir te enviamos la vista previa para que la apruebes.'],
-  ['¿Por qué piden un anticipo?', 'Porque tu skin o estuche lleva tu foto y no se puede vender a otra persona. El anticipo cubre los materiales y pone tu diseño en producción.'],
+  ['¿Por qué piden pago total o anticipo del 50%?', 'Porque tu skin o estuche lleva tu foto y se fabrica solo para ti: no se puede vender a otra persona. Para iniciar pedimos el pago total o un anticipo del 50%, que cubre los materiales y pone tu diseño en producción. Antes del pago final te enviamos foto del producto terminado.'],
   ['¿Cuánto cuesta el hidrogel?', 'Desde $25.000 para pantalla y desde $25.000 para la trasera completa. El precio sube según la calidad que elijas (mate, anti-espía, etc.). La instalación está incluida.'],
-  ['¿Cómo puedo pagar?', 'Transferencia, Nequi, tarjeta de crédito (recargo del 6%) o Sistecrédito. Te confirmamos el método al finalizar por WhatsApp.']
+  ['¿Cómo puedo pagar?', 'Transferencia, Nequi, tarjeta de crédito (recargo del 6%), Sistecrédito o contraentrega en Bogotá. Te confirmamos el método al finalizar por WhatsApp.']
 ];
 function pzRenderFaq(){
   const el = document.getElementById('pzFaq');
