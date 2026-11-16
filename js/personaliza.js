@@ -140,7 +140,9 @@ function pzInitReels(){
 /* --- Hero "laboratorio": la luz sigue al mouse y el collage se mueve un poco
    (parallax). Solo con mouse; en celular el fondo se anima solo con CSS. --- */
 function pzInitHeroLab(){
-  const hero = document.querySelector('.pz-hero-lab');
+  document.querySelectorAll('.pz-hero-lab, .pz-dual-lab').forEach(pzLabMouse);
+}
+function pzLabMouse(hero){
   if(!hero || !window.matchMedia || !matchMedia('(hover: hover) and (pointer: fine)').matches) return;
   if(matchMedia('(prefers-reduced-motion: reduce)').matches) return;
   const collage = hero.querySelector('.collage');
