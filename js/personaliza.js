@@ -23,20 +23,20 @@ const PERSONALIZA_CONFIG = {
   // el link de una imagen (Cloudinary, horizontal, ~2000 px de ancho),
   // se usa esa imagen con un velo oscuro para que el texto se lea.
   fondoImagen: '',
-  skinPrecio: 25000,
+  skinPrecio: 30000,
   // Celular que aparece en la tarjeta "Celulares" del inicio (se busca por
   // nombre en tu catálogo; debe tener foto en la columna IMAGEN).
   celularDestacado: 'iPhone 18 Pro Max',
   // Productos del estudio de diseño (el único personalizador de la tienda).
   // borde: '' (skin), 'claro' (Acrygel transparente) o 'negro' (reforzado).
   productos: [
-    { id:'skin', nombre:'Skin personalizada', corto:'Se adhiere a la tapa, troquel exacto', precio:25000, antes:0,
+    { id:'skin', nombre:'Skin personalizada', corto:'Se adhiere a la tapa, troquel exacto', precio:30000, antes:0,
       nota:'Skin personalizada · instalación fácil en casa', carrito:'Skin personalizada', whatsapp:'una skin personalizada', borde:'' },
-    { id:'clasica', nombre:'Estuche Clásica', corto:'Acrygel transparente, anti-amarilleo', precio:34990, antes:41990, impresion:true,
+    { id:'clasica', nombre:'Estuche Clásica', corto:'Acrygel transparente, anti-amarilleo', precio:35000, antes:41990, impresion:true,
       nota:'Acrygel resistente a caídas · garantía de 1 mes', carrito:'Estuche Clásica', whatsapp:'un estuche Línea Clásica', borde:'claro' },
-    { id:'pro', nombre:'Estuche Pro', corto:'Borde negro reforzado, impresión UV', precio:44990, antes:53990,
+    { id:'pro', nombre:'Estuche Pro', corto:'Borde negro reforzado, impresión UV', precio:45000, antes:53990,
       nota:'Máxima protección · garantía de 1 mes', carrito:'Estuche Pro', whatsapp:'un estuche Línea Pro', borde:'negro' },
-    { id:'3d', nombre:'Estuche 3D', corto:'Cambia de imagen al girar (2 fotos)', precio:54990, antes:65990, dosImagenes:true,
+    { id:'3d', nombre:'Estuche 3D', corto:'Cambia de imagen al girar (2 fotos)', precio:55000, antes:65990, dosImagenes:true,
       nota:'Lámina lenticular · garantía de 1 mes', carrito:'Estuche 3D', whatsapp:'un estuche Línea 3D', borde:'negro' }
   ],
   envioBogota: 10000,
@@ -54,12 +54,12 @@ const PERSONALIZA_CONFIG = {
     ]
   },
   cards: [
-    { key:'skins', badge:'Crea tu skin', color:'#7b4ee6', chipBg:'#f1ebfd', chip:'$25.000', titulo:'Skins personalizadas',
+    { key:'skins', badge:'Crea tu skin', color:'#7b4ee6', chipBg:'#f1ebfd', chip:'$30.000', titulo:'Skins personalizadas',
       texto:'Tu foto o diseño impreso en una skin con troquel exacto para bordes, cámaras y logo.',
       puntos:['Se adhieren a la tapa de tu celular','Protegen contra rayones','Para casi cualquier modelo'],
       cta:'Diseñar mi skin', accion:"pzOpenStudio('skin')", foto:'' ,
       icono:'<rect x="7" y="2" width="10" height="20" rx="2.5"/><rect x="8.6" y="3.6" width="3.6" height="3.6" rx="1"/><path d="M8 13c2-2 4 1 6-1s2 2 3 1"/>' },
-    { key:'estuches', badge:'Acrygel', color:'#0071e3', chipBg:'#e6f1fd', chip:'Desde $34.990', titulo:'Estuches personalizados',
+    { key:'estuches', badge:'Acrygel', color:'#0071e3', chipBg:'#e6f1fd', chip:'Desde $35.000', titulo:'Estuches personalizados',
       texto:'Estuche transparente resistente a caídas, con tu foto. Líneas Clásica, Pro y 3D.',
       puntos:['Anti-amarilleo','Impresión UV de alta definición','Vista previa en el editor'],
       cta:'Diseñar mi estuche', accion:"pzOpenStudio('clasica')", foto:'img/galeria/estuche-02.jpg' },

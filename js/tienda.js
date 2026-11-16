@@ -1050,7 +1050,7 @@ function crossSellExtrasHTML(){
   return [
     {
       media: `<div class="cart-item-noimg">${ICON_SPARKLE}</div>`,
-      name: 'Estuche personalizado Acrygel', price: 'Desde $34.990, con tu foto',
+      name: 'Estuche personalizado Acrygel', price: 'Desde $35.000, con tu foto',
       btnLabel: 'Diseñar →', btnAttr: `onclick="openCart(false);pzOpenStudio('clasica')"`
     },
     {
@@ -3564,7 +3564,7 @@ const CINTA_MENSAJES_BASE = [
   'Paga contraentrega al recibir',
   'Crédito con Sistecrédito',
   'Tarjeta de crédito a cuotas',
-  'Skins personalizadas con tu foto a $25.000',
+  'Skins personalizadas con tu foto a $30.000',
   'Estuches personalizados Acrygel',
   'Hidrogel instalado desde $25.000',
   'iPhone y Android nuevos y seminuevos',
