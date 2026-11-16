@@ -101,7 +101,7 @@
 <!-- Copia de los banners (la genera el robot diario): se pide desde ya para
      mostrar el banner sin esperar a Google Sheets. -->
 <link rel="preload" href="data/banners.json" as="fetch" crossorigin="anonymous">
-<link rel="stylesheet" href="css/tienda.css?v=20261115d">
+<link rel="stylesheet" href="css/tienda.css?v=20261116a">
 <link rel="stylesheet" href="css/movimiento.css?v=20261102c">
 <!-- V3 ACTIVA PARA TODOS (desde 2026-11-03). Para volver a ver la tienda anterior
      en ESTE navegador: camandmobile.com/?v3=0 (y ?v3=1 la vuelve a activar).
@@ -130,7 +130,7 @@
     // del primer dibujo, y PageSpeed bajaba de ~80 a ~53. Sin precarga, la primera
     // visita usa Inter y desde la segunda (ya en caché) se ve Manrope.
     document.write('<link rel="stylesheet" href="css/v3.css?v=20261103j">' +
-      '<script defer src="js/v3.js?v=20261103g"><\/script>');
+      '<script defer src="js/v3.js?v=20261116a"><\/script>');
   }catch(e){}
 })();
 </script>
@@ -816,7 +816,7 @@ window.TEMPORADA_CONFIG = {
     <!-- ¿Qué estás buscando? · Regalos por presupuesto · Producto estrella · Kits · Cómo compramos contigo -->
     <div class="section qeb-section reveal" id="qebSection">
       <div class="wrap">
-        <div class="home-featured-head"><h2>¿Qué estás buscando?</h2><a onclick="go('celulares')">Ver todos los celulares →</a></div>
+        <div class="home-featured-head"><h2>¿Qué estás buscando?</h2><a href="#/celulares" onclick="go('celulares');return false;">Ver todos los celulares →</a></div>
         <div class="qeb-chips" id="qebChips" role="tablist" aria-label="Buscar por necesidad"></div>
         <p class="qeb-note" id="qebNote"></p>
         <div class="product-grid" id="qebGrid"></div>
@@ -854,7 +854,7 @@ window.TEMPORADA_CONFIG = {
       <div class="wrap">
         <div class="home-featured-head">
           <h2 id="homeFeaturedTitle">Productos más vendidos</h2>
-          <a onclick="goToCatGrid()">Ver todo el catálogo →</a>
+          <a href="#/celulares" onclick="goToCatGrid();return false;">Ver todo el catálogo →</a>
         </div>
         <div class="product-grid" id="homeFeaturedGrid"></div>
       </div>
@@ -2056,7 +2056,7 @@ window.TEMPORADA_CONFIG = {
         </ul>
 
         <h2>8. Devoluciones y datos personales</h2>
-        <p>Puedes retractarte de compras de productos no personalizados dentro de los 5 días hábiles siguientes a la entrega. Las condiciones completas de devolución están en nuestra <a onclick="go('devoluciones')" style="cursor:pointer;text-decoration:underline;">Política de Devoluciones</a>, y el tratamiento de tus datos en la <a onclick="go('privacidad')" style="cursor:pointer;text-decoration:underline;">Política de Privacidad</a>, conforme a la Ley 1581 de 2012.</p>
+        <p>Puedes retractarte de compras de productos no personalizados dentro de los 5 días hábiles siguientes a la entrega. Las condiciones completas de devolución están en nuestra <a href="#/devoluciones" onclick="go('devoluciones');return false;" style="cursor:pointer;text-decoration:underline;">Política de Devoluciones</a>, y el tratamiento de tus datos en la <a href="#/privacidad" onclick="go('privacidad');return false;" style="cursor:pointer;text-decoration:underline;">Política de Privacidad</a>, conforme a la Ley 1581 de 2012.</p>
       </div>
     </div>
   </section>
@@ -2132,21 +2132,21 @@ function mostrarGraciasSuscripcion() {
       </div>
       <div>
         <h4>Explorar</h4>
-        <a onclick="go('celulares')" style="cursor:pointer;">Equipos</a>
-        <a onclick="go('tablets')" style="cursor:pointer;">Tablets</a>
-        <a onclick="go('computadores')" style="cursor:pointer;">Computadores</a>
-        <a onclick="go('relojes')" style="cursor:pointer;">Relojes</a>
-        <a onclick="go('audifonos')" style="cursor:pointer;">Audífonos</a>
-        <a onclick="go('techoficina')" style="cursor:pointer;">Accesorios</a>
-        <a onclick="go('personaliza')" style="cursor:pointer;">Personaliza: skins, fundas e hidrogel</a>
-        <a onclick="go('cases')" style="cursor:pointer;">Estuches personalizados</a>
+        <a href="#/celulares" onclick="go('celulares');return false;" style="cursor:pointer;">Equipos</a>
+        <a href="#/tablets" onclick="go('tablets');return false;" style="cursor:pointer;">Tablets</a>
+        <a href="#/computadores" onclick="go('computadores');return false;" style="cursor:pointer;">Computadores</a>
+        <a href="#/relojes" onclick="go('relojes');return false;" style="cursor:pointer;">Relojes</a>
+        <a href="#/audifonos" onclick="go('audifonos');return false;" style="cursor:pointer;">Audífonos</a>
+        <a href="#/techoficina" onclick="go('techoficina');return false;" style="cursor:pointer;">Accesorios</a>
+        <a href="#/personaliza" onclick="go('personaliza');return false;" style="cursor:pointer;">Personaliza: skins, fundas e hidrogel</a>
+        <a href="#/cases" onclick="go('cases');return false;" style="cursor:pointer;">Estuches personalizados</a>
       </div>
       <div>
         <h4>Ayuda</h4>
-        <a onclick="go('faq')" style="cursor:pointer;">Políticas y Envíos</a>
-        <a onclick="go('privacidad')" style="cursor:pointer;">Política de Privacidad</a>
-        <a onclick="go('devoluciones')" style="cursor:pointer;">Política de Devoluciones</a>
-        <a onclick="go('terminos')" style="cursor:pointer;">Términos y Condiciones</a>
+        <a href="#/faq" onclick="go('faq');return false;" style="cursor:pointer;">Políticas y Envíos</a>
+        <a href="#/privacidad" onclick="go('privacidad');return false;" style="cursor:pointer;">Política de Privacidad</a>
+        <a href="#/devoluciones" onclick="go('devoluciones');return false;" style="cursor:pointer;">Política de Devoluciones</a>
+        <a href="#/terminos" onclick="go('terminos');return false;" style="cursor:pointer;">Términos y Condiciones</a>
       </div>
     </div>
 
@@ -2323,7 +2323,7 @@ function mostrarGraciasSuscripcion() {
 <div class="cookie-banner" id="cookieBanner" role="dialog" aria-live="polite" aria-label="Aviso de cookies y privacidad">
   <div class="cookie-banner-text">
     <b>Usamos cookies propias y de análisis (Google Analytics)</b> para que el carrito funcione correctamente y para entender cómo se usa el sitio. Puedes aceptarlas, rechazarlas o elegir cuáles permitir. Más información en nuestra
-    <a onclick="go('privacidad');return false;" href="#">Política de Privacidad y Tratamiento de Datos</a>.
+    <a href="#/privacidad" onclick="go('privacidad');return false;">Política de Privacidad y Tratamiento de Datos</a>.
   </div>
   <div class="cookie-banner-actions">
     <button type="button" class="cookie-btn config" onclick="openCookieSettings()">Configurar</button>
@@ -2355,7 +2355,7 @@ function mostrarGraciasSuscripcion() {
      ejecutan en este mismo orden, antes de DOMContentLoaded. -->
 <script defer src="https://cdnjs.cloudflare.com/ajax/libs/PapaParse/5.4.1/papaparse.min.js"></script>
 <script defer src="js/movimiento.js?v=20261102b"></script>
-<script defer src="js/tienda.js?v=20261116a"></script>
+<script defer src="js/tienda.js?v=20261116b"></script>
 
 <script defer src="js/personaliza.js?v=20261115d"></script>
 

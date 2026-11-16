@@ -2722,3 +2722,8 @@ html.v3 .pz-dual-pz.pz-dual-lab{background:#07060d;}
   .pz-dual-lab .pz-aurora span,.pz-dual-lab .pz-grid span,.pz-dual-lab .pz-orbit,.pz-dual-lab .pz-cursor,.pz-dual-lab h2 em,.pz-dual-lab .pz-dual-eyebrow::before,
   .pz-dual-lab h2.pz-sel::before,.pz-dual-lab h2.pz-sel::after,.pz-dual-lab .pz-sel-tag{animation:none;}
 }
+
+/* Navidad: js/navidad.js agrega botones y cuenta regresiva al hero después del
+   primer dibujo; se reserva su espacio para que la página no "salte" (CLS). */
+html[data-temporada="navidad"] .hero{min-height:500px;}
+@media (max-width:700px){ html[data-temporada="navidad"] .hero{min-height:555px;} }

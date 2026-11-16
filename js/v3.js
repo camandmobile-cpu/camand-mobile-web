@@ -47,10 +47,10 @@
       logo.animate([
         { transform: 'none' },
         { transform: 'translate(' + (d.left - r.left) + 'px,' + (d.top - r.top) + 'px) scale(' + (d.height / r.height) + ')', filter: 'none' }
-      ], { duration: 550, easing: 'cubic-bezier(.7,0,.2,1)', fill: 'forwards' });
+      ], { duration: 380, easing: 'cubic-bezier(.7,0,.2,1)', fill: 'forwards' });
       var halo = splash.querySelector('.v3-halo');
       if(halo) halo.animate([{ opacity: .35 }, { opacity: 0 }], { duration: 300, fill: 'forwards' });
-      splash.animate([{ backgroundColor: '#ffffff' }, { backgroundColor: 'rgba(255,255,255,0)' }], { duration: 420, delay: 150, fill: 'forwards' })
+      splash.animate([{ backgroundColor: '#ffffff' }, { backgroundColor: 'rgba(255,255,255,0)' }], { duration: 300, delay: 80, fill: 'forwards' })
         .onfinish = function(){
           cerrar();
           splash.getAnimations().forEach(function(a){ a.cancel(); });
@@ -60,7 +60,7 @@
 
     if(!splash || !logo){ terminar(true); return; }
     // Seguro: pase lo que pase, a los 4,5 s la tienda queda a la vista.
-    despues(4500, function(){ terminar(true); });
+    despues(2500, function(){ terminar(true); });
 
     var saltar = document.createElement('button');
     saltar.type = 'button'; saltar.className = 'v3-saltar'; saltar.textContent = 'Saltar';
@@ -71,7 +71,7 @@
 
     // En celular el desfile es más corto: 3 equipos y paso más rápido.
     var movil = window.innerWidth < 700;
-    var fotos = DESFILE.slice(0, movil ? 3 : 4), paso = movil ? 220 : 260;
+    var fotos = DESFILE.slice(0, movil ? 2 : 3), paso = movil ? 170 : 200;
     // En campaña, el halo toma los colores de la campaña.
     var cs = getComputedStyle(html), tmA = cs.getPropertyValue('--tm-a').trim(), tmB = cs.getPropertyValue('--tm-b').trim();
     var colores = (html.dataset.temporada && tmA) ? [tmA, tmB || tmA, tmA, tmB || tmA] : COLORES;
@@ -100,14 +100,14 @@
         { opacity: 1, transform: 'none', offset: .4 },
         { opacity: 1, transform: 'none', offset: .65 },
         { opacity: 0, transform: 'translateX(-60%) rotate(-12deg) scale(.8)' }
-      ], { duration: paso * 2, delay: 120 + i * paso, easing: 'cubic-bezier(.22,.61,.36,1)' });
-      despues(120 + i * paso, function(){ halo.style.background = colores[i % colores.length]; });
+      ], { duration: paso * 2, delay: 60 + i * paso, easing: 'cubic-bezier(.22,.61,.36,1)' });
+      despues(60 + i * paso, function(){ halo.style.background = colores[i % colores.length]; });
     });
-    var vuelta = 120 + fotos.length * paso + 120;
+    var vuelta = 60 + fotos.length * paso + 60;
     despues(vuelta, function(){
-      logo.animate([{ transform: 'scale(.9)' }, { transform: 'none' }], { duration: 380, fill: 'forwards', easing: 'cubic-bezier(.34,1.56,.64,1)' });
+      logo.animate([{ transform: 'scale(.9)' }, { transform: 'none' }], { duration: 200, fill: 'forwards', easing: 'cubic-bezier(.34,1.56,.64,1)' });
     });
-    despues(vuelta + 650, function(){ terminar(false); });
+    despues(vuelta + 220, function(){ terminar(false); });
   }
 
   /* ---------- Encabezado V3.2 ---------- */

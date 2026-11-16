@@ -2253,9 +2253,9 @@ function productDetailHTML(catKey, catLabel, marca, m){
           </div>
           <div class="pdp-tab-panel" data-panel="warranty">
             <p>${esNuevo
-              ? '<b>Equipo nuevo:</b> cubierto por la garantía legal mínima y, cuando aplica, la garantía del fabricante o importador.'
-              : '<b>Equipo seminuevo/remanufacturado:</b> revisado antes de la entrega, con garantía directa de Camand Mobile por funcionamiento.'}</p>
-            <p>El tiempo exacto de garantía varía según el modelo y su condición — te lo confirmamos para <b>este</b> producto antes de comprar. Ver también nuestras <a onclick="go('faq');return false;" href="#">políticas generales de garantía y devoluciones</a>.</p>
+              ? '<b>Equipo nuevo:</b> 1 año de garantía, directamente con la marca.'
+              : '<b>Equipo seminuevo:</b> revisado antes de la entrega, con 3 meses de garantía directa de Camand Mobile, que cubre la batería y los cambios autorizados realizados al equipo.'}</p>
+            <p>Además, en compras de equipos tienes 5 días hábiles de derecho de retracto. Ver nuestras <a href="#/devoluciones" onclick="go('devoluciones');return false;">políticas de garantía y devoluciones</a>.</p>
             <p><a href="${waLink('Hola, quiero saber la garantía de: ' + m.n)}" target="_blank" rel="noopener">Preguntar garantía de este equipo por WhatsApp →</a></p>
           </div>
         </div>
@@ -2571,7 +2571,7 @@ function youtubeEmbedUrl(url){
 // sale del borde en móvil" que reportaste. Quitar el halo resuelve eso de
 // raíz y de paso simplifica el HTML.
 function promoBannerMediaHTML(b, i){
-  const altJs = (b.alt || 'Publicidad Camand Mobile').replace(/"/g, '&quot;');
+  const altJs = (/^\s*(ver abajo)?\s*$/i.test(b.alt || '') ? 'Promoción Camand Mobile' : b.alt).replace(/"/g, '&quot;');
   // Columna VIDEO (opcional): si viene llena, tiene prioridad y se trata
   // siempre como video/YouTube, sin adivinar por la extensión. Si viene
   // vacía, se sigue detectando automáticamente dentro de la columna IMAGEN
@@ -2591,7 +2591,7 @@ function promoBannerMediaHTML(b, i){
   // Cloudinary: cada pantalla descarga el tamaño que necesita (antes el
   // celular bajaba siempre la versión de 1600 px).
   const srcset = /res\.cloudinary\.com\/.+\/upload\//i.test(mediaUrl)
-    ? ` srcset="${[640, 960, 1280, 1600].map(w => `${optimizeImageUrl(mediaUrl, w)} ${w}w`).join(', ')}" sizes="(max-width:1200px) 100vw, 1200px"`
+    ? ` srcset="${[480, 640, 960, 1280, 1600].map(w => `${optimizeImageUrl(mediaUrl, w)} ${w}w`).join(', ')}" sizes="(max-width:1200px) 100vw, 1200px"`
     : '';
   // El primer banner se muestra sin fundido: es el contenido principal de la
   // página y el fundido retrasaba casi 1 s el momento en que se ve.
@@ -2635,7 +2635,7 @@ function promoBannerBindImages(track){
 //    cumple con no depender solo de la foto para poder actuar sobre el
 //    banner.
 function promoBannerSlideHTML(b, i){
-  const altJs = (b.alt || 'Publicidad Camand Mobile').replace(/"/g, '&quot;');
+  const altJs = (/^\s*(ver abajo)?\s*$/i.test(b.alt || '') ? 'Promoción Camand Mobile' : b.alt).replace(/"/g, '&quot;');
   const media = promoBannerMediaHTML(b, i);
   const tieneTexto = !!(b.kicker || b.titulo || b.subtitulo || b.cta);
 
@@ -3111,7 +3111,7 @@ function applyCatHomePhotos(){
     if(!url) return;
     const el = document.getElementById('cchm-' + key);
     if(!el) return;
-    el.innerHTML = `<img src="${optimizeImageUrl(url, 200)}" alt="">`;
+    el.innerHTML = `<img src="${optimizeImageUrl(url, 200)}" alt="" width="200" height="200">`;
   });
 }
 
@@ -3717,7 +3717,7 @@ function renderHomeRails(){
             ${r.sub ? `<p>${r.sub}</p>` : ''}
           </div>
           <div class="home-rail-tools">
-            ${r.verTodos ? `<a onclick="${r.verTodos}">Ver todos →</a>` : ''}
+            ${r.verTodos ? `<a href="#/${((r.verTodos.match(/'(\w+)'/) || [])[1]) || 'celulares'}" onclick="${r.verTodos};return false;">Ver todos →</a>` : ''}
             <button type="button" class="home-rail-nav" onclick="railStep('${r.id}',-1)" aria-label="Anterior">‹</button>
             <button type="button" class="home-rail-nav" onclick="railStep('${r.id}',1)" aria-label="Siguiente">›</button>
           </div>
