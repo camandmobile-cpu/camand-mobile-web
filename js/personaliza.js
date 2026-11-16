@@ -137,6 +137,34 @@ function pzInitReels(){
   });
 }
 
+/* --- Hero "laboratorio": la luz sigue al mouse y el collage se mueve un poco
+   (parallax). Solo con mouse; en celular el fondo se anima solo con CSS. --- */
+function pzInitHeroLab(){
+  const hero = document.querySelector('.pz-hero-lab');
+  if(!hero || !window.matchMedia || !matchMedia('(hover: hover) and (pointer: fine)').matches) return;
+  if(matchMedia('(prefers-reduced-motion: reduce)').matches) return;
+  const collage = hero.querySelector('.collage');
+  let pend = null;
+  hero.addEventListener('pointermove', e => {
+    if(pend) return;
+    pend = requestAnimationFrame(() => {
+      pend = null;
+      const r = hero.getBoundingClientRect();
+      const x = (e.clientX - r.left) / r.width, y = (e.clientY - r.top) / r.height;
+      hero.style.setProperty('--mx', (x * 100).toFixed(1) + '%');
+      hero.style.setProperty('--my', (y * 100).toFixed(1) + '%');
+      if(collage){
+        collage.style.setProperty('--px', ((x - .5) * -28).toFixed(1) + 'px');
+        collage.style.setProperty('--py', ((y - .5) * -20).toFixed(1) + 'px');
+      }
+    });
+  }, { passive: true });
+  hero.addEventListener('pointerleave', () => {
+    hero.style.removeProperty('--mx'); hero.style.removeProperty('--my');
+    if(collage){ collage.style.removeProperty('--px'); collage.style.removeProperty('--py'); }
+  });
+}
+
 /* --- 6 tarjetas --- */
 function pzCardFoto(c){
   const hoja = (typeof CAT_HOME_PHOTOS !== 'undefined' && CAT_HOME_PHOTOS[c.key]) || '';
@@ -670,6 +698,7 @@ function renderPersonaliza(){
   pzSetProducto((PERSONALIZA_CONFIG.productos.find(p => p.id === 'skin') || {}).id);
   pzInitDrag();
   pzInitReels();
+  pzInitHeroLab();
   pzRenderGallery();
   pzRenderFaq();
   renderPersonaliza();
