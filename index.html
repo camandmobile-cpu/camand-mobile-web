@@ -561,6 +561,10 @@ window.TEMPORADA_CONFIG = {
         <div class="mega-menu" id="megaAccesorios"></div>
       </div>
       <div class="nav-item">
+        <button data-view="tvsonido" onclick="go('tvsonido')">TV y Sonido</button>
+        <div class="mega-menu" id="megaTvSonido"></div>
+      </div>
+      <div class="nav-item">
         <button data-view="hogar" onclick="go('hogar')">Hogar</button>
         <div class="mega-menu" id="megaHogar"></div>
       </div>
@@ -616,6 +620,7 @@ window.TEMPORADA_CONFIG = {
   <button class="mm-link" onclick="go('audifonos')">Audífonos</button>
   <button class="mm-link" onclick="go('computadores')">Computadores</button>
   <button class="mm-link" onclick="go('techoficina')">Accesorios</button>
+  <button class="mm-link" onclick="go('tvsonido')">TV y Sonido</button>
   <button class="mm-link" onclick="go('hogar')">Hogar</button>
   <button class="mm-link" onclick="go('jugueteria')">Juguetería</button>
   <button class="mm-link" onclick="go('cases')">Estuches</button>
@@ -634,9 +639,10 @@ window.TEMPORADA_CONFIG = {
       <button type="button" class="mm3-tile" style="--c:var(--v3-naranja);--i:3" onclick="go('audifonos')"><i><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 14v-2a8 8 0 0 1 16 0v2"/><rect x="2.5" y="14" width="5" height="7" rx="2"/><rect x="16.5" y="14" width="5" height="7" rx="2"/></svg></i><b>Audífonos<small data-cuenta="audifonos"></small></b></button>
       <button type="button" class="mm3-tile" style="--c:var(--v3-cian);--i:4" onclick="go('computadores')"><i><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="4" width="18" height="12" rx="1.5"/><path d="M2 20h20"/></svg></i><b>Computadores<small data-cuenta="computadores"></small></b></button>
       <button type="button" class="mm3-tile" style="--c:var(--v3-magenta);--i:5" onclick="go('techoficina')"><i><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M13 2 4 14h7l-1 8 9-12h-7Z"/></svg></i><b>Accesorios<small data-cuenta="techoficina"></small></b></button>
-      <button type="button" class="mm3-tile" style="--c:var(--v3-lima);--i:6" onclick="go('hogar')"><i><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 11 12 4l9 7"/><path d="M5 10v10h14V10"/><path d="M10 20v-5h4v5"/></svg></i><b>Hogar<small data-cuenta="hogar"></small></b></button>
-      <button type="button" class="mm3-tile" style="--c:var(--v3-naranja);--i:7" onclick="go('jugueteria')"><i><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="4" y="9" width="16" height="10" rx="3"/><path d="M8 14h3M9.5 12.5v3M15 13h.01M17 15h.01M12 9V5"/></svg></i><b>Juguetería<small data-cuenta="jugueteria"></small></b></button>
-      <button type="button" class="mm3-tile mm3-pz" style="--i:8" onclick="go('personaliza')"><b>✦ Personaliza tu celular<small>Skins con tu foto, estuches e hidrogel</small></b></button>
+      <button type="button" class="mm3-tile" style="--c:var(--v3-cian);--i:6" onclick="go('tvsonido')"><i><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="2" y="4" width="20" height="13" rx="1.5"/><path d="M8 21h8M12 17v4"/></svg></i><b>TV y Sonido<small data-cuenta="tvsonido"></small></b></button>
+      <button type="button" class="mm3-tile" style="--c:var(--v3-lima);--i:7" onclick="go('hogar')"><i><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 11 12 4l9 7"/><path d="M5 10v10h14V10"/><path d="M10 20v-5h4v5"/></svg></i><b>Hogar<small data-cuenta="hogar"></small></b></button>
+      <button type="button" class="mm3-tile" style="--c:var(--v3-naranja);--i:8" onclick="go('jugueteria')"><i><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="4" y="9" width="16" height="10" rx="3"/><path d="M8 14h3M9.5 12.5v3M15 13h.01M17 15h.01M12 9V5"/></svg></i><b>Juguetería<small data-cuenta="jugueteria"></small></b></button>
+      <button type="button" class="mm3-tile mm3-pz" style="--i:9" onclick="go('personaliza')"><b>✦ Personaliza tu celular<small>Skins con tu foto, estuches e hidrogel</small></b></button>
     </div>
     <ul class="mm3-rapidos">
       <li><button type="button" onclick="go('home')">Inicio <span>→</span></button></li>
@@ -825,12 +831,16 @@ window.TEMPORADA_CONFIG = {
           <div class="cch-media" id="cchm-techoficina"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><rect x="5" y="8" width="14" height="8" rx="1.5"/><path d="M7 8V4h10v4M8 16v4h8v-4"/></svg></div>
           <h3>Tech &amp; Oficina<span class="arrow">→</span></h3>
         </button>
+        <button type="button" class="cat-card-home" onclick="go('tvsonido')">
+          <div class="cch-media" id="cchm-tvsonido"><img src="img/categorias/tvsonido.jpg" alt="" width="200" height="200" loading="lazy"></div>
+          <h3>TV y Sonido<span class="arrow">→</span></h3>
+        </button>
         <button type="button" class="cat-card-home" onclick="go('hogar')">
-          <div class="cch-media" id="cchm-hogar"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M3 11 12 4l9 7"/><path d="M5 10v10h14V10"/><path d="M10 20v-5h4v5"/></svg></div>
+          <div class="cch-media" id="cchm-hogar"><img src="img/categorias/hogar.jpg" alt="" width="200" height="200" loading="lazy"></div>
           <h3>Hogar<span class="arrow">→</span></h3>
         </button>
         <button type="button" class="cat-card-home" onclick="go('jugueteria')">
-          <div class="cch-media" id="cchm-jugueteria"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><rect x="4" y="9" width="16" height="10" rx="3"/><path d="M8 14h3M9.5 12.5v3M15 13h.01M17 15h.01M12 9V5"/></svg></div>
+          <div class="cch-media" id="cchm-jugueteria"><img src="img/categorias/jugueteria.jpg" alt="" width="200" height="200" loading="lazy"></div>
           <h3>Juguetería<span class="arrow">→</span></h3>
         </button>
       </div>
@@ -1201,6 +1211,26 @@ window.TEMPORADA_CONFIG = {
       </div>
 
       <div class="acc-panel" id="techOficinaGrid"></div>
+
+    </div>
+  </section>
+
+  <!-- ======================= TV Y SONIDO ======================= -->
+  <section class="view" id="view-tvsonido">
+    <div class="wrap">
+      <div class="subnav">
+        <button class="back-btn" onclick="go('home')">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4"><path d="M15 6l-6 6 6 6"/></svg>
+          Inicio
+        </button>
+        <span>/ TV y Sonido</span>
+      </div>
+      <div class="hub-hero">
+        <h1>TV y Sonido</h1>
+        <p>Televisores, bases y soportes, proyectores, parlantes, barras de sonido y radios. Precio especial por mayor desde 3 unidades — pide por WhatsApp.</p>
+      </div>
+
+      <div class="acc-panel" id="tvSonidoGrid"></div>
 
     </div>
   </section>
@@ -2209,6 +2239,7 @@ function mostrarGraciasSuscripcion() {
         <a href="#/relojes" onclick="go('relojes');return false;" style="cursor:pointer;">Relojes</a>
         <a href="#/audifonos" onclick="go('audifonos');return false;" style="cursor:pointer;">Audífonos</a>
         <a href="#/techoficina" onclick="go('techoficina');return false;" style="cursor:pointer;">Accesorios</a>
+        <a href="#/tvsonido" onclick="go('tvsonido');return false;" style="cursor:pointer;">TV y Sonido</a>
         <a href="#/hogar" onclick="go('hogar');return false;" style="cursor:pointer;">Hogar</a>
         <a href="#/jugueteria" onclick="go('jugueteria');return false;" style="cursor:pointer;">Juguetería</a>
         <a href="#/personaliza" onclick="go('personaliza');return false;" style="cursor:pointer;">Personaliza: skins, fundas e hidrogel</a>
@@ -2272,6 +2303,7 @@ function mostrarGraciasSuscripcion() {
         <li><a href="#/audifonos" onclick="go('audifonos');return false;">Audífonos</a></li>
         <li><a href="#/computadores" onclick="go('computadores');return false;">Computadores</a></li>
         <li><a href="#/techoficina" onclick="go('techoficina');return false;">Accesorios</a></li>
+        <li><a href="#/tvsonido" onclick="go('tvsonido');return false;">TV y Sonido</a></li>
         <li><a href="#/hogar" onclick="go('hogar');return false;">Hogar</a></li>
         <li><a href="#/jugueteria" onclick="go('jugueteria');return false;">Juguetería</a></li>
       </ul></details>

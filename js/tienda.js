@@ -61,6 +61,7 @@ const OTROS_BRANDS_DATA = [];
 // "Carros a control"), que sale como filtro de Marca/Tipo.
 const HOGAR_BRANDS_DATA = [];
 const JUGUETERIA_BRANDS_DATA = [];
+const TVSONIDO_BRANDS_DATA = [];
 
 const CATALOG = {
   apple: {
@@ -92,6 +93,11 @@ const CATALOG = {
     label:"Accesorios", count:"Cargadores, audio, wearables", photo:null,
     icon:'<circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 3"/>',
     brands: ACCESORIO_BRANDS_DATA
+  },
+  tvsonido: {
+    label:"TV y Sonido", count:"Televisores, bases, proyectores, parlantes y radios", photo:null,
+    icon:'<rect x="2" y="4" width="20" height="13" rx="1.5"/><path d="M8 21h8"/>',
+    brands: TVSONIDO_BRANDS_DATA
   },
   hogar: {
     label:"Hogar", count:"Cocina, bienestar, herramientas y más", photo:null,
@@ -322,6 +328,7 @@ function clearFilters(panelKey){
   if(panelKey === 'relojes'){ renderRelojesGrid(); return; }
   if(panelKey === 'audifonos'){ renderAudifonosGrid(); return; }
   if(panelKey === 'techoficina'){ renderTechOficinaGrid(); return; }
+  if(panelKey === 'tvsonido'){ renderTvSonidoGrid(); return; }
   if(panelKey === 'hogar'){ renderHogarGrid(); return; }
   if(panelKey === 'jugueteria'){ renderJugueteriaGrid(); return; }
   const panel = document.getElementById('panel-'+panelKey);
@@ -1255,7 +1262,7 @@ function checkoutWhatsApp(){
 // Celulares; Tablets y Computadores tienen su propia vista; Accesorios
 // también) y por lo tanto no se repiten como tile dentro del hub general
 // de Tecnología (que ahora solo agrupa Impresoras y, si aplica, "Otros").
-const CATGRID_OCULTAS = ['accesorios', 'apple', 'android', 'tablets', 'computadores', 'hogar', 'jugueteria'];
+const CATGRID_OCULTAS = ['accesorios', 'apple', 'android', 'tablets', 'computadores', 'hogar', 'jugueteria', 'tvsonido'];
 
 function renderCatGrid(){
   ARMADO_PENDIENTE.delete('tech');
@@ -1346,13 +1353,13 @@ function flattenAllProducts(){
    - Recuerda las últimas búsquedas solo en este navegador. */
 const normBusca = s => String(s == null ? '' : s).toLowerCase().normalize('NFD').replace(/[̀-ͯ]/g, '');
 const BUSQUEDAS_KEY = 'camand_busquedas_v1';
-const HUB_NOMBRE = { celulares: 'celulares', tablets: 'tablets', computadores: 'computadores', relojes: 'relojes', audifonos: 'audífonos', techoficina: 'accesorios', hogar: 'productos de hogar', jugueteria: 'juguetes' };
+const HUB_NOMBRE = { celulares: 'celulares', tablets: 'tablets', computadores: 'computadores', relojes: 'relojes', audifonos: 'audífonos', techoficina: 'accesorios', hogar: 'productos de hogar', tvsonido: 'productos de TV y sonido', jugueteria: 'juguetes' };
 // Sección (hub) donde vive un producto, con la misma regla que getExtraHub().
 function hubDeProducto(catKey, marca){
   if(catKey === 'apple' || catKey === 'android') return 'celulares';
   if(catKey === 'tablets' || catKey === 'computadores') return catKey;
   if(catKey === 'impresoras') return 'techoficina';
-  if(catKey === 'hogar' || catKey === 'jugueteria') return catKey;
+  if(catKey === 'hogar' || catKey === 'jugueteria' || catKey === 'tvsonido') return catKey;
   if(catKey === 'accesorios'){
     const n = normBusca(marca);
     if(WEARABLE_BRAND_NAMES.some(w => n.includes(w))) return 'relojes';
@@ -1594,6 +1601,7 @@ function getExtraHub(key){
     const resto = accBrands.filter(b => !esWearable(b) && !esAudio(b));
     return buildHub('Tech & Oficina', [...CATALOG.impresoras.brands, ...resto]);
   }
+  if(key === 'tvsonido') return buildHub('TV y Sonido', CATALOG.tvsonido.brands);
   if(key === 'hogar') return buildHub('Hogar', CATALOG.hogar.brands);
   if(key === 'jugueteria') return buildHub('Juguetería', CATALOG.jugueteria.brands);
   return null;
@@ -1625,6 +1633,7 @@ function renderExtraHubGrid(key, gridId){
 function renderRelojesGrid(){ renderExtraHubGrid('relojes', 'relojesGrid'); }
 function renderAudifonosGrid(){ renderExtraHubGrid('audifonos', 'audifonosGrid'); }
 function renderTechOficinaGrid(){ renderExtraHubGrid('techoficina', 'techOficinaGrid'); }
+function renderTvSonidoGrid(){ renderExtraHubGrid('tvsonido', 'tvSonidoGrid'); }
 function renderHogarGrid(){ renderExtraHubGrid('hogar', 'hogarGrid'); }
 function renderJugueteriaGrid(){ renderExtraHubGrid('jugueteria', 'jugueteriaGrid'); }
 function renderCelularesGrid(){ renderExtraHubGrid('celulares', 'celularesGrid'); }
@@ -1640,7 +1649,7 @@ const MEGA_HUB_RENDERERS = {
   celulares: renderCelularesGrid, techoficina: renderTechOficinaGrid,
   tablets: renderTabletsGrid, computadores: renderComputadoresGrid,
   relojes: renderRelojesGrid, audifonos: renderAudifonosGrid,
-  hogar: renderHogarGrid, jugueteria: renderJugueteriaGrid
+  hogar: renderHogarGrid, jugueteria: renderJugueteriaGrid, tvsonido: renderTvSonidoGrid
 };
 function megaMenuGoFiltered(hubKey, marca, q){
   FILTER_STATE[hubKey] = {};
@@ -1716,6 +1725,10 @@ function renderMegaAudifonos(){
   if(el) el.innerHTML = megaMenuColumnHTML('Audífonos', 'audifonos', getExtraHub('audifonos').brands, 8);
 }
 
+function renderMegaTvSonido(){
+  const el = document.getElementById('megaTvSonido');
+  if(el) el.innerHTML = megaMenuColumnHTML('TV y Sonido', 'tvsonido', CATALOG.tvsonido.brands, 8);
+}
 function renderMegaHogar(){
   const el = document.getElementById('megaHogar');
   if(el) el.innerHTML = megaMenuColumnHTML('Hogar', 'hogar', CATALOG.hogar.brands, 8);
@@ -1753,6 +1766,7 @@ function renderMegaMenus(){
   renderMegaAudifonos();
   renderMegaComputadores();
   renderMegaAccesorios();
+  renderMegaTvSonido();
   renderMegaHogar();
   renderMegaJugueteria();
 }
@@ -1802,7 +1816,7 @@ function performCelularesSearch(query){
 // Vistas con URL propia (hash) para poder compartir o recargar el link
 // directamente en esa sección. "product" se maneja aparte en openProduct(),
 // porque su hash lleva el id del producto (#/producto/<id>).
-const HASH_VIEWS = ['home','personaliza','tech','celulares','tablets','computadores','accesorios','relojes','audifonos','techoficina','hogar','jugueteria','cases','faq','privacidad','devoluciones','terminos','historias'];
+const HASH_VIEWS = ['home','personaliza','tech','celulares','tablets','computadores','accesorios','relojes','audifonos','techoficina','tvsonido','hogar','jugueteria','cases','faq','privacidad','devoluciones','terminos','historias'];
 
 // Contador que identifica la navegación más reciente. Antes, si go() se
 // llamaba dos veces seguidas muy rápido (doble clic, o un clic mientras la
@@ -1978,6 +1992,7 @@ const ARMADO_DIFERIDO = {
   relojes: () => renderRelojesGrid(),
   audifonos: () => renderAudifonosGrid(),
   techoficina: () => renderTechOficinaGrid(),
+  tvsonido: () => renderTvSonidoGrid(),
   hogar: () => renderHogarGrid(),
   jugueteria: () => renderJugueteriaGrid(),
   mega: () => renderMegaMenus()
@@ -3340,6 +3355,7 @@ function aplicarFilasCatalogo(filas, origen){
 
     const nuevoIphone = [], nuevoTablets = [], nuevoComputadores = [], nuevoImpresoras = [];
     const androidPorMarca = new Map();
+    const tvPorTipo = new Map();
     const hogarPorTipo = new Map(), juguetesPorTipo = new Map();
     const accesoriosPorMarca = new Map();
     // Fila cuya "categoria" no calzó con ninguna palabra clave conocida
@@ -3466,6 +3482,10 @@ function aplicarFilasCatalogo(filas, origen){
         nuevoComputadores.push(modelo);
       } else if(categoria.includes("impresora")){
         nuevoImpresoras.push(modelo);
+      } else if(/\btv\b|sonido|televis/.test(categoria)){
+        const tipo = sub || "TV y Sonido";
+        if(!tvPorTipo.has(tipo)) tvPorTipo.set(tipo, []);
+        tvPorTipo.get(tipo).push(modelo);
       } else if(categoria.includes("hogar")){
         const tipo = sub || "Hogar";
         if(!hogarPorTipo.has(tipo)) hogarPorTipo.set(tipo, []);
@@ -3503,6 +3523,8 @@ function aplicarFilasCatalogo(filas, origen){
       ACCESORIO_BRANDS_DATA.length = 0;
       accesoriosPorMarca.forEach((models, name) => ACCESORIO_BRANDS_DATA.push({ name, models }));
     }
+    TVSONIDO_BRANDS_DATA.length = 0;
+    tvPorTipo.forEach((models, name) => TVSONIDO_BRANDS_DATA.push({ name, models }));
     HOGAR_BRANDS_DATA.length = 0;
     hogarPorTipo.forEach((models, name) => HOGAR_BRANDS_DATA.push({ name, models }));
     JUGUETERIA_BRANDS_DATA.length = 0;
@@ -3530,7 +3552,7 @@ function aplicarFilasCatalogo(filas, origen){
       "[Camand] Catálogo actualizado desde " + origen + ":", filas.length, "filas leídas —",
       nuevoIphone.length, "iPhone,", totalAndroid, "Android,", nuevoTablets.length, "tablets,",
       nuevoComputadores.length, "computadores,", nuevoImpresoras.length, "impresoras,",
-      totalAccesorios, "accesorios,", HOGAR_BRANDS_DATA.reduce((a,b)=>a+b.models.length,0), "hogar,",
+      totalAccesorios, "accesorios,", TVSONIDO_BRANDS_DATA.reduce((a,b)=>a+b.models.length,0), "TV y sonido,", HOGAR_BRANDS_DATA.reduce((a,b)=>a+b.models.length,0), "hogar,",
       JUGUETERIA_BRANDS_DATA.reduce((a,b)=>a+b.models.length,0), "juguetería."
     );
     console.log(
