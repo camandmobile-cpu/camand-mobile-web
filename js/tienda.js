@@ -2347,11 +2347,9 @@ function renderProductInto(id){
   // cada categoría con página propia (Celulares, Tablets, Computadores,
   // Accesorios) regresa a la suya; el resto (Impresoras, Otros) vuelve al
   // hub general de Tecnología.
-  const HUB_VIEW_BY_CAT = {
-    accesorios: 'accesorios', apple: 'celulares', android: 'celulares',
-    tablets: 'tablets', computadores: 'computadores'
-  };
-  const hubView = HUB_VIEW_BY_CAT[catKey] || 'tech';
+  // Usa el mismo mapa que el buscador (hubDeProducto): Hogar, Juguetería,
+  // TV y Sonido, Relojes, Audífonos y Accesorios vuelven a su propia página.
+  const hubView = hubDeProducto(catKey, marca) || 'tech';
   document.title = m.n.split('•')[0].trim() + ' — Camand Mobile';
 
   crumbEl.innerHTML = `
