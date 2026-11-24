@@ -3169,6 +3169,13 @@ function applyCatHomePhotos(){
   });
 }
 
+const CAT_FOTO_ALIAS = {
+  accesorios: 'techoficina', accesorio: 'techoficina', techyoficina: 'techoficina', tech: 'techoficina',
+  celulares: 'equipos', celular: 'equipos', telefonos: 'equipos',
+  tablet: 'tablets', reloj: 'relojes', audifono: 'audifonos', computador: 'computadores', portatiles: 'computadores',
+  tvysonido: 'tvsonido', tv: 'tvsonido', televisores: 'tvsonido', sonido: 'tvsonido',
+  juguetes: 'jugueteria', juguete: 'jugueteria'
+};
 async function cargarCategoriasDesdeSheet(){
   if(!/^https?:\/\//i.test(CATEGORIAS_CSV_URL)) return;
   try{
@@ -3195,7 +3202,11 @@ async function cargarCategoriasDesdeSheet(){
 
     const fotos = {};
     filas.forEach(f => {
-      const key = String(f.categoria || "").trim().toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g, "");
+      // Se acepta el nombre que se ve en el sitio o el nombre interno, con o
+      // sin tildes/espacios/símbolos: "Accesorios" o "techoficina", "TV y
+      // Sonido" o "tvsonido", "Juguetería", "Celulares" o "equipos", etc.
+      let key = String(f.categoria || "").trim().toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g, "").replace(/[^a-z0-9]/g, "");
+      key = CAT_FOTO_ALIAS[key] || key;
       const img = String(f.imagen || "").trim();
       if(key && img) fotos[key] = img;
     });
