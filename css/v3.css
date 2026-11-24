@@ -124,6 +124,8 @@ html.v3 nav.links button[data-view="relojes"]{--c:var(--v3-lima);}
 html.v3 nav.links button[data-view="audifonos"]{--c:var(--v3-naranja);}
 html.v3 nav.links button[data-view="computadores"]{--c:var(--v3-cian);}
 html.v3 nav.links button[data-view="techoficina"]{--c:var(--v3-magenta);}
+html.v3 nav.links button[data-view="hogar"]{--c:var(--v3-lima);}
+html.v3 nav.links button[data-view="jugueteria"]{--c:var(--v3-naranja);}
 html.v3 nav.links button:hover:not(.is-active){background:color-mix(in srgb,var(--c) 10%,#fff);color:var(--ink);}
 html.v3 nav.links button:hover::before{transform:scale(1.4);}
 html.v3 nav.links button.is-active{background:var(--ink);color:#fff;}

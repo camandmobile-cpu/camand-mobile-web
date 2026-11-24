@@ -131,7 +131,7 @@ async function main(){
     productos.push({ slug: s, nombre, cond, alm, precio, antes: parsearPrecio(f.precioantes),
       marca: /iphone/i.test(base) ? 'Apple' : String(f.subcategoria || '').trim(),
       ram: String(f.ram || '').trim(), cam: String(f.camara || '').trim(), bat: String(f.bateria || '').trim(),
-      esp: String(f.especificaciones || '').trim(),
+      esp: [f.especificaciones, f.descripcion].map(x => String(x || '').trim()).filter(Boolean).join('. '),
       imagenes: String(f.imagen || '').split(/[,|]/).map(x => x.trim()).filter(x => /^https?:\/\//i.test(x)) });
   }
   if(productos.length < 5) throw new Error(`Solo ${productos.length} productos; parece un error de la Hoja, no se toca nada.`);

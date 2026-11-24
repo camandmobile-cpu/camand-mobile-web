@@ -56,6 +56,11 @@ const ACCESORIO_BRANDS_DATA = [
 // llegó en la columna categoria, para que sea fácil ver en el sitio qué hay
 // que corregir en la Hoja. Se llena solo desde aplicarFilasCatalogo().
 const OTROS_BRANDS_DATA = [];
+// Hogar y Juguetería: secciones propias. En la Hoja, columna "categoria" =
+// "Hogar" o "Juguetería" y "subcategoria" = el grupo (ej. "Cocina",
+// "Carros a control"), que sale como filtro de Marca/Tipo.
+const HOGAR_BRANDS_DATA = [];
+const JUGUETERIA_BRANDS_DATA = [];
 
 const CATALOG = {
   apple: {
@@ -87,6 +92,16 @@ const CATALOG = {
     label:"Accesorios", count:"Cargadores, audio, wearables", photo:null,
     icon:'<circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 3"/>',
     brands: ACCESORIO_BRANDS_DATA
+  },
+  hogar: {
+    label:"Hogar", count:"Cocina, bienestar, herramientas y más", photo:null,
+    icon:'<path d="M3 11 12 4l9 7"/><path d="M5 10v10h14V10"/>',
+    brands: HOGAR_BRANDS_DATA
+  },
+  jugueteria: {
+    label:"Juguetería", count:"Juguetes y regalos para niños", photo:null,
+    icon:'<circle cx="12" cy="12" r="9"/><path d="M9 10h.01M15 10h.01M8.5 14.5a4.5 4.5 0 0 0 7 0"/>',
+    brands: JUGUETERIA_BRANDS_DATA
   },
   // Solo aparece en "Tecnología" cuando de verdad hay algo sin categorizar
   // (ver renderCatGrid) — así no se ve un tile vacío el resto del tiempo.
@@ -307,6 +322,8 @@ function clearFilters(panelKey){
   if(panelKey === 'relojes'){ renderRelojesGrid(); return; }
   if(panelKey === 'audifonos'){ renderAudifonosGrid(); return; }
   if(panelKey === 'techoficina'){ renderTechOficinaGrid(); return; }
+  if(panelKey === 'hogar'){ renderHogarGrid(); return; }
+  if(panelKey === 'jugueteria'){ renderJugueteriaGrid(); return; }
   const panel = document.getElementById('panel-'+panelKey);
   if(panel){ panel.innerHTML = buildCatPanelHTML(panelKey); initScrollReveal(); }
 }
@@ -1238,7 +1255,7 @@ function checkoutWhatsApp(){
 // Celulares; Tablets y Computadores tienen su propia vista; Accesorios
 // también) y por lo tanto no se repiten como tile dentro del hub general
 // de Tecnología (que ahora solo agrupa Impresoras y, si aplica, "Otros").
-const CATGRID_OCULTAS = ['accesorios', 'apple', 'android', 'tablets', 'computadores'];
+const CATGRID_OCULTAS = ['accesorios', 'apple', 'android', 'tablets', 'computadores', 'hogar', 'jugueteria'];
 
 function renderCatGrid(){
   ARMADO_PENDIENTE.delete('tech');
@@ -1329,12 +1346,13 @@ function flattenAllProducts(){
    - Recuerda las últimas búsquedas solo en este navegador. */
 const normBusca = s => String(s == null ? '' : s).toLowerCase().normalize('NFD').replace(/[̀-ͯ]/g, '');
 const BUSQUEDAS_KEY = 'camand_busquedas_v1';
-const HUB_NOMBRE = { celulares: 'celulares', tablets: 'tablets', computadores: 'computadores', relojes: 'relojes', audifonos: 'audífonos', techoficina: 'accesorios' };
+const HUB_NOMBRE = { celulares: 'celulares', tablets: 'tablets', computadores: 'computadores', relojes: 'relojes', audifonos: 'audífonos', techoficina: 'accesorios', hogar: 'productos de hogar', jugueteria: 'juguetes' };
 // Sección (hub) donde vive un producto, con la misma regla que getExtraHub().
 function hubDeProducto(catKey, marca){
   if(catKey === 'apple' || catKey === 'android') return 'celulares';
   if(catKey === 'tablets' || catKey === 'computadores') return catKey;
   if(catKey === 'impresoras') return 'techoficina';
+  if(catKey === 'hogar' || catKey === 'jugueteria') return catKey;
   if(catKey === 'accesorios'){
     const n = normBusca(marca);
     if(WEARABLE_BRAND_NAMES.some(w => n.includes(w))) return 'relojes';
@@ -1576,6 +1594,8 @@ function getExtraHub(key){
     const resto = accBrands.filter(b => !esWearable(b) && !esAudio(b));
     return buildHub('Tech & Oficina', [...CATALOG.impresoras.brands, ...resto]);
   }
+  if(key === 'hogar') return buildHub('Hogar', CATALOG.hogar.brands);
+  if(key === 'jugueteria') return buildHub('Juguetería', CATALOG.jugueteria.brands);
   return null;
 }
 
@@ -1605,6 +1625,8 @@ function renderExtraHubGrid(key, gridId){
 function renderRelojesGrid(){ renderExtraHubGrid('relojes', 'relojesGrid'); }
 function renderAudifonosGrid(){ renderExtraHubGrid('audifonos', 'audifonosGrid'); }
 function renderTechOficinaGrid(){ renderExtraHubGrid('techoficina', 'techOficinaGrid'); }
+function renderHogarGrid(){ renderExtraHubGrid('hogar', 'hogarGrid'); }
+function renderJugueteriaGrid(){ renderExtraHubGrid('jugueteria', 'jugueteriaGrid'); }
 function renderCelularesGrid(){ renderExtraHubGrid('celulares', 'celularesGrid'); }
 function renderTabletsGrid(){ renderExtraHubGrid('tablets', 'tabletsGrid'); }
 function renderComputadoresGrid(){ renderExtraHubGrid('computadores', 'computadoresGrid'); }
@@ -1617,7 +1639,8 @@ function renderComputadoresGrid(){ renderExtraHubGrid('computadores', 'computado
 const MEGA_HUB_RENDERERS = {
   celulares: renderCelularesGrid, techoficina: renderTechOficinaGrid,
   tablets: renderTabletsGrid, computadores: renderComputadoresGrid,
-  relojes: renderRelojesGrid, audifonos: renderAudifonosGrid
+  relojes: renderRelojesGrid, audifonos: renderAudifonosGrid,
+  hogar: renderHogarGrid, jugueteria: renderJugueteriaGrid
 };
 function megaMenuGoFiltered(hubKey, marca, q){
   FILTER_STATE[hubKey] = {};
@@ -1693,6 +1716,15 @@ function renderMegaAudifonos(){
   if(el) el.innerHTML = megaMenuColumnHTML('Audífonos', 'audifonos', getExtraHub('audifonos').brands, 8);
 }
 
+function renderMegaHogar(){
+  const el = document.getElementById('megaHogar');
+  if(el) el.innerHTML = megaMenuColumnHTML('Hogar', 'hogar', CATALOG.hogar.brands, 8);
+}
+function renderMegaJugueteria(){
+  const el = document.getElementById('megaJugueteria');
+  if(el) el.innerHTML = megaMenuColumnHTML('Juguetería', 'jugueteria', CATALOG.jugueteria.brands, 8);
+}
+
 function renderMegaAccesorios(){
   const el = document.getElementById('megaAccesorios');
   if(!el) return;
@@ -1721,6 +1753,8 @@ function renderMegaMenus(){
   renderMegaAudifonos();
   renderMegaComputadores();
   renderMegaAccesorios();
+  renderMegaHogar();
+  renderMegaJugueteria();
 }
 
 // Cierra el mega-menú abierto al presionar Escape (quita el foco de
@@ -1768,7 +1802,7 @@ function performCelularesSearch(query){
 // Vistas con URL propia (hash) para poder compartir o recargar el link
 // directamente en esa sección. "product" se maneja aparte en openProduct(),
 // porque su hash lleva el id del producto (#/producto/<id>).
-const HASH_VIEWS = ['home','personaliza','tech','celulares','tablets','computadores','accesorios','relojes','audifonos','techoficina','cases','faq','privacidad','devoluciones','terminos','historias'];
+const HASH_VIEWS = ['home','personaliza','tech','celulares','tablets','computadores','accesorios','relojes','audifonos','techoficina','hogar','jugueteria','cases','faq','privacidad','devoluciones','terminos','historias'];
 
 // Contador que identifica la navegación más reciente. Antes, si go() se
 // llamaba dos veces seguidas muy rápido (doble clic, o un clic mientras la
@@ -1944,6 +1978,8 @@ const ARMADO_DIFERIDO = {
   relojes: () => renderRelojesGrid(),
   audifonos: () => renderAudifonosGrid(),
   techoficina: () => renderTechOficinaGrid(),
+  hogar: () => renderHogarGrid(),
+  jugueteria: () => renderJugueteriaGrid(),
   mega: () => renderMegaMenus()
 };
 const ARMADO_PENDIENTE = new Set();
@@ -3304,6 +3340,7 @@ function aplicarFilasCatalogo(filas, origen){
 
     const nuevoIphone = [], nuevoTablets = [], nuevoComputadores = [], nuevoImpresoras = [];
     const androidPorMarca = new Map();
+    const hogarPorTipo = new Map(), juguetesPorTipo = new Map();
     const accesoriosPorMarca = new Map();
     // Fila cuya "categoria" no calzó con ninguna palabra clave conocida
     // (vacía, mal escrita, o una categoría nueva que el sitio aún no
@@ -3381,10 +3418,12 @@ function aplicarFilasCatalogo(filas, origen){
       // "Especificaciones técnicas" de la ficha de producto. Sepára cada
       // punto con ";" o "." en la Hoja para que salgan como líneas separadas.
       const especificaciones = (fila.especificaciones || fila.especificacion || fila.specs || "").trim();
-      const notes = [condicion, almacenamiento ? "Almacenamiento: " + almacenamiento : "", especificaciones]
+      // DESCRIPCION (opcional, última columna): texto de venta del producto.
+      const descripcion = (fila.descripcion || "").trim();
+      const notes = [condicion, almacenamiento ? "Almacenamiento: " + almacenamiento : "", especificaciones, descripcion]
         .filter(Boolean).join(". ");
 
-      const categoria = (fila.categoria || "").trim().toLowerCase();
+      const categoria = (fila.categoria || "").trim().toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g, "");
       const sub = (fila.subcategoria || "").trim();
       const imagen = (fila.imagen || "").trim();
       // Columnas opcionales para los filtros del catálogo — si no existen
@@ -3427,6 +3466,14 @@ function aplicarFilasCatalogo(filas, origen){
         nuevoComputadores.push(modelo);
       } else if(categoria.includes("impresora")){
         nuevoImpresoras.push(modelo);
+      } else if(categoria.includes("hogar")){
+        const tipo = sub || "Hogar";
+        if(!hogarPorTipo.has(tipo)) hogarPorTipo.set(tipo, []);
+        hogarPorTipo.get(tipo).push(modelo);
+      } else if(categoria.includes("jugue")){
+        const tipo = sub || "Juguetes";
+        if(!juguetesPorTipo.has(tipo)) juguetesPorTipo.set(tipo, []);
+        juguetesPorTipo.get(tipo).push(modelo);
       } else if(categoria.includes("accesorio")){
         const marca = sub || "Otros";
         if(!accesoriosPorMarca.has(marca)) accesoriosPorMarca.set(marca, []);
@@ -3456,6 +3503,10 @@ function aplicarFilasCatalogo(filas, origen){
       ACCESORIO_BRANDS_DATA.length = 0;
       accesoriosPorMarca.forEach((models, name) => ACCESORIO_BRANDS_DATA.push({ name, models }));
     }
+    HOGAR_BRANDS_DATA.length = 0;
+    hogarPorTipo.forEach((models, name) => HOGAR_BRANDS_DATA.push({ name, models }));
+    JUGUETERIA_BRANDS_DATA.length = 0;
+    juguetesPorTipo.forEach((models, name) => JUGUETERIA_BRANDS_DATA.push({ name, models }));
     if(otrosPorMarca.size){
       OTROS_BRANDS_DATA.length = 0;
       otrosPorMarca.forEach((models, name) => OTROS_BRANDS_DATA.push({ name, models }));
@@ -3479,7 +3530,8 @@ function aplicarFilasCatalogo(filas, origen){
       "[Camand] Catálogo actualizado desde " + origen + ":", filas.length, "filas leídas —",
       nuevoIphone.length, "iPhone,", totalAndroid, "Android,", nuevoTablets.length, "tablets,",
       nuevoComputadores.length, "computadores,", nuevoImpresoras.length, "impresoras,",
-      totalAccesorios, "accesorios."
+      totalAccesorios, "accesorios,", HOGAR_BRANDS_DATA.reduce((a,b)=>a+b.models.length,0), "hogar,",
+      JUGUETERIA_BRANDS_DATA.reduce((a,b)=>a+b.models.length,0), "juguetería."
     );
     console.log(
       "[Camand] " + totalDestacados + " producto(s) con DESTACADO=sí (y disponibles) — se muestran en \"Productos más vendidos\" del inicio (máximo " + HOME_FEATURED_LIMIT + "). " +
