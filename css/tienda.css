@@ -2727,3 +2727,26 @@ html.v3 .pz-dual-pz.pz-dual-lab{background:#07060d;}
    primer dibujo; se reserva su espacio para que la página no "salte" (CLS). */
 html[data-temporada="navidad"] .hero{min-height:500px;}
 @media (max-width:700px){ html[data-temporada="navidad"] .hero{min-height:555px;} }
+
+/* ===== Rendimiento de las tarjetas "laboratorio" (Personaliza) =====
+   Al deslizar se trababa: el desenfoque de fondo (backdrop-filter) de los
+   botones y la mezcla del grano se recalculaban en cada cuadro sobre un
+   fondo animado. Ahora: sin backdrop-filter ni mezcla, la capa de efectos
+   queda aislada (contain) y TODAS las animaciones se pausan mientras la
+   persona desliza y cuando la tarjeta no está en pantalla (ver
+   pzLabPausas() en js/personaliza.js). */
+.pz-dual-lab .pz-fx,.pz-hero-lab .pz-fx{contain:strict;}
+.pz-dual-lab .pz-grain,.pz-hero-lab .pz-grain{mix-blend-mode:normal;opacity:.05;}
+.pz-dual-lab .pz-dual-mini button,.pz-dual-lab .pz-btn.ghost,
+.pz-hero-lab .pz-btn.ghost{-webkit-backdrop-filter:none;backdrop-filter:none;background:rgba(20,18,34,.72);}
+.pz-dual-lab .pz-dual-mini button:hover{background:rgba(40,36,62,.85);}
+.pz-dual-lab .pz-btn.ghost:hover,.pz-hero-lab .pz-btn.ghost:hover{background:rgba(40,36,62,.85);}
+.pz-lab-quieto .pz-fx *,.pz-lab-quieto .pz-fx *::before,.pz-lab-quieto .pz-fx *::after,
+.pz-lab-quieto h2 em,.pz-lab-quieto h1 em,.pz-lab-quieto .pz-dual-eyebrow::before,.pz-lab-quieto .pz-kicker::before,
+.pz-lab-quieto .pz-hero-video::before{animation-play-state:paused !important;}
+/* En celular (pantalla táctil) la aurora gigante desenfocada queda fija:
+   es la capa más pesada y casi no se nota que gire. */
+@media (hover:none){
+  .pz-dual-lab .pz-aurora span,.pz-hero-lab .pz-aurora span{animation:none;will-change:auto;}
+  .pz-dual-lab .pz-fx .collage img,.pz-hero-lab .pz-fx .collage img{box-shadow:0 18px 36px -16px rgba(0,0,0,.8),0 0 0 4px rgba(255,255,255,.06);}
+}

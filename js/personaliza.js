@@ -141,6 +141,32 @@ function pzInitReels(){
    (parallax). Solo con mouse; en celular el fondo se anima solo con CSS. --- */
 function pzInitHeroLab(){
   document.querySelectorAll('.pz-hero-lab, .pz-dual-lab').forEach(pzLabMouse);
+  pzLabPausas();
+}
+/* Pausa las animaciones de las tarjetas "laboratorio" mientras la persona
+   desliza la página y mientras la tarjeta está fuera de pantalla: así el
+   navegador solo dibuja el scroll y no se traba. */
+let _pzLabPausasListo = false;
+function pzLabPausas(){
+  if(_pzLabPausasListo) return; _pzLabPausasListo = true;
+  const labs = [...document.querySelectorAll('.pz-hero-lab, .pz-dual-lab')];
+  if(!labs.length) return;
+  const visibles = new Set();
+  let deslizando = false, t = null;
+  const aplicar = () => labs.forEach(el => el.classList.toggle('pz-lab-quieto', deslizando || !visibles.has(el)));
+  if('IntersectionObserver' in window){
+    const io = new IntersectionObserver(ents => {
+      ents.forEach(e => e.isIntersecting ? visibles.add(e.target) : visibles.delete(e.target));
+      aplicar();
+    }, { rootMargin: '80px' });
+    labs.forEach(el => io.observe(el));
+  } else labs.forEach(el => visibles.add(el));
+  window.addEventListener('scroll', () => {
+    if(!deslizando){ deslizando = true; aplicar(); }
+    clearTimeout(t);
+    t = setTimeout(() => { deslizando = false; aplicar(); }, 180);
+  }, { passive: true });
+  aplicar();
 }
 function pzLabMouse(hero){
   if(!hero || !window.matchMedia || !matchMedia('(hover: hover) and (pointer: fine)').matches) return;

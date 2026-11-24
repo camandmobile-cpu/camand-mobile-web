@@ -101,7 +101,7 @@
 <!-- Copia de los banners (la genera el robot diario): se pide desde ya para
      mostrar el banner sin esperar a Google Sheets. -->
 <link rel="preload" href="data/banners.json" as="fetch" crossorigin="anonymous">
-<link rel="stylesheet" href="css/tienda.css?v=20261116a">
+<link rel="stylesheet" href="css/tienda.css?v=20261124a">
 <link rel="stylesheet" href="css/movimiento.css?v=20261102c">
 <!-- V3 ACTIVA PARA TODOS (desde 2026-11-03). Para volver a ver la tienda anterior
      en ESTE navegador: camandmobile.com/?v3=0 (y ?v3=1 la vuelve a activar).
@@ -129,7 +129,7 @@
     // Sin precarga de Manrope: Chrome espera las fuentes "optional" precargadas antes
     // del primer dibujo, y PageSpeed bajaba de ~80 a ~53. Sin precarga, la primera
     // visita usa Inter y desde la segunda (ya en caché) se ve Manrope.
-    document.write('<link rel="stylesheet" href="css/v3.css?v=20261103j">' +
+    document.write('<link rel="stylesheet" href="css/v3.css?v=20261124a">' +
       '<script defer src="js/v3.js?v=20261116b"><\/script>');
   }catch(e){}
 })();
@@ -2462,9 +2462,9 @@ function mostrarGraciasSuscripcion() {
      ejecutan en este mismo orden, antes de DOMContentLoaded. -->
 <script defer src="https://cdnjs.cloudflare.com/ajax/libs/PapaParse/5.4.1/papaparse.min.js"></script>
 <script defer src="js/movimiento.js?v=20261102b"></script>
-<script defer src="js/tienda.js?v=20261116c"></script>
+<script defer src="js/tienda.js?v=20261124a"></script>
 
-<script defer src="js/personaliza.js?v=20261115d"></script>
+<script defer src="js/personaliza.js?v=20261124a"></script>
 
 <script defer src="js/campanas.js?v=20261102a"></script>
 
