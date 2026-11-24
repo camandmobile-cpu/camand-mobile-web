@@ -1599,7 +1599,7 @@ function getExtraHub(key){
   }
   if(key === 'techoficina'){
     const resto = accBrands.filter(b => !esWearable(b) && !esAudio(b));
-    return buildHub('Tech & Oficina', [...CATALOG.impresoras.brands, ...resto]);
+    return buildHub('Accesorios', [...CATALOG.impresoras.brands, ...resto]);
   }
   if(key === 'tvsonido') return buildHub('TV y Sonido', CATALOG.tvsonido.brands);
   if(key === 'hogar') return buildHub('Hogar', CATALOG.hogar.brands);
