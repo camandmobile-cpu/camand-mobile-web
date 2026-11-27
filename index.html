@@ -141,7 +141,7 @@
     }catch(e){ vidrioOff = pv === '0'; }
     if((VIDRIO_PARA_TODOS || pv === '1') && !vidrioOff){
       h.classList.add('vd');
-      document.write('<link rel="stylesheet" href="css/vidrio.css?v=20261127e">' +
+      document.write('<link rel="stylesheet" href="css/vidrio.css?v=20261127f">' +
         '<script defer src="js/vidrio.js?v=20261127e"><\/script>');
     }
   }catch(e){}
@@ -1293,6 +1293,23 @@ window.TEMPORADA_CONFIG = {
        Ruta: #/personaliza (también #/skins, que baja directo al estudio de skins).
        Precios y opciones editables en el bloque "PERSONALIZA_CONFIG" (al final del archivo). -->
   <section class="view" id="view-personaliza">
+    <!-- Portada en el estilo vidrio (ventana negra con estuche, igual al inicio). Sin vidrio se ve la portada anterior. -->
+    <section class="vd-win pz-win" id="pzWin" aria-label="Personaliza tu equipo">
+      <div class="vd-win-bg" aria-hidden="true" style="background-image:url('img/fondos/bg-personaliza.webp')"></div>
+      <div class="wrap">
+        <div class="vd-card">
+          <span class="vd-eb">Personalización Camand · Hecho en Bogotá</span>
+          <h1>Tu celular, tu estilo.</h1>
+          <p>Skins, estuches con tu foto e hidrogel instalado. Tú lo diseñas, nosotros lo hacemos y lo ves antes de producirlo.</p>
+          <div class="vd-btns">
+            <button type="button" class="vd-btn claro" onclick="pzOpenStudio('skin')">Diseñar mi skin · $30.000</button>
+            <button type="button" class="vd-btn vidrio" onclick="pzOpenStudio('clasica')">Diseñar mi estuche</button>
+          </div>
+          <ul class="pz-win-trust"><li>Vista previa antes de producir</li><li>Envíos a toda Colombia</li><li>Ajuste o reposición si hay un error</li></ul>
+        </div>
+      </div>
+    </section>
+
     <div class="pz-hero pz-hero-lab">
       <div class="pz-fx" aria-hidden="true"><div class="pz-aurora"><span></span></div><div class="pz-grid"><span></span></div><div class="pz-spot"></div><div class="pz-orbit o1"></div><div class="pz-orbit o2"></div><div class="pz-cursor c1"><svg viewBox="0 0 20 22"><path d="M2 2l15 7.5-6.6 1.9L7.4 18z"/></svg><span>Tú</span></div><div class="pz-cursor c2"><svg viewBox="0 0 20 22"><path d="M2 2l15 7.5-6.6 1.9L7.4 18z"/></svg><span>Camand</span></div><div class="pz-grain"></div><span class="blob b1"></span><span class="blob b2"></span><span class="blob b3"></span><span class="blob b4"></span><div class="doodles"></div><div class="collage"><img src="img/galeria/estuche-04.jpg" alt="" loading="lazy"><img src="img/galeria/estuche-08.jpg" alt="" loading="lazy"><img src="img/galeria/estuche-12.jpg" alt="" loading="lazy"><img src="img/galeria/estuche-15.jpg" alt="" loading="lazy"></div><div class="shade"></div></div>
       <div class="wrap pz-hero-inner">
@@ -1326,7 +1343,23 @@ window.TEMPORADA_CONFIG = {
       </div>
     </div>
 
-    <!-- 6 tarjetas: qué quieres personalizar -->
+    <!-- 1. Así de fácil: lo primero que se lee, para dar confianza antes de diseñar -->
+    <div class="section pz-soft pz-pasos" id="pzPasos">
+      <div class="wrap">
+        <div class="section-head">
+          <h2>Así de fácil</h2>
+          <p>Así funciona de principio a fin. Apruebas tu diseño antes de que lo produzcamos.</p>
+        </div>
+        <div class="pz-how">
+          <div><span>01</span><h5>Elige y diseña</h5><p>Escoge skin, estuche o funda y sube tu foto desde el celular.</p></div>
+          <div><span>02</span><h5>Confirmamos por WhatsApp</h5><p>Revisamos tu diseño, tu modelo y la forma de pago contigo.</p></div>
+          <div><span>03</span><h5>Lo ves antes de producir</h5><p>Te enviamos la vista previa para que apruebes antes de fabricar.</p></div>
+          <div><span>04</span><h5>Te llega a casa</h5><p>1 a 2 días hábiles. Envíos a Bogotá y a toda Colombia.</p></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- 2. Qué quieres personalizar: solo lo personalizado (skins, estuches, hidrogel) -->
     <div class="section" style="padding-top:28px;">
       <div class="wrap">
         <div class="section-head">
@@ -1337,7 +1370,7 @@ window.TEMPORADA_CONFIG = {
       </div>
     </div>
 
-    <!-- Estudio de skins -->
+    <!-- 3. Estudio de skins y estuches -->
     <div class="section pz-studio-section" id="pzSkinStudio">
       <div class="wrap">
         <div class="section-head">
@@ -1448,7 +1481,27 @@ window.TEMPORADA_CONFIG = {
       </div>
     </div>
 
-    <!-- Hidrogel -->
+    <!-- 4. Prueba real: galería de trabajos y videos del taller -->
+    <div class="section" id="pzVideos">
+      <div class="wrap">
+        <div class="section-head">
+          <h2>Hecho por Camand</h2>
+          <p>Trabajos reales entregados a clientes.</p>
+        </div>
+        <div class="pz-gallery" id="pzGallery"></div>
+        <div class="section-head" style="margin-top:56px;">
+          <h2>Míralo en acción</h2>
+          <p>Videos reales de nuestro taller. Toca para reproducir.</p>
+        </div>
+        <div class="pz-reels-row">
+          <div class="pz-reel" data-reel="DaJklmiCyqw" data-poster="img/galeria/estuche-03.jpg" data-label="Cómo personalizamos estuches"></div>
+          <div class="pz-reel" data-reel="DT34mMvgpvc" data-poster="img/galeria/estuche-07.jpg" data-label="Tu dispositivo, tu estilo"></div>
+          <div class="pz-reel" data-reel="DZVWLBBCv6O" data-poster="img/galeria/estuche-10.jpg" data-label="Protege y personaliza"></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- 5. Hidrogel -->
     <div class="section pz-soft" id="pzHidrogel">
       <div class="wrap">
         <div class="section-head">
@@ -1478,13 +1531,13 @@ window.TEMPORADA_CONFIG = {
       </div>
     </div>
 
-    <!-- Fundas -->
+    <!-- 6. Completa tu equipo (no personalizado): fundas y vidrios, luego accesorios Apple -->
     <div class="section" id="pzFundas">
       <div class="wrap">
         <div class="section-head">
-          <p class="pz-eyebrow">Fundas</p>
-          <h2>Fundas para tu modelo</h2>
-          <p>Antigolpes, silicona y transparentes. Dinos tu celular y te mostramos lo disponible.</p>
+          <p class="pz-eyebrow">Completa tu equipo</p>
+          <h2>Fundas y vidrios para tu modelo</h2>
+          <p>Antigolpes, silicona, transparentes y vidrio templado. Dinos tu celular y te mostramos lo disponible.</p>
         </div>
         <div class="product-grid" id="pzFundasGrid"></div>
         <div class="pz-tiles" id="pzFundasTiles"></div>
@@ -1504,49 +1557,14 @@ window.TEMPORADA_CONFIG = {
       </div>
     </div>
 
-    <!-- Videos -->
-    <div class="section" id="pzVideos">
+    <!-- Promesa + preguntas frecuentes -->
+    <div class="section" style="padding-top:56px;">
       <div class="wrap">
-        <div class="section-head">
-          <h2>Míralo en acción</h2>
-          <p>Videos reales de nuestro taller. Toca para reproducir.</p>
-        </div>
-        <div class="pz-reels-row">
-          <div class="pz-reel" data-reel="DaJklmiCyqw" data-poster="img/galeria/estuche-03.jpg" data-label="Cómo personalizamos estuches"></div>
-          <div class="pz-reel" data-reel="DT34mMvgpvc" data-poster="img/galeria/estuche-07.jpg" data-label="Tu dispositivo, tu estilo"></div>
-          <div class="pz-reel" data-reel="DZVWLBBCv6O" data-poster="img/galeria/estuche-10.jpg" data-label="Protege y personaliza"></div>
-        </div>
-        <div class="pz-gallery-head">
-          <h3>Hecho por Camand</h3>
-          <span>Trabajos reales entregados a clientes</span>
-        </div>
-        <div class="pz-gallery" id="pzGallery"></div>
-      </div>
-    </div>
-
-    <!-- Cómo funciona + promesa -->
-    <div class="section pz-soft">
-      <div class="wrap">
-        <div class="section-head">
-          <h2>Así de fácil</h2>
-        </div>
-        <div class="pz-how">
-          <div><span>01</span><h5>Elige y diseña</h5><p>Escoge skin, estuche o funda y sube tu foto desde el celular.</p></div>
-          <div><span>02</span><h5>Confirmamos por WhatsApp</h5><p>Revisamos tu diseño, tu modelo y la forma de pago contigo.</p></div>
-          <div><span>03</span><h5>Lo ves antes de producir</h5><p>Te enviamos la vista previa para que apruebes antes de fabricar.</p></div>
-          <div><span>04</span><h5>Te llega a casa</h5><p>1 a 2 días hábiles. Envíos a Bogotá y a toda Colombia.</p></div>
-        </div>
         <div class="pz-promise">
           <h3>Tu diseño no es un pedido más</h3>
           <p>Cada skin y cada estuche lleva una foto que significa algo para ti: tu familia, tu mascota, tu equipo, tu arte. Por eso lo revisamos contigo antes de producir y, si llega con un defecto, un error de impresión o no ajusta a tu modelo, lo corregimos o lo reponemos sin costo.</p>
         </div>
-      </div>
-    </div>
-
-    <!-- FAQ personalización -->
-    <div class="section" style="padding-top:56px;">
-      <div class="wrap">
-        <div class="section-head"><h2>Preguntas frecuentes</h2></div>
+        <div class="section-head" style="margin-top:56px;"><h2>Preguntas frecuentes</h2></div>
         <div class="faq-list" id="pzFaq"></div>
       </div>
     </div>
@@ -2477,7 +2495,7 @@ function mostrarGraciasSuscripcion() {
 <script defer src="js/movimiento.js?v=20261102b"></script>
 <script defer src="js/tienda.js?v=20261124b"></script>
 
-<script defer src="js/personaliza.js?v=20261124a"></script>
+<script defer src="js/personaliza.js?v=20261127a"></script>
 
 <script defer src="js/campanas.js?v=20261127r"></script>
 

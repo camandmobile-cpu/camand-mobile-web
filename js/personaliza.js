@@ -201,7 +201,10 @@ function pzCardFoto(c){
 function pzRenderCards(){
   const cont = document.getElementById('pzCards');
   if(!cont) return;
-  cont.innerHTML = PERSONALIZA_CONFIG.cards.map(c => {
+  // Solo lo personalizado. Fundas, vidrios y accesorios Apple tienen su propia sección más abajo
+  // ("Completa tu equipo"); sus tarjetas siguen en la lista por si se quieren volver a mostrar aquí.
+  const PERSONAL = ['skins', 'estuches', 'hidrogel'];
+  const tarjeta = c => {
     const foto = pzCardFoto(c);
     const media = foto
       ? `<img src="${pzEsc(typeof optimizeImageUrl === 'function' ? optimizeImageUrl(foto, 700) : foto)}" alt="${pzEsc(c.titulo)}" loading="lazy">`
@@ -215,7 +218,9 @@ function pzRenderCards(){
         <button type="button" class="pz-btn dark" onclick="${c.accion}">${pzEsc(c.cta)}</button>
       </div>
     </article>`;
-  }).join('');
+  };
+  const todas = PERSONALIZA_CONFIG.cards;
+  cont.innerHTML = todas.filter(c => PERSONAL.includes(c.key)).map(tarjeta).join('');
   // Las tarjetas se vuelven a dibujar cuando llegan las fotos de la Hoja:
   // sin esto quedaban invisibles (animación de aparición sin activar).
   if(typeof initScrollReveal === 'function') initScrollReveal();
@@ -659,7 +664,8 @@ function pzRenderProductos(){
   document.getElementById('pzFundasTiles').innerHTML = [
     pzTile(ICO_FUNDA, 'Transparente antigolpes', 'Deja ver el color de tu equipo, con esquinas reforzadas.', 'Hola Camand Mobile, quiero una funda transparente antigolpes. Mi celular es: '),
     pzTile(ICO_FUNDA, 'Silicona', 'Tacto suave, interior afelpado, varios colores.', 'Hola Camand Mobile, quiero una funda de silicona. Mi celular es: '),
-    pzTile(ICO_FUNDA, 'Antigolpes reforzada', 'Máxima protección para el día a día.', 'Hola Camand Mobile, quiero una funda antigolpes reforzada. Mi celular es: ')
+    pzTile(ICO_FUNDA, 'Antigolpes reforzada', 'Máxima protección para el día a día.', 'Hola Camand Mobile, quiero una funda antigolpes reforzada. Mi celular es: '),
+    pzTile('<rect x="6" y="2" width="12" height="20" rx="2.5"/><path d="M9 6l6 6M9 10l4 4"/>', 'Vidrio templado', 'Blindado $15.000 o sin borde $25.000. Gratis al llevar 2 estuches.', 'Hola Camand Mobile, quiero un vidrio de protección (blindado $15.000 o sin borde $25.000). Mi celular es: ')
   ].join('');
 
   const cubos = pzBuscarAccesorios(/(cubo|cargador|adaptador)[^|]{0,30}(apple|iphone|20\s?w)|apple[^|]{0,20}20\s?w/i);
