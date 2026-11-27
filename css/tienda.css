@@ -2438,7 +2438,8 @@ html[data-temporada="blackfriday"] .hero .eyebrow{color:#b38f00;}
 .rg-qr small{margin-top:12px;font-size:11.5px;color:rgba(255,255,255,.55);}
 @media (max-width:860px){
   .rg-panel{grid-template-columns:1fr;padding:32px 24px;border-radius:26px;}
-  .rg-qr{display:none;} /* en el celular ya están en el celular: basta el botón */
+  .rg-qr{justify-self:stretch;max-width:none;padding:22px 18px;}
+  .rg-qr img{width:150px;height:150px;}
   .rg-nota > b{font-size:56px;}
   .rg-btn{flex:1 1 100%;justify-content:center;}
 }
