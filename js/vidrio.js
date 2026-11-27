@@ -67,9 +67,36 @@
     ancla.after(s);
   }
 
+  // Menú del celular (tres rayas): cada categoría muestra la misma foto que
+  // tiene en el inicio (las fotos salen de la pestaña de categorías de la Hoja).
+  // Si una categoría no tiene foto, se queda su ícono de siempre.
+  function fotosMenu(){
+    document.querySelectorAll('.mm3-tile').forEach(function(t){
+      var c = t.querySelector('[data-cuenta]');
+      if(!c) return;
+      var k = c.getAttribute('data-cuenta');
+      if(k === 'celulares') k = 'equipos';
+      var img = document.querySelector('#cchm-' + k + ' img');
+      var src = img && (img.currentSrc || img.getAttribute('src'));
+      var caja = t.querySelector('.vd-mm-foto');
+      if(!src){ if(caja){ caja.remove(); t.classList.remove('vd-foto'); } return; }
+      if(!caja){
+        caja = document.createElement('span'); caja.className = 'vd-mm-foto'; caja.setAttribute('aria-hidden', 'true');
+        caja.appendChild(document.createElement('img'));
+        t.insertBefore(caja, t.firstChild);
+      }
+      var im = caja.firstChild;
+      if(im.getAttribute('src') !== src){ im.setAttribute('src', src); im.alt = ''; im.loading = 'lazy'; }
+      t.classList.add('vd-foto');
+    });
+  }
+
   function armar(){
     aura();
     VENTANAS.forEach(ventana);
+    fotosMenu();
+    var grid = document.getElementById('catGridHome');
+    if(grid && window.MutationObserver) new MutationObserver(fotosMenu).observe(grid, { childList: true, subtree: true, attributes: true, attributeFilter: ['src'] });
   }
   // Después de que js/v3.js reordena el inicio (también en DOMContentLoaded).
   if(document.readyState === 'loading') document.addEventListener('DOMContentLoaded', function(){ setTimeout(armar, 0); });

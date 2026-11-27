@@ -97,6 +97,30 @@ html.v3 #view-home > #vdComputadores{order:9;}
   .vd-card{padding:22px;}
 }
 
+/* ---------- Menú del celular: fotos de cada categoría (las mismas del inicio) ---------- */
+html.v3.vd .mm3-tile.vd-foto i{display:none;}
+html.v3.vd .mm3-tile.vd-foto::before{display:none;}
+html.v3.vd .mm3-tile.vd-foto{justify-content:flex-start;}
+html.v3.vd .vd-mm-foto{display:block;width:100%;aspect-ratio:16/11;border-radius:14px;background:#fff;overflow:hidden;}
+html.v3.vd .vd-mm-foto img{width:100%;height:100%;object-fit:contain;display:block;}
+
+/* ---------- "¿Qué quieres personalizar hoy?" en celular: mismo tamaño y forma que las tarjetas de producto ---------- */
+@media (max-width:600px){
+  html.v3.vd .pz-cards{gap:10px;}
+  html.v3.vd .pz-cards > *{flex:0 0 46%;}
+  html.v3.vd .pz-card{border-radius:24px;padding:8px;background:var(--vd-glass-solid);border:1px solid var(--vd-line);box-shadow:var(--vd-shadow);}
+  html.v3.vd .pz-card:hover{transform:none;}
+  html.v3.vd .pz-card-media{aspect-ratio:1;border-radius:18px;}
+  html.v3.vd .pz-card-media > svg{width:56px;height:56px;}
+  html.v3.vd .pz-card-badge{left:8px;top:8px;font-size:10px;padding:5px 9px;letter-spacing:.03em;}
+  html.v3.vd .pz-card-body{padding:12px 6px 6px;}
+  html.v3.vd .pz-card-top{flex-direction:column;gap:6px;margin-bottom:10px;}
+  html.v3.vd .pz-card h3{font-size:15px;line-height:1.25;letter-spacing:-.01em;}
+  html.v3.vd .pz-card-chip{font-size:12.5px;padding:4px 9px;border-radius:100px;white-space:normal;text-align:left;}
+  html.v3.vd .pz-card p,html.v3.vd .pz-card .pz-checks{display:none;}
+  html.v3.vd .pz-card .pz-btn{min-height:42px;padding:0 10px;font-size:13.5px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+}
+
 /* ---------- Final en negro ---------- */
 html.v3.vd .pie-v3{background:#000;}
 html.v3.vd .instagram-cta{background:#000;}
