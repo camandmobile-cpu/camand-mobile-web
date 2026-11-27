@@ -115,6 +115,27 @@ html.v3 #view-home > #vdComputadores{order:9;}
   .vd-enlace{margin-top:12px;}
 }
 
+/* ---------- Cinta negra entre Celulares y Personaliza ---------- */
+html.v3 #view-home > #vdCinta{order:6;}
+html.vd-unidas #vdCelulares{margin-bottom:0;}
+html.vd-unidas #vdPersonaliza{margin-top:0;}
+.vd-cinta{position:relative;background:#000;color:#fff;overflow:hidden;padding:22px 0;
+  border-top:1px solid rgba(255,255,255,.12);border-bottom:1px solid rgba(255,255,255,.12);}
+.vd-cinta-txt{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0);white-space:nowrap;margin:0;}
+.vd-cinta-pista{display:flex;width:max-content;animation:vdCinta 38s linear infinite;}
+.vd-cinta:hover .vd-cinta-pista{animation-play-state:paused;}
+.vd-cinta-grupo{display:flex;flex-shrink:0;}
+.vd-cinta-grupo span{display:inline-flex;align-items:center;gap:28px;padding-right:28px;white-space:nowrap;
+  font-family:var(--v3-titulo,inherit);font-size:clamp(18px,2.2vw,26px);font-weight:700;letter-spacing:-.02em;color:#f5f5f7;}
+.vd-cinta-grupo span::after{content:"✦";font-size:.7em;color:#86868b;}
+@keyframes vdCinta{to{transform:translateX(-50%);}}
+@media (max-width:760px){.vd-cinta{padding:16px 0;}}
+@media (prefers-reduced-motion:reduce){
+  .vd-cinta-pista{animation:none;width:auto;}
+  .vd-cinta-grupo{flex-wrap:wrap;justify-content:center;row-gap:6px;padding:0 16px;}
+  .vd-cinta-grupo + .vd-cinta-grupo{display:none;}
+}
+
 /* ---------- Menú del celular: fotos de cada categoría (las mismas del inicio) ---------- */
 html.v3.vd .mm3-tile.vd-foto i{display:none;}
 html.v3.vd .mm3-tile.vd-foto::before{display:none;}
@@ -147,4 +168,4 @@ html.v3.vd .instagram-cta{background:#000;}
   .vd-aura i{animation:none;}
   html.v3.vd .product-card,html.v3.vd .product-card:hover,.vd-btn:hover{transform:none;}
 }
-@media print{.vd-aura,.vd-win{display:none !important;}}
+@media print{.vd-aura,.vd-cinta,.vd-win{display:none !important;}}

@@ -121,9 +121,33 @@
     });
   }
 
+  // Cinta negra con texto entre Celulares y Personaliza: une las dos ventanas.
+  var CINTA = ['Envío en 1 a 2 días hábiles', 'Paga contraentrega en Bogotá', 'Tarjeta de crédito a cuotas',
+               'Sistecrédito sin tarjeta', 'Garantía en todos los equipos', 'Personalizados hechos en Bogotá',
+               'Ves tu diseño antes de producirlo'];
+  function cinta(){
+    var a = document.getElementById('vdCelulares'), b = document.getElementById('vdPersonaliza');
+    if(!a || !b || document.getElementById('vdCinta')) return;
+    var c = document.createElement('div');
+    c.className = 'vd-cinta'; c.id = 'vdCinta';
+    var lista = document.createElement('p'); lista.className = 'vd-cinta-txt';
+    lista.textContent = CINTA.join(' · ');
+    c.appendChild(lista);
+    var pista = document.createElement('div'); pista.className = 'vd-cinta-pista'; pista.setAttribute('aria-hidden', 'true');
+    for(var i = 0; i < 2; i++){
+      var g = document.createElement('div'); g.className = 'vd-cinta-grupo';
+      CINTA.forEach(function(t){ var sp = document.createElement('span'); sp.textContent = t; g.appendChild(sp); });
+      pista.appendChild(g);
+    }
+    c.appendChild(pista);
+    a.after(c);
+    document.documentElement.classList.add('vd-unidas');
+  }
+
   function armar(){
     aura();
     VENTANAS.forEach(ventana);
+    cinta();
     fotosMenu();
     var grid = document.getElementById('catGridHome');
     if(grid && window.MutationObserver) new MutationObserver(fotosMenu).observe(grid, { childList: true, subtree: true, attributes: true, attributeFilter: ['src'] });
