@@ -101,7 +101,7 @@
 <!-- Copia de los banners (la genera el robot diario): se pide desde ya para
      mostrar el banner sin esperar a Google Sheets. -->
 <link rel="preload" href="data/banners.json" as="fetch" crossorigin="anonymous">
-<link rel="stylesheet" href="css/tienda.css?v=20261124a">
+<link rel="stylesheet" href="css/tienda.css?v=20261127r">
 <link rel="stylesheet" href="css/movimiento.css?v=20261102c">
 <!-- V3 ACTIVA PARA TODOS (desde 2026-11-03). Para volver a ver la tienda anterior
      en ESTE navegador: camandmobile.com/?v3=0 (y ?v3=1 la vuelve a activar).
@@ -966,7 +966,7 @@ window.TEMPORADA_CONFIG = {
             <div class="who">Laura G. · Estuche personalizado</div>
           </div>
         </div>
-        <!-- Botón a las reseñas de Google: aparece solo cuando GOOGLE_RESENAS_URL (bloque de campañas, al final del archivo) tiene el link. -->
+        <!-- Bloque "Perfil verificado de Google": se dibuja desde js/campanas.js (CAMPANAS_CONFIG: links, calificación y número de reseñas). -->
         <div class="resenas-google" id="resenasGoogle" hidden></div>
       </div>
     </div>
@@ -2479,7 +2479,7 @@ function mostrarGraciasSuscripcion() {
 
 <script defer src="js/personaliza.js?v=20261124a"></script>
 
-<script defer src="js/campanas.js?v=20261102a"></script>
+<script defer src="js/campanas.js?v=20261127r"></script>
 
 <script defer src="js/plantillas.js?v=20261102a"></script>
 <script defer src="js/reels.js?v=20261102a"></script>

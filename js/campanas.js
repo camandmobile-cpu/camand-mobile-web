@@ -1,7 +1,11 @@
 /* =====================================================================
    CAMPAÑAS, ASESOR DE COMPRA Y MEDICIÓN (auditoría oct 2026)
    ANDRÉS — lo que puedes cambiar aquí:
-   - googleResenasUrl: link a tus reseñas de Google (botón bajo los testimonios).
+   - googleResenasUrl: link a tu perfil de Google (botón "Ver perfil en Google").
+   - googleEscribirResenaUrl: link directo para DEJAR reseña (el de "Pedir reseñas").
+   - googleCalificacion / googleTotalResenas: lo que dice tu perfil de Google
+     (ej. '4.9' y '37'). Actualízalos de vez en cuando. Si los dejas vacíos,
+     el bloque sale igual pero sin el número grande.
    - metaPixelId: el número de tu Pixel de Meta (Administrador de eventos).
      Solo se activa si el visitante acepta las cookies analíticas.
    - resenasCsvUrl: link CSV publicado de la pestaña "RESEÑAS PAGINA"
@@ -15,6 +19,9 @@
    ===================================================================== */
 const CAMPANAS_CONFIG = {
   googleResenasUrl: 'https://share.google/naZINh4sRmNxgIL0U',
+  googleEscribirResenaUrl: 'https://g.page/r/CY-YxXEr6Q58EAI/review',
+  googleCalificacion: '',
+  googleTotalResenas: '',
   metaPixelId: '1601620134984140',
   kitsCsvUrl: '',
   resenasCsvUrl: 'https://docs.google.com/spreadsheets/d/e/2PACX-1vTVTMXRy1SKrWUR512KBjjWJ0__CcP5g19K2QK7YfVSr5FBeH8PZHMxBAeCKdxQuawOgi-IjsfF4Pvp/pub?gid=587353892&single=true&output=csv'
@@ -243,9 +250,39 @@ function kitAgregar(i, btn){
 function renderResenas(){
   const el = document.getElementById('resenasGoogle');
   if(!el) return;
-  if(!/^https?:\/\//i.test(CAMPANAS_CONFIG.googleResenasUrl)){ el.hidden = true; return; }
+  const C = CAMPANAS_CONFIG, ok = u => /^https?:\/\//i.test(u || '');
+  if(!ok(C.googleResenasUrl) && !ok(C.googleEscribirResenaUrl)){ el.hidden = true; return; }
+  const nota = parseFloat(String(C.googleCalificacion || '').replace(',', '.'));
+  const total = parseInt(C.googleTotalResenas, 10);
+  const hayNota = nota > 0 && nota <= 5;
+  const estrellas = '★★★★★';
+  const llenas = hayNota ? Math.round(nota / 5 * 100) : 100;
   el.hidden = false;
-  el.innerHTML = `<a class="pz-btn outline-dark" href="${tmEsc(CAMPANAS_CONFIG.googleResenasUrl)}" target="_blank" rel="noopener" onclick="camandTrack('ver_resenas')">Ver nuestras reseñas en Google →</a>`;
+  el.innerHTML = `
+    <div class="rg-panel">
+      <div class="rg-info">
+        <span class="rg-eyebrow"><i aria-hidden="true">✓</i> Perfil verificado de Google</span>
+        <div class="rg-nota">
+          ${hayNota ? `<b>${nota.toFixed(1)}</b>` : ''}
+          <div>
+            <span class="rg-stars" aria-label="${hayNota ? nota.toFixed(1) + ' de 5 estrellas' : 'Reseñas de 5 estrellas'}"><span style="width:${llenas}%">${estrellas}</span>${estrellas}</span>
+            <small>${total > 0 ? `${total} calificaciones en Google` : 'Calificaciones reales en Google'}</small>
+          </div>
+        </div>
+        <p>Lo que dicen quienes ya compraron su celular o personalizaron su estuche con nosotros, directo de nuestro perfil de Google.</p>
+        <div class="rg-btns">
+          ${ok(C.googleResenasUrl) ? `<a class="rg-btn" href="${tmEsc(C.googleResenasUrl)}" target="_blank" rel="noopener" onclick="camandTrack('ver_resenas')">Ver perfil en Google <span aria-hidden="true">↗</span></a>` : ''}
+          ${ok(C.googleEscribirResenaUrl) ? `<a class="rg-btn rg-btn-ghost" href="${tmEsc(C.googleEscribirResenaUrl)}" target="_blank" rel="noopener" onclick="camandTrack('escribir_resena')">¿Ya compraste? Déjanos tu reseña</a>` : ''}
+        </div>
+      </div>
+      ${ok(C.googleEscribirResenaUrl) ? `
+      <div class="rg-qr">
+        <img src="img/qr-resenas-google.png" alt="Código QR para dejar una reseña de Camand Mobile en Google" width="180" height="180" loading="lazy">
+        <b>Escanea con tu celular</b>
+        <span>y deja tu reseña en Google en un toque</span>
+        <small>Tienda 100% virtual · Bogotá · Envíos a todo Colombia</small>
+      </div>` : ''}
+    </div>`;
 }
 
 async function cargarResenasHoja(){
