@@ -76,6 +76,8 @@ html.v3.vd .product-card .pc-ask{background:rgba(255,255,255,.75);border:1px sol
 .vd-win .wrap{width:100%;}
 /* Lugar en el inicio (la V3 ordena el inicio con "order", ver css/v3.css) */
 html.v3 #view-home > #vdCelulares{order:6;}
+html.v3 #view-home > #vdPersonaliza{order:7;}
+html.v3 #view-home > .vd-reemplazado{display:none;}
 html.v3 #view-home > #vdRelojes{order:8;}
 html.v3 #view-home > #vdComputadores{order:9;}
 .vd-card{max-width:460px;border-radius:26px;padding:28px;background:rgba(255,255,255,.12);border:1px solid rgba(255,255,255,.22);
@@ -90,11 +92,27 @@ html.v3 #view-home > #vdComputadores{order:9;}
 .vd-btn.claro{background:#fff;color:#1d1d1f;}
 .vd-btn.vidrio{background:rgba(255,255,255,.14);color:#fff;border:1px solid rgba(255,255,255,.4);}
 .vd-btn:focus-visible{outline:3px solid #fff;outline-offset:3px;}
+/* Lista de precios (ventana Personaliza) */
+.vd-lista{display:grid;gap:8px;margin:0 0 20px;}
+.vd-lista button{display:flex;justify-content:space-between;align-items:center;gap:12px;min-height:46px;padding:0 16px;border-radius:14px;
+  background:rgba(255,255,255,.08);border:1px solid rgba(255,255,255,.18);color:#fff;font:inherit;font-size:15px;font-weight:600;cursor:pointer;text-align:left;transition:background .2s;}
+.vd-lista button:hover{background:rgba(255,255,255,.16);}
+.vd-lista button span{font-weight:700;color:#d2d2d7;white-space:nowrap;}
+.vd-lista button:focus-visible{outline:3px solid #fff;outline-offset:2px;}
+.vd-enlace{display:inline-flex;align-items:center;gap:8px;margin-top:16px;font-size:14px;font-weight:600;color:#e8e8ed;text-decoration:none;}
+.vd-enlace svg{width:14px;height:14px;}
+.vd-enlace:hover{color:#fff;text-decoration:underline;}
 @media (max-width:760px){
   .vd-win{min-height:72vh;align-items:flex-end;padding-bottom:22px;margin:28px 0;}
   .vd-win-bg{background-size:cover;background-position:center;}
   .vd-win-bg::after{background:linear-gradient(0deg,rgba(0,0,0,.85),rgba(0,0,0,.15) 62%,rgba(0,0,0,0));}
   .vd-card{padding:22px;}
+  #vdPersonaliza{min-height:96vh;}
+  #vdPersonaliza .vd-win-bg{background-position:center top 8%;}
+  #vdPersonaliza .vd-card p{font-size:15px;margin-bottom:14px;}
+  .vd-lista{gap:6px;margin-bottom:16px;}
+  .vd-lista button{min-height:40px;font-size:14px;padding:0 14px;border-radius:12px;}
+  .vd-enlace{margin-top:12px;}
 }
 
 /* ---------- Menú del celular: fotos de cada categoría (las mismas del inicio) ---------- */

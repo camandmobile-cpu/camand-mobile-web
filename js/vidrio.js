@@ -16,6 +16,16 @@
       texto: 'Revisados uno por uno, con garantía y envío en 1 a 2 días a toda Colombia. Paga a cuotas con Sistecrédito.',
       botones: [ { t: 'Ver celulares', clase: 'claro', accion: function(){ go('celulares'); } },
                  { t: 'Comparar modelos', clase: 'vidrio', accion: function(){ startCompareFlow(); } } ] },
+    // Personaliza: reemplaza el bloque morado de antes (.pz-dual), en el mismo lugar del inicio.
+    { id: 'vdPersonaliza', foto: 'img/fondos/bg-personaliza.webp', despues: '.pz-dual', reemplaza: true,
+      eb: 'Personaliza tu equipo', titulo: 'Tu celular, tu estilo.',
+      texto: 'Skins con tu foto, estuches Acrygel e hidrogel instalado. Ves el diseño antes de producirlo.',
+      lista: [ { t: 'Skins con tu foto', p: '$30.000', accion: function(){ go('personaliza'); } },
+               { t: 'Estuches Acrygel', p: 'Desde $35.000', accion: function(){ go('cases'); } },
+               { t: 'Hidrogel instalado', p: 'Desde $25.000', accion: function(){ pzOpen('pzHidrogel'); } } ],
+      botones: [ { t: 'Diseñar mi skin', clase: 'claro', accion: function(){ pzOpenStudio('skin'); } },
+                 { t: 'Ver todo', clase: 'vidrio', accion: function(){ pzOpen(); } } ],
+      enlace: { t: 'Ver nuestro video más visto', url: 'https://www.instagram.com/reel/DcZyzOyiL1m/' } },
     { id: 'vdRelojes', foto: 'img/fondos/bg-relojes.webp?v=2', despues: '.comocompras-section',
       eb: 'Relojes', titulo: 'Relojes que combinan contigo.',
       texto: 'Smartwatches y correas para cada estilo, con envío en 1 a 2 días.',
@@ -62,9 +72,29 @@
       el.addEventListener('click', function(){ try{ b.accion(); }catch(e){} });
       btns.appendChild(el);
     });
-    card.appendChild(eb); card.appendChild(h2); card.appendChild(p); card.appendChild(btns);
+    card.appendChild(eb); card.appendChild(h2); card.appendChild(p);
+    if(v.lista){
+      var ls = document.createElement('div'); ls.className = 'vd-lista';
+      v.lista.forEach(function(it){
+        var b = document.createElement('button'); b.type = 'button';
+        b.appendChild(document.createTextNode(it.t));
+        var sp = document.createElement('span'); sp.textContent = it.p; b.appendChild(sp);
+        b.addEventListener('click', function(){ try{ it.accion(); }catch(e){} });
+        ls.appendChild(b);
+      });
+      card.appendChild(ls);
+    }
+    card.appendChild(btns);
+    if(v.enlace){
+      var a = document.createElement('a'); a.className = 'vd-enlace';
+      a.href = v.enlace.url; a.target = '_blank'; a.rel = 'noopener';
+      a.innerHTML = '<svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M7 4.5v15l13-7.5z"/></svg>';
+      a.appendChild(document.createTextNode(v.enlace.t));
+      card.appendChild(a);
+    }
     wrap.appendChild(card); s.appendChild(bg); s.appendChild(wrap);
     ancla.after(s);
+    if(v.reemplaza) ancla.classList.add('vd-reemplazado');
   }
 
   // Menú del celular (tres rayas): cada categoría muestra la misma foto que
