@@ -84,7 +84,7 @@
   html[data-temporada="navidad"]{--nv-rojo:#e0263b;--nv-rojo2:#b5172a;--nv-verde:#14532d;--nv-oro:#ffd166;--nv-noche:#0b1d33;}
 
   /* Barra superior verde con dorado y cinta de bastón de caramelo */
-  html[data-temporada="navidad"] .top-bar,html.v3[data-temporada="navidad"] .top-bar{background:linear-gradient(90deg,#0d3b24,#14532d 50%,#0d3b24);}
+  html[data-temporada="navidad"] .top-bar,html.v3[data-temporada="navidad"] .top-bar{background:linear-gradient(90deg,#0b1d33,#14335a 50%,#0b1d33);}
   html[data-temporada="navidad"] .top-bar-msg{color:var(--nv-oro);font-weight:700;}
   html[data-temporada="navidad"] .cinta{background:repeating-linear-gradient(-45deg,#d42a3c 0 18px,#c01f31 18px 36px);color:#fff;}
   html[data-temporada="navidad"] .cinta-item{color:#fff;font-weight:700;}
@@ -92,7 +92,8 @@
   html[data-temporada="navidad"] .cinta-item b{color:var(--nv-oro);}
   html[data-temporada="navidad"] nav.links button.nav-pz{background:linear-gradient(90deg,#e0263b,#b5172a);color:#fff;}
 
-  /* Luces bajo el menú */
+  /* Luces bajo el menú (con espacio reservado: no caen sobre el banner) */
+  html[data-temporada="navidad"] #app{padding-top:calc(var(--stack-h) + 20px);}
   .nv-luces{position:absolute;left:0;right:0;top:100%;height:26px;pointer-events:none;z-index:2;}
   .nv-luces svg{position:absolute;inset:0 0 auto 0;width:100%;height:16px;}
   .nv-luces i{position:absolute;top:7px;width:8px;height:12px;margin-left:-4px;border-radius:50% 50% 50% 50%/40% 40% 60% 60%;background:var(--c);
@@ -128,6 +129,14 @@
   .nv-cuenta small{font-size:10.5px;letter-spacing:.06em;text-transform:uppercase;color:#b9c9de;}
   .nv-cuenta.nv-hoy .nv-cuenta-lbl{font-size:20px;letter-spacing:.04em;text-transform:none;}
 
+  /* Cielo quieto: la tarjeta pasa por encima de las estrellas al bajar (efecto ventana). */
+  html[data-temporada="navidad"] #view-home .hero > .nv-cielo{position:absolute;inset:0;z-index:-1;pointer-events:none;
+    background:radial-gradient(120% 90% at 50% 0%,#17406b 0%,#0e2a4b 45%,#0b1d33 100%);}
+  @supports (clip-path:inset(0 round 30px)){
+    html[data-temporada="navidad"] #view-home .hero{clip-path:inset(0 round 30px);}
+    html[data-temporada="navidad"] #view-home .hero > .nv-cielo{position:fixed;background:radial-gradient(110% 80% at 50% 20%,#17406b 0%,#0e2a4b 48%,#0b1d33 100%);}
+  }
+  @media (max-width:700px){ @supports (clip-path:inset(0 round 24px)){ html[data-temporada="navidad"] #view-home .hero{clip-path:inset(0 round 24px);} } }
   .nv-estrella{position:absolute;width:2px;height:2px;border-radius:50%;background:#fff;opacity:.8;animation:nvTitila 2.6s ease-in-out infinite alternate;}
   .nv-estrella.g{width:3px;height:3px;box-shadow:0 0 6px 1px rgba(255,255,255,.8);}
   @keyframes nvTitila{from{opacity:.15;}to{opacity:1;}}
@@ -175,7 +184,7 @@
   }
 
   /* Trineo que cruza toda la pantalla */
-  .nv-vuelo{position:fixed;left:0;top:0;z-index:170;pointer-events:none;width:240px;will-change:transform;}
+  .nv-vuelo{position:fixed;left:0;top:0;z-index:-1;pointer-events:none;width:240px;will-change:transform;}
   .nv-vuelo svg{display:block;width:100%;height:auto;overflow:visible;filter:drop-shadow(0 8px 10px rgba(0,0,0,.18));}
   .nv-vuelo .nv-chispa{position:absolute;left:12px;top:60%;width:6px;height:6px;border-radius:50%;background:#ffd166;box-shadow:0 0 10px 3px rgba(255,209,102,.9);
     animation:nvChispa .9s ease-out forwards;}
@@ -188,7 +197,7 @@
   @media (max-width:700px){ .nv-vuelo{width:160px;} }
 
   /* Nieve de toda la página: visible también sobre blanco */
-  html[data-temporada="navidad"] .tm-p.fall svg{stroke:#8fbbe6;filter:drop-shadow(0 0 1px rgba(30,80,140,.35));}
+  html[data-temporada="navidad"] .tm-p.fall{display:none;}   /* la nieve va solo dentro de la tarjeta de noche */
 
   /* Productos de la campaña: moño de regalo y botones rojos */
   html[data-temporada="navidad"] #homeFeaturedSection .pc-media,html[data-temporada="navidad"] #regalosSection .pc-media{position:relative;}
@@ -206,8 +215,8 @@
     .nv-sombra,.nv-vuelo{display:none;}
   }
   html:not([data-temporada="navidad"]) .nv-luces,html:not([data-temporada="navidad"]) .nv-gorro,html:not([data-temporada="navidad"]) .nv-vuelo,
-  html:not([data-temporada="navidad"]) .nv-escena,html:not([data-temporada="navidad"]) .nv-extra{display:none !important;}
-  @media print{.nv-luces,.nv-vuelo,.nv-escena{display:none !important;}}`;
+  html:not([data-temporada="navidad"]) .nv-escena,html:not([data-temporada="navidad"]) .nv-cielo,html:not([data-temporada="navidad"]) .nv-extra{display:none !important;}
+  @media print{.nv-luces,.nv-vuelo,.nv-escena,.nv-cielo{display:none !important;}}`;
 
   /* ---------- Piezas ---------- */
   const COLORES = ['#ff3b4f', '#ffd166', '#36d07a', '#4fa8ff', '#ff7ad9'];
@@ -258,7 +267,7 @@
       const movil = innerWidth < 700;
       let estrellas = '';
       for(let i = 0; i < (movil ? 22 : 46); i++){
-        estrellas += `<span class="nv-estrella${Math.random() < .2 ? ' g' : ''}" style="left:${rnd(1, 99).toFixed(1)}%;top:${rnd(2, 62).toFixed(1)}%;animation-delay:${rnd(-3, 0).toFixed(2)}s;animation-duration:${rnd(1.6, 3.6).toFixed(2)}s"></span>`;
+        estrellas += `<span class="nv-estrella${Math.random() < .2 ? ' g' : ''}" style="left:${rnd(1, 99).toFixed(1)}%;top:${rnd(2, 96).toFixed(1)}%;animation-delay:${rnd(-3, 0).toFixed(2)}s;animation-duration:${rnd(1.6, 3.6).toFixed(2)}s"></span>`;
       }
       const pinos = movil
         ? [[3, 46, 1], [14, 34, 0], [80, 38, 0], [88, 52, 1]]
@@ -275,7 +284,9 @@
           <span class="nv-regalo" style="width:${36 * g}px">${REGALO('#14532d', '#ffd166', 36, 30, 8)}</span></button>`;
       const div = document.createElement('div');
       div.className = 'nv-escena'; div.setAttribute('aria-hidden', 'false');
-      div.innerHTML = `${estrellas}<span class="nv-luna"></span>
+      const cielo = document.createElement('div');
+      cielo.className = 'nv-cielo'; cielo.setAttribute('aria-hidden', 'true'); cielo.innerHTML = estrellas;
+      div.innerHTML = `<span class="nv-luna"></span>
         ${reducir ? '' : `<span class="nv-sombra">${SVG_TRINEO}</span><span class="nv-nieve b"></span><span class="nv-nieve"></span>`}
         <div class="nv-colinas">
           <svg class="nv-suelo" viewBox="0 0 1200 150" preserveAspectRatio="none" aria-hidden="true">
@@ -286,6 +297,7 @@
           ${pinosHtml}${regalosL}${regalosR}
         </div>`;
       hero.insertBefore(div, hero.firstChild);
+      hero.insertBefore(cielo, hero.firstChild);
       // Los regalos sí se pueden tocar (el resto de la escena no bloquea clics).
       div.querySelectorAll('.nv-regalos').forEach(b => b.setAttribute('tabindex', '0'));
       hero.style.setProperty('--w', hero.clientWidth + 'px');
@@ -308,7 +320,7 @@
     }
   }
   function quitarEscena(){
-    document.querySelectorAll('.nv-escena,.nv-luces,.nv-gorro,.nv-cuenta').forEach(e => e.remove());
+    document.querySelectorAll('.nv-escena,.nv-cielo,.nv-luces,.nv-gorro,.nv-cuenta').forEach(e => e.remove());
     const extra = document.querySelector('.nv-extra'), cta = document.getElementById('tmHeroCta');
     if(extra){ if(cta && extra.contains(cta)) extra.parentNode.insertBefore(cta, extra); extra.remove(); }
     if(cuentaTimer){ clearInterval(cuentaTimer); cuentaTimer = null; }

@@ -131,6 +131,19 @@
     // visita usa Inter y desde la segunda (ya en caché) se ve Manrope.
     document.write('<link rel="stylesheet" href="css/v3.css?v=20261124a">' +
       '<script defer src="js/v3.js?v=20261116b"><\/script>');
+    // ESTILO VIDRIO (desde 2026-11-27): paneles de vidrio y ventanas con foto de fondo fija.
+    // Para apagarlo para todos: VIDRIO_PARA_TODOS = false. Solo en tu navegador: ?vidrio=0 (y ?vidrio=1).
+    var VIDRIO_PARA_TODOS = true, pv = new URLSearchParams(location.search).get('vidrio'), vidrioOff = false;
+    try{
+      if(pv === '0') localStorage.setItem('camand_vidrio_off', '1');
+      if(pv === '1') localStorage.removeItem('camand_vidrio_off');
+      vidrioOff = localStorage.getItem('camand_vidrio_off') === '1';
+    }catch(e){ vidrioOff = pv === '0'; }
+    if((VIDRIO_PARA_TODOS || pv === '1') && !vidrioOff){
+      h.classList.add('vd');
+      document.write('<link rel="stylesheet" href="css/vidrio.css?v=20261127a">' +
+        '<script defer src="js/vidrio.js?v=20261127a"><\/script>');
+    }
   }catch(e){}
 })();
 </script>
@@ -2471,7 +2484,7 @@ function mostrarGraciasSuscripcion() {
 <script defer src="js/plantillas.js?v=20261102a"></script>
 <script defer src="js/reels.js?v=20261102a"></script>
 <script src="js/aranas.js?v=20261102a" defer></script>
-<script src="js/navidad.js?v=20261115a" defer></script>
+<script src="js/navidad.js?v=20261127a" defer></script>
 
 </body>
 </html>

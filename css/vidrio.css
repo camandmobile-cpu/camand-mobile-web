@@ -1,0 +1,108 @@
+/* ============================================================
+   CAMAND MOBILE — ESTILO VIDRIO (desde 2026-11-27)
+   Capa encima de la V3: paneles esmerilados sobre una luz de color
+   fija, y "ventanas" con foto de fondo que se queda quieta mientras
+   la página pasa. Solo es estilo: no cambia carrito, Hoja ni rutas.
+   ANDRÉS: para apagarlo para todos, en index.html cambia
+   VIDRIO_PARA_TODOS a false. Para verlo apagado solo en tu
+   navegador: camandmobile.com/?vidrio=0 (y ?vidrio=1 lo vuelve a encender).
+   Fotos de las ventanas: img/fondos/. Textos de las ventanas: js/vidrio.js.
+   ============================================================ */
+html.v3.vd{
+  --vd-glass:rgba(255,255,255,.52);
+  --vd-glass-solid:rgba(255,255,255,.84);
+  --vd-line:rgba(255,255,255,.78);
+  --vd-shadow:0 1px 0 rgba(255,255,255,.95) inset,0 12px 32px -6px rgba(29,29,31,.10);
+  --vd-blur:blur(22px) saturate(180%);
+  background:#FBFBFD;
+}
+html.v3.vd body{background:transparent;}
+
+/* ---------- Luz de fondo fija (lo que el vidrio desenfoca) ---------- */
+.vd-aura{position:fixed;inset:0;z-index:-2;pointer-events:none;overflow:hidden;}
+.vd-aura i{position:absolute;border-radius:50%;opacity:.7;will-change:transform;animation:vdDeriva 28s ease-in-out infinite alternate;}
+.vd-aura i:nth-child(1){width:70vmax;height:70vmax;left:-24vmax;top:-22vmax;background:radial-gradient(closest-side,#a9cdfd,rgba(169,205,253,0));}
+.vd-aura i:nth-child(2){width:60vmax;height:60vmax;right:-22vmax;top:12vh;background:radial-gradient(closest-side,#f6bdd5,rgba(246,189,213,0));animation-delay:-9s;}
+.vd-aura i:nth-child(3){width:56vmax;height:56vmax;left:22vw;bottom:-26vmax;background:radial-gradient(closest-side,#ffd9ad,rgba(255,217,173,0));animation-delay:-18s;}
+@keyframes vdDeriva{to{transform:translate(6vmax,5vmax) scale(1.1);}}
+
+/* ---------- Menú de vidrio ---------- */
+html.v3.vd header.nav{background:rgba(255,255,255,.62);-webkit-backdrop-filter:var(--vd-blur);backdrop-filter:var(--vd-blur);
+  border-bottom:1px solid var(--vd-line);box-shadow:0 1px 0 rgba(255,255,255,.9) inset,0 10px 30px -18px rgba(29,29,31,.25);}
+html.v3.vd .mobile-menu{background:rgba(255,255,255,.8);-webkit-backdrop-filter:var(--vd-blur);backdrop-filter:var(--vd-blur);}
+
+/* ---------- Paneles de vidrio ---------- */
+html.v3.vd .cat-card-home,
+html.v3.vd .comocompras li,
+html.v3.vd .about-block,
+html.v3.vd .testi,
+html.v3.vd .trust .pill,
+html.v3.vd .v3-pestanas button,
+html.v3.vd .qeb-chips button,
+html.v3.vd #suscripcion > *,
+html.v3.vd .pz-dual-cel{
+  background:var(--vd-glass);border:1px solid var(--vd-line);box-shadow:var(--vd-shadow);
+  -webkit-backdrop-filter:var(--vd-blur);backdrop-filter:var(--vd-blur);
+}
+html.v3.vd .v3-pestanas button[aria-selected="true"],html.v3.vd .qeb-chips button[aria-selected="true"]{background:var(--ink);color:#fff;border-color:var(--ink);}
+
+/* ---------- Tarjetas de producto: vidrio, foto de la Hoja sobre blanco ---------- */
+html.v3.vd .product-card{background:var(--vd-glass);border:1px solid var(--vd-line);box-shadow:var(--vd-shadow);
+  -webkit-backdrop-filter:var(--vd-blur);backdrop-filter:var(--vd-blur);border-radius:24px;padding:8px;
+  transition:transform .28s cubic-bezier(.22,.61,.36,1),box-shadow .28s;}
+html.v3.vd .product-card:hover{transform:translateY(-4px);box-shadow:var(--vd-shadow),0 22px 40px -16px rgba(29,29,31,.22);}
+html.v3.vd .product-card .pc-media{background:#fff;border-radius:18px;overflow:hidden;}
+html.v3.vd .product-card .pc-body{padding:12px 8px 8px;}
+html.v3.vd .product-card .pc-specs span{background:rgba(255,255,255,.8);}
+html.v3.vd .product-card .pc-ask{background:rgba(255,255,255,.75);border:1px solid var(--vd-line);}
+
+/* En celular el desenfoque de muchas tarjetas pesa: se usa vidrio "lechoso" sin desenfoque. */
+@media (max-width:760px){
+  html.v3.vd .product-card,html.v3.vd .cat-card-home,html.v3.vd .testi,html.v3.vd .comocompras li,
+  html.v3.vd .trust .pill,html.v3.vd .qeb-chips button,html.v3.vd .v3-pestanas button{
+    -webkit-backdrop-filter:none;backdrop-filter:none;background:var(--vd-glass-solid);}
+}
+
+/* ---------- Ventanas con fondo fijo ---------- */
+.vd-win{position:relative;isolation:isolate;background:#000;color:#fff;display:flex;align-items:center;
+  min-height:78vh;margin:40px 0;overflow:hidden;}
+.vd-win-bg{position:absolute;inset:0;z-index:-1;pointer-events:none;
+  background-color:#000;background-repeat:no-repeat;background-position:right 7% center;background-size:contain;}
+.vd-win-bg::after{content:"";position:absolute;inset:0;background:linear-gradient(90deg,rgba(0,0,0,.8),rgba(0,0,0,.2) 55%,rgba(0,0,0,0));}
+@supports (clip-path:inset(0 0 0 0)){
+  .vd-win{clip-path:inset(0 0 0 0);}
+  .vd-win-bg{position:fixed;}
+}
+.vd-win .wrap{width:100%;}
+/* Lugar en el inicio (la V3 ordena el inicio con "order", ver css/v3.css) */
+html.v3 #view-home > #vdCelulares{order:6;}
+html.v3 #view-home > #vdRelojes{order:8;}
+html.v3 #view-home > #vdComputadores{order:9;}
+.vd-card{max-width:460px;border-radius:26px;padding:28px;background:rgba(255,255,255,.12);border:1px solid rgba(255,255,255,.22);
+  box-shadow:0 1px 0 rgba(255,255,255,.25) inset;-webkit-backdrop-filter:blur(20px) saturate(160%);backdrop-filter:blur(20px) saturate(160%);}
+.vd-card .vd-eb{display:block;font-size:13px;font-weight:700;color:#d2d2d7;margin-bottom:8px;}
+.vd-card h2{font-family:var(--v3-titulo,inherit);font-size:clamp(30px,4.4vw,52px);line-height:1.04;letter-spacing:-.03em;margin:0 0 12px;color:#fff;text-wrap:balance;}
+.vd-card p{font-size:16.5px;line-height:1.5;margin:0 0 20px;color:#e8e8ed;}
+.vd-btns{display:flex;flex-wrap:wrap;gap:10px;}
+.vd-btn{display:inline-flex;align-items:center;justify-content:center;gap:8px;min-height:46px;padding:0 22px;border-radius:100px;border:0;
+  font:inherit;font-size:15px;font-weight:700;cursor:pointer;white-space:nowrap;transition:transform .2s,background .2s;}
+.vd-btn:hover{transform:translateY(-2px);}
+.vd-btn.claro{background:#fff;color:#1d1d1f;}
+.vd-btn.vidrio{background:rgba(255,255,255,.14);color:#fff;border:1px solid rgba(255,255,255,.4);}
+.vd-btn:focus-visible{outline:3px solid #fff;outline-offset:3px;}
+@media (max-width:760px){
+  .vd-win{min-height:72vh;align-items:flex-end;padding-bottom:22px;margin:28px 0;}
+  .vd-win-bg{background-size:cover;background-position:center;}
+  .vd-win-bg::after{background:linear-gradient(0deg,rgba(0,0,0,.85),rgba(0,0,0,.15) 62%,rgba(0,0,0,0));}
+  .vd-card{padding:22px;}
+}
+
+/* ---------- Final en negro ---------- */
+html.v3.vd .pie-v3{background:#000;}
+html.v3.vd .instagram-cta{background:#000;}
+
+@media (prefers-reduced-motion:reduce){
+  .vd-aura i{animation:none;}
+  html.v3.vd .product-card,html.v3.vd .product-card:hover,.vd-btn:hover{transform:none;}
+}
+@media print{.vd-aura,.vd-win{display:none !important;}}
