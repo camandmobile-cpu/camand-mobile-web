@@ -141,7 +141,7 @@
     }catch(e){ vidrioOff = pv === '0'; }
     if((VIDRIO_PARA_TODOS || pv === '1') && !vidrioOff){
       h.classList.add('vd');
-      document.write('<link rel="stylesheet" href="css/vidrio.css?v=20261127f">' +
+      document.write('<link rel="stylesheet" href="css/vidrio.css?v=20261127i">' +
         '<script defer src="js/vidrio.js?v=20261127e"><\/script>');
     }
   }catch(e){}
@@ -1294,7 +1294,7 @@ window.TEMPORADA_CONFIG = {
        Precios y opciones editables en el bloque "PERSONALIZA_CONFIG" (al final del archivo). -->
   <section class="view" id="view-personaliza">
     <!-- Portada en el estilo vidrio (ventana negra con estuche, igual al inicio). Sin vidrio se ve la portada anterior. -->
-    <section class="vd-win pz-win" id="pzWin" aria-label="Personaliza tu equipo">
+    <section class="vd-win pz-win" id="pzWin" aria-label="Personaliza tu equipo" hidden>
       <div class="vd-win-bg" aria-hidden="true" style="background-image:url('img/fondos/bg-personaliza.webp')"></div>
       <div class="wrap">
         <div class="vd-card">
@@ -1618,7 +1618,7 @@ window.TEMPORADA_CONFIG = {
             <span class="line-badge pink">Más vendida</span>
             <p class="line-eyebrow">Línea Clásica</p>
             <h3>Estuche Acrygel transparente</h3>
-            <div class="line-photo" id="lineFoto_basica"><img src="img/estuches-ejemplo/basica.png" alt="Ejemplo de estuche Línea Clásica" loading="lazy" onerror="this.closest('.line-photo').style.display='none'"></div>
+            <div class="line-photo" id="lineFoto_basica"><img src="img/galeria/estuche-02.jpg" alt="Ejemplo de estuche Línea Clásica" loading="lazy" onerror="this.closest('.line-photo').style.display='none'"></div>
             <p class="line-desc">Un estuche híbrido Acrygel resistente a caídas, con bordes compactos, protección de cámara y tecnología anti-amarilleo (exclusiva de esta línea). Tú eliges si tu foto o diseño se imprime por el exterior o por el interior del acrílico.</p>
             <div class="line-price">
               <span class="old">$41.990</span>
@@ -1642,7 +1642,7 @@ window.TEMPORADA_CONFIG = {
             <span class="line-badge ink">Máxima protección</span>
             <p class="line-eyebrow">Línea Pro</p>
             <h3>Estuche Pro, borde reforzado</h3>
-            <div class="line-photo" id="lineFoto_pro"><img src="img/estuches-ejemplo/pro.png" alt="Ejemplo de estuche Línea Pro" loading="lazy" onerror="this.closest('.line-photo').style.display='none'"></div>
+            <div class="line-photo" id="lineFoto_pro"><img src="img/galeria/estuche-06.jpg" alt="Ejemplo de estuche Línea Pro" loading="lazy" onerror="this.closest('.line-photo').style.display='none'"></div>
             <p class="line-desc">Para quienes quieren el máximo nivel de protección: bordes negros reforzados, de máxima calidad y protección, con impresión exterior UV de máxima definición.</p>
             <div class="line-price">
               <span class="old">$53.990</span>
@@ -2493,9 +2493,9 @@ function mostrarGraciasSuscripcion() {
      ejecutan en este mismo orden, antes de DOMContentLoaded. -->
 <script defer src="https://cdnjs.cloudflare.com/ajax/libs/PapaParse/5.4.1/papaparse.min.js"></script>
 <script defer src="js/movimiento.js?v=20261102b"></script>
-<script defer src="js/tienda.js?v=20261124b"></script>
+<script defer src="js/tienda.js?v=20261127a"></script>
 
-<script defer src="js/personaliza.js?v=20261127a"></script>
+<script defer src="js/personaliza.js?v=20261127b"></script>
 
 <script defer src="js/campanas.js?v=20261127r"></script>
 

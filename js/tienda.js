@@ -3241,8 +3241,8 @@ const LINEA_FOTOS_CSV_URL = "https://docs.google.com/spreadsheets/d/e/2PACX-1vTV
 const LINEA_FOTOS_CACHE_KEY = 'camand_linea_fotos_cache_v1';
 
 let LINEA_FOTOS = {
-  basica: "img/estuches-ejemplo/basica.png",
-  pro: "img/estuches-ejemplo/pro.png",
+  basica: "img/galeria/estuche-02.jpg",
+  pro: "img/galeria/estuche-06.jpg",
   "3d": ""   // vacío = se muestra la animación de ejemplo hasta que pongas tu foto o video
 };
 

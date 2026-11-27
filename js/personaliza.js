@@ -112,8 +112,13 @@ function pzEsc(s){ return String(s == null ? '' : s).replace(/&/g,'&amp;').repla
 function pzScrollTo(id){
   const el = document.getElementById(id);
   if(!el) return;
-  const y = el.getBoundingClientRect().top + window.scrollY - 90;
-  window.scrollTo({ top: y, behavior: 'smooth' });
+  const ir = suave => window.scrollTo({ top: el.getBoundingClientRect().top + window.scrollY - 90, behavior: suave ? 'smooth' : 'auto' });
+  ir(true);
+  // Mientras baja, se cargan fotos y tarjetas de más arriba y la sección se corre:
+  // se corrige la posición cuando termina el desplazamiento.
+  [900, 1600].forEach(ms => setTimeout(() => {
+    if(Math.abs(el.getBoundingClientRect().top - 90) > 24) ir(true);
+  }, ms));
 }
 // Abre la página Personaliza (desde el inicio, el menú o un link) y, si se
 // indica, baja hasta una sección — espera a que termine la animación de

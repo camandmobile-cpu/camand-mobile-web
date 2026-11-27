@@ -39,7 +39,6 @@ html.v3.vd .testi,
 html.v3.vd .trust .pill,
 html.v3.vd .v3-pestanas button,
 html.v3.vd .qeb-chips button,
-html.v3.vd #suscripcion > *,
 html.v3.vd .pz-dual-cel{
   background:var(--vd-glass);border:1px solid var(--vd-line);box-shadow:var(--vd-shadow);
   -webkit-backdrop-filter:var(--vd-blur);backdrop-filter:var(--vd-blur);
@@ -160,6 +159,28 @@ html.v3.vd .vd-mm-foto img{width:100%;height:100%;object-fit:contain;display:blo
   html.v3.vd .pz-card .pz-btn{min-height:42px;padding:0 10px;font-size:13.5px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
 }
 
+/* ---------- Orden del inicio: mostrar → confiar → mostrar → confiar ----------
+   Celulares + Personaliza (negro) → Cómo compras (claro) → Relojes + Computadores (negro)
+   → Opiniones de clientes → Quiénes somos → Instagram. */
+html.v3.vd #view-home > #vdRelojes{order:9;}
+html.v3.vd #view-home > #vdComputadores{order:10;}
+html.v3.vd #view-home > .section:has(.testi-grid){order:11;}
+html.v3.vd #view-home > .section:has(.about-block){order:12;}
+html.v3.vd #view-home > .section:has(.instagram-cta){order:13;}
+html.v3.vd #vdRelojes{margin-bottom:0;}
+html.v3.vd #vdComputadores{margin-top:0;border-top:1px solid rgba(255,255,255,.12);}
+/* Cómo compras: sin la escena fija de 150vh (dejaba un espacio en blanco enorme). */
+html.v3.vd .comocompras-section{min-height:0;padding-top:56px;padding-bottom:56px;}
+html.v3.vd .comocompras-section > .wrap{position:static;}
+html.v3.vd .comocompras li,html.v3.vd .comocompras li span{animation:none;transform:none;}
+html.v3.vd .comocompras li::after{display:none;}
+@media (max-width:480px){
+  html.v3.vd .comocompras{grid-template-columns:1fr 1fr;gap:10px;}
+  html.v3.vd .comocompras li{padding:14px;border-radius:18px;}
+  html.v3.vd .comocompras b{font-size:14.5px;}
+  html.v3.vd .comocompras p{font-size:13px;line-height:1.4;}
+}
+
 /* ---------- Página Personaliza: mismo sistema que el inicio ---------- */
 /* Portada: ventana negra con estuche (la portada morada anterior solo se ve sin vidrio). */
 .pz-win{display:none;}
@@ -203,6 +224,13 @@ html.v3.vd #view-personaliza .pz-card-media{background:rgba(255,255,255,.7);}
   html.v3.vd #view-personaliza .pz-how > div,html.v3.vd #view-personaliza .faq-item,html.v3.vd #view-personaliza .pz-promise{
     -webkit-backdrop-filter:none;backdrop-filter:none;background:var(--vd-glass-solid);}
 }
+
+/* Suscripción: un solo panel de vidrio (antes cada título y campo tenía su propia caja). */
+html.v3.vd #suscripcion{background:var(--vd-glass) !important;border:1px solid var(--vd-line);box-shadow:var(--vd-shadow);
+  -webkit-backdrop-filter:var(--vd-blur);backdrop-filter:var(--vd-blur);border-radius:26px !important;font-family:inherit !important;}
+html.v3.vd #suscripcion input[type=text],html.v3.vd #suscripcion input[type=email]{background:rgba(255,255,255,.85);border-radius:12px !important;}
+/* La barra de comparar no se asoma cuando no hay nada elegido. */
+.compare-bar:not(.show){visibility:hidden;transition:transform .3s,visibility 0s .3s;}
 
 /* ---------- Final en negro ---------- */
 html.v3.vd .pie-v3{background:#000;}
